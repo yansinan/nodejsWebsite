@@ -8,7 +8,7 @@
 
 module.exports = {
 
-    server_api: `http://localhost:8080/api/v0`, // [前台]api地址
-    server_admin_api: `http://localhost:8080`, // [后台]api地址
-
+    server_api: `http://nodejs.local:8084/api/v0`, // [前台]api地址
+    server_admin_api: `http://nodejs.local:8084`, // [后台]api地址
+    "client_admin_api":"http://nodejs.local:8084",
 }

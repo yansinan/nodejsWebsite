@@ -1,7 +1,8 @@
 import Axios from "axios";
 import _ from "lodash";
 const {
-    server_admin_api
+    server_admin_api,
+    client_admin_api,
 } = require("~server/configs/urlConfigs");
 
 const defaultConfig = {
@@ -12,11 +13,11 @@ export function reqJsonData(url, params = {}, method = 'post') {
 
     _.assign(params, defaultConfig);
     if (method === 'get') {
-        return Axios.get(server_admin_api + '/' + url, {
+        return Axios.get(client_admin_api + '/' + url, {
             params
         })
     } else if (method === 'post') {
-        return Axios.post(server_admin_api + '/' + url, params)
+        return Axios.post(client_admin_api + '/' + url, params)
     }
 }
 export default {
