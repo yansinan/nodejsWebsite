@@ -11,3 +11,4 @@ logs/
 dist/
 .cache
 data/
+docker/
