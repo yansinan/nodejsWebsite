@@ -10,3 +10,4 @@ public/upload/
 logs/
 dist/
 .cache
+data/
