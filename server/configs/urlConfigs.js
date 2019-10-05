@@ -12,5 +12,5 @@
  module.exports = {
   "server_api": "http://127.0.0.1:8080/api/v0",
   "server_admin_api": "http://127.0.0.1:8080",
-  "client_admin_api":"http://nodejs.local:8084",
+  "client_admin_api":"http://wx.z-core.cn:8084",
 }
