@@ -19,7 +19,8 @@ const {
     _create,
     _update,
     _removes,
-    _safeDelete
+    _safeDelete,
+    _updateMany,
 } = require('./general');
 
 
@@ -86,8 +87,8 @@ class ContentTemplateService {
         return _update(res, ContentTemplate, _id, payload);
     }
 
-    async updateMany(res, ids, payload) {
-        return _updateMany(res, ContentTemplate, ids, payload);
+    async updateMany(res, ids, payload,query={}) {
+        return _updateMany(res, ContentTemplate, ids, payload,query);
     }
 
     async item(res, params = {}) {

@@ -726,14 +726,17 @@ exports.uploadCMSTemplate = async (req, res, next) => {
 
 exports.enableTemp = async (req, res, next) => {
     var tempId = req.query.tempId;
-
+    console.log("使能模板传入id:",req.query,tempId)
     try {
         if (!tempId || !shortid.isValid(tempId)) {
+            console.error("使能模板传入id:错误:",req.query)
             throw new Error(res.__("validate_error_params"));
         }
         // 重置所有模板
         await contentTemplateService.updateMany(res, '', {
             'using': false
+        }, {
+            query: {'using':true},
         })
         await contentTemplateService.update(res, tempId, {
             'using': true
@@ -764,6 +767,7 @@ exports.uninstallTemp = async (req, res, next) => {
 
         let errMsg = '';
         if (!checkCurrentId(tempId)) {
+            console.error("使能模板传入id错误:",req)
             errMsg = res.__("validate_error_params");
         }
         if (errMsg) {
