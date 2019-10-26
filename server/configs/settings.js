@@ -63,5 +63,5 @@
   "redis_ttl": 12,
   "doracms_api": "http://api.html-js.cn",
   "system_log_path": "./logs/",
-  "upload_path": "/home/doraData/uploadFiles/doracms2/upload"
+  "upload_path": "/home/node/public/upload",//"/home/node/uploadFiles/doracms2/upload"
 }
