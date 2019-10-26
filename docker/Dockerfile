@@ -15,7 +15,10 @@ RUN npm install -g n && \
 RUN npm install pm2 -g   \
     && npm install apidoc -g  \
     && npm install gulp -g  \
-    && npm install nodemon -g  
+    && npm install nodemon -g  && \
+    npm install concurrently -g && \
+    npm install cross-env -g
+
 #下载
 # RUN cd /home \
 #     && git clone https://github.com/doramart/DoraCMS.git \
@@ -36,7 +39,23 @@ WORKDIR /home/node
 
 COPY startapp.sh /startapp.sh
 RUN chmod +x /startapp.sh 
-#ENTRYPOINT ["/startapp.sh"]
+# change uid and gid for elasticsearch user
+#RUN apk --no-cache add shadow && \
+#    usermod -aG users node 
+#ENV USER=dr
+#ENV UID=100
+#ENV GID=101
+
+#RUN addgroup --gid "$GID" "$USER" && \
+#    adduser \
+#    --disabled-password \
+#    --gecos "" \
+#    --home "$(pwd)" \
+#    --ingroup node \
+#    --no-create-home \
+#    --uid "$UID" \
+#    "$USER"
+ENTRYPOINT ["npm","run","dev"]
 #容器启动时执行指令
 # CMD /bin/bash
 
