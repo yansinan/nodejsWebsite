@@ -640,12 +640,18 @@ exports.uploadCMSTemplate = async (req, res, next) => {
                                                     console.info("文件复制路径:",tempForder,temp_static_forder,fromPath,targetPath)
                                                     service.copyForder(fromPath, targetPath);
 
-                                                    var tempItem = {};
-                                                    tempItem.forder = "2-stage-default";
-                                                    tempItem.name = '默认模板';
-                                                    tempItem.isDefault = true;
+                                                    // var tempItem = {};
+                                                    // tempItem.forder = "2-stage-default";
+                                                    // tempItem.name = '默认模板';
+                                                    // tempItem.isDefault = true;
+                                                    // await templateItemsService.create(tempItem);
+
                                                     console.info("创建单个默认模板:",templateItemsService)
-                                                    await templateItemsService.create(tempItem);
+                                                    let newTempItem = await templateItemsService.create({
+                                                        forder: "2-stage-default",
+                                                        name: 'Default',
+                                                        isDefault: true,
+                                                    });
 
                                                     var tempObj = {
                                                         name: tempInfoData.name,
@@ -657,10 +663,16 @@ exports.uploadCMSTemplate = async (req, res, next) => {
                                                         items: []
                                                     };
 
-                                                    tempObj.using = false;
-                                                    tempObj.items.push(tempItem);
-                                                    console.info("创建模板before:",tempObj,tempForder)
-                                                    await contentTemplateService.create(tempObj);
+                                                    // tempObj.using = false;
+                                                    // tempObj.items.push(tempItem);
+                    
+                                                    let newTempObj = _.assign({}, tempObj, {
+                                                        using: false,
+                                                        items: []
+                                                    });
+                                                    newTempObj.items.push(newTempItem._id);
+                                                    console.info("创建模板before:",newTempObj,tempForder)
+                                                    await contentTemplateService.create(newTempObj);
                                                     console.info("创建模板success:","before deletFolder",tempForder)
                                                     await service.deleteFolder(tempForder + '.zip');
                                                     console.info("模板创建完成,删除zip:ok")
