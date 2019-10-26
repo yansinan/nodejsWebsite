@@ -588,8 +588,6 @@ exports.uploadCMSTemplate = async (req, res, next) => {
                     path: DOWNLOAD_DIR
                 });
                 extract.on('error', function (err) {
-                    console.log("dr::解压失败:",err);
-                    //解压异常处理
                     throw new Error("dr::解压失败:");
                 });
                 extract.on('finish', async function () {
@@ -637,16 +635,8 @@ exports.uploadCMSTemplate = async (req, res, next) => {
                                                     let temp_static_forder = process.cwd() + '/public/themes/';
                                                     var fromPath = tempForder + '/dist/';
                                                     var targetPath = temp_static_forder + targetForder;
-                                                    console.info("文件复制路径:",tempForder,temp_static_forder,fromPath,targetPath)
                                                     service.copyForder(fromPath, targetPath);
 
-                                                    // var tempItem = {};
-                                                    // tempItem.forder = "2-stage-default";
-                                                    // tempItem.name = '默认模板';
-                                                    // tempItem.isDefault = true;
-                                                    // await templateItemsService.create(tempItem);
-
-                                                    console.info("创建单个默认模板:",templateItemsService)
                                                     let newTempItem = await templateItemsService.create({
                                                         forder: "2-stage-default",
                                                         name: 'Default',
@@ -661,21 +651,14 @@ exports.uploadCMSTemplate = async (req, res, next) => {
                                                         author: tempInfoData.author,
                                                         comment: tempInfoData.comment,
                                                         items: []
-                                                    };
-
-                                                    // tempObj.using = false;
-                                                    // tempObj.items.push(tempItem);
-                    
+                                                    };                    
                                                     let newTempObj = _.assign({}, tempObj, {
                                                         using: false,
                                                         items: []
                                                     });
                                                     newTempObj.items.push(newTempItem._id);
-                                                    console.info("创建模板before:",newTempObj,tempForder)
                                                     await contentTemplateService.create(newTempObj);
-                                                    console.info("创建模板success:","before deletFolder",tempForder)
                                                     await service.deleteFolder(tempForder + '.zip');
-                                                    console.info("模板创建完成,删除zip:ok")
                                                     renderSuccess(req, res);
 
                                                 }
