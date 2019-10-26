@@ -1,39 +1,38 @@
+/*
+ * @param  {[string]} session_secret   [session 密钥]
+ * @param  {[string]} auth_cookie_name   [cookie 标识]
+ * @param  {[number]} serverPort   [服务端口号]
+ * @param  {[string]} lang   [默认语言]
+ * @param  {[string]} languages   [支持语言]
+ * @param  {[string]} encrypt_key   [密钥]
+ * @param  {[string]} salt_aes_key   [可以解密]
+ * @param  {[string]} salt_md5_key   [MD5的盐，用于加密密码]
+ * @param  {[string]} encryptApp_key   [iv加密key]
+ * @param  {[string]} encryptApp_vi   [iv加密密钥]
+ * @param  {[string]} mongo_connection_uri   [mongodb连接信息]
+ * @param  {[boolean]} openqn   [打开七牛]
+ * @param  {[string]} accessKey   [七牛信息]
+ * @param  {[string]} secretKey   [七牛信息]
+ * @param  {[string]} bucket   [资源空间名称]
+ * @param  {[string]} origin   [cdn域名]
+ * @param  {[number]} fsizeLimit   [上传文件大小限制]
+ * @param  {[boolean]} openRedis   [使用redis缓存]
+ * @param  {[string]} redis_host   [redis主机ip]
+ * @param  {[number]} redis_port   [redis端口]
+ * @param  {[string]} redis_psd   [redis密码]
+ * @param  {[number]} redis_db   [redis db]
+ * @param  {[number]} redis_ttl   [超时时间]
+ * @param  {[string]} doracms_api   [系统服务提供商]
+ * @param  {[string]} system_log_path   [服务器日志保存目录]
+ * @param  {[string]} upload_path   [文件上传路径]
+ */
 
-    /*
-    * @param  {[string]} session_secret   [session 密钥]
-    * @param  {[string]} auth_cookie_name   [cookie 标识]
-    * @param  {[number]} serverPort   [服务端口号]
-    * @param  {[string]} lang   [默认语言]
-    * @param  {[string]} languages   [支持语言]
-    * @param  {[string]} encrypt_key   [密钥]
-    * @param  {[string]} salt_aes_key   [可以解密]
-    * @param  {[string]} salt_md5_key   [MD5的盐，用于加密密码]
-    * @param  {[string]} encryptApp_key   [iv加密key]
-    * @param  {[string]} encryptApp_vi   [iv加密密钥]
-    * @param  {[string]} mongo_connection_uri   [mongodb连接信息]
-    * @param  {[boolean]} openqn   [打开七牛]
-    * @param  {[string]} accessKey   [七牛信息]
-    * @param  {[string]} secretKey   [七牛信息]
-    * @param  {[string]} bucket   [资源空间名称]
-    * @param  {[string]} origin   [cdn域名]
-    * @param  {[number]} fsizeLimit   [上传文件大小限制]
-    * @param  {[boolean]} openRedis   [使用redis缓存]
-    * @param  {[string]} redis_host   [redis主机ip]
-    * @param  {[number]} redis_port   [redis端口]
-    * @param  {[string]} redis_psd   [redis密码]
-    * @param  {[number]} redis_db   [redis db]
-    * @param  {[number]} redis_ttl   [超时时间]
-    * @param  {[string]} doracms_api   [系统服务提供商]
-    * @param  {[string]} system_log_path   [服务器日志保存目录]
-    * @param  {[string]} upload_path   [文件上传路径]
-    */
-    
 
 
 
 'use strict';
 
- module.exports = {
+module.exports = {
   "session_secret": "doracms_secret",
   "auth_cookie_name": "doracms",
   "serverPort": 8080,
