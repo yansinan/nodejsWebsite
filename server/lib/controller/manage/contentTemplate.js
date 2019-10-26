@@ -8,7 +8,7 @@
 
 const {
     contentTemplateService,
-    templateItemService
+    templateItemsService
 } = require('@service');
 const formidable = require('formidable');
 const {
@@ -373,7 +373,7 @@ exports.addTemplateItem = async (req, res, next) => {
             throw new Error(errInfo.errors[0].message)
         }
 
-        let newContentTemplateItems = await templateItemService.create(formObj);
+        let newContentTemplateItems = await templateItemsService.create(formObj);
 
         let defaultTemp = await this._getDefaultTempInfo();
         await contentTemplateService.addItems(defaultTemp._id, newContentTemplateItems._id);
@@ -405,7 +405,7 @@ exports.delTemplateItem = async (req, res, next) => {
         let defaultTemp = await this._getDefaultTempInfo();
         await contentTemplateService.removeItems(defaultTemp._id, req.query.ids);
 
-        await templateItemService.removes(res, req.query.ids);
+        await templateItemsService.removes(res, req.query.ids);
 
         renderSuccess(req, res);
 
@@ -477,7 +477,7 @@ exports.installTemp = async (req, res, next) => {
                             extract.on('finish', async () => {
                                 console.log("解压完成!!");
                                 //解压完成处理入库操作
-                                let newTempItem = await templateItemService.create({
+                                let newTempItem = await templateItemsService.create({
                                     forder: "2-stage-default",
                                     name: 'Default',
                                     isDefault: true,
@@ -566,9 +566,10 @@ exports.uploadCMSTemplate = async (req, res, next) => {
             try {
                 fs.renameSync(files.file.path, system_template_forder + files.file.name);
                 forderName = files.file.name.split('.')[0];
-                console.log('parsing done');
+                
                 var target_path = system_template_forder + forderName + '.zip';
                 var DOWNLOAD_DIR = system_template_forder + forderName + '/';
+                console.log('parsing done',system_template_forder,target_path,DOWNLOAD_DIR);
 
                 if (fs.existsSync(DOWNLOAD_DIR)) {
                     await service.deleteFolder(target_path);
@@ -587,9 +588,9 @@ exports.uploadCMSTemplate = async (req, res, next) => {
                     path: DOWNLOAD_DIR
                 });
                 extract.on('error', function (err) {
-                    console.log(err);
+                    console.log("dr::解压失败:",err);
                     //解压异常处理
-                    throw new Error(err);
+                    throw new Error("dr::解压失败:");
                 });
                 extract.on('finish', async function () {
                     console.log("解压完成!!");
@@ -611,7 +612,7 @@ exports.uploadCMSTemplate = async (req, res, next) => {
 
                                     var tempInfoData = eval("(" + newData + ")")[0];
                                     if (tempInfoData && tempInfoData.name && tempInfoData.alias && tempInfoData.version && tempInfoData.sImg && tempInfoData.author && tempInfoData.comment) {
-
+                                        console.info("上传的模板信息:",tempInfoData);
                                         service.checkTempInfo(tempInfoData, targetForder, async (data) => {
                                             try {
                                                 if (data != 'success') {
@@ -620,27 +621,31 @@ exports.uploadCMSTemplate = async (req, res, next) => {
                                                     throw new Error(data);
 
                                                 } else {
-                                                    let oldTemp = await ContentTemplateModel.findOne({
+                                                    let oldTemp = await contentTemplateService.findOne({
                                                         $or: [{
                                                             'name': tempInfoData.name
                                                         }, {
                                                             'alias': tempInfoData.alias
                                                         }]
                                                     });
+                                                    
                                                     if (!_.isEmpty(oldTemp)) {
+                                                        console.error("模板名称或key已存在，请修改后重试！",oldTemp);
                                                         throw new Error("模板名称或key已存在，请修改后重试！");
                                                     }
                                                     //复制静态文件到公共目录
                                                     let temp_static_forder = process.cwd() + '/public/themes/';
-                                                    var fromPath = system_template_forder + targetForder + '/dist/';
+                                                    var fromPath = tempForder + '/dist/';
                                                     var targetPath = temp_static_forder + targetForder;
+                                                    console.info("文件复制路径:",tempForder,temp_static_forder,fromPath,targetPath)
                                                     service.copyForder(fromPath, targetPath);
 
                                                     var tempItem = {};
                                                     tempItem.forder = "2-stage-default";
                                                     tempItem.name = '默认模板';
                                                     tempItem.isDefault = true;
-                                                    await templateItemService.create(tempItem);
+                                                    console.info("创建单个默认模板:",templateItemsService)
+                                                    await templateItemsService.create(tempItem);
 
                                                     var tempObj = {
                                                         name: tempInfoData.name,
@@ -654,10 +659,11 @@ exports.uploadCMSTemplate = async (req, res, next) => {
 
                                                     tempObj.using = false;
                                                     tempObj.items.push(tempItem);
+                                                    console.info("创建模板before:",tempObj,tempForder)
                                                     await contentTemplateService.create(tempObj);
-
+                                                    console.info("创建模板success:","before deletFolder",tempForder)
                                                     await service.deleteFolder(tempForder + '.zip');
-
+                                                    console.info("模板创建完成,删除zip:ok")
                                                     renderSuccess(req, res);
 
                                                 }
@@ -763,7 +769,7 @@ exports.uninstallTemp = async (req, res, next) => {
             })
             // console.log('---targetTemp---', targetTemp);
             if (!_.isEmpty(targetTemp)) {
-                await templateItemService.removes(res, (targetTemp.items).join(','));
+                await templateItemsService.removes(res, (targetTemp.items).join(','));
                 await contentTemplateService.removes(res, targetTemp._id)
 
                 //删除模板文件夹

@@ -24,7 +24,10 @@ const {
 
 
 class ContentTemplateService {
-
+    async findOne(query,populate = [],files = null) {
+        // return _item(res, ContentTemplate, params)
+        return await ContentTemplate.findOne(query).exec();
+    }
     async find(payload, {
         query = {},
         searchKeys = [],
