@@ -225,7 +225,8 @@ export default {
     },
     beforeUpload(file) {
       this.loadingPage = true;
-      const isZIP = file.type === "application/zip";
+      const isZIP = (file.type === "application/zip") || (file.type==="application/x-zip-compressed");
+      // console.log("上传的模板文件类型为:",file.type)
       const isLt5M = file.size / 1024 / 1024 < 5;
       if (!isZIP) {
         this.loadingPage = false;
