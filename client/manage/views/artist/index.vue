@@ -3,23 +3,27 @@
     <DirectUser :dialogState="directUserFormState" :ids="selectlist"/>
     <el-row class="dr-datatable">
       <el-col :span="24">
-        <TopBar type="artist" :ids="selectlist" :pageInfo="artistList.pageInfo"></TopBar>
+        <TopBar type="artist" :ids="selectlist" :pageInfo="dataList.pageInfo"></TopBar>
         <DataTable
-          :dataList="artistList.docs"
-          :pageInfo="artistList.pageInfo"
+          :dataList="dataList.docs"
+          :pageInfo="dataList.pageInfo"
           @changeContentSelectList="changeSelect"
         ></DataTable>
-        <Pagination :pageInfo="artistList.pageInfo" pageType="artist"></Pagination>
+        <Pagination :pageInfo="dataList.pageInfo" pageType="artist"></Pagination>
       </el-col>
     </el-row>
   </div>
 </template>
 <script>
+//需要修改的:
+const nameMod="artist"
+
 import DataTable from "./dataTable.vue";
 import DirectUser from "./directUser.vue";
 import TopBar from "../common/TopBar.vue";
 import Pagination from "../common/Pagination.vue";
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions,createNamespacedHelpers} from "vuex";
+const mod = createNamespacedHelpers(nameMod)////模块,含mapGetters, mapActions等
 
 export default {
   name: "index",
@@ -40,10 +44,15 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["artistList", "directUserFormState"])
+    ...mapGetters(["directUserFormState"]),//全局
+    ...mod.mapState({
+      dataList: state => state.dataList,
+    }),//模块的state
+    // ...mod.mapGetters({dataList:"getterListData"}),//模块
   },
   mounted() {
-    this.$store.dispatch("getArtistList");
+    // 触发action,异步
+    this.$store.dispatch(nameMod+"/getList",{mod:nameMod});
   }
 };
 </script>

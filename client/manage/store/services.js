@@ -173,6 +173,10 @@ export default {
         artistList(params) {
             return reqJsonData('manage/artist/getList', params, 'get')
         },
+        list(params) {
+            return reqJsonData('manage/artist/getList', params, 'get')
+        },
+
         getOneContent(params) {
             return reqJsonData('manage/artist/getContent', params, 'get')
         },
