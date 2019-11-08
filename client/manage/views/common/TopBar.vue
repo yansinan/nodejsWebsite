@@ -29,6 +29,15 @@
           </el-button>
         </el-tooltip>
       </div>
+      <!-- 艺人列表 -->
+      <div v-else-if="type === 'artist'">
+        <el-button size="small" type="primary" plain @click="addArtist('artist')" round>
+          <i class="fa fa-fw fa-plus" aria-hidden="true"></i>
+        </el-button>
+        <el-button size="small" type="danger" plain round @click="branchDelete('artist')">
+          <i class="fa fa-fw fa-trash-o"></i>
+        </el-button>
+      </div>
       <div v-else-if="type === 'contentCategory'">
         <el-button size="small" type="primary" plain @click="addTopCates" round>
           <i class="fa fa-fw fa-plus" aria-hidden="true"></i>
@@ -337,6 +346,10 @@ export default {
           parentId: "0"
         }
       });
+    },
+    addArtist() {
+      this.$store.dispatch("showContentForm");
+      this.$router.push("/addArtist");
     },
     addContent() {
       this.$store.dispatch("showContentForm");

@@ -15,6 +15,7 @@ const {
   AdminUserController,
   AdminGroupController,
   AdminResourceController,
+  ArtistController,
   ContentCategoryController,
   ContentController,
   ContentTagController,
@@ -150,6 +151,17 @@ router.get('/content/deleteContent', ContentController.removes)
 // 给文章分配用户
 router.post('/content/redictContentToUsers', ContentController.redictContentToUsers)
 
+/**
+ * 艺人管理
+ * 
+ */
+
+router.get('/artist/getList', ArtistController.list)
+router.get('/artist/getContent', ArtistController.getOne)
+
+router.post('/artist/addOne', ArtistController.create)
+
+router.post('/artist/updateOne', ArtistController.update)
 /**
  * tag管理
  */

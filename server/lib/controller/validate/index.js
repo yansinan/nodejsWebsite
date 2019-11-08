@@ -49,6 +49,9 @@ exports.validateForm = async (res, controlName, source) => {
         case 'content':
             checkRule = this.contentFormData;
             break;
+        case 'artist':
+            checkRule = this.contentFormData;
+            break;
         case 'adminUserLogin':
             checkRule = this.adminUserLoginFormData;
             break;

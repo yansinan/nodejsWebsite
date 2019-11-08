@@ -39,7 +39,15 @@ export default {
           state,
           userId: user
         });
-      } else if (this.pageType === "adminUser") {
+      } else if (this.pageType === "artist") {
+        this.$store.dispatch("getArtistList", {
+          current: targetCurrent,
+          pageSize,
+          searchkey,
+          state,
+          userId: user
+        });
+      }  else if (this.pageType === "adminUser") {
         this.$store.dispatch("getAdminUserList", {
           current: targetCurrent,
           pageSize,

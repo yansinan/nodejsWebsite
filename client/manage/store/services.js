@@ -169,7 +169,28 @@ export default {
     redictContentToUsers(params) {
         return reqJsonData('manage/content/redictContentToUsers', params)
     },
-
+    artist:{
+        artistList(params) {
+            return reqJsonData('manage/artist/getList', params, 'get')
+        },
+        getOneContent(params) {
+            return reqJsonData('manage/artist/getContent', params, 'get')
+        },
+    
+        addContent(params) {
+            return reqJsonData('manage/artist/addOne', params)
+        },
+    
+        updateContent(params) {
+            return reqJsonData('manage/artist/updateOne', params)
+        },
+        // getRandomContentImg(params) {
+        //     return reqJsonData('api/v0/content/getRandomContentImg', params, 'get')
+        // },
+        // regUserList(params) {
+        //     return reqJsonData('manage/regUser/getList', params, 'get')
+        // },
+    },
     contentList(params) {
         return reqJsonData('manage/content/getList', params, 'get')
     },
