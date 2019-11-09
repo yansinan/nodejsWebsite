@@ -5,6 +5,7 @@
       <el-col :span="24">
         <TopBar :type="nameMod" :ids="selectlist" :pageInfo="dataList.pageInfo"></TopBar>
         <DataTable
+          :nameMod="nameMod"
           :dataList="dataList.docs"
           :pageInfo="dataList.pageInfo"
           @changeContentSelectList="changeSelect"

@@ -176,7 +176,18 @@ export default {
         list(params) {
             return reqJsonData('manage/artist/getList', params, 'get')
         },
-
+        updateToTop(params) {
+            return reqJsonData('manage/artist/top', params)
+        },
+    
+        roof(params) {
+            return reqJsonData('manage/artist/roof', params)
+        },
+    
+        delete(params) {
+            return reqJsonData('manage/artist/delete', params, 'get')
+        },
+    
         getOneContent(params) {
             return reqJsonData('manage/artist/getContent', params, 'get')
         },

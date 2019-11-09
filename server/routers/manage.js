@@ -162,6 +162,11 @@ router.get('/artist/getContent', ArtistController.getOne)
 router.post('/artist/addOne', ArtistController.create)
 
 router.post('/artist/updateOne', ArtistController.update)
+
+router.post('/artist/top', ArtistController.updateContentToTop)
+router.post('/artist/roof', ArtistController.roofPlacement)
+router.get('/artist/delete', ArtistController.removes)
+
 /**
  * tag管理
  */

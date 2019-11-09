@@ -121,8 +121,12 @@
 <script>
 import services from "../../store/services.js";
 import _ from "lodash";
+// import { mapGetters, mapActions,createNamespacedHelpers} from "vuex";
+// let mod = createNamespacedHelpers(nameMod)////模块,含mapGetters, mapActions等
+
 export default {
   props: {
+    nameMod:String,
     dataList: Array,
     pageInfo: Object
   },
@@ -142,6 +146,11 @@ export default {
   },
 
   methods: {
+    // 从mod获取列表更新
+    getList(){
+      this.pageInfo.mod=this.nameMod;
+      this.$store.dispatch(this.nameMod+"/getList", this.pageInfo);
+    },
     handleContentSelectionChange(val) {
       if (val && val.length > 0) {
         let ids = val.map((item, index) => {
@@ -153,7 +162,7 @@ export default {
     },
     editContentInfo(index, rows) {
       let rowData = rows[index];
-      this.$router.push("/editContent/" + rowData._id);
+      this.$router.push("/edit_"+this.nameMod+"/" + rowData._id);
     },
     topContent(index, rows) {
       let contentData = rows[index];
@@ -162,9 +171,9 @@ export default {
         _id: contentData._id,
         isTop: contentData.isTop == 1 ? 0 : 1
       };
-      services.updateContentToTop(targetParams).then(result => {
+      services[this.nameMod].updateToTop(targetParams).then(result => {
         if (result.data.status === 200) {
-          this.$store.dispatch("getContentList", this.pageInfo);
+          this.getList();
         } else {
           this.$message.error(result.data.message);
         }
@@ -180,9 +189,9 @@ export default {
         _id: contentData._id,
         roofPlacement: contentData.roofPlacement == "1" ? "0" : "1"
       };
-      services.roofContent(targetParams).then(result => {
+      services[this.nameMod].roof(targetParams).then(result => {
         if (result.data.status === 200) {
-          this.$store.dispatch("getContentList", this.pageInfo);
+          this.getList();
         } else {
           this.$message.error(result.data.message);
         }
@@ -199,14 +208,14 @@ export default {
         }
       )
         .then(() => {
-          return services.deleteContent({
+          return services[this.nameMod].delete({
             ids: rows[index]._id
           });
         })
         .then(result => {
           if (result.data.status === 200) {
             Object.assign(this.pageInfo);
-            this.$store.dispatch("getContentList", this.pageInfo);
+            this.getList();
             this.$message({
               message: this.$t("main.scr_modal_del_succes_info"),
               type: "success"

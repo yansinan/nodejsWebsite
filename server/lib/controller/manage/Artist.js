@@ -185,28 +185,25 @@ exports.getOne = async (req, res, next) => {
 }
 
 // 文章推荐
-// exports.updateContentToTop = async (req, res, next) => {
+exports.updateContentToTop = async (req, res, next) => {
+    try {
+        let fields = req.body || {};
+        if (!fields._id) {
+            throw new Error(res.__('validate_error_params'));
+        }
+        await artistService.update(res, fields._id, {
+            isTop: fields.isTop
+        })
 
+        renderSuccess(req, res);
 
-//     try {
-//         let fields = req.body || {};
-//         if (!fields._id) {
-//             throw new Error(res.__('validate_error_params'));
-//         }
-//         await artistService.update(res, fields._id, {
-//             isTop: fields.isTop
-//         })
+    } catch (err) {
 
-//         renderSuccess(req, res);
-
-//     } catch (err) {
-
-//         renderFail(req, res, {
-//             message: err
-//         });
-//     }
-
-// }
+        renderFail(req, res, {
+            message: err
+        });
+    }
+}
 
 // 文章置顶
 exports.roofPlacement = async (req, res, next) => {

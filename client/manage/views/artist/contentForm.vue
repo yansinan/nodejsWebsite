@@ -180,8 +180,7 @@
 //需要修改的:
 const nameMod="artist"
 
-import servicesAll from "../../store/services.js";
-let service = servicesAll[nameMod];
+import services from "../../store/services.js";
 import Ueditor from "../common/Ueditor.vue";
 
 import _ from "lodash";
@@ -345,7 +344,7 @@ export default {
     },
     queryUserListByParams(params = {}) {
       let _this = this;
-      servicesAll
+      services
         .regUserList(params)
         .then(result => {
           let specialList = result.data.data.docs;
@@ -368,7 +367,7 @@ export default {
     },
     getRandomContentImg(params = {}) {
       let _this = this;
-      servicesAll
+      services
         .getRandomContentImg(params)
         .then(result => {
           if (result.status == 200 && result.data && result.data.data) {
@@ -484,7 +483,7 @@ export default {
           });
           // 更新
           if (this.formState.edit) {
-            servicesAll[nameMod].updateContent(params).then(result => {
+            services[nameMod].updateContent(params).then(result => {
               console.log("更新:",params,result);
               if (result.data.status === 200) {
                 this.$router.push("/"+nameMod);
@@ -498,7 +497,7 @@ export default {
             });
           } else {
             // 新增
-            servicesAll[nameMod].addContent(params).then(result => {
+            services[nameMod].addContent(params).then(result => {
               console.log("新增:",params,result);
               if (result.data.status === 200) {
                 this.$router.push("/"+nameMod);
@@ -532,7 +531,7 @@ export default {
     // 针对手动页面刷新
     let _this = this;
     if (this.$route.params.id) {
-      services.getOneContent({ id: this.$route.params.id }).then(result => {
+      services[nameMod].getOneContent({ id: this.$route.params.id }).then(result => {
         if (result.data.status === 200) {
           if (result.data.data) {
             let contentObj = result.data.data,
