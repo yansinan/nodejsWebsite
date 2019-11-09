@@ -71,6 +71,34 @@ const app = {
     // [types.DECREMENT](state) {
     //   state.count--
     // },
+    FORMSTATE(state, formState) {
+      state.formState.edit = formState.edit;
+      state.formState.formData = Object.assign({
+        targetUser: '',
+        title: '',
+        stitle: '',
+        type: '1',
+        categories: [],
+        keywords: '',
+        sortPath: '',
+        tags: [],
+        keywords: '',
+        sImg: '/upload/images/defaultImg.jpg',
+        discription: '',
+        author: {},
+        uAuthor: '',
+        markDownComments: '',
+        state: '1',
+        isTop: 0,
+        roofPlacement: '0',
+        clickNum: 0,
+        comments: '',
+        simpleComments: '',
+        commentNum: 0,
+        likeNum: 0
+      }, formState.formData);
+
+    },
     GET_LIST(state, dataList) {
       state.dataList = dataList
     },
@@ -120,17 +148,17 @@ const app = {
     // }) => {
     //   console.log(commit);
     // },
-    // showContentForm: ({
-    //   commit
-    // }, params = {
-    //   edit: false,
-    //   formData: {}
-    // }) => {
-    //   commit(types.CONTENT_FORMSTATE, {
-    //     edit: params.edit,
-    //     formData: params.formData
-    //   })
-    // },
+    showContentForm: ({
+      commit
+    }, params = {
+      edit: false,
+      formData: {}
+    }) => {
+      commit("FORMSTATE", {
+        edit: params.edit,
+        formData: params.formData
+      })
+    },
     // showDirectUserForm: ({
     //   commit
     // }, params = {

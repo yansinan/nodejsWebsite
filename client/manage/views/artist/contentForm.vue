@@ -177,12 +177,17 @@
 </style>
 
 <script>
+//需要修改的:
+const nameMod="artist"
+
 import servicesAll from "../../store/services.js";
-let service = servicesAll.artist;
+let service = servicesAll[nameMod];
 import Ueditor from "../common/Ueditor.vue";
 
 import _ from "lodash";
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions,createNamespacedHelpers} from "vuex";
+const mod = createNamespacedHelpers(nameMod)////模块,含mapGetters, mapActions等
+
 export default {
   props: {
     groups: Array
@@ -316,6 +321,8 @@ export default {
     Ueditor
   },
   methods: {
+    //获取表单信息
+    ...mod.mapActions(["showContentForm"]),// 将 `this.showContentForm(params)` 映射为 `this.$store.dispatch(nameMod+'/incrementBy', params)`
     changeTargetUser(value) {
       let targetUserInfo = _.filter(this.selectUserList, item => {
         return item.value == value;
@@ -378,7 +385,7 @@ export default {
               });
               Object.assign(initFormData, { targetUser: targetUser.value });
             }
-            this.$store.dispatch("showContentForm", {
+            this.showContentForm({
               formData: initFormData
             });
           }
@@ -388,7 +395,7 @@ export default {
         });
     },
     checkFlashPost(currentType) {
-      this.$store.dispatch("showContentForm", {
+      this.showContentForm({
         edit: this.formState.edit,
         formData: Object.assign({}, this.formState.formData, {
           type: currentType ? "2" : "1"
@@ -396,12 +403,13 @@ export default {
       });
     },
     inputEditor(value) {
-      this.$store.dispatch("showContentForm", {
+      this.showContentForm({
         edit: this.formState.edit,
         formData: Object.assign({}, this.formState.formData, {
           markDownComments: value
         })
       });
+      
     },
     changeEditor(value) {
       console.log(value);
@@ -427,7 +435,7 @@ export default {
       instance.addListener("contentChange", () => {
         this.content = instance.getContent();
         this.simpleComments = instance.getPlainTxt();
-        this.$store.dispatch("showContentForm", {
+        this.showContentForm({
           edit: this.formState.edit,
           formData: Object.assign({}, this.formState.formData, {
             comments: this.content,
@@ -439,7 +447,7 @@ export default {
 
     handleAvatarSuccess(res, file) {
       let imageUrl = res.data.path;
-      this.$store.dispatch("showContentForm", {
+      this.showContentForm({
         edit: this.formState.edit,
         formData: Object.assign({}, this.formState.formData, {
           sImg: imageUrl
@@ -465,7 +473,7 @@ export default {
       console.log(value);
     },
     backToList() {
-      this.$router.push("/artist");
+      this.$router.push("/"+nameMod);
     },
     submitForm(formName, type = "") {
       this.$refs[formName].validate(valid => {
@@ -476,10 +484,10 @@ export default {
           });
           // 更新
           if (this.formState.edit) {
-            servicesAll.artist.updateContent(params).then(result => {
+            servicesAll[nameMod].updateContent(params).then(result => {
               console.log("更新:",params,result);
               if (result.data.status === 200) {
-                this.$router.push("/artist");
+                this.$router.push("/"+nameMod);
                 this.$message({
                   message: this.$t("main.updateSuccess"),
                   type: "success"
@@ -490,10 +498,10 @@ export default {
             });
           } else {
             // 新增
-            servicesAll.artist.addContent(params).then(result => {
+            servicesAll[nameMod].addContent(params).then(result => {
               console.log("新增:",params,result);
               if (result.data.status === 200) {
-                this.$router.push("/artist");
+                this.$router.push("/"+nameMod);
                 this.$message({
                   message: this.$t("main.addSuccess"),
                   type: "success"
@@ -512,9 +520,13 @@ export default {
   },
   computed: {
     ...mapGetters(["contentTagList", "contentCategoryList"]),
-    formState() {
-      return this.$store.getters.contentFormState;
-    }
+    // formState() {
+    //   return this.$store.getters.contentFormState;
+    // },
+    ...mod.mapState({
+      formState: state => state.formState,
+    }),//模块的state
+
   },
   mounted() {
     // 针对手动页面刷新
@@ -549,7 +561,7 @@ export default {
               contentObj.targetUser = contentObj.uAuthor._id;
             }
 
-            this.$store.dispatch("showContentForm", {
+            this.showContentForm({
               edit: true,
               formData: contentObj
             });
@@ -558,7 +570,7 @@ export default {
               message: this.$t("validate.error_params"),
               type: "warning",
               onClose: () => {
-                this.$router.push("/content");
+                this.$router.push("/"+nameMod);
               }
             });
           }
@@ -583,7 +595,7 @@ export default {
             _this.$refs.ueditor.setContent(currentComments);
             // 清除缓存
             localStorage.removeItem(this.$route.path.split("/")[1]);
-            this.$store.dispatch("showContentForm", {
+            this.showContentForm({
               edit: false,
               formData: localContent
             });
