@@ -3,13 +3,13 @@
     <DirectUser :dialogState="directUserFormState" :ids="selectlist"/>
     <el-row class="dr-datatable">
       <el-col :span="24">
-        <TopBar type="artist" :ids="selectlist" :pageInfo="dataList.pageInfo"></TopBar>
+        <TopBar :type="nameMod" :ids="selectlist" :pageInfo="dataList.pageInfo"></TopBar>
         <DataTable
           :dataList="dataList.docs"
           :pageInfo="dataList.pageInfo"
           @changeContentSelectList="changeSelect"
         ></DataTable>
-        <Pagination :pageInfo="dataList.pageInfo" pageType="artist"></Pagination>
+        <Pagination :pageInfo="dataList.pageInfo" :pageType="nameMod"></Pagination>
       </el-col>
     </el-row>
   </div>
@@ -29,7 +29,8 @@ export default {
   name: "index",
   data() {
     return {
-      selectlist: []
+      selectlist: [],
+      nameMod:nameMod,
     };
   },
   components: {
