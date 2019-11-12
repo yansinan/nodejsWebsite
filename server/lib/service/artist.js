@@ -24,6 +24,17 @@ const {
     _inc,
 } = require('./general');
 
+const constListPopulate=[
+    {
+        path: 'listMembers',
+        select: 'userName _id id logo'
+    },
+    {
+        path: 'tags',
+        select: 'name _id'
+    },
+
+]
 
 class ArtistService {
 
@@ -41,26 +52,7 @@ class ArtistService {
             files: files,
             query: query,
             searchKeys: searchKeys,
-            populate: !_.isEmpty(populate) ? populate : [{
-                    path: 'author',
-                    select: 'userName _id id logo'
-                },
-                {
-                    path: 'uAuthor',
-                    select: 'userName name logo _id group'
-                },
-                {
-                    path: 'tags',
-                    select: 'name _id'
-                },
-                {
-                    path: 'categories',
-                    select: 'name _id contentTemp enable defaultUrl',
-                    populate: {
-                        path: 'contentTemp'
-                    }
-                }
-            ],
+            populate: !_.isEmpty(populate) ? populate : constListPopulate,
             sort: sort
         });
 
@@ -105,26 +97,7 @@ class ArtistService {
         return _item(res, Artist, {
             files: files,
             query: query,
-            populate: !_.isEmpty(populate) ? populate : [{
-                    path: 'author',
-                    select: 'userName _id id logo'
-                },
-                {
-                    path: 'uAuthor',
-                    select: 'userName name logo _id group'
-                },
-                {
-                    path: 'tags',
-                    select: 'name _id'
-                },
-                {
-                    path: 'categories',
-                    select: 'name _id contentTemp enable defaultUrl',
-                    populate: {
-                        path: 'contentTemp'
-                    }
-                }
-            ],
+            populate: !_.isEmpty(populate) ? populate : defaultListPopulate,
 
         })
     }

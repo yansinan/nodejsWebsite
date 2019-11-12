@@ -34,12 +34,12 @@
           ></i>
         </template>
       </el-table-column>
-      <el-table-column prop="title" :label="$t('contents.title')" width="350" show-overflow-tooltip>
+      <el-table-column prop="name" :label="$t('contents.name')" width="350" show-overflow-tooltip>
         <template slot-scope="scope">
           <div v-if="scope.row.state">
-            <a :href="'/details/'+scope.row._id+'.html'" target="_blank">{{scope.row.title}}</a>
+            <a :href="'/details/'+scope.row._id+'.html'" target="_blank">{{scope.row.name}}</a>
           </div>
-          <div v-else>{{scope.row.title}}</div>
+          <div v-else>{{scope.row.name}}</div>
         </template>
       </el-table-column>
       <el-table-column prop="author.name" :label="$t('contents.author')" show-overflow-tooltip>

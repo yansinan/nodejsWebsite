@@ -21,6 +21,23 @@ const xss = require("xss");
 const _ = require('lodash');
 const shortid = require('shortid');
 
+function funGetData(fields){
+    return {
+        name: fields.name,
+        listMembers:fields.listMembers,
+        // stitle: fields.stitle,
+        type: fields.type,
+        categories: fields.categories,
+        sortPath: fields.sortPath,
+        tags: fields.tags,
+        sImg: fields.sImg,
+        state: fields.state,
+        dismissReason: fields.dismissReason,
+        comments: fields.comments,
+        type: fields.type
+    
+    }
+}
 
 exports.list = async (req, res, next) => {
     try {
@@ -41,25 +58,25 @@ exports.list = async (req, res, next) => {
         let artistList = await artistService.find(payload, {
             query: queryObj,
             searchKeys: ['userName', 'title', 'comments', 'discription'],
-            populate: [{
-                    path: 'author',
-                    select: 'userName name logo _id group'
-                },
-                {
-                    path: 'uAuthor',
-                    select: 'userName name logo _id group',
-                    $match: {
-                        group: '1'
-                    }
-                },
-                {
-                    path: 'categories',
-                    select: 'name _id defaultUrl'
-                }, {
-                    path: 'tags',
-                    select: 'name _id'
-                }
-            ]
+            // populate: [{
+            //         path: 'author',
+            //         select: 'userName name logo _id group'
+            //     },
+            //     {
+            //         path: 'uAuthor',
+            //         select: 'userName name logo _id group',
+            //         $match: {
+            //             group: '1'
+            //         }
+            //     },
+            //     {
+            //         path: 'categories',
+            //         select: 'name _id defaultUrl'
+            //     }, {
+            //         path: 'tags',
+            //         select: 'name _id'
+            //     }
+            // ]
 
         });
 
@@ -90,26 +107,16 @@ exports.create = async (req, res, next) => {
             }
         }
 
-        const formObj = {
-            title: fields.title,
-            stitle: fields.stitle,
-            type: fields.type,
-            categories: fields.categories,
-            sortPath: fields.sortPath,
-            tags: fields.tags,
+        const formObjCheck = {
             keywords: targetKeyWords,
-            sImg: fields.sImg,
             author: !_.isEmpty(req.session.adminUserInfo) ? req.session.adminUserInfo._id : '',
-            state: fields.state,
-            dismissReason: fields.dismissReason,
-            isTop: fields.isTop,
+            isTop: fields.isTop || '',
             discription: xss(fields.discription),
-            comments: fields.comments,
             simpleComments: xss(fields.simpleComments),
             likeUserIds: [],
-            type: fields.type
         }
-
+        let formObj=Object.assign({},funGetData(fields),formObjCheck);
+        console.log(fields,formObj)
         let errInfo = validateForm(res, 'artist', formObj);
 
         if (!_.isEmpty(errInfo)) {
@@ -128,9 +135,9 @@ exports.create = async (req, res, next) => {
 
 
         // 如果是管理员代发,则指定用户
-        if (req.session.adminUserInfo && fields.targetUser) {
-            formObj.uAuthor = fields.targetUser;
-        }
+        // if (req.session.adminUserInfo && fields.targetUser) {
+        //     formObj.uAuthor = fields.targetUser;
+        // }
 
         await artistService.create(formObj);
         renderSuccess(req, res);
@@ -151,25 +158,25 @@ exports.getOne = async (req, res, next) => {
             query: {
                 _id: _id
             },
-            populate: [{
-                    path: 'author',
-                    select: 'userName name logo _id group'
-                },
-                {
-                    path: 'uAuthor',
-                    select: 'userName name logo _id group',
-                    $match: {
-                        group: '1'
-                    }
-                },
-                {
-                    path: 'categories',
-                    select: 'name _id defaultUrl'
-                }, {
-                    path: 'tags',
-                    select: 'name _id'
-                }
-            ]
+            // populate: [{
+            //         path: 'author',
+            //         select: 'userName name logo _id group'
+            //     },
+            //     {
+            //         path: 'uAuthor',
+            //         select: 'userName name logo _id group',
+            //         $match: {
+            //             group: '1'
+            //         }
+            //     },
+            //     {
+            //         path: 'categories',
+            //         select: 'name _id defaultUrl'
+            //     }, {
+            //         path: 'tags',
+            //         select: 'name _id'
+            //     }
+            // ]
         });
 
         renderSuccess(req, res, {
@@ -267,25 +274,16 @@ exports.update = async (req, res, next) => {
 
     try {
         let fields = req.body || {};
-        const formObj = {
-            title: fields.title,
-            stitle: fields.stitle,
-            type: fields.type,
-            categories: fields.categories,
-            sortPath: fields.sortPath,
-            tags: fields.tags,
+        const formObjCheck = {
             keywords: fields.keywords ? (fields.keywords).split(',') : [],
-            sImg: fields.sImg,
             author: !_.isEmpty(req.session.adminUserInfo) ? req.session.adminUserInfo._id : '',
-            state: fields.state,
-            dismissReason: fields.dismissReason,
             isTop: fields.isTop || '',
             updateDate: new Date(),
             discription: xss(fields.discription),
-            comments: fields.comments,
             simpleComments: xss(fields.simpleComments),
-            type: fields.type
         }
+        let formObj=Object.assign({},funGetData(fields),formObjCheck);
+        console.log(fields,formObj)
 
         let errInfo = validateForm(res, 'artist', formObj)
 

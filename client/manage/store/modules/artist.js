@@ -3,6 +3,30 @@ import * as types from '../types.js';
 import services from '../services.js';
 import _ from 'lodash';
 
+const defautlFormData={
+  targetUser: '',
+  name: '',
+  type: '1',
+  keywords: '',
+  sortPath: '',
+  tags: [],
+  keywords: '',
+  sImg: '/upload/images/defaultImg.jpg',
+  discription: '',
+  author: {},
+  listMembers: [],
+  markDownComments: '',
+  state: '1',
+  isTop: 0,
+  roofPlacement: '0',
+  clickNum: 0,
+  comments: '',
+  simpleComments: '',
+  // commentNum: 0,
+  // likeNum: 0,
+  dismissReason: '',
+
+}
 
 const app = {
   namespaced: true,
@@ -14,32 +38,7 @@ const app = {
 
     formState: {
       edit: false,
-      formData: {
-        targetUser: '',
-        title: '',
-        stitle: '',
-        type: '1',
-        categories: [],
-        keywords: '',
-        sortPath: '',
-        tags: [],
-        keywords: '',
-        sImg: '/upload/images/defaultImg.jpg',
-        discription: '',
-        author: {},
-        uAuthor: '',
-        markDownComments: '',
-        state: '1',
-        isTop: 0,
-        roofPlacement: '0',
-        clickNum: 0,
-        comments: '',
-        simpleComments: '',
-        commentNum: 0,
-        likeNum: 0,
-        dismissReason: '',
-
-      }
+      formData: defautlFormData,
     },
     dataList: {
       pageInfo: {},
@@ -73,30 +72,7 @@ const app = {
     // },
     FORMSTATE(state, formState) {
       state.formState.edit = formState.edit;
-      state.formState.formData = Object.assign({
-        targetUser: '',
-        title: '',
-        stitle: '',
-        type: '1',
-        categories: [],
-        keywords: '',
-        sortPath: '',
-        tags: [],
-        keywords: '',
-        sImg: '/upload/images/defaultImg.jpg',
-        discription: '',
-        author: {},
-        uAuthor: '',
-        markDownComments: '',
-        state: '1',
-        isTop: 0,
-        roofPlacement: '0',
-        clickNum: 0,
-        comments: '',
-        simpleComments: '',
-        commentNum: 0,
-        likeNum: 0
-      }, formState.formData);
+      state.formState.formData = Object.assign(defautlFormData, formState.formData);
 
     },
     GET_LIST(state, dataList) {
