@@ -25,6 +25,8 @@
           size="small"
           v-model="formState.formData.targetUser"
           filterable
+          multiple
+          allow-create
           remote
           reserve-keyword
           placeholder="请输入要分配的用户名"
@@ -40,26 +42,11 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item :label="$t('contents.title')" prop="title">
-        <el-input size="small" v-model="formState.formData.title"></el-input>
-      </el-form-item>
-
-      <el-form-item :label="$t('contents.categories')" prop="categories">
-        <el-cascader
-          size="small"
-          expandTrigger="hover"
-          :options="contentCategoryList.docs"
-          v-model="formState.formData.categories"
-          @change="handleChangeCategory"
-          :props="categoryProps"
-        ></el-cascader>
+      <el-form-item :label="$t('docs.name')" prop="name">
+        <el-input size="small" v-model="formState.formData.name"></el-input>
       </el-form-item>
 
       <div v-if="formState.formData.type == '1'">
-        <el-form-item :label="$t('contents.stitle')" prop="stitle">
-          <el-input size="small" v-model="formState.formData.stitle"></el-input>
-        </el-form-item>
-
         <el-form-item label="乐队关键字" prop="keywords">
           <el-input size="small" v-model="formState.formData.keywords"></el-input>
         </el-form-item>
@@ -71,7 +58,9 @@
             multiple
             filterable
             allow-create
+            :loading="userLoading"
             :placeholder="$t('validate.selectNull', {label: this.$t('contents.tags')})"
+            @change="eChangeTags"
           >
             <el-option
               v-for="item in contentTagList.docs"
@@ -201,7 +190,8 @@ export default {
       ],
       selectUserList: [],
       loading: false,
-      userLoading: false,
+      userLoading: false,//是否loading用户
+      loadingTag:false,//是否loading标签
       selectSpecialList: [],
       content: "",
       simpleComments: "",
@@ -211,11 +201,6 @@ export default {
         initialFrameHeight: 320
       },
       imageUrl: "",
-      categoryProps: {
-        value: "_id",
-        label: "name",
-        children: "children"
-      },
       currentType: "1",
       rules: {
         sImg: [
@@ -227,42 +212,18 @@ export default {
             trigger: "blur"
           }
         ],
-        categories: [
-          {
-            required: true,
-            message: this.$t("validate.selectNull", {
-              label: this.$t("contents.categories")
-            }),
-            trigger: "blur"
-          }
-        ],
-        title: [
+        name: [
           {
             required: true,
             message: this.$t("validate.inputNull", {
-              label: this.$t("contents.title")
+              label: this.$t("contents.name")
             }),
             trigger: "blur"
           },
           {
-            min: 2,
+            min: 1,
             max: 50,
-            message: this.$t("validate.rangelength", { min: 2, max: 50 }),
-            trigger: "blur"
-          }
-        ],
-        stitle: [
-          {
-            required: true,
-            message: this.$t("validate.inputNull", {
-              label: this.$t("contents.stitle")
-            }),
-            trigger: "blur"
-          },
-          {
-            min: 2,
-            max: 50,
-            message: this.$t("validate.rangelength", { min: 2, max: 50 }),
+            message: this.$t("validate.rangelength", { min: 1, max: 50 }),
             trigger: "blur"
           }
         ],
@@ -332,6 +293,43 @@ export default {
           JSON.stringify(targetUserInfo[0])
         );
       }
+    },
+    //标签变化
+    eChangeTags(v){
+      //检查 是否有没在列表里的值v=[idTag1,idTag2...text]
+      this.formState.formData.tags.forEach((v,idx,arr) => {
+        let isTagFound = this.contentTagList.docs.find(tag=>(tag._id==v));
+        if(!isTagFound){
+          //loading停止操作
+          this.loadingTag=true;
+          //创建标签 // 新增
+          let formDataTag={
+            name:v,
+            comments:"即时创建",
+            alias:v,
+          }
+          //添加contentTag标签
+          services.addContentTag(formDataTag).then(result => {
+            if (result.data.status === 200) {
+              // this.$store.dispatch("hideContentTagForm");
+              this.$store.dispatch("getContentTagList");
+              this.$message({
+                message: this.$t("main.addSuccess"),
+                type: "success"
+              });
+              //替换文字为idTag//可以在返回结果中获得result.data.data._id{}
+              this.formState.formData.tags[idx]=result.data.data._id;
+              
+            } else {
+              this.$message.error(result.data.message);
+            }
+            //恢复操作
+            this.loadingTag=false;
+          });
+          
+        }
+      });
+      //console.log(v,this.formState.formData.tags,this.contentTagList.docs);
     },
     remoteUserMethod(query) {
       if (query !== "") {
@@ -468,9 +466,9 @@ export default {
       }
       return (isJPG || isPNG || isGIF) && isLt2M;
     },
-    handleChangeCategory(value) {
-      console.log(value);
-    },
+    // handleChangeCategory(value) {
+    //   console.log(value);
+    // },
     backToList() {
       this.$router.push("/"+nameMod);
     },
@@ -553,11 +551,11 @@ export default {
             if (contentObj.keywords) {
               contentObj.keywords = contentObj.keywords.join();
             }
-            if (contentObj.uAuthor) {
+            if (contentObj.listMembers) {
               this.queryUserListByParams({
-                searchkey: contentObj.uAuthor.userName
+                searchkey: contentObj.listMembers.userName
               });
-              contentObj.targetUser = contentObj.uAuthor._id;
+              contentObj.targetUser = contentObj.listMembers._id;
             }
 
             this.showContentForm({

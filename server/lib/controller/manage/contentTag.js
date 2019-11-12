@@ -54,9 +54,11 @@ exports.create = async (req, res, next) => {
             throw new Error(errInfo.errors[0].message)
         }
 
-        await contentTagService.create(formObj);
-
-        renderSuccess(req, res);
+        let resTag=await contentTagService.create(formObj);
+        // renderSuccess 第三个参数,可以在返回结果中获得result.data.data._id{}
+        renderSuccess(req, res,{
+            data:resTag,
+        });
 
     } catch (err) {
         renderFail(req, res, {

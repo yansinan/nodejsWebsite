@@ -97,7 +97,7 @@ class ArtistService {
         return _item(res, Artist, {
             files: files,
             query: query,
-            populate: !_.isEmpty(populate) ? populate : defaultListPopulate,
+            populate: !_.isEmpty(populate) ? populate : constListPopulate,
 
         })
     }
