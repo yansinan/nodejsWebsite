@@ -82,7 +82,7 @@ export default {
           if (tag.to.path === this.$route.path) {
             // 标签数据初始化
             if (tag.to.path == "/addContent") {
-              this.$store.dispatch("showContentForm", {
+              this.$store.dispatch("content/showContentForm", {
                 edit: false,
                 formData: {}
               });

@@ -177,11 +177,16 @@
 </style>
 
 <script>
+//需要修改的:
+const nameMod="content"
+
 import services from "../../store/services.js";
 import Ueditor from "../common/Ueditor.vue";
 
 import _ from "lodash";
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions,createNamespacedHelpers} from "vuex";
+const mod = createNamespacedHelpers(nameMod)////模块,含mapGetters, mapActions等
+
 export default {
   props: {
     groups: Array
@@ -315,6 +320,9 @@ export default {
     Ueditor
   },
   methods: {
+    //获取表单信息
+    ...mod.mapActions(["showContentForm"]),// 将 `this.showContentForm(params)` 映射为 `this.$store.dispatch(nameMod+'/incrementBy', params)`
+
     changeTargetUser(value) {
       let targetUserInfo = _.filter(this.selectUserList, item => {
         return item.value == value;
@@ -377,7 +385,7 @@ export default {
               });
               Object.assign(initFormData, { targetUser: targetUser.value });
             }
-            this.$store.dispatch("showContentForm", {
+            this.showContentForm({
               formData: initFormData
             });
           }
@@ -387,7 +395,7 @@ export default {
         });
     },
     checkFlashPost(currentType) {
-      this.$store.dispatch("showContentForm", {
+      this.showContentForm({
         edit: this.formState.edit,
         formData: Object.assign({}, this.formState.formData, {
           type: currentType ? "2" : "1"
@@ -395,7 +403,7 @@ export default {
       });
     },
     inputEditor(value) {
-      this.$store.dispatch("showContentForm", {
+      this.showContentForm({
         edit: this.formState.edit,
         formData: Object.assign({}, this.formState.formData, {
           markDownComments: value
@@ -426,7 +434,7 @@ export default {
       instance.addListener("contentChange", () => {
         this.content = instance.getContent();
         this.simpleComments = instance.getPlainTxt();
-        this.$store.dispatch("showContentForm", {
+        this.showContentForm({
           edit: this.formState.edit,
           formData: Object.assign({}, this.formState.formData, {
             comments: this.content,
@@ -438,7 +446,7 @@ export default {
 
     handleAvatarSuccess(res, file) {
       let imageUrl = res.data.path;
-      this.$store.dispatch("showContentForm", {
+      this.showContentForm({
         edit: this.formState.edit,
         formData: Object.assign({}, this.formState.formData, {
           sImg: imageUrl
@@ -475,7 +483,7 @@ export default {
           });
           // 更新
           if (this.formState.edit) {
-            services.updateContent(params).then(result => {
+            services[nameMod].updateContent(params).then(result => {
               if (result.data.status === 200) {
                 this.$router.push("/content");
                 this.$message({
@@ -488,7 +496,7 @@ export default {
             });
           } else {
             // 新增
-            services.addContent(params).then(result => {
+            services[nameMod].addContent(params).then(result => {
               if (result.data.status === 200) {
                 this.$router.push("/content");
                 this.$message({
@@ -509,15 +517,16 @@ export default {
   },
   computed: {
     ...mapGetters(["contentTagList", "contentCategoryList"]),
-    formState() {
-      return this.$store.getters.contentFormState;
-    }
+    ...mod.mapState({
+      formState: state => state.formState,
+    }),//模块的state
+
   },
   mounted() {
     // 针对手动页面刷新
     let _this = this;
     if (this.$route.params.id) {
-      services.getOneContent({ id: this.$route.params.id }).then(result => {
+      services[nameMod].getOneContent({ id: this.$route.params.id }).then(result => {
         if (result.data.status === 200) {
           if (result.data.data) {
             let contentObj = result.data.data,
@@ -546,7 +555,7 @@ export default {
               contentObj.targetUser = contentObj.uAuthor._id;
             }
 
-            this.$store.dispatch("showContentForm", {
+            this.showContentForm({
               edit: true,
               formData: contentObj
             });
@@ -580,7 +589,7 @@ export default {
             _this.$refs.ueditor.setContent(currentComments);
             // 清除缓存
             localStorage.removeItem(this.$route.path.split("/")[1]);
-            this.$store.dispatch("showContentForm", {
+            this.showContentForm({
               edit: false,
               formData: localContent
             });

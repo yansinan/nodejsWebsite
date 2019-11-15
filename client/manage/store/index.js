@@ -8,6 +8,7 @@ import getters from './getters'
 
 //dr
 import artist from './modules/artist'
+import content from './modules/content'
 
 Vue.use(Vuex)
 
@@ -18,6 +19,7 @@ const store = new Vuex.Store({
     tagsView,
     user,
     artist,
+    content,
   },
   getters
 })

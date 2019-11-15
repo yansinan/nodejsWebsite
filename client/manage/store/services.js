@@ -206,33 +206,67 @@ export default {
         //     return reqJsonData('manage/regUser/getList', params, 'get')
         // },
     },
-    contentList(params) {
-        return reqJsonData('manage/content/getList', params, 'get')
+    content:{
+        list(params) {
+            return reqJsonData('manage/content/getList', params, 'get')
+        },
+        updateToTop(params) {
+            return reqJsonData('manage/content/topContent', params)
+        },
+    
+        roof(params) {
+            return reqJsonData('manage/content/roofContent', params)
+        },
+    
+        delete(params) {
+            return reqJsonData('manage/content/deleteContent', params, 'get')
+        },
+    
+        getOneContent(params) {
+            return reqJsonData('manage/content/getContent', params, 'get')
+        },
+    
+        addContent(params) {
+            return reqJsonData('manage/content/addOne', params)
+        },
+    
+        updateContent(params) {
+            return reqJsonData('manage/content/updateOne', params)
+        },
+        // getRandomContentImg(params) {
+        //     return reqJsonData('api/v0/content/getRandomContentImg', params, 'get')
+        // },
+        // regUserList(params) {
+        //     return reqJsonData('manage/regUser/getList', params, 'get')
+        // },
     },
+    // contentList(params) {
+    //     return reqJsonData('manage/content/getList', params, 'get')
+    // },
 
-    getOneContent(params) {
-        return reqJsonData('manage/content/getContent', params, 'get')
-    },
+    // getOneContent(params) {
+    //     return reqJsonData('manage/content/getContent', params, 'get')
+    // },
 
-    addContent(params) {
-        return reqJsonData('manage/content/addOne', params)
-    },
+    // addContent(params) {
+    //     return reqJsonData('manage/content/addOne', params)
+    // },
 
-    updateContent(params) {
-        return reqJsonData('manage/content/updateOne', params)
-    },
+    // updateContent(params) {
+    //     return reqJsonData('manage/content/updateOne', params)
+    // },
 
-    updateContentToTop(params) {
-        return reqJsonData('manage/content/topContent', params)
-    },
+    // updateContentToTop(params) {
+    //     return reqJsonData('manage/content/topContent', params)
+    // },
 
-    roofContent(params) {
-        return reqJsonData('manage/content/roofContent', params)
-    },
+    // roofContent(params) {
+    //     return reqJsonData('manage/content/roofContent', params)
+    // },
 
-    deleteContent(params) {
-        return reqJsonData('manage/content/deleteContent', params, 'get')
-    },
+    // deleteContent(params) {
+    //     return reqJsonData('manage/content/deleteContent', params, 'get')
+    // },
 
     getRandomContentImg(params) {
         return reqJsonData('api/v0/content/getRandomContentImg', params, 'get')

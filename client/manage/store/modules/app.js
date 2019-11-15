@@ -203,45 +203,45 @@ const app = {
         err: {}
       }
     },
-    content: {
-      formState: {
-        edit: false,
-        formData: {
-          targetUser: '',
-          title: '',
-          stitle: '',
-          type: '1',
-          categories: [],
-          keywords: '',
-          sortPath: '',
-          tags: [],
-          keywords: '',
-          sImg: '/upload/images/defaultImg.jpg',
-          discription: '',
-          author: {},
-          uAuthor: '',
-          markDownComments: '',
-          state: '1',
-          isTop: 0,
-          roofPlacement: '0',
-          clickNum: 0,
-          comments: '',
-          simpleComments: '',
-          commentNum: 0,
-          likeNum: 0,
-          dismissReason: '',
+    // content: {
+    //   formState: {
+    //     edit: false,
+    //     formData: {
+    //       targetUser: '',
+    //       title: '',
+    //       stitle: '',
+    //       type: '1',
+    //       categories: [],
+    //       keywords: '',
+    //       sortPath: '',
+    //       tags: [],
+    //       keywords: '',
+    //       sImg: '/upload/images/defaultImg.jpg',
+    //       discription: '',
+    //       author: {},
+    //       uAuthor: '',
+    //       markDownComments: '',
+    //       state: '1',
+    //       isTop: 0,
+    //       roofPlacement: '0',
+    //       clickNum: 0,
+    //       comments: '',
+    //       simpleComments: '',
+    //       commentNum: 0,
+    //       likeNum: 0,
+    //       dismissReason: '',
 
-        }
-      },
-      contentList: {
-        pageInfo: {},
-        docs: []
-      },
-      addContent: {
-        state: '',
-        err: {}
-      }
-    },
+    //     }
+    //   },
+    //   contentList: {
+    //     pageInfo: {},
+    //     docs: []
+    //   },
+    //   addContent: {
+    //     state: '',
+    //     err: {}
+    //   }
+    // },
     contentTag: {
       formState: {
         show: false,
@@ -627,50 +627,50 @@ const app = {
     [types.CONTENTCATEGORYS_LIST](state, categoryList) {
       state.contentCategory.categoryList = categoryList
     },
-    [types.CONTENT_FORMSTATE](state, formState) {
-      state.content.formState.edit = formState.edit;
-      state.content.formState.formData = Object.assign({
-        targetUser: '',
-        title: '',
-        stitle: '',
-        type: '1',
-        categories: [],
-        keywords: '',
-        sortPath: '',
-        tags: [],
-        keywords: '',
-        sImg: '/upload/images/defaultImg.jpg',
-        discription: '',
-        author: {},
-        uAuthor: '',
-        markDownComments: '',
-        state: '1',
-        isTop: 0,
-        roofPlacement: '0',
-        clickNum: 0,
-        comments: '',
-        simpleComments: '',
-        commentNum: 0,
-        likeNum: 0
-      }, formState.formData);
+    // [types.CONTENT_FORMSTATE](state, formState) {
+    //   state.content.formState.edit = formState.edit;
+    //   state.content.formState.formData = Object.assign({
+    //     targetUser: '',
+    //     title: '',
+    //     stitle: '',
+    //     type: '1',
+    //     categories: [],
+    //     keywords: '',
+    //     sortPath: '',
+    //     tags: [],
+    //     keywords: '',
+    //     sImg: '/upload/images/defaultImg.jpg',
+    //     discription: '',
+    //     author: {},
+    //     uAuthor: '',
+    //     markDownComments: '',
+    //     state: '1',
+    //     isTop: 0,
+    //     roofPlacement: '0',
+    //     clickNum: 0,
+    //     comments: '',
+    //     simpleComments: '',
+    //     commentNum: 0,
+    //     likeNum: 0
+    //   }, formState.formData);
 
-    },
-    [types.CONTENT_LIST](state, contentList) {
-      state.content.contentList = contentList
-    },
-    [types.CONTENT_ONE](state, content) {
-      state.content.content = content
-    },
-    [types.DIRECTUSERFORMSTATE](state, formState) {
-      state.directUser.formState.show = formState.show;
-      state.directUser.formState.edit = formState.edit;
-      state.directUser.formState.type = formState.type;
-      state.directUser.formState.formData = Object.assign({
-        name: '',
-        alias: '',
-        targetUser: ''
-      }, formState.formData);
-    },
+    // },
+    // [types.CONTENT_LIST](state, contentList) {
+    //   state.content.contentList = contentList
+    // },
+    // [types.CONTENT_ONE](state, content) {
+    //   state.content.content = content
+    // },
+    // [types.DIRECTUSERFORMSTATE](state, formState) {
+    //   state.directUser.formState.show = formState.show;
+    //   state.directUser.formState.edit = formState.edit;
+    //   state.directUser.formState.type = formState.type;
+    //   state.directUser.formState.formData = Object.assign({
+    //     name: '',
+    //     alias: '',
+    //     targetUser: ''
+    //   }, formState.formData);
+    // },
 
     [types.CONTENTTAG_FORMSTATE](state, formState) {
       state.contentTag.formState.show = formState.show;
@@ -1081,51 +1081,51 @@ const app = {
       })
     },
 
-    showContentForm: ({
-      commit
-    }, params = {
-      edit: false,
-      formData: {}
-    }) => {
-      commit(types.CONTENT_FORMSTATE, {
-        edit: params.edit,
-        formData: params.formData
-      })
-    },
-    showDirectUserForm: ({
-      commit
-    }, params = {
-      edit: false,
-      formData: {}
-    }) => {
-      commit(types.DIRECTUSERFORMSTATE, {
-        show: true,
-        edit: params.edit,
-        formData: params.formData
-      })
-    },
-    hideDirectUserForm: ({
-      commit
-    }) => {
-      commit(types.DIRECTUSERFORMSTATE, {
-        show: false
-      })
-    },
-    getContentList({
-      commit
-    }, params = {}) {
-      services.contentList(params).then((result) => {
-        commit(types.CONTENT_LIST, result.data.data)
-      })
-    },
+    // showContentForm: ({
+    //   commit
+    // }, params = {
+    //   edit: false,
+    //   formData: {}
+    // }) => {
+    //   commit(types.CONTENT_FORMSTATE, {
+    //     edit: params.edit,
+    //     formData: params.formData
+    //   })
+    // },
+    // showDirectUserForm: ({
+    //   commit
+    // }, params = {
+    //   edit: false,
+    //   formData: {}
+    // }) => {
+    //   commit(types.DIRECTUSERFORMSTATE, {
+    //     show: true,
+    //     edit: params.edit,
+    //     formData: params.formData
+    //   })
+    // },
+    // hideDirectUserForm: ({
+    //   commit
+    // }) => {
+    //   commit(types.DIRECTUSERFORMSTATE, {
+    //     show: false
+    //   })
+    // },
+    // getContentList({
+    //   commit
+    // }, params = {}) {
+    //   services.contentList(params).then((result) => {
+    //     commit(types.CONTENT_LIST, result.data.data)
+    //   })
+    // },
 
-    getOneContent({
-      commit
-    }, params = {}) {
-      services.contentInfo(params).then((result) => {
-        commit(types.CONTENT_ONE, result.data.data)
-      })
-    },
+    // getOneContent({
+    //   commit
+    // }, params = {}) {
+    //   services.contentInfo(params).then((result) => {
+    //     commit(types.CONTENT_ONE, result.data.data)
+    //   })
+    // },
     showContentTagForm: ({
       commit
     }, params = {
