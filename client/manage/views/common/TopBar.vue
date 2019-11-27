@@ -347,12 +347,12 @@ export default {
         }
       });
     },
-    addArtist() {
-      this.$store.dispatch("showContentForm");
+    addArtist(strMod) {
+      this.$store.dispatch(strMod+"/showContentForm");
       this.$router.push("/addArtist");
     },
-    addContent() {
-      this.$store.dispatch("showContentForm");
+    addContent(strMod) {
+      this.$store.dispatch(strMod+"/showContentForm");
       this.$router.push("/addContent");
     },
     directUser() {

@@ -24,6 +24,7 @@ const shortid = require('shortid');
 function funGetData(fields){
     return {
         name: fields.name,
+        alias: fields.alias,
         listMembers:fields.listMembers,
         // stitle: fields.stitle,
         type: fields.type,
@@ -34,8 +35,11 @@ function funGetData(fields){
         state: fields.state,
         dismissReason: fields.dismissReason,
         comments: fields.comments,
-        type: fields.type
-    
+        type: fields.type,
+        from:fields.from,
+        listDateDur:fields.listDateDur,
+        listHotMusics:fields.listHotMusics,
+        listLinks:fields.listLinks,
     }
 }
 

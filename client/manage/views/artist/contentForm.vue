@@ -20,9 +20,26 @@
       <el-form-item v-if="formState.formData.state == '3'" label="驳回原因" prop="dismissReason">
         <el-input size="small" v-model="formState.formData.dismissReason"></el-input>
       </el-form-item>
-      <el-form-item label="指定用户" prop="targetUser">
+      <el-form-item :label="$t('artist.name')" prop="name">
+        <el-input size="small" v-model="formState.formData.name"></el-input>
+      </el-form-item>
+      <el-form-item :label="$t('artist.nameAlias')" prop="alias">
+        <el-input size="small" v-model="formState.formData.alias"></el-input>
+      </el-form-item>
+      <el-form-item :label="$t('artist.from')" prop="from">
+        <el-input size="small" v-model="formState.formData.from" placeholder="中国/China"></el-input>
+      </el-form-item>
+      <el-form-item :label="$t('artist.date')" prop="listDateDur">
+        <el-date-picker
+          v-model="formState.formData.listDateDur"
+          type="daterange"
+          start-placeholder="加入日期"
+          end-placeholder="退出日期">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item :label="$t('artist.listMembers')" prop="targetUser">
         <el-select
-          size="small"
+          size="medium"
           v-model="formState.formData.targetUser"
           filterable
           multiple
@@ -42,9 +59,6 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item :label="$t('docs.name')" prop="name">
-        <el-input size="small" v-model="formState.formData.name"></el-input>
-      </el-form-item>
 
       <div v-if="formState.formData.type == '1'">
         <el-form-item label="乐队关键字" prop="keywords">
@@ -53,7 +67,7 @@
 
         <el-form-item label="乐队标签" prop="tags">
           <el-select
-            size="small"
+            size="medium"
             v-model="formState.formData.tags"
             multiple
             filterable
@@ -92,7 +106,13 @@
       <el-form-item :label="$t('contents.comments')" prop="comments">
         <Ueditor @ready="editorReady" ref="ueditor"></Ueditor>
       </el-form-item>
-
+      <!-- 热门歌曲：相关链接 -->
+      <el-form-item :label="$t('artist.listHotMusics')" prop="listHotMusics">
+        <ListURL @list-changed="eListHotMusicChanged" label="歌名" ref="listHotMusics"></ListURL>
+      </el-form-item>
+      <el-form-item :label="$t('artist.listLinks')" prop="listLinks">
+        <ListURL @list-changed="eListLinks" label="注释" ref="listLinks"></ListURL>
+      </el-form-item>
       <el-form-item class="dr-submitContent">
         <el-button
           size="medium"
@@ -171,6 +191,7 @@ const nameMod="artist"
 
 import services from "../../store/services.js";
 import Ueditor from "../common/Ueditor.vue";
+import ListURL from "../common/ListURL.vue";
 
 import _ from "lodash";
 import { mapGetters, mapActions,createNamespacedHelpers} from "vuex";
@@ -278,7 +299,8 @@ export default {
     };
   },
   components: {
-    Ueditor
+    Ueditor,
+    ListURL,
   },
   methods: {
     //获取表单信息
@@ -471,6 +493,13 @@ export default {
     // },
     backToList() {
       this.$router.push("/"+nameMod);
+    },
+    // 热门歌曲列表变化
+    eListHotMusicChanged(e){
+      console.log("热门歌曲列表变化",e);
+    },
+    eListLinks(e){
+      console.log("其他链接列表变化",e);
     },
     submitForm(formName, type = "") {
       this.$refs[formName].validate(valid => {

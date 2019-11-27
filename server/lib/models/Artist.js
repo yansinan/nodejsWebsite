@@ -13,8 +13,8 @@ var ContentTag = require('./ContentTag');
 var User = require('./User');
 
 let optionsSchema={
-    discriminatorKey:"doc",
-    collection: 'Artist',
+    // discriminatorKey:"doc",
+    // collection: 'Artist',
     toJSON:{
         getters: true,
         virtuals: true
@@ -55,10 +55,28 @@ var schema = new Schema({
         type: String,
         default:"中国/China",
     },
-    dateEnd: {
+    listDateDur:[{
         type: Date,
-        default: null,
-    },//退出厂牌时间
+        default: Date.now,
+    }],//加入厂牌时间
+    // dateJoin: {
+    //     type: Date,
+    //     default: Date.now,
+    // },//加入厂牌时间
+    // dateExit: {
+    //     type: Date,
+    //     default: null,
+    // },//退出厂牌时间
+    listHotMusics:[{
+        url:{type:String},
+        name:{type:String},
+    }],//推荐热门歌曲
+    listLinks:[{
+        url:{type:String},
+        name:{type:String},
+        icon:{type:String},
+        type:{type:String,default:"社交"},
+    }],//相关链接
 });
 
 
@@ -82,4 +100,19 @@ var schema = new Schema({
 //         this.name=v;
 //     }
 // });
+// schema.virtual('tags').get(function () {
+//     return this.listRefs;
+// }).set(function(v){
+//     this.listRefs
+// });
+schema.virtual('dateJoin').get(function () {
+    return this.listDateDur[0];
+}).set(function(v){
+    this.listDateDur[0]=v;
+});
+schema.virtual('dateExit').get(function () {
+    return this.listDateDur[1] || false ;
+}).set(function(v){
+    this.listDateDur[1]=v;
+});
 module.exports = Doc.discriminator("Artist", schema);//mongoose.model("Artist", schema);

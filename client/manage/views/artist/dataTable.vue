@@ -160,10 +160,12 @@ export default {
         this.$emit("changeContentSelectList", ids);
       }
     },
+    //编辑按钮
     editContentInfo(index, rows) {
       let rowData = rows[index];
       this.$router.push("/edit_"+this.nameMod+"/" + rowData._id);
     },
+    //推荐
     topContent(index, rows) {
       let contentData = rows[index];
       // contentData.isTop = contentData.isTop == 1 ? 0 : 1;
@@ -179,6 +181,7 @@ export default {
         }
       });
     },
+    // 置顶
     roofContent(index, rows) {
       let contentData = rows[index];
       // 推荐的才允许置顶
