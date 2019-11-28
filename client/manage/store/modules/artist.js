@@ -25,7 +25,9 @@ const defautlFormData={
   // commentNum: 0,
   // likeNum: 0,
   dismissReason: '',
-
+  listDateDur:[],
+  listHotMusics:[],
+  listLinks:[],
 }
 
 const app = {
@@ -59,7 +61,10 @@ const app = {
     //     }
     //   }
     // },
-
+    dataMembers:{
+      pageInfo:{},
+      docs:[],
+    }
     //StoreAppInitState
   },
   mutations: {
@@ -94,6 +99,10 @@ const app = {
     //     targetUser: ''
     //   }, formState.formData);
     // },
+    FIND_ARTIST_BY_NAME(state,dataList){
+      state.dataMembers=dataList;
+      // console.log("FIND_ARTIST_BY_NAME",state,dataList)
+    },
     //StoreAppMutations
   },
   actions: {
@@ -161,6 +170,14 @@ const app = {
         commit("GET_LIST", result.data.data)
       })
     },
+    // 获取艺人列表
+    getArtistList({
+      commit
+    }, params = {}) {
+      services.findArtists(params).then((result) => {
+        commit("FIND_ARTIST_BY_NAME", result.data.data)
+      })
+    },
     // getOneContent({
     //   commit
     // }, params = {}) {
@@ -198,6 +215,7 @@ const app = {
   },
   getters:{
     getterListData: state => state.dataList,
+    getterDataMembers:state => state.dataMembers,
   }
 }
 

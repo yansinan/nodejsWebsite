@@ -307,7 +307,14 @@ export default {
     deleteContentMessage(params) {
         return reqJsonData('manage/contentMessage/deleteMessage', params, 'get')
     },
-
+    // 添加用户
+    addUser(params) {
+        return reqJsonData('manage/user/addOne', params)
+    },
+    // 查找乐手
+    findArtists(params){
+        return reqJsonData("manage/artist/findByName",params,"get");
+    },
     regUserList(params) {
         return reqJsonData('manage/regUser/getList', params, 'get')
     },

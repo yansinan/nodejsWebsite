@@ -195,6 +195,10 @@ router.get('/contentMessage/deleteMessage', MessageController.removes)
 /**
  * 注册用户管理
  */
+router.post('/user/addOne', UserController.addOneArtist)
+// router.post('/regUser/addOne', UserController.addOne)
+router.get('/artist/findByName',UserController.findArtistByName)
+
 router.get('/regUser/getList', UserController.list)
 
 router.get('/regUser/getOne', UserController.getOne)

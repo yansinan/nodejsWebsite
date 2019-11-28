@@ -31,31 +31,35 @@
       </el-form-item>
       <el-form-item :label="$t('artist.date')" prop="listDateDur">
         <el-date-picker
-          v-model="formState.formData.listDateDur"
-          type="daterange"
-          start-placeholder="加入日期"
-          end-placeholder="退出日期">
+          v-model="formState.formData.listDateDur[0]"
+          type="date"
+          placeholder="加入日期" @change="eChangeDate">
+        </el-date-picker>
+        <el-date-picker
+          v-model="formState.formData.listDateDur[1]"
+          type="date"
+          placeholder="退出日期" @change="eChangeDate">
         </el-date-picker>
       </el-form-item>
-      <el-form-item :label="$t('artist.listMembers')" prop="targetUser">
+      <el-form-item :label="$t('artist.listMembers')" prop="listMembers">
         <el-select
           size="medium"
-          v-model="formState.formData.targetUser"
+          v-model="formState.formData.listMembers"
           filterable
           multiple
           allow-create
-          remote
-          reserve-keyword
-          placeholder="请输入要分配的用户名"
+          placeholder="请输入乐队成员名"
           :remote-method="remoteUserMethod"
           :loading="userLoading"
           @change="changeTargetUser"
         >
+        <!--           remote
+          reserve-keyword -->
           <el-option
-            v-for="item in selectUserList"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+            v-for="item in dataMembers.docs"
+            :key="item._id"
+            :label="item.name"
+            :value="item._id"
           ></el-option>
         </el-select>
       </el-form-item>
@@ -306,15 +310,53 @@ export default {
     //获取表单信息
     ...mod.mapActions(["showContentForm"]),// 将 `this.showContentForm(params)` 映射为 `this.$store.dispatch(nameMod+'/incrementBy', params)`
     changeTargetUser(value) {
-      let targetUserInfo = _.filter(this.selectUserList, item => {
-        return item.value == value;
+      let that=this;
+      //检查 是否有没在列表里的值v=[idUser1,idUser2...text]
+      this.formState.formData.listMembers.forEach((v,idx,arr) => {
+        let isFound = that.dataMembers.docs.find(user=>(user._id==v));
+        console.log("添加成员：",v,"是否已经创建:",isFound,that.dataMembers.docs);
+        if(!isFound){
+          //loading停止操作
+          that.userLoading=true;
+          //创建标签 // 新增
+          let formData={
+            name:v,
+            comments:"即时创建",
+            group:"乐手",
+          }
+          //添加contentTag标签
+          services.addUser(formData).then(result => {
+            if (result.data.status === 200) {
+              that.$message({
+                message: that.$t("main.addSuccess"),
+                type: "success"
+              });
+              //替换文字为idTag//可以在返回结果中获得result.data.data._id{}
+              that.formState.formData.listMembers[idx]=result.data.data._id;
+              //刷新用户列表
+              that.userLoading = true;       
+              // that.queryUserListByParams({ searchkey: that.formState.formData.listMembers });
+              that.remoteUserMethod();
+            } else {
+              that.$message.error(result.data.message);
+            }
+            //恢复操作
+            that.loadingTag=false;
+          });
+          
+        }
+
       });
-      if (!_.isEmpty(targetUserInfo)) {
-        localStorage.setItem(
-          "contentAuthor",
-          JSON.stringify(targetUserInfo[0])
-        );
-      }
+
+      // let targetUserInfo = _.filter(this.selectUserList, item => {
+      //   return item.value == value;
+      // });
+      // if (!_.isEmpty(targetUserInfo)) {
+      //   localStorage.setItem(
+      //     "contentAuthor",
+      //     JSON.stringify(targetUserInfo[0])
+      //   );
+      // }
     },
     //标签变化
     eChangeTags(v){
@@ -353,37 +395,53 @@ export default {
       });
       //console.log(v,this.formState.formData.tags,this.contentTagList.docs);
     },
-    remoteUserMethod(query) {
+    remoteUserMethod(query="") {
       if (query !== "") {
         this.userLoading = true;
         let _this = this;
-        this.queryUserListByParams({ searchkey: query });
+        
+        this.queryUserListByParams({ searchkey: query, pageSize : 200,});
       } else {
-        this.selectUserList = [];
+        this.queryUserListByParams({ pageSize : 200,});
+        // this.selectUserList = [];
       }
     },
     queryUserListByParams(params = {}) {
       let _this = this;
-      services
-        .regUserList(params)
-        .then(result => {
-          let specialList = result.data.data.docs;
-          if (specialList) {
-            _this.selectUserList = specialList.map(item => {
-              return {
-                value: item._id,
-                label: item.userName
-              };
-            });
-            _this.userLoading = false;
-          } else {
-            _this.selectUserList = [];
-          }
-        })
-        .catch(err => {
-          console.log(err);
-          _this.selectUserList = [];
-        });
+      Object.assign(params,{ pageSize : 200, });
+      // this.$store.dispatch("getRegUserList",params);
+      this.$store.dispatch(nameMod+"/getArtistList",params);
+
+      this.userLoading = false;
+      // services
+      //   .regUserList(params)
+      //   .then(result => {
+      //     _this.selectUserList=_this.selectUserList || [];
+      //     let specialList = result.data.data.docs.filter(v=>(!_this.selectUserList.find(item=>(item._id==v._id))));
+      //     if (specialList) {
+      //       _this.selectUserList=_this.selectUserList.concat(specialList);
+      //       console.log("用户列表刷新结果",specialList,_this.selectUserList);
+
+      //       _this.selectUserList = specialList.map(item => {
+      //         return {
+      //           _id:item._id,
+      //           name:item.name || item.userName
+      //           // value: item._id,
+      //           // label: item.name || item.userName
+      //         };
+      //       });
+      //       // this.$store.dispatch("hideContentTagForm");
+      //       this.$store.dispatch("getRegUserList");
+
+      //       _this.userLoading = false;
+      //     } else {
+      //       _this.selectUserList = _this.selectUserList || [];
+      //     }
+      //   })
+      //   .catch(err => {
+      //     console.log(err);
+      //     _this.selectUserList = [];
+      //   });
     },
     getRandomContentImg(params = {}) {
       let _this = this;
@@ -501,6 +559,10 @@ export default {
     eListLinks(e){
       console.log("其他链接列表变化",e);
     },
+    // 选择日期
+    eChangeDate(e){
+      console.log("选取日期变化",e,this.formState.formData.listDateDur);
+    },
     submitForm(formName, type = "") {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -545,14 +607,14 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["contentTagList", "contentCategoryList"]),
+    ...mapGetters(["contentTagList", "contentCategoryList"]),//"regUserList",
     // formState() {
     //   return this.$store.getters.contentFormState;
     // },
     ...mod.mapState({
       formState: state => state.formState,
+      dataMembers:state => state.dataMembers,
     }),//模块的state
-
   },
   mounted() {
     // 针对手动页面刷新
@@ -564,7 +626,7 @@ export default {
             let contentObj = result.data.data,
               categoryIdArr = [],
               tagsArr = [];
-
+            console.info("获取乐队信息：",contentObj);
             if (contentObj.categories) {
               contentObj.categories.map((item, index) => {
                 item && categoryIdArr.push(item._id);
@@ -581,10 +643,10 @@ export default {
               contentObj.keywords = contentObj.keywords.join();
             }
             if (contentObj.listMembers) {
-              this.queryUserListByParams({
-                searchkey: contentObj.listMembers.userName
-              });
-              contentObj.targetUser = contentObj.listMembers._id;
+              let listMembersId=contentObj.listMembers.map(v=>{return v._id});
+              this.remoteUserMethod();//{searchkey: listMembersId}
+              contentObj.listMembers = listMembersId;
+              // contentObj.targetUser = contentObj.listMembers._id;
             }
 
             this.showContentForm({
@@ -604,7 +666,7 @@ export default {
           this.$message.error(result.data.message);
         }
       });
-    } else {
+    } else {//新创建
       let localContent = this.getLocalContents();
       if (!_.isEmpty(localContent)) {
         this.$confirm(
@@ -641,6 +703,8 @@ export default {
     this.$store.dispatch("getContentTagList", {
       pageSize: 200
     });
+    // this.$store.dispatch("getRegUserList",{pageSize:200});
+    this.$store.dispatch(nameMod+"/getArtistList",{pageSize:200});
   }
 };
 </script>

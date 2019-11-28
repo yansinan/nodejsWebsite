@@ -15,8 +15,50 @@ const {
 } = require('../validate/index');
 const xss = require("xss");
 const _ = require('lodash');
+//中文转拼音
+const getPinYin = require('../../utils/modPinYin.js').getPinYin;
 
+exports.addOneArtist=async(req,res,next) =>{
+    
+    try {
+        let fields = req.body || {};
+        const formObj = {
+            name: fields.name,
+            userName:fields.userName || getPinYin(fields.name),
+            group:fields.group || "乐手",
+        }
 
+        // let errInfo = validateForm(res, 'contentTag', formObj)
+
+        // if (!_.isEmpty(errInfo)) {
+        //     throw new Error(errInfo.errors[0].message)
+        // }
+
+        let resAdd=await userService.create(formObj);
+        // renderSuccess 第三个参数,可以在返回结果中获得result.data.data._id{}
+        renderSuccess(req, res,{
+            data:resAdd,
+        });
+
+    } catch (err) {
+        renderFail(req, res, {
+            message: err
+        });
+    }
+}
+exports.findArtistByName  = async (req, res, next) => {
+    try {
+        let payload = req.query;
+        let userlist = await userService.findArtistByName(payload);
+        renderSuccess(req, res, {
+            data: userlist
+        });
+    } catch (err) {
+        renderFail(req, res, {
+            message: err
+        });
+    }
+}
 exports.list = async (req, res, next) => {
     try {
 

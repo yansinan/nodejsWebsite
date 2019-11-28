@@ -31,12 +31,11 @@ class UserService {
         populate = [],
         files = null
     } = {}) {
-
         let listdata = _list(User, payload, {
             query: _.assign({
                 state: '1'
             }, query),
-            searchKeys: !_.isEmpty(searchKeys) ? searchKeys : ['userName', 'phoneNum', 'email'],
+            searchKeys: !_.isEmpty(searchKeys) ? searchKeys : ['_id','name'],//'phoneNum', 'email','userName'
             populate: !_.isEmpty(populate) ? populate : [{
                 path: 'category',
                 select: 'name _id'
@@ -44,9 +43,27 @@ class UserService {
             files: files ? files : '-password',
         });
         return listdata;
-
     }
-
+    async findArtistByName(payload, {
+        query = {},
+        searchKeys = [],
+        populate = [],
+        files = null
+    } = {}) {
+        let listdata = _list(User, payload, {
+            query: _.assign({
+                state: '1',
+                group:"乐手",
+            }, query),
+            searchKeys: !_.isEmpty(searchKeys) ? searchKeys : ['name'],//'phoneNum', 'email','userName'
+            populate: !_.isEmpty(populate) ? populate : [{
+                path: 'category',
+                select: 'name _id'
+            }],
+            files: files ? files : '-password',
+        });
+        return listdata;
+    }
     async findRecomend(payload) {
         const {
             current,
