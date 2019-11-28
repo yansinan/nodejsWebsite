@@ -11,6 +11,10 @@
     >
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="userName" :label="$t('regUser.userName')" width="120"></el-table-column>
+      <el-table-column prop="name" :label="$t('regUser.name')" width="180"></el-table-column>
+      <el-table-column prop="group" :label="$t('regUser.group')" width="180"></el-table-column>
+
+      <!-- 
       <el-table-column prop="phoneNum" :label="$t('regUser.phoneNum')" width="180">
         <template slot-scope="scope">
           <div v-if="scope.row.countryCode&&scope.row.phoneNum">{{scope.row.countryCode + ' ' + scope.row.phoneNum}}</div>
@@ -18,9 +22,11 @@
           <div v-else></div>
         </template>
       </el-table-column>
+       -->
       <el-table-column prop="group" :label="$t('regUser.group')">
         <template slot-scope="scope">
           <span v-if="scope.row.group == '0'">普通用户</span>
+          <span v-if="scope.row.group == '乐手'">乐手</span>
         </template>
       </el-table-column>
       <el-table-column prop="enable" :label="$t('regUser.enable')" show-overflow-tooltip>
