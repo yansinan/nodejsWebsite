@@ -313,7 +313,8 @@ export default {
       let that=this;
       //检查 是否有没在列表里的值v=[idUser1,idUser2...text]
       this.formState.formData.listMembers.forEach((v,idx,arr) => {
-        let isFound = that.dataMembers.docs.find(user=>(user._id==v));
+        let tagFound=this.dataMembers.docs.find(user=>(user._id==v));
+        let isFound = tagFound?true:false;
         console.log("添加成员：",v,"是否已经创建:",isFound,that.dataMembers.docs);
         if(!isFound){
           //loading停止操作
@@ -333,6 +334,8 @@ export default {
               });
               //替换文字为idTag//可以在返回结果中获得result.data.data._id{}
               that.formState.formData.listMembers[idx]=result.data.data._id;
+              //关键词里同步
+              that.updateKeywords(v);
               //刷新用户列表
               that.userLoading = true;       
               // that.queryUserListByParams({ searchkey: that.formState.formData.listMembers });
@@ -344,6 +347,11 @@ export default {
             that.loadingTag=false;
           });
           
+        }else{
+          //替换文字为idTag//可以在返回结果中获得result.data.data._id{}
+          // this.formState.formData.tags[idx]=tagFound._id;
+          //关键词里同步
+          this.updateKeywords(tagFound.name);
         }
 
       });
@@ -362,7 +370,8 @@ export default {
     eChangeTags(v){
       //检查 是否有没在列表里的值v=[idTag1,idTag2...text]
       this.formState.formData.tags.forEach((v,idx,arr) => {
-        let isTagFound = this.contentTagList.docs.find(tag=>(tag._id==v));
+        let tagFound=this.contentTagList.docs.find(tag=>(tag._id==v));
+        let isTagFound = tagFound?true:false;
         if(!isTagFound){
           //loading停止操作
           this.loadingTag=true;
@@ -383,7 +392,8 @@ export default {
               });
               //替换文字为idTag//可以在返回结果中获得result.data.data._id{}
               this.formState.formData.tags[idx]=result.data.data._id;
-              
+              //关键词里同步
+              this.updateKeywords(v);
             } else {
               this.$message.error(result.data.message);
             }
@@ -391,6 +401,11 @@ export default {
             this.loadingTag=false;
           });
           
+        }else{
+          //替换文字为idTag//可以在返回结果中获得result.data.data._id{}
+          // this.formState.formData.tags[idx]=tagFound._id;
+          //关键词里同步
+          this.updateKeywords(tagFound.name);
         }
       });
       //console.log(v,this.formState.formData.tags,this.contentTagList.docs);
@@ -562,6 +577,15 @@ export default {
     // 选择日期
     eChangeDate(e){
       console.log("选取日期变化",e,this.formState.formData.listDateDur);
+    },
+    // 20191206 自动添加关键词
+    updateKeywords(inStr){
+      //两处自动复制：乐队成员，标签
+      let listTmp=this.formState.formData.keywords.split(",");
+      if(inStr && inStr!="")listTmp.push(inStr);
+      listTmp = [...(new Set(listTmp))];
+      this.formState.formData.keywords=listTmp.join();
+      return this.formState.formData.keywords;
     },
     submitForm(formName, type = "") {
       this.$refs[formName].validate(valid => {
