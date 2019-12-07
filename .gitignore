@@ -1,9 +1,9 @@
-.DS_Store
-package-lock.json
-node_modules/
+logs/
 npm-debug.log
-.vscode/
+node_modules/
+coverage/
 .idea/
+<<<<<<< HEAD
 admin.lock
 server/config/secret.js
 
@@ -19,3 +19,18 @@ data/
 
 public/themes/drTempTst
 views/drTempTst
+=======
+run/
+.DS_Store
+*.swp
+*.vscode
+package-lock.json
+# app/public/upload
+app/public/apidoc
+app/ext
+app/controller/ext
+dist/*
+
+
+
+>>>>>>> upstream/2.1.4
