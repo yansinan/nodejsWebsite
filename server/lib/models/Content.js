@@ -12,6 +12,18 @@ var ContentCategory = require('./ContentCategory');
 var ContentTag = require('./ContentTag');
 var AdminUser = require('./AdminUser');
 var User = require('./User');
+let optionsSchema={
+    discriminatorKey:"Content",
+    // collection: 'docs',
+    toJSON:{
+        getters: true,
+        virtuals: true
+    },
+    toObject:{
+        getters: true,
+        virtuals: true
+    },
+}
 var ContentSchema = new Schema({
     _id: {
         type: String,
@@ -102,8 +114,12 @@ var ContentSchema = new Schema({
         type: Number,
         default: 0
     }, // 喜欢数
+    listArtist:[{
+        type: String,
+        ref: 'Artist'
+    }],//乐队成员
 
-});
+},optionsSchema);
 
 
 ContentSchema.index({
@@ -111,14 +127,14 @@ ContentSchema.index({
     uAuthor: 1
 }); // 添加索引
 
-ContentSchema.set('toJSON', {
-    getters: true,
-    virtuals: true
-});
-ContentSchema.set('toObject', {
-    getters: true,
-    virtuals: true
-});
+// ContentSchema.set('toJSON', {
+//     getters: true,
+//     virtuals: true
+// });
+// ContentSchema.set('toObject', {
+//     getters: true,
+//     virtuals: true
+// });
 
 ContentSchema.path('date').get(function (v) {
     return moment(v).format("YYYY-MM-DD HH:mm:ss");

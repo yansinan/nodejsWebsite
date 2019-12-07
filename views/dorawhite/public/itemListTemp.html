@@ -19,8 +19,8 @@ item为子元素集合
 				<a target="_blank" class="item-category"
 					href="{{'/'+(item.categories)[0].defaultUrl+ '___'+(item.categories)[0]._id}}">{{(item.categories)[0].name}}</a>
 				{% endif%} {% endif%}
-				<a href="/details/{{item._id}}.html " target="_blank " class="contentImg ">
-					<img src="{{item.sImg}} " class="img-responsive " alt="{{item.title}} " />
+				<a href="/details/{{item._id}}.html " target="_blank " class="contentImg">
+					<img src="{{item.sImg}} " class="img-fluid img-responsive center-block " alt="{{item.title}} " style="max-height: 100%;width: auto;"/>
 				</a>
 			</div>
 			<div class="col-xs-7 col-sm-9 col-md-8 discription ">
