@@ -15,4 +15,11 @@ app/controller/ext
 dist/*
 
 
+public/upload/
+uploadFiles
+.v8flags-1-6.8.275.32-node.54.b4688aaaaf17fad03225929fe56ad458.json
+.v8flags-1-6.8.275.32-node.54.d41d8cd98f00b204e9800998ecf8427e.json
 
+public/themes/drTempTst
+views/drTempTst
+doraData/logsdir

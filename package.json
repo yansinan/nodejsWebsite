@@ -58,7 +58,7 @@
     "init": "node ./build/restore",
     "makePrdDoc": "apidoc -i lib/plugin -e node_modules -o app/public/apidoc/ && npm run modifyPrdDoc",
     "modifyPrdDoc": "node ./build/renderApiDoc --docv prd",
-    "start": "egg-scripts start --daemon --title=doracms2",
+    "start": "egg-scripts start --title=doracms2",
     "stop": "egg-scripts stop [--title=doracms2]"
   },
   "ci": {

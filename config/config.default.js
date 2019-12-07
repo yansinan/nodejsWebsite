@@ -19,7 +19,16 @@ module.exports = appInfo => {
       '/favicon.ico': fs.readFileSync(path.join(appInfo.baseDir, 'app/public/favicon.ico'))
     },
 
-
+    // 数据库连接
+    mongoose: {
+      client: {
+          url: 'mongodb://mongo:27017/doracms2',
+          options: {
+              useCreateIndex: true,
+              useUnifiedTopology: true
+          },
+      },
+    },
     // 配置需要的中间件,数组顺序即为中间件的加载顺序
     middleware: ['notfoundHandler', 'crossHeader', 'compress', 'authUserToken', 'authAdminToken', 'authAdminPower'],
 
