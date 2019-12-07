@@ -3,7 +3,6 @@ npm-debug.log
 node_modules/
 coverage/
 .idea/
-<<<<<<< HEAD
 admin.lock
 server/config/secret.js
 
@@ -19,7 +18,6 @@ data/
 
 public/themes/drTempTst
 views/drTempTst
-=======
 run/
 .DS_Store
 *.swp
@@ -33,4 +31,3 @@ dist/*
 
 
 
->>>>>>> upstream/2.1.4
