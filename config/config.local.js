@@ -4,7 +4,8 @@ const path = require('path')
 module.exports = appInfo => {
 
     return {
-        admin_root_path: 'http://wx.z-core.cn:8084',
+        // 后台管理vue-cli模块的调试环境服务器路径，找到package.json时，dev_modules列表存在时使用
+        admin_root_path: 'http://127.0.0.1',
         // DEV_CONFIG_MODULES_BEGIN
         dev_modules: [
             // 'navbar',
@@ -22,6 +23,7 @@ module.exports = appInfo => {
             // 'templateConfig',
             // 'versionManage',
             // 'content',
+            // 'artist',
             // 'contentTags',
             // 'contentCategory',
             // 'contentMessage',
@@ -44,7 +46,10 @@ module.exports = appInfo => {
         static: {
             prefix: '/static',
             dir: [path.join(appInfo.baseDir, 'app/public'), path.join(appInfo.baseDir, 'backstage/dist')],
-            maxAge: 31536000,
+            maxAge: 0,//31536000,
+            buffer:false,
+            dynamic :true,
+            preload: false,
         },
         logger: {
             dir: path.join(appInfo.baseDir, 'logs'),
