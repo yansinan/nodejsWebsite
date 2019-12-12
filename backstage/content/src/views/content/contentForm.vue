@@ -112,6 +112,13 @@
             :config="editorConfig"
           ></vue-ueditor-wrap>
         </el-form-item>
+        <el-form-item :label="$t('content.date')" prop="date">
+          <el-date-picker
+            v-model="formState.formData.date"
+            type="date"
+            placeholder="创建日期" >
+          </el-date-picker>
+        </el-form-item>
 
         <el-form-item class="dr-submitContent">
           <el-button
