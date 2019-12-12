@@ -16,6 +16,9 @@ if (designatedModule.length > 0) {
 targetBuildModules.forEach(function (name) {
     if (name != '.git' && name != 'build' && name != 'publicMethods' && name != 'dist') {
         shell.cd(`${modulesPath}/${name}`);
+        //清除node_modules
+        shell.rm('-rf', `${modulesPath}/${name}/node_modules/*`);
+        console.warn("清除"+`${name}/`+"node_modules:OK")
         shell.exec('cnpm install');
     }
 });

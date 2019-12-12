@@ -23,7 +23,7 @@ module.exports = {
   admin_base_path: '/admin',
 
   // 宿主工程目录
-  host_project_path: '/Users/dora/Documents/dora/coding.net/egg-cms',
+  // host_project_path: "/home/node",//'/Users/dora/Documents/dora/coding.net/egg-cms',
   // 七牛文件上传目录
   qiniuStaticPath: 'cms/plugins/static/admin/'
 }

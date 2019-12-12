@@ -15,11 +15,14 @@ let designatedModule = [];
 let copyType = "dev",
     targetModules = ''; //  ALL 或 separate 可选
 let argvs = process.argv;
+
 if (argvs[2] == '--type') {
     copyType = argvs[3];
 }
-if (argvs[4] == '--modules') {
-    targetModules = argvs[5];
+// 命令行也可以直接控制编译哪个模块，多个用,分隔
+if (argvs[4] == '--modules' || (argvs[2]!="--type")) {
+    targetModules = argvs[5] || argvs[2];
+    console.log(argvs)
     if (targetModules && targetModules != 'ALL') {
         if (targetModules.indexOf(',') >= 0 && targetModules.split(',').length > 0) {
             designatedModule = designatedModule.concat(targetModules.split(','));
