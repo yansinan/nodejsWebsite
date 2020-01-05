@@ -6,13 +6,13 @@ coverage/
 run/
 .DS_Store
 *.swp
-*.vscode
+# *.vscode
 package-lock.json
 # app/public/upload
 app/public/apidoc
 app/ext
 app/controller/ext
 dist/*
-
+app/public/upload
 
 
