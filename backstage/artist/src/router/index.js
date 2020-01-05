@@ -20,7 +20,7 @@ const createRouter = () => new Router({
     name: 'addArtist',
     component: () => import( /* webpackChunkName: "addArtist" */ '@/views/artist/contentForm.vue')
   }, {
-    path: settings.admin_base_path + '/artist/editArtist/:id',
+    path: settings.admin_base_path + '/artist/edit_artist/:id',
     name: 'editArtist',
     component: () => import( /* webpackChunkName: "editArtist" */ '@/views/artist/contentForm.vue')
   }]

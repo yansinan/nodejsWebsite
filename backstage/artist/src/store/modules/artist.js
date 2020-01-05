@@ -100,7 +100,9 @@ const actions = {
     commit
   }, params = {mod:"content"}) {
     list(params).then((result) => {
-      commit("GET_LIST", result.data.data)
+      commit("GET_LIST", result.data)
+    }).catch(error=>{
+      console.log("artist.store.artist.actions.getList获取失败:fail",error);
     })
   },
   // 获取艺人列表
@@ -108,7 +110,7 @@ const actions = {
     commit
   }, params = {}) {
     findArtists(params).then((result) => {
-      commit("FIND_ARTIST_BY_NAME", result.data.data)
+      commit("FIND_ARTIST_BY_NAME", result.data)
     })
   },
 

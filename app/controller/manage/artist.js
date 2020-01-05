@@ -7,7 +7,7 @@
 const Controller = require('egg').Controller;
 
 const {
-    artist
+    artistRule
 } = require('@validate')
 
 
@@ -42,12 +42,15 @@ function funGetData(fields){
 }
 
 class ArtistController extends Controller {
-    async list(req, res, next) {
+    async list(ctx, app) {
         try {
     
-            let payload = req.query;
-            let state = req.query.state;
-            let userId = req.query.userId;
+            // let payload = req.query;
+            // let state = req.query.state;
+            // let userId = req.query.userId;
+            let payload = ctx.query;
+            let state = ctx.query.state;
+            let userId = ctx.query.userId;
     
             let queryObj = {};
     
@@ -58,7 +61,7 @@ class ArtistController extends Controller {
                 queryObj.uAuthor = userId;
             }
     
-            let artistList = await this.ctx.service.artist.find(payload, {
+            let artistList = await ctx.service.artist.find(payload, {
                 query: queryObj,
                 searchKeys: ['userName', 'title', 'comments', 'discription'],
                 // populate: [{
@@ -81,24 +84,24 @@ class ArtistController extends Controller {
                 //     }
                 // ]
     
-            });
-    
-            this.ctx.helper.renderSuccess(req, res, {
+            });    
+            ctx.helper.renderSuccess(ctx, {
                 data: artistList
             });
     
         } catch (err) {
-    
-            this.ctx.helper.renderFail(req, res, {
+            ctx.helper.renderFail(ctx, {
                 message: err
             });
     
         }
     }
     
-    async create(req, res, next){
+    async create(ctx, app){
         try {
-            let fields = req.body || {};
+            // let fields = req.body || {};
+            let fields = ctx.request.body || {};
+
             let targetKeyWords = [];
             if (fields.keywords) {
                 if ((fields.keywords).indexOf(',') >= 0) {
@@ -112,7 +115,7 @@ class ArtistController extends Controller {
     
             const formObjCheck = {
                 keywords: targetKeyWords,
-                author: !_.isEmpty(req.session.adminUserInfo) ? req.session.adminUserInfo._id : '',
+                author: !_.isEmpty(ctx.session.adminUserInfo) ? ctx.session.adminUserInfo._id : '',
                 isTop: fields.isTop || '',
                 discription: xss(fields.discription),
                 simpleComments: xss(fields.simpleComments),
@@ -120,12 +123,13 @@ class ArtistController extends Controller {
             }
             let formObj=Object.assign({},funGetData(fields),formObjCheck);
             console.log(fields,formObj)
-            let errInfo = validateForm(res, 'artist', formObj);
-    
-            if (!_.isEmpty(errInfo)) {
-                throw new Error(errInfo.errors[0].message)
-            }
-    
+            // let errInfo = validateForm(res, 'artist', formObj);
+
+            // if (!_.isEmpty(errInfo)) {
+            //     throw new Error(errInfo.errors[0].message)
+            // }
+            ctx.validate(artistRule(ctx), formObj);;
+
             // 设置显示模式
             let checkInfo = siteFunc.checkContentType(formObj.simpleComments);
             formObj.appShowType = checkInfo.type;
@@ -142,22 +146,18 @@ class ArtistController extends Controller {
             //     formObj.uAuthor = fields.targetUser;
             // }
     
-            await this.ctx.service.artist.create(formObj);
-            this.ctx.helper.renderSuccess(req, res);
-    
+            await ctx.service.artist.create(formObj);
+            ctx.helper.renderSuccess(ctx);    
         } catch (err) {
-            this.ctx.helper.renderFail(req, res, {
+            ctx.helper.renderFail(ctx, {
                 message: err
             });
-        }
-    
-    }
-    
-    async getOne (req, res, next) {
+        }    
+    }    
+    async getOne (ctx, app) {
         try {
-            let _id = req.query.id;
-    
-            let targetArtist = await this.ctx.service.artist.item(res, {
+            let _id = ctx.query.id;
+            let targetArtist = await ctx.service.artist.item(ctx, {
                 query: {
                     _id: _id
                 },
@@ -180,14 +180,12 @@ class ArtistController extends Controller {
                 //         select: 'name _id'
                 //     }
                 // ]
-            });
-    
-            this.ctx.helper.renderSuccess(req, res, {
+            });    
+            ctx.helper.renderSuccess(ctx, {
                 data: targetArtist
-            });
-    
+            });    
         } catch (err) {
-            this.ctx.helper.renderFail(req, res, {
+            ctx.helper.renderFail(ctx, {
                 message: err
             });
         }
@@ -195,91 +193,53 @@ class ArtistController extends Controller {
     }
     
     // 文章推荐
-    async updateContentToTop (req, res, next){
+    async updateContentToTop (ctx, app){
         try {
-            let fields = req.body || {};
+            let fields = ctx.request.body || {};
+
             if (!fields._id) {
-                throw new Error(res.__('validate_error_params'));
+                throw new Error(ctx.__('validate_error_params'));
             }
-            await this.ctx.service.artist.update(res, fields._id, {
+            await this.ctx.service.artist.update(ctx, fields._id, {
                 isTop: fields.isTop
-            })
-    
-            this.ctx.helper.renderSuccess(req, res);
-    
-        } catch (err) {
-    
-            this.ctx.helper.renderFail(req, res, {
+            })    
+            ctx.helper.renderSuccess(ctx);    
+        } catch (err) {    
+            ctx.helper.renderFail(ctx, {
                 message: err
             });
         }
     }
     
     // 文章置顶
-    async roofPlacement (req, res, next) {
-    
-    
+    async roofPlacement (ctx, app) {   
         try {
-            let fields = req.body || {};
-            await this.ctx.service.artist.update(res, fields._id, {
+            let fields = ctx.request.body || {};
+            await ctx.service.artist.update(ctx, fields._id, {
                 roofPlacement: fields.roofPlacement
-            })
-    
-            this.ctx.helper.renderSuccess(req, res);
-    
+            })    
+            ctx.helper.renderSuccess(ctx);
         } catch (err) {
-            this.ctx.helper.renderFail(req, res, {
+            ctx.helper.renderFail(ctx, {
                 message: err
             });
-        }
-    
-    }
-    
-    // 给文章分配用户
-    // async redictContentToUsers = async (req, res, next) => {
-    
-    //     try {
-    //         let fields = req.body || {};
-    //         let errMsg = '',
-    //             targetIds = fields.ids;
-    //         let targetUser = fields.targetUser;
-    
-    //         if (!shortid.isValid(targetUser)) {
-    //             errMsg = res.__("validate_error_params");
-    //         }
-    
-    //         if (!checkCurrentId(targetIds)) {
-    //             errMsg = res.__("validate_error_params");
-    //         } else {
-    //             targetIds = targetIds.split(',');
-    //         }
-    
-    //         if (errMsg) {
-    //             throw new Error(errMsg);
-    //         }
-    
-    //         await this.ctx.service.artist.updateMany(res, targetIds, {
-    //             uAuthor: targetUser
-    //         })
-    
-    //         this.ctx.helper.renderSuccess(req, res);
-    
-    //     } catch (err) {
-    
-    //         this.ctx.helper.renderFail(req, res, {
-    //             message: err
-    //         });
-    //     }
-    // }
-    
-    
-    async update (req, res, next) {
-    
+        }    
+    } 
+
+    async update () {
+        const {
+            ctx,
+            service
+        } = this;
         try {
-            let fields = req.body || {};
+            // let fields = req.body || {};
+            console.info('udpate.ctx.request: %j', ctx.request)
+            this.logger.debug('udpate.ctx.request: %j', ctx.request);
+            let fields = ctx.request.body || {};
+
             const formObjCheck = {
                 keywords: fields.keywords ? (fields.keywords).split(',') : [],
-                author: !_.isEmpty(req.session.adminUserInfo) ? req.session.adminUserInfo._id : '',
+                author: !_.isEmpty(ctx.session.adminUserInfo) ? ctx.session.adminUserInfo._id : '',
                 isTop: fields.isTop || '',
                 updateDate: new Date(),
                 discription: xss(fields.discription),
@@ -288,12 +248,13 @@ class ArtistController extends Controller {
             let formObj=Object.assign({},funGetData(fields),formObjCheck);
             console.log(fields,formObj)
     
-            let errInfo = validateForm(res, 'artist', formObj)
+            // let errInfo = validateForm(res, 'artist', formObj)
     
-            if (!_.isEmpty(errInfo)) {
-                throw new Error(errInfo.errors[0].message)
-            }
-    
+            // if (!_.isEmpty(errInfo)) {
+            //     throw new Error(errInfo.errors[0].message)
+            // }
+            ctx.validate(artistRule(ctx), formObj);
+
             // 设置显示模式
             let checkInfo = siteFunc.checkContentType(formObj.simpleComments);
             formObj.appShowType = checkInfo.type;
@@ -307,17 +268,18 @@ class ArtistController extends Controller {
             }
     
             // 如果是管理员代发,则指定用户
-            if (req.session.adminUserInfo && fields.targetUser) {
+            if (ctx.session.adminUserInfo && fields.targetUser) {
                 formObj.uAuthor = fields.targetUser;
             }
     
-            await this.ctx.service.artist.update(res, fields._id, formObj);
-    
-            this.ctx.helper.renderSuccess(req, res);
+            // await this.ctx.service.artist.update(res, fields._id, formObj);
+            await ctx.service.artist.update(ctx, fields._id, formObj);
+
+            ctx.helper.renderSuccess(ctx);
     
         } catch (err) {
-    
-            this.ctx.helper.renderFail(req, res, {
+            console.error("updateArtist:error",err)
+            ctx.helper.renderFail(ctx, {
                 message: err
             });
     
@@ -326,22 +288,22 @@ class ArtistController extends Controller {
     }
     
     
-    async removes(req, res, next) {
+    async removes(ctx, app) {
         try {
-            let targetIds = req.query.ids;
+            let targetIds = ctx.query.ids;
     
             if (!checkCurrentId(targetIds)) {
-                throw new Error(res.__("validate_error_params"));
+                throw new Error(ctx.__("validate_error_params"));
             } else {
-                await this.ctx.service.messageService.removes(res, targetIds, 'artistId');
+                await ctx.service.message.removes(ctx, targetIds, 'contentId');
             }
     
-            await this.ctx.service.artist.removes(res, targetIds);
-            this.ctx.helper.renderSuccess(req, res);
+            await ctx.service.artist.removes(ctx, targetIds);
+            ctx.helper.renderSuccess(ctx);
     
         } catch (err) {
     
-            this.ctx.helper.renderFail(req, res, {
+            ctx.helper.renderFail(ctx, {
                 message: err
             });
         }

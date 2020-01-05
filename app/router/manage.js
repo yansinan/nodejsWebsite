@@ -80,6 +80,9 @@ module.exports = app => {
     router.post('/manage/artist/roof', controller.manage.artist.roofPlacement)
     router.get('/manage/artist/delete', controller.manage.artist.removes)
 
+    // router.post('/user/addOne', UserController.addOneArtist)
+    // router.get('/artist/findByName',UserController.findArtistByName)
+    
 
     /**
      * 系统配置

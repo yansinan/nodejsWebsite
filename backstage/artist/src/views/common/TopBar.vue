@@ -4,10 +4,10 @@
       <!-- 艺人列表 -->
       <div v-if="type === 'artist'">
         <el-button size="small" type="primary" plain @click="addArtist('artist')" round>
-          <i class="fa fa-fw fa-plus" aria-hidden="true"></i>
+          <svg-icon icon-class="icon_add" />
         </el-button>
         <el-button size="small" type="danger" plain round @click="branchDelete('artist')">
-          <i class="fa fa-fw fa-trash-o"></i>
+          <svg-icon icon-class="icon_delete" />
         </el-button>
       </div>
       <!-- TOPBARLEFT -->

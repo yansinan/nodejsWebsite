@@ -1,137 +1,141 @@
 <template>
-  <div class="dr-contentForm">
-    <el-form
-      :model="formState.formData"
-      :rules="rules"
-      ref="ruleForm"
-      label-width="120px"
-      class="demo-ruleForm"
-    >
-      <el-form-item :label="$t('contents.enable')" prop="state">
-        <el-select size="small" v-model="formState.formData.state" placeholder="审核文章">
-          <el-option
-            v-for="item in contentState"
-            :key="'kw_'+item.value"
-            :label="item.label"
-            :value="item.value"
-          ></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item v-if="formState.formData.state == '3'" label="驳回原因" prop="dismissReason">
-        <el-input size="small" v-model="formState.formData.dismissReason"></el-input>
-      </el-form-item>
-      <el-form-item :label="$t('artist.name')" prop="name">
-        <el-input size="small" v-model="formState.formData.name"></el-input>
-      </el-form-item>
-      <el-form-item :label="$t('artist.nameAlias')" prop="alias">
-        <el-input size="small" v-model="formState.formData.alias"></el-input>
-      </el-form-item>
-      <el-form-item :label="$t('artist.from')" prop="from">
-        <el-input size="small" v-model="formState.formData.from" placeholder="中国/China"></el-input>
-      </el-form-item>
-      <el-form-item :label="$t('artist.date')" prop="listDateDur">
-        <el-date-picker
-          v-model="formState.formData.listDateDur[0]"
-          type="date"
-          placeholder="加入日期" @change="eChangeDate">
-        </el-date-picker>
-        <el-date-picker
-          v-model="formState.formData.listDateDur[1]"
-          type="date"
-          placeholder="退出日期" @change="eChangeDate">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item :label="$t('artist.listMembers')" prop="listMembers">
-        <el-select
-          size="medium"
-          v-model="formState.formData.listMembers"
-          filterable
-          multiple
-          allow-create
-          placeholder="请输入乐队成员名"
-          :remote-method="remoteUserMethod"
-          :loading="userLoading"
-          @change="changeTargetUser"
-        >
-        <!--           remote
-          reserve-keyword -->
-          <el-option
-            v-for="item in dataMembers.docs"
-            :key="item._id"
-            :label="item.name"
-            :value="item._id"
-          ></el-option>
-        </el-select>
-      </el-form-item>
-
-      <div v-if="formState.formData.type == '1'">
-        <el-form-item label="乐队关键字" prop="keywords">
-          <el-input size="small" v-model="formState.formData.keywords"></el-input>
+  <div :class="classObj" class="dr-contentForm">
+    <div class="main-container">
+      <el-form
+        :model="formState.formData"
+        :rules="rules"
+        ref="ruleForm"
+        label-width="120px"
+        class="demo-ruleForm"
+        :label-position="device == 'mobile' ? 'top' : 'right'"
+      >
+        <el-form-item :label="$t('contents.enable')" prop="state">
+          <el-select size="small" v-model="formState.formData.state" placeholder="审核文章">
+            <el-option
+              v-for="item in contentState"
+              :key="'kw_'+item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
         </el-form-item>
-
-        <el-form-item label="乐队标签" prop="tags">
+        <el-form-item v-if="formState.formData.state == '3'" label="驳回原因" prop="dismissReason">
+          <el-input size="small" v-model="formState.formData.dismissReason"></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('artist.name')" prop="name">
+          <el-input size="small" v-model="formState.formData.name"></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('artist.nameAlias')" prop="alias">
+          <el-input size="small" v-model="formState.formData.alias"></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('artist.from')" prop="from">
+          <el-input size="small" v-model="formState.formData.from" placeholder="中国/China"></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('artist.date')" prop="listDateDur">
+          <el-date-picker
+            v-model="formState.formData.listDateDur[0]"
+            type="date"
+            placeholder="加入日期" @change="eChangeDate">
+          </el-date-picker>
+          <el-date-picker
+            v-model="formState.formData.listDateDur[1]"
+            type="date"
+            placeholder="退出日期" @change="eChangeDate">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item :label="$t('artist.listMembers')" prop="listMembers">
           <el-select
             size="medium"
-            v-model="formState.formData.tags"
-            multiple
+            v-model="formState.formData.listMembers"
             filterable
+            multiple
             allow-create
+            placeholder="请输入乐队成员名"
+            :remote-method="remoteUserMethod"
             :loading="userLoading"
-            :placeholder="$t('validate.selectNull', {label: this.$t('contents.tags')})"
-            @change="eChangeTags"
+            @change="changeTargetUser"
           >
+          <!--           remote
+            reserve-keyword -->
             <el-option
-              v-for="item in contentTagList.docs"
+              v-for="item in dataMembers.docs"
               :key="item._id"
               :label="item.name"
               :value="item._id"
             ></el-option>
           </el-select>
         </el-form-item>
-      </div>
-      <el-form-item class="upSimg" :label="$t('contents.sImg')" prop="sImg">
-        <el-upload
-          class="avatar-uploader"
-          action="/api/v0/upload/files?type=images"
-          :show-file-list="false"
-          :on-success="handleAvatarSuccess"
-          :before-upload="beforeAvatarUpload"
-        >
-          <img v-if="formState.formData.sImg" :src="formState.formData.sImg" class="avatar" />
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
-        <el-button size="mini" @click="getRandomContentImg()" class="refresh-btn" plain round>
-          <i class="fa fa-refresh"></i>
-        </el-button>
-      </el-form-item>
-      <el-form-item :label="$t('contents.discription')" prop="discription">
-        <el-input size="small" type="textarea" v-model="formState.formData.discription"></el-input>
-      </el-form-item>
-      <el-form-item :label="$t('contents.comments')" prop="comments">
-        <!-- <Ueditor @ready="editorReady" ref="ueditor"></Ueditor> -->
-        <vue-ueditor-wrap
-          class="editorForm"
-          @ready="editorReady"
-          v-model="formState.formData.comments"
-          :config="editorConfig"
-        ></vue-ueditor-wrap>
-      </el-form-item>
-      <!-- 热门歌曲：相关链接 -->
-      <el-form-item :label="$t('artist.listHotMusics')" prop="listHotMusics">
-        <ListURL @list-changed="eListHotMusicChanged" label="歌名" ref="listHotMusics"></ListURL>
-      </el-form-item>
-      <el-form-item :label="$t('artist.listLinks')" prop="listLinks">
-        <ListURL @list-changed="eListLinks" label="注释" ref="listLinks"></ListURL>
-      </el-form-item>
-      <el-form-item class="dr-submitContent">
-        <el-button
-          size="medium"
-          type="primary"
-          @click="submitForm('ruleForm')"
-        >{{formState.edit ? $t('main.form_btnText_update') : $t('main.form_btnText_save')}}</el-button>
-        <el-button size="medium" @click="backToList">{{$t('main.back')}}</el-button>
-      </el-form-item>
-    </el-form>
+
+        <div v-if="formState.formData.type == '1'">
+          <el-form-item label="乐队关键字" prop="keywords">
+            <el-input size="small" v-model="formState.formData.keywords"></el-input>
+          </el-form-item>
+
+          <el-form-item label="乐队标签" prop="tags">
+            <el-select
+              size="medium"
+              v-model="formState.formData.tags"
+              multiple
+              filterable
+              allow-create
+              :loading="userLoading"
+              :placeholder="$t('validate.selectNull', {label: this.$t('contents.tags')})"
+              @change="eChangeTags"
+            >
+              <el-option
+                v-for="item in contentTagList.docs"
+                :key="item._id"
+                :label="item.name"
+                :value="item._id"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </div>
+        <el-form-item class="upSimg" :label="$t('contents.sImg')" prop="sImg">
+          <el-upload
+            class="avatar-uploader"
+            action="/api/upload/files"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload"
+            :data="{action:'uploadimage'}"
+          >
+            <img v-if="formState.formData.sImg" :src="formState.formData.sImg" class="avatar" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+          <el-button size="mini" @click="getRandomContentImg()" class="refresh-btn" plain round>
+            <svg-icon icon-class="reload" />
+          </el-button>
+        </el-form-item>
+        <el-form-item :label="$t('contents.discription')" prop="discription">
+          <el-input size="small" type="textarea" v-model="formState.formData.discription"></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('contents.comments')" prop="comments">
+          <!-- <Ueditor @ready="editorReady" ref="ueditor"></Ueditor> -->
+          <vue-ueditor-wrap
+            class="editorForm"
+            @ready="editorReady"
+            v-model="formState.formData.comments"
+            :config="editorConfig"
+          ></vue-ueditor-wrap>
+        </el-form-item>
+        <!-- 热门歌曲：相关链接 -->
+        <el-form-item :label="$t('artist.listHotMusics')" prop="listHotMusics">
+          <ListURL @list-changed="eListHotMusicChanged" label="歌名" ref="listHotMusics"></ListURL>
+        </el-form-item>
+        <el-form-item :label="$t('artist.listLinks')" prop="listLinks">
+          <ListURL @list-changed="eListLinks" label="注释" ref="listLinks"></ListURL>
+        </el-form-item>
+        <el-form-item class="dr-submitContent">
+          <el-button
+            size="medium"
+            type="primary"
+            @click="submitForm('ruleForm')"
+          >{{formState.edit ? $t('main.form_btnText_update') : $t('main.form_btnText_save')}}</el-button>
+          <el-button size="medium" @click="backToList">{{$t('main.back')}}</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
   </div>
 </template>
 
@@ -204,7 +208,8 @@ import { initEvent } from "@root/publicMethods/events";
 import {
   addUser,
   getOneContent,
-  addContent,
+  // addContent,
+  addOne,
   updateContent,
   getRandomContentImg,
   // regUserList,
@@ -241,6 +246,18 @@ export default {
       config: {
         initialFrameWidth: null,
         initialFrameHeight: 320
+      },
+      editorConfig: {
+        // 编辑器不自动被内容撑高
+        autoHeightEnabled: false,
+        // 初始容器高度
+        initialFrameHeight: 240,
+        // 初始容器宽度
+        initialFrameWidth: "100%",
+        // 上传文件接口（这个地址是我为了方便各位体验文件上传功能搭建的临时接口，请勿在生产环境使用！！！）
+        serverUrl: "/api/upload/ueditor",
+        // UEditor 资源文件的存放路径，如果你使用的是 vue-cli 生成的项目，通常不需要设置该选项，vue-ueditor-wrap 会自动处理常见的情况，如果需要特殊配置，参考下方的常见问题2
+        UEDITOR_HOME_URL: this.$root.staticRootPath + "/plugins/ueditor/"
       },
       imageUrl: "",
       currentType: "1",
@@ -400,26 +417,27 @@ export default {
           }
           //添加contentTag标签
           addContentTag(formDataTag).then(result => {
-            if (result.data.status === 200) {
+            console.log("添加标签返回的result:",result);
+            if (result.status === 200) {
               // this.$store.dispatch("hideContentTagForm");
               this.$store.dispatch("contentTag/getContentTagList");
               this.$message({
                 message: this.$t("main.addSuccess"),
                 type: "success"
               });
-              //替换文字为idTag//可以在返回结果中获得result.data.data._id{}
-              this.formState.formData.tags[idx]=result.data.data._id;
+              //替换文字为idTag//可以在返回结果中获得result.data._id{}
+              this.formState.formData.tags[idx]=result._id;
               //关键词里同步
               this.updateKeywords(v);
             } else {
-              this.$message.error(result.data.message);
+              this.$message.error("添加标签错误："+result.message);
             }
             //恢复操作
             this.loadingTag=false;
           });
           
         }else{
-          //替换文字为idTag//可以在返回结果中获得result.data.data._id{}
+          //替换文字为idTag//可以在返回结果中获得result.data._id{}
           // this.formState.formData.tags[idx]=tagFound._id;
           //关键词里同步
           this.updateKeywords(tagFound.name);
@@ -450,8 +468,8 @@ export default {
       let _this = this;
       getRandomContentImg(params)
         .then(result => {
-          if (result.status == 200 && result.data && result.data.data) {
-            let randomImg = result.data.data[0];
+          if (result.status == 200 && result && result.data) {
+            let randomImg = result.data[0];
             let initFormData = Object.assign({}, this.formState.formData, {
               sImg: randomImg
             });
@@ -552,7 +570,9 @@ export default {
     //   console.log(value);
     // },
     backToList() {
-      this.$router.push("/"+nameMod);
+      // this.$router.push("/"+nameMod);
+      this.$router.push(this.$root.adminBasePath + "/"+nameMod);
+
     },
     // 热门歌曲列表变化
     eListHotMusicChanged(e){
@@ -584,34 +604,40 @@ export default {
           // 更新
           if (this.formState.edit) {
             updateContent(params).then(result => {
-              console.log("更新:",params,result);
-              if (result.data.status === 200) {
-                this.$router.push("/"+nameMod);
+              if (result.status === 200) {
+                this.backToList();
                 this.$message({
                   message: this.$t("main.updateSuccess"),
                   type: "success"
                 });
               } else {
-                this.$message.error(result.data.message);
+                this.$message.error(result.message);
               }
+            }).catch(error=>{
+              debugger
+              console.error("乐队更新:fail,",error,params);
+              this.$message.error(JSON.stringify(error));
             });
           } else {
             // 新增
-            addContent(params).then(result => {
+            addOne(params).then(result => {
               console.log("新增:",params,result);
-              if (result.data.status === 200) {
-                this.$router.push("/"+nameMod);
+              if (result.status === 200) {
+                this.backToList();
                 this.$message({
                   message: this.$t("main.addSuccess"),
                   type: "success"
                 });
               } else {
-                this.$message.error(result.data.message);
+                this.$message.error(result.message);
               }
+            }).catch(error=>{
+              console.error("乐队添加：fail:",error,params);
+              this.$message.error(error.message);
             });
           }
         } else {
-          console.log("error submit!!");
+          console.log("提交格式审核不通过!valid",valid);
           return false;
         }
       });
@@ -632,9 +658,9 @@ export default {
     let _this = this;
     if (this.$route.params.id) {
       getOneContent({ id: this.$route.params.id }).then(result => {
-        if (result.data.status === 200) {
-          if (result.data.data) {
-            let contentObj = result.data.data,
+        if (result.status === 200) {
+          if (result.data) {
+            let contentObj = result.data,
               categoryIdArr = [],
               tagsArr = [];
             console.info("获取乐队信息：",contentObj);
@@ -669,12 +695,12 @@ export default {
               message: this.$t("validate.error_params"),
               type: "warning",
               onClose: () => {
-                this.$router.push("/"+nameMod);
+                this.backToList();
               }
             });
           }
         } else {
-          this.$message.error(result.data.message);
+          this.$message.error(result.message);
         }
       });
     } else {//新创建

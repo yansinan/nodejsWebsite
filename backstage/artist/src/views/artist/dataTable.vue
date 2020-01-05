@@ -12,11 +12,18 @@
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="isTop" :label="$t('contents.rec')" width="55" show-overflow-tooltip>
         <template slot-scope="scope">
-          <i
+          <svg-icon
+            :style="yellow"
+            v-show="scope.row.isTop === 1"
             @click="topContent(scope.$index, dataList)"
-            :class="scope.row.isTop === 1 ? 'fa fa-star' : 'fa fa-star-o'"
-            :style="scope.row.isTop === 1 ? yellow : gray"
-          ></i>
+            icon-class="icon_star_fill"
+          />
+          <svg-icon
+            :style="gray"
+            v-show="scope.row.isTop != 1"
+            @click="topContent(scope.$index, dataList)"
+            icon-class="icon_star"
+          />
         </template>
       </el-table-column>
       <el-table-column
@@ -26,15 +33,21 @@
         show-overflow-tooltip
       >
         <template slot-scope="scope">
-          <i
-            v-if="scope.row.isTop === 1"
+          <svg-icon
+            :style="green"
+            v-show="scope.row.isTop === 1 && scope.row.roofPlacement == 1"
             @click="roofContent(scope.$index, dataList)"
-            :class="scope.row.roofPlacement == 1 ? 'fa fa-thumbs-up ' : 'fa fa-thumbs-o-up'"
-            :style="scope.row.roofPlacement == 1 ? green : gray"
-          ></i>
+            icon-class="icon_ping"
+          />
+          <svg-icon
+            :style="gray"
+            v-show="scope.row.isTop === 1 && scope.row.roofPlacement != 1"
+            @click="roofContent(scope.$index, dataList)"
+            icon-class="icon_ding"
+          />
         </template>
       </el-table-column>
-      <el-table-column prop="name" :label="$t('contents.name')" width="350" show-overflow-tooltip>
+      <el-table-column prop="name" :label="$t('docs.name')" width="350" show-overflow-tooltip>
         <template slot-scope="scope">
           <div v-if="scope.row.state">
             <a :href="'/details/'+scope.row._id+'.html'" target="_blank">{{scope.row.name}}</a>
@@ -76,10 +89,8 @@
       <el-table-column prop="commentNum" :label="$t('contents.commentNum')" show-overflow-tooltip></el-table-column>
       <el-table-column prop="state" :label="$t('contents.enable')" show-overflow-tooltip>
         <template slot-scope="scope">
-          <i
-            :class="scope.row.state=='2' ? 'fa fa-check-circle' : 'fa fa-minus-circle'"
-            :style="scope.row.state=='2' ? green : red"
-          ></i>
+          <svg-icon v-show="scope.row.state=='2'" :style="green" icon-class="check-circle-fill" />
+          <svg-icon v-show="scope.row.state!='2'" :style="red" icon-class="minus-circle-fill" />
         </template>
       </el-table-column>
       
@@ -92,16 +103,17 @@
             round
             @click="editContentInfo(scope.$index, dataList)"
           >
-            <i class="fa fa-edit"></i>
+            <svg-icon icon-class="edit" />
           </el-button>
           <el-button
             size="mini"
             type="danger"
             plain
             round
-            icon="el-icon-delete"
             @click="deleteContent(scope.$index, dataList)"
-          ></el-button>
+          >
+            <svg-icon icon-class="icon_delete" />
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -164,7 +176,7 @@ export default {
     //编辑按钮
     editContentInfo(index, rows) {
       let rowData = rows[index];
-      this.$router.push("/edit_"+this.nameMod+"/" + rowData._id);
+      this.$router.push("artist/edit_"+this.nameMod+"/" + rowData._id);
     },
     //推荐
     topContent(index, rows) {

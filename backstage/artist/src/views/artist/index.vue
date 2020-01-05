@@ -60,12 +60,10 @@ export default {
         mobile: this.device === "mobile"
       };
     },
-    ...mapGetters(["getterListData",]),
-
     // ...mod.mapState({
     //   dataList: state => state.dataList,
     // }),//模块的state
-    // ...mod.mapGetters({dataList:"getterListData"}),//模块
+    ...mapGetters({dataList:"getterListData"}),//模块
   },
   mounted() {
     // 触发action,异步

@@ -2,53 +2,47 @@
  * @Author: doramart 
  * @Date: 2019-08-15 10:51:41 
  * @Last Modified by: dr
- * @Last Modified time: 2019-12-08 
+ * @Last Modified time: 2019-12-14 
  */
 
-const form = (res) => {
+const form = (ctx) => {
     return {
-        title: {
+        name: {
             type: "string",
             required: true,
             min: 2,
             max: 50,
-            message: res.__("validate_error_field", {
-                label: res.__("label_content_title")
-            })
+            message: ctx.__("validate_error_field", [ctx.__("label_content_title")])
+
         },
-        stitle: {
+        alias: {
             type: "string",
             required: true,
             min: 2,
             max: 50,
-            message: res.__("validate_error_field", {
-                label: res.__("label_content_stitle")
-            })
+            message: ctx.__("validate_error_field", [ctx.__("label_content_stitle")])
         },
         sImg: {
             type: "string",
             required: true,
-            message: res.__("validate_error_field", {
-                label: res.__("lc_small_images")
-            })
+            message: ctx.__("validate_error_field", [ctx.__("lc_small_images")])
         },
         discription: {
             type: "string",
             required: true,
             min: 3,
             max: 300,
-            message: res.__("validate_error_field", {
-                label: res.__("label_content_dis")
-            })
+            message: ctx.__("validate_error_field", [ctx.__("label_content_dis")])
         },
         comments: {
             type: "string",
             required: true,
             min: 5,
             max: 100000,
-            message: res.__("validate_inputCorrect", {
-                label: res.__("label_content_comments")
-            })
+            message: ctx.__("validate_inputCorrect", [ctx.__("label_content_comments")])
+            // message: res.__("validate_inputCorrect", {
+            //     label: res.__("label_content_comments")
+            // })
         }
     }
 };
