@@ -59,13 +59,32 @@ export function updateContent(data) {
     })
 }
 // 添加用户
-export function addUser(params) {
-    return reqJsonData('manage/regUser/addOneName', params)
+export function addUser(data) {
+    // return reqJsonData('manage/artist/updateOne', params)
+    return request({
+        url: '/manage/regUser/addOneName',//"/manage/artist/updateOne"
+        // url: '/manage/content/getList',    
+        data,
+        params:data,
+        method: 'post',
+    })
 }
+// export function addUser(params) {
+//     return reqJsonData('manage/regUser/addOneName', params)
+// }
 // 查找乐手
-export function findArtists(params){
-    return reqJsonData("manage/regUser/findByName",params,"get");
+export function findArtists(data) {
+    // return reqJsonData('manage/artist/updateOne', params)
+    return request({
+        url: '/manage/regUser/findByName',//"/manage/artist/updateOne"
+        // url: '/manage/content/getList',    
+        data:data,
+        method: 'get'
+    })
 }
+// export function findArtists(params){
+//     return reqJsonData("manage/regUser/findByName",params,"get");
+// }
 
 export function getRandomContentImg(params) {
     return request({

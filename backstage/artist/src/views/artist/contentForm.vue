@@ -361,13 +361,13 @@ export default {
           }
           //添加contentTag标签
           addUser(formData).then(result => {
-            if (result.data.status === 200) {
+            if (result.status === 200) {
               that.$message({
                 message: that.$t("main.addSuccess"),
                 type: "success"
               });
               //替换文字为idTag//可以在返回结果中获得result.data.data._id{}
-              that.formState.formData.listMembers[idx]=result.data.data._id;
+              that.formState.formData.listMembers[idx]=result.data._id;
               //关键词里同步
               that.updateKeywords(v);
               //刷新用户列表
@@ -375,10 +375,17 @@ export default {
               // that.queryUserListByParams({ searchkey: that.formState.formData.listMembers });
               that.remoteUserMethod();
             } else {
+              console.error(result)
+              debugger
               that.$message.error(result.data.message);
             }
             //恢复操作
             that.loadingTag=false;
+          }).catch(error=>{
+              console.error(error)
+              debugger
+              that.$message.error(error.message);
+
           });
           
         }else{

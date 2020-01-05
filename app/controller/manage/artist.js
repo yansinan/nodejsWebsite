@@ -246,7 +246,7 @@ class ArtistController extends Controller {
                 simpleComments: xss(fields.simpleComments),
             }
             let formObj=Object.assign({},funGetData(fields),formObjCheck);
-            console.log(fields,formObj)
+            // console.log(fields,formObj)
     
             // let errInfo = validateForm(res, 'artist', formObj)
     

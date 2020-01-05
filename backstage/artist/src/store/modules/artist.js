@@ -79,7 +79,6 @@ const mutations = {
   // },
   FIND_ARTIST_BY_NAME(state,dataList){
     state.dataMembers=dataList;
-    // console.log("FIND_ARTIST_BY_NAME",state,dataList)
   },
 }
 
@@ -111,6 +110,8 @@ const actions = {
   }, params = {}) {
     findArtists(params).then((result) => {
       commit("FIND_ARTIST_BY_NAME", result.data)
+    }).catch(error=>{
+      console.log("artist.store.artist.actions.getArtistList获取失败:fail",error);
     })
   },
 
