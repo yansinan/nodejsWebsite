@@ -528,25 +528,25 @@ export default {
     },
     editorReady(instance) {
       this.ueditorObj = instance;
-      if (this.formState.edit) {
-        setTimeout(() => {
-          instance.setContent(this.formState.formData.comments);
-          this.simpleComments = instance.getPlainTxt();
-        }, 1500);
-      } else {
-        instance.setContent("");
-      }
-      instance.addListener("contentChange", () => {
-        this.content = instance.getContent();
-        this.simpleComments = instance.getPlainTxt();
-        this.showContentForm({
-          edit: this.formState.edit,
-          formData: Object.assign({}, this.formState.formData, {
-            comments: this.content,
-            simpleComments: this.simpleComments
-          })
-        });
-      });
+      // if (this.formState.edit) {
+      //   setTimeout(() => {
+      //     instance.setContent(this.formState.formData.comments);
+      //     this.simpleComments = instance.getPlainTxt();
+      //   }, 1500);
+      // } else {
+      //   instance.setContent("");
+      // }
+      // instance.addListener("contentChange", () => {
+      //   this.content = instance.getContent();
+      //   this.simpleComments = instance.getPlainTxt();
+      //   this.showContentForm({
+      //     edit: this.formState.edit,
+      //     formData: Object.assign({}, this.formState.formData, {
+      //       comments: this.content,
+      //       simpleComments: this.simpleComments
+      //     })
+      //   });
+      // });
     },
 
     handleAvatarSuccess(res, file) {
@@ -578,6 +578,7 @@ export default {
     // },
     backToList() {
       // this.$router.push("/"+nameMod);
+      // this.$store.dispatch(nameMod+"/showContentForm",{edit:false,formData:{test:"debug:backToList"},isInit:true});
       this.$router.push(this.$root.adminBasePath + "/"+nameMod);
 
     },
@@ -661,6 +662,8 @@ export default {
     }),//模块的state
   },
   mounted() {
+    initEvent(this);
+
     // 针对手动页面刷新
     let _this = this;
     if (this.$route.params.id) {
@@ -740,6 +743,8 @@ export default {
             });
           });
       } else {
+        //初始化表單
+
         this.getRandomContentImg();
       }
     }

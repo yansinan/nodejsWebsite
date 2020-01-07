@@ -34,7 +34,6 @@ const defautlFormData={
   listHotMusics:[],
   listLinks:[],
 }
-
 const state = {
   formState: {
     edit: false,
@@ -68,8 +67,7 @@ const state = {
 const mutations = {
   FORMSTATE(state, formState) {
     state.formState.edit = formState.edit;
-    state.formState.formData = Object.assign(defautlFormData, formState.formData);
-
+    state.formState.formData = Object.assign({},defautlFormData, formState.formData);
   },
   GET_LIST(state, dataList) {
     state.dataList = dataList
@@ -88,11 +86,11 @@ const actions = {
     commit
   }, params = {
     edit: false,
-    formData: {}
+    formData: defautlFormData
   }) => {
     commit("FORMSTATE", {
-      edit: params.edit,
-      formData: params.formData
+      edit: params.edit || false,
+      formData: params.isInit?defautlFormData:params.formData
     })
   },
   getList({

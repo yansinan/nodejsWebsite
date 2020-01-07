@@ -3,7 +3,7 @@
     <el-col :xs="12" :md="6" class="option-button">
       <!-- 艺人列表 -->
       <div v-if="type === 'artist'">
-        <el-button size="small" type="primary" plain @click="addArtist('artist')" round>
+        <el-button size="small" type="primary" plain @click="eBnAdd('artist')" round>
           <svg-icon icon-class="icon_add" />
         </el-button>
         <el-button size="small" type="danger" plain round @click="branchDelete('artist')">
@@ -53,8 +53,8 @@ export default {
   },
   methods: {
 
-    addArtist(strMod) {
-      this.$store.dispatch(strMod+"/showContentForm");
+    eBnAdd(strMod) {
+      this.$store.dispatch(strMod+"/showContentForm",{isInit:true});
       // this.$router.push("/addArtist");
       this.$router.push(this.$root.adminBasePath + "/artist/addArtist");
 
