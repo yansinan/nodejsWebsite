@@ -389,8 +389,6 @@ export default {
           });
           
         }else{
-          //替换文字为idTag//可以在返回结果中获得result.data.data._id{}
-          // this.formState.formData.tags[idx]=tagFound._id;
           //关键词里同步
           this.updateKeywords(tagFound.name);
         }
@@ -408,9 +406,14 @@ export default {
       // }
     },
     //标签变化
-    eChangeTags(v){
-      //检查 是否有没在列表里的值v=[idTag1,idTag2...text]
+    eChangeTags(e){
+      //检查 是否有没在列表里的值e=[idTag1,idTag2...text]
       this.formState.formData.tags.forEach((v,idx,arr) => {
+        // console.log("添加标签e,v:",e,this.formState.formData.tags,v);
+        if(!v){
+          this.$message.error("标签undefined：",v);
+          return;
+        }
         let tagFound=this.contentTagList.docs.find(tag=>(tag._id==v));
         let isTagFound = tagFound?true:false;
         if(!isTagFound){
@@ -433,19 +436,21 @@ export default {
                 type: "success"
               });
               //替换文字为idTag//可以在返回结果中获得result.data._id{}
-              this.formState.formData.tags[idx]=result._id;
+              this.formState.formData.tags[idx]=result.data._id;
               //关键词里同步
               this.updateKeywords(v);
             } else {
-              this.$message.error("添加标签错误："+result.message);
+              this.$message.error("添加标签错误："+result.message,formDataTag);
             }
             //恢复操作
             this.loadingTag=false;
+          }).catch(error=>{
+            this.$message.error("添加标签错误："+error,formDataTag);
+            let t=formDataTag;
+            debugger
           });
           
         }else{
-          //替换文字为idTag//可以在返回结果中获得result.data._id{}
-          // this.formState.formData.tags[idx]=tagFound._id;
           //关键词里同步
           this.updateKeywords(tagFound.name);
         }
@@ -471,6 +476,7 @@ export default {
 
       this.userLoading = false;
     },
+    //TODO：20200107默认图片
     getRandomContentImg(params = {}) {
       let _this = this;
       getRandomContentImg(params)
@@ -528,25 +534,6 @@ export default {
     },
     editorReady(instance) {
       this.ueditorObj = instance;
-      // if (this.formState.edit) {
-      //   setTimeout(() => {
-      //     instance.setContent(this.formState.formData.comments);
-      //     this.simpleComments = instance.getPlainTxt();
-      //   }, 1500);
-      // } else {
-      //   instance.setContent("");
-      // }
-      // instance.addListener("contentChange", () => {
-      //   this.content = instance.getContent();
-      //   this.simpleComments = instance.getPlainTxt();
-      //   this.showContentForm({
-      //     edit: this.formState.edit,
-      //     formData: Object.assign({}, this.formState.formData, {
-      //       comments: this.content,
-      //       simpleComments: this.simpleComments
-      //     })
-      //   });
-      // });
     },
 
     handleAvatarSuccess(res, file) {

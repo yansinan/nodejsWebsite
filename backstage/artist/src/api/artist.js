@@ -43,7 +43,7 @@ export function getOneContent(params) {
 // }
 export function addOne(data) {
     return request({
-        url: 'manage/artist/addOne',
+        url: '/manage/artist/addOne',
         // url: '/manage/content/getList',    
         data,
         method: 'post'
