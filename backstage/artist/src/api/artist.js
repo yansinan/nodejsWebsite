@@ -1,4 +1,5 @@
 import request from '@root/publicMethods/request'
+const strMod="artist"
 let reqJsonData =function(url,params,method="post"){
   return request({
     url: "/"+url,
@@ -7,31 +8,29 @@ let reqJsonData =function(url,params,method="post"){
   })
   
 };
-export function artistList(params) {
-      return reqJsonData('manage/artist/getList', params, 'get')
-  }
+
 export function list(params) {
     return request({
-        url: '/manage/artist/getList',
+        url: '/manage/'+strMod+'/getList',
         // url: '/manage/content/getList',    
         params:params,
         method: 'get'
     })
 }
 export function updateToTop(params) {
-    return reqJsonData('manage/artist/top', params)
+    return reqJsonData('manage/'+strMod+'/top', params)
 }
 
 export function roof(params) {
-    return reqJsonData('manage/artist/roof', params)
+    return reqJsonData('manage/'+strMod+'/roof', params)
 }
 
 export function remove(params) {
-    return reqJsonData('manage/artist/delete', params, 'get')
+    return reqJsonData('manage/'+strMod+'/delete', params, 'get')
 }
 
 export function getOneContent(params) {
-    return reqJsonData('manage/artist/getContent', params, 'get')
+    return reqJsonData('manage/'+strMod+'/getContent', params, 'get')
 }
 
 // export function addContent(data) {
@@ -43,7 +42,7 @@ export function getOneContent(params) {
 // }
 export function addOne(data) {
     return request({
-        url: '/manage/artist/addOne',
+        url: '/manage/'+strMod+'/addOne',
         // url: '/manage/content/getList',    
         data,
         method: 'post'
@@ -52,7 +51,7 @@ export function addOne(data) {
 export function updateContent(data) {
     // return reqJsonData('manage/artist/updateOne', params)
     return request({
-        url: '/manage/artist/updateOne',//"/manage/artist/updateOne"
+        url: '/manage/'+strMod+'/updateOne',//"/manage/artist/updateOne"
         // url: '/manage/content/getList',    
         data,
         method: 'post'
