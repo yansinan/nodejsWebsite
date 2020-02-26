@@ -31,3 +31,6 @@ dist/*
 
 
 
+
+/run
+/doraData/logsdir
