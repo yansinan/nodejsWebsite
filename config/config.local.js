@@ -1,5 +1,8 @@
 'use strict';
 const path = require('path')
+const isDocker = process.env.BUILD_ENV == 'docker' ? true : false;
+const mongohost = isDocker ? 'mongo:27017' : 'mongo:27017';//isDocker ? 'mongodb' : '127.0.0.1:27017';
+const mongobin = isDocker ? '' : '/Users/dora/Documents/dora/softs/mongodb/bin/';
 
 module.exports = appInfo => {
 
@@ -31,17 +34,26 @@ module.exports = appInfo => {
             // 'helpCenter',
             // 'renderCms',
             // 'cmsTemplate',
-            // 'plugin'
+            // 'plugin',
+            // 'uploadFile',
+            // 'mailTemplate',
+            // 'mailDelivery',
         ],
         // DEV_CONFIG_MODULES_END
         mongoose: {
             client: {
-                url: 'mongodb://mongo:27017/doracms2',
+                url: `mongodb://${mongohost}/doracms2`,
                 options: {
                     useCreateIndex: true,
-                    useUnifiedTopology: true
+                    useUnifiedTopology: true,
+                    keepAlive: 3000
                 },
             },
+        },
+        // mongodb相关路径
+        mongodb: {
+            binPath: `${mongobin}`,
+            backUpPath: path.join(appInfo.baseDir, 'databak/')
         },
         static: {
             prefix: '/static',

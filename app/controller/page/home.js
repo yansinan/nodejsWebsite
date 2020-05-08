@@ -7,6 +7,7 @@ const captcha = require('trek-captcha')
 const path = require('path')
 const fs = require('fs')
 const qr = require('qr-image')
+const moment = require('moment')
 
 class HomeController extends Controller {
 
@@ -19,6 +20,7 @@ class HomeController extends Controller {
             siteKeywords,
             siteAltKeywords,
             ogTitle,
+            siteLogo
         } = configs || [];
 
         let {
@@ -32,6 +34,7 @@ class HomeController extends Controller {
         let altkey = siteAltKeywords || '';
         return {
             title: pageTitle,
+            siteLogo,
             ogTitle,
             discription,
             key,
@@ -140,6 +143,7 @@ class HomeController extends Controller {
             xml += "</url>";
         });
         xml += "</urlset>";
+        this.ctx.set('Content-Type', 'application/xml');
         this.ctx.body = xml;
     }
 
@@ -494,7 +498,7 @@ class HomeController extends Controller {
             }
         }
 
-        // console.log('-------', ctx.isIOS);
+        // console.log('----pageData.siteInfo---', pageData.siteInfo);
         pageData.lsk = JSON.stringify(sysKeys);
         await ctx.render(defaultTemp.alias + '/' + targetTempPage, pageData);
     }

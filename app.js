@@ -1,5 +1,5 @@
 const path = require('path');
-
+var Cache = require('js-cache');
 class AppBootHook {
 
 
@@ -41,7 +41,7 @@ class AppBootHook {
     }
 
     async didReady() {
-
+        this.app.cache = new Cache();
     }
 }
 

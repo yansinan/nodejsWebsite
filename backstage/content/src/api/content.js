@@ -9,6 +9,14 @@ export function redictContentToUsers(data) {
   })
 }
 
+export function updateContentEditor(data) {
+  return request({
+    url: '/manage/content/updateContentEditor',
+    data,
+    method: 'post'
+  })
+}
+
 export function contentList(params) {
   return request({
     url: '/manage/content/getList',
@@ -36,6 +44,14 @@ export function addContent(data) {
 export function updateContent(data) {
   return request({
     url: '/manage/content/updateOne',
+    data,
+    method: 'post'
+  })
+}
+
+export function updateManyContent(data) {
+  return request({
+    url: '/manage/content/updateContents',
     data,
     method: 'post'
   })
@@ -76,6 +92,46 @@ export function getRandomContentImg(params) {
 export function regUserList(params) {
   return request({
     url: '/manage/regUser/getList',
+    params,
+    method: 'get'
+  })
+}
+
+export function moveContentCate(data) {
+  return request({
+    url: '/manage/content/moveCate',
+    data,
+    method: 'post'
+  })
+}
+
+export function uploadCover(data) {
+  return request({
+    url: '/api/content/uploadCover',
+    data,
+    method: 'post'
+  })
+}
+
+export function coverList(params) {
+  return request({
+    url: '/api/content/getCoverList',
+    params,
+    method: 'get'
+  })
+}
+
+export function coverInfo(params) {
+  return request({
+    url: '/api/content/getOneContentCover',
+    params,
+    method: 'get'
+  })
+}
+
+export function contentCoverTypeList(params) {
+  return request({
+    url: '/api/content/getCoverTypeList',
     params,
     method: 'get'
   })

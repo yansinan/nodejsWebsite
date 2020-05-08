@@ -105,7 +105,6 @@
   </div>
 </template>
 <script>
-import crypto from "@/utils/crypto.js";
 import settings from "@root/publicMethods/settings";
 import {
   checkUserName,
@@ -275,6 +274,7 @@ export default {
         ],
         comments: [
           {
+            required: true,
             message: this.$t("validate.inputNull", {
               label: this.$t("adminUser.lb_comments")
             }),
@@ -319,14 +319,12 @@ export default {
       return (isJPG || isPNG || isGIF) && isLt2M;
     },
     confirm() {
-      this.$store.dispatch("hideAdminUserForm");
+      this.$store.dispatch("adminUser/hideAdminUserForm");
     },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           let params = Object.assign({}, this.dialogState.formData);
-          params.password = crypto.MD5(params.password);
-          params.confirmPassword = crypto.MD5(params.confirmPassword);
           // 更新
           if (this.dialogState.edit) {
             updateAdminUser(params).then(result => {
@@ -345,8 +343,8 @@ export default {
             // 新增
             addAdminUser(params).then(result => {
               if (result.status === 200) {
-                this.$store.dispatch("hideAdminUserForm");
-                this.$store.dispatch("getAdminUserList");
+                this.$store.dispatch("adminUser/hideAdminUserForm");
+                this.$store.dispatch("adminUser/getAdminUserList");
                 this.$message({
                   message: this.$t("main.addSuccess"),
                   type: "success"

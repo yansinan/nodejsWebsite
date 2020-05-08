@@ -2,24 +2,19 @@
  * @Author: doramart 
  * @Date: 2019-08-15 14:23:19 
  * @Last Modified by: doramart
- * @Last Modified time: 2019-11-09 19:31:53
+ * @Last Modified time: 2020-04-02 17:04:44
  */
 
 require('module-alias/register')
-//邮件发送插件
-let nodemailer = require("nodemailer");
+
 //文件操作对象
 let fs = require('fs');
 let stat = fs.stat;
-//数据库操作对象
-let crypto = require("crypto");
+//TODO 老版本暂时保留，下个版本移除
+var CryptoJS = require("crypto-js");
 //站点配置
 const validator = require('validator');
 let iconv = require('iconv-lite');
-const {
-    siteFunc,
-    cache
-} = require('@utils');
 const Axios = require("axios");
 const _ = require('lodash')
 
@@ -58,9 +53,10 @@ module.exports = {
 
     clearRedisByType(str, cacheKey) {
         console.log('cacheStr', str);
-        let currentKey = this.ctx.session_secret + cacheKey + str;
-        cache.set(currentKey, '', 2000);
+        let currentKey = this.app.config.session_secret + cacheKey + str;
+        this.setMemoryCache(currentKey, '', 2000);
     },
+
     renderSuccess(ctx, {
         data = {},
         message = ''
@@ -95,80 +91,6 @@ module.exports = {
 
     },
 
-    sendEmail(sysConfigs, key, obj = {}, callBack = () => {}) {
-
-        let emailTitle = "Hello";
-        let emailSubject = "Hello";
-        let emailContent = "Hello";
-        let toEmail;
-        if (key == emailTypeKey.email_findPsd) {
-            toEmail = obj.email;
-            let oldLink = obj.password + '$' + obj.email + '$' + this.ctx.session_secret;
-            let newLink = this.encrypt(oldLink, this.app.config.encrypt_key);
-
-            emailSubject = emailTitle = '[' + sysConfigs.siteName + '] ' + this.ctx.__("label_sendEmail_activePwd_title");
-            emailContent = siteFunc.setConfirmPassWordEmailTemp(this.ctx, sysConfigs, obj.userName, newLink);
-        } else if (key == emailTypeKey.email_notice_contentMsg) {
-            emailSubject = emailTitle = '[' + sysConfigs.siteName + '] ' + this.ctx.__("label_sendEmail_recieveMsg_title");
-            emailContent = siteFunc.setNoticeToAdminEmailTemp(this.ctx, sysConfigs, obj);
-            toEmail = sysConfigs.siteEmail;
-        } else if (key == emailTypeKey.email_notice_admin_byContactUs) {
-            emailSubject = emailTitle = '[' + sysConfigs.siteName + '] ' + this.ctx.__("label_sendEmail_recieveMsg_title");
-            emailContent = siteFunc.setNoticeToAdminEmailByContactUsTemp(this.ctx, sysConfigs, obj);
-            toEmail = sysConfigs.siteEmail;
-        } else if (key == emailTypeKey.email_notice_user_contentMsg) {
-            emailSubject = emailTitle = '[' + sysConfigs.siteName + '] ' + this.ctx.__("label_sendEmail_notice_haveMsg");
-            emailContent = siteFunc.setNoticeToUserEmailTemp(this.ctx, sysConfigs, obj);
-            toEmail = obj.replyAuthor.email;
-        } else if (key == emailTypeKey.email_notice_contentBug) {
-            emailSubject = emailTitle = '[' + sysConfigs.siteName + '] ' + this.ctx.__("label_sendEmail_notice_askBug");
-            emailContent = siteFunc.setBugToAdminEmailTemp(this.ctx, sysConfigs, obj);
-            toEmail = sysConfigs.siteEmail;
-        } else if (key == emailTypeKey.email_notice_user_reg) {
-            emailSubject = emailTitle = '[' + sysConfigs.siteName + '] ' + this.ctx.__("label_sendEmail_notice_reg_success");
-            emailContent = siteFunc.setNoticeToUserRegSuccess(this.ctx, sysConfigs, obj);
-            toEmail = obj.email;
-        } else if (key == emailTypeKey.email_notice_user_byContactUs) {
-            emailSubject = emailTitle = '[' + sysConfigs.siteName + '] ' + this.ctx.__("label_sendEmail_noticeuser_askInfo_success");
-            emailContent = siteFunc.setNoticeToAdminEmailByContactUsTemp(this.ctx, sysConfigs, obj);
-            toEmail = obj.email;
-        } else if (key == emailTypeKey.email_sendMessageCode) {
-            emailSubject = emailTitle = '[' + sysConfigs.siteName + '] ' + this.ctx.__("label_sendEmail_sendMessageCode_success");
-            emailContent = siteFunc.setNoticeToUserGetMessageCode(this.ctx, sysConfigs, obj);
-            toEmail = obj.email;
-        }
-
-        // 发送邮件
-        let transporter = nodemailer.createTransport({
-
-            service: sysConfigs.siteEmailServer,
-            auth: {
-                user: sysConfigs.siteEmail,
-                pass: this.decrypt(sysConfigs.siteEmailPwd, this.app.config.encrypt_key)
-            }
-
-        });
-
-        let mailOptions = {
-            from: sysConfigs.siteEmail, // sender address
-            to: toEmail, // list of receivers
-            subject: emailSubject, // Subject line
-            text: emailTitle, // plaintext body
-            html: emailContent // html body
-        };
-
-        transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-                console.log('-----邮件发送失败：-----' + error);
-                callBack('notCurrentEmail');
-            } else {
-                console.log('Message sent: ' + info.response);
-                callBack();
-            }
-        });
-
-
-    },
     scanFolder(basePath, path) { //文件夹列表读取
         // 记录原始路径
         let oldPath = path;
@@ -317,8 +239,8 @@ module.exports = {
             if (fs.existsSync(path)) {
                 fs.readFile(path, "binary", function (error, data) {
                     if (error) {
-                        console.log(err)
-                        reject(err);
+                        console.log(error)
+                        reject(error);
                     } else {
                         //处理中文乱码问题
                         let buf = new Buffer(data, 'binary');
@@ -534,8 +456,8 @@ module.exports = {
             errors = '版本号必须为2-15个字符';
         }
 
-        if (!validator.isLength(author, 4, 15)) {
-            errors = '作者名称必须为4-15个字符';
+        if (!validator.isLength(author, 2, 15)) {
+            errors = '作者名称必须为2-15个字符';
         }
 
         if (!validator.isLength(comment, 4, 40)) {
@@ -551,46 +473,40 @@ module.exports = {
 
 
     encrypt(data, key) { // 密码加密
-        let cipher = crypto.createCipher("bf", key);
-        let newPsd = "";
-        newPsd += cipher.update(data, "utf8", "hex");
-        newPsd += cipher.final("hex");
-        return newPsd;
+
+        return CryptoJS.AES.encrypt(data, key).toString();
+
     },
 
     decrypt(data, key) { //密码解密
-        let decipher = crypto.createDecipher("bf", key);
-        let oldPsd = "";
-        oldPsd += decipher.update(data, "hex", "utf8");
-        oldPsd += decipher.final("utf8");
-        return oldPsd;
-    },
-
-    // APP加密
-    encryptApp(key, iv, data) {
-        var cipher = crypto.createCipheriv('aes-128-cbc', key, iv);
-        var cryped = cipher.update(data, 'utf8', 'binary');
-        cryped += cipher.final('binary');
-        cryped = new Buffer(cryped, 'binary').toString('base64');
-        return cryped;
-    },
-
-    decryptApp(key, iv, crypted) {
-        try {
-            crypted = new Buffer(crypted, 'base64').toString('binary');
-            var decipher = crypto.createDecipheriv('aes-128-cbc', key, iv);
-            var decoded = decipher.update(crypted, 'binary', 'utf8');
-            decoded += decipher.final('utf8');
-            return decoded;
-        } catch (error) {
-            console.log('check token failed!')
-            return '';
-        }
+        var bytes = CryptoJS.AES.decrypt(data, key);
+        return bytes.toString(CryptoJS.enc.Utf8);
     },
 
     getKeyArrByTokenId(tokenId) {
+        tokenId = decodeURIComponent(tokenId);
         var newLink = this.decrypt(tokenId, this.app.config.encrypt_key);
         var keyArr = newLink.split('$');
         return keyArr;
+    },
+
+    async getAdminPower(ctx) {
+        let adminUserInfo = await ctx.service.adminUser.item(ctx, {
+            query: {
+                _id: ctx.session.adminUserInfo._id,
+            },
+            populate: [{
+                path: 'group',
+                select: 'power _id enable name'
+            }],
+            files: 'group'
+        })
+        let adminPower = adminUserInfo.group.power || {};
+        return adminPower;
+    },
+
+    setMemoryCache(key, value, time) {
+        this.app.cache.set(key, value, time);
     }
+
 };

@@ -8,6 +8,7 @@ module.exports = app => {
     const mongoose = app.mongoose;
     var shortid = require('shortid');
     var Schema = mongoose.Schema;
+    var CryptoJS = require("crypto-js");
 
     var SystemConfigSchema = new Schema({
         _id: {
@@ -27,6 +28,10 @@ module.exports = app => {
             type: String,
             default: ''
         },
+        siteLogo: {
+            type: String,
+            default: '/static/themes/dorawhite/images/logo.png'
+        }, // 站点logo
         siteDomain: {
             type: String,
             default: 'https://www.html-js.cn'
@@ -39,7 +44,12 @@ module.exports = app => {
         siteAltKeywords: String, // 标签内的alt关键字
         siteEmailServer: String,
         siteEmail: String,
-        siteEmailPwd: String,
+        siteEmailPwd: {
+            type: String,
+            set(data) {
+                return CryptoJS.AES.encrypt(data, app.config.encrypt_key).toString();
+            }
+        },
         registrationNo: {
             type: String,
             default: ''

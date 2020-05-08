@@ -14,6 +14,23 @@
             <el-form-item :label="$t('sysTemConfigs.site_name')" prop="siteName">
               <el-input size="small" v-model="systemConfig.configs.siteName"></el-input>
             </el-form-item>
+            <el-form-item :label="$t('sysTemConfigs.site_logo')" prop="siteLogo">
+              <el-upload
+                class="avatar-uploader"
+                action="/api/upload/files"
+                :show-file-list="false"
+                :on-success="handleLogoSuccess"
+                :before-upload="beforeLogoUpload"
+                :data="{action:'uploadimage'}"
+              >
+                <img
+                  v-if="systemConfig.configs.siteLogo"
+                  :src="systemConfig.configs.siteLogo"
+                  class="avatar"
+                />
+                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              </el-upload>
+            </el-form-item>
             <el-form-item label="详情标题" prop="ogTitle">
               <el-input size="small" v-model="systemConfig.configs.ogTitle"></el-input>
             </el-form-item>
@@ -67,12 +84,6 @@
             <el-form-item :label="$t('sysTemConfigs.statisticalCode')" prop="statisticalCode">
               <el-input size="small" v-model="systemConfig.configs.statisticalCode"></el-input>
             </el-form-item>
-            <el-form-item label="mongoDBPath" prop="mongodbInstallPath">
-              <el-input size="small" v-model="systemConfig.configs.mongodbInstallPath"></el-input>
-            </el-form-item>
-            <el-form-item :label="$t('sysTemConfigs.databakPath')" prop="databackForderPath">
-              <el-input size="small" v-model="systemConfig.configs.databackForderPath"></el-input>
-            </el-form-item>
             <el-form-item>
               <el-button
                 size="medium"
@@ -118,6 +129,10 @@ export default {
         {
           value: "QQ",
           label: "QQ"
+        },
+        {
+          value: "smtp.exmail.qq.com",
+          label: "腾讯企业邮箱"
         },
         {
           value: "163",
@@ -284,48 +299,31 @@ export default {
             }),
             trigger: "blur"
           }
-        ],
-        mongodbInstallPath: [
-          {
-            required: true,
-            message: this.$t("validate.inputNull", {
-              label: this.$t("sysTemConfigs.mongoPath")
-            }),
-            trigger: "blur"
-          },
-          {
-            min: 5,
-            max: 100,
-            message: this.$t("validate.ranglengthandnormal", {
-              min: 5,
-              max: 100
-            }),
-            trigger: "blur"
-          }
-        ],
-        databackForderPath: [
-          {
-            required: true,
-            message: this.$t("validate.inputNull", {
-              label: this.$t("sysTemConfigs.databakPath")
-            }),
-            trigger: "blur"
-          },
-          {
-            min: 5,
-            max: 100,
-            message: this.$t("validate.ranglengthandnormal", {
-              min: 5,
-              max: 100
-            }),
-            trigger: "blur"
-          }
         ]
       }
     };
   },
   components: {},
   methods: {
+    handleLogoSuccess(res, file) {
+      let imageUrl = res.data.path;
+      this.systemConfig.configs.siteLogo = imageUrl;
+    },
+    beforeLogoUpload(file) {
+      const isJPG = file.type === "image/jpeg";
+      const isPNG = file.type === "image/png";
+      const isGIF = file.type === "image/gif";
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isJPG && !isPNG && !isGIF) {
+        this.$message.error(this.$t("validate.limitUploadImgType"));
+      }
+      if (!isLt2M) {
+        this.$message.error(
+          this.$t("validate.limitUploadImgSize", { size: 2 })
+        );
+      }
+      return (isJPG || isPNG || isGIF) && isLt2M;
+    },
     handleArticlScoreChange(value) {
       console.log(value);
     },
@@ -402,6 +400,29 @@ export default {
     width: 90px;
     margin-left: 10px;
     vertical-align: bottom;
+  }
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409eff;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 150px;
+    height: 30px;
+    line-height: 30px !important;
+    text-align: center;
+  }
+  .avatar {
+    width: 150px;
+    height: 36px;
+    display: block;
   }
 }
 </style>

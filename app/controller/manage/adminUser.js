@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-20 18:55:40 
  * @Last Modified by: doramart
- * @Last Modified time: 2019-11-24 12:12:53
+ * @Last Modified time: 2020-02-17 17:20:26
  */
 const Controller = require('egg').Controller;
 const {
@@ -19,6 +19,7 @@ const {
 
 const path = require('path');
 const _ = require('lodash');
+
 
 class AdminUserController extends Controller {
     async list() {
@@ -182,8 +183,6 @@ class AdminUserController extends Controller {
                 }
             }
 
-
-
             let oldResource = await ctx.service.adminUser.item(ctx, {
                 query: {
                     userName: fields.userName
@@ -215,8 +214,23 @@ class AdminUserController extends Controller {
             service
         } = this;
         try {
-            let targetIds = ctx.query.ids;
-            await ctx.service.adminUser.safeDelete(ctx, targetIds);
+            let targetId = ctx.query.ids;
+            // TODO 目前只针对删除单一管理员逻辑
+            let oldUser = await ctx.service.adminUser.item(ctx, {
+                query: {
+                    _id: targetId
+                }
+            });
+            let leftAdminUser = await ctx.service.adminUser.count();
+            if (!_.isEmpty(oldUser)) {
+                if (oldUser._id === ctx.session.adminUserInfo._id ||
+                    leftAdminUser == 1) {
+                    throw new Error("当前场景不允许删除该管理员用户");
+                }
+            } else {
+                throw new Error(ctx.__('validate_error_params'));
+            }
+            await ctx.service.adminUser.removes(ctx, targetId);
             ctx.helper.renderSuccess(ctx);
 
         } catch (err) {
@@ -324,7 +338,7 @@ class AdminUserController extends Controller {
             for (let i = 0; i < fullResources.length; i++) {
                 let resourceObj = JSON.parse(JSON.stringify(fullResources[i]));
                 if (resourceObj.type == '1' && !_.isEmpty(ctx.session.adminUserInfo)) {
-                    let adminPower = ctx.session.adminUserInfo.group.power;
+                    let adminPower = await ctx.helper.getAdminPower(ctx);
                     if (adminPower && adminPower.indexOf(resourceObj._id) > -1) {
                         resourceObj.hasPower = true;
                     } else {
@@ -374,10 +388,24 @@ class AdminUserController extends Controller {
                 })
             }
 
+            let adminUserInfo = await ctx.service.adminUser.item(ctx, {
+                query: {
+                    _id: ctx.session.adminUserInfo._id
+                },
+                populate: [{
+                    path: 'group',
+                    select: 'power _id enable name'
+                }, {
+                    path: 'targetEditor',
+                    select: 'userName _id'
+                }],
+                files: 'enable password _id email userName logo'
+            })
+
             let renderData = {
                 noticeCounts,
                 loginState: true,
-                userInfo: ctx.session.adminUserInfo
+                userInfo: adminUserInfo
             };
 
             ctx.helper.renderSuccess(ctx, {
@@ -408,7 +436,7 @@ class AdminUserController extends Controller {
         let manageCates = await ctx.service.adminResource.find(payload, {
             files: 'api _id label enable routePath parentId type icon comments'
         });
-        let adminPower = ctx.session.adminUserInfo.group.power;
+        let adminPower = await ctx.helper.getAdminPower(ctx);
         let currentCates = await siteFunc.renderNoPowerMenus(manageCates, adminPower, false);
         if (!_.isEmpty(currentCates)) {
 
@@ -460,7 +488,7 @@ class AdminUserController extends Controller {
                     let pluginStr = `dora${pathItem.charAt(0).toUpperCase() + pathItem.slice(1)}`;
 
                     if (plugins.indexOf(pluginStr) >= 0 && this.app.config[pluginStr].adminUrl) {
-                        let adminUrlItem = this.app.config[pluginStr].adminUrl;
+                        let adminUrlItem = this.app.config.admin_root_path + this.app.config[pluginStr].adminUrl;
                         if (adminUrlItem instanceof Array) {
                             for (const routerItem of adminUrlItem) {
                                 renderMap.push({

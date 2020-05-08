@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-20 18:55:40 
  * @Last Modified by: doramart
- * @Last Modified time: 2019-11-08 09:48:19
+ * @Last Modified time: 2020-03-20 12:09:29
  */
 const Controller = require('egg').Controller;
 
@@ -10,13 +10,8 @@ const {
     systemConfigRule
 } = require('@validate')
 
-
-// const DataOptionLog = require("./dataOptionLog");
 const _ = require('lodash');
 
-
-
-// const schedule = require('node-schedule');
 
 class SystemConfigController extends Controller {
     async list() {
@@ -30,7 +25,6 @@ class SystemConfigController extends Controller {
             let systemConfigList = await ctx.service.systemConfig.find(payload, {
                 files: '-siteEmailPwd'
             });
-
             ctx.helper.renderSuccess(ctx, {
                 data: systemConfigList
             });
@@ -83,6 +77,7 @@ class SystemConfigController extends Controller {
             let fields = ctx.request.body || {};
             const formObj = {
                 siteName: fields.siteName,
+                siteLogo: fields.siteLogo,
                 ogTitle: fields.ogTitle,
                 siteDomain: fields.siteDomain,
                 siteDiscription: fields.siteDiscription,
@@ -107,7 +102,7 @@ class SystemConfigController extends Controller {
                 if (fields.siteEmailPwd.length < 6) {
                     errInfo = ctx.__("validate_inputCorrect", [ctx.__("label_password")])
                 } else {
-                    formObj.siteEmailPwd = ctx.helper.encrypt(fields.siteEmailPwd, this.app.config.encrypt_key);
+                    formObj.siteEmailPwd = fields.siteEmailPwd;
                 }
             }
 
@@ -149,25 +144,6 @@ class SystemConfigController extends Controller {
             });
         }
     }
-
-    // addBakDataTask(req = {}, res = {}, bakDataRate) {
-    //     if (!_.isEmpty(global.bakDataTask)) {
-    //         global.bakDataTask.cancel();
-    //     }
-    //     let taskRule = '0 59 23 * * *';
-    //     if (bakDataRate == '3') { // 每周三次
-    //         var rule = new schedule.RecurrenceRule();
-    //         rule.dayOfWeek = [0, 3, 6];
-    //         rule.hour = 23;
-    //         rule.minute = 59;
-    //         taskRule = rule;
-    //     } else if (bakDataRate == '7') { // 每周
-    //         taskRule = '0 59 23 * * 1';
-    //     }
-    //     global.bakDataTask = schedule.scheduleJob(taskRule, function () {
-    //         DataOptionLog.backUpData(ctx);
-    //     });
-    // }
 
     cancelBakDataTask() {
         if (!_.isEmpty(global.bakDataTask)) {

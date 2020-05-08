@@ -20,5 +20,6 @@ targetBuildModules.forEach(function (name) {
         shell.rm('-rf', `${modulesPath}/${name}/node_modules/*`);
         console.warn("清除"+`${name}/`+"node_modules:OK")
         shell.exec('cnpm install');
+        // shell.exec('npm install --registry=https://registry.npm.taobao.org');
     }
 });

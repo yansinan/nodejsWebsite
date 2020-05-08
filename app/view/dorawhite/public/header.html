@@ -1,7 +1,8 @@
 <!--头部模板-->
 <script>
     if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
-        document.write("<script src='{{staticRootPath}}/themes/{{staticforder}}/js/iscroll/iscroll.js'><" + '/' + "script>");
+        document.write("<script src='{{staticRootPath}}/themes/{{staticforder}}/js/iscroll/iscroll.js'><" + '/' +
+            "script>");
         $(function () {
             new IScroll('#navWrapper', {
                 scrollX: true,
@@ -30,12 +31,12 @@
                     <div class="col-sm-2 col-md-2">
                         <div class="site-name ">
                             <a href="{{homelink}}" id="logo">
-                                <img src="{{staticRootPath}}/themes/{{staticforder}}/images/logo.png" alt="{{siteInfo.title}}" />
+                                <img src="{{siteInfo.siteLogo}}" alt="{{siteInfo.title}}" />
                             </a>
                             </a>
                         </div>
                     </div>
-                    <div class="col-sm-9 col-md-5" id="navWrapper">
+                    <div class="col-sm-9 col-md-6" id="navWrapper">
                         <div id="navScroller">
                             <ul>
                                 {% for cate in cateTypes %} {% if cate.parentId == '0' %}
@@ -47,7 +48,7 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="col-sm-1 col-md-5">
+                    <div class="col-sm-1 col-md-4">
                         <div class="text-right topNav">
                             <div class="search-pannel">
                                 <div :class="['input-area',(@activeSearch? 'active':'')]">

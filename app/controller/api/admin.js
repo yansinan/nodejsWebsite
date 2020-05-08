@@ -2,12 +2,12 @@
  * @Author: doramart 
  * @Date: 2019-06-27 17:16:32 
  * @Last Modified by: doramart
- * @Last Modified time: 2019-11-13 16:40:34
+ * @Last Modified time: 2020-03-20 08:53:05
  */
 const Controller = require('egg').Controller;
 const jwt = require('jsonwebtoken')
 const _ = require('lodash');
-
+var CryptoJS = require("crypto-js");
 const {
     adminUserRule
 } = require('@validate')
@@ -59,7 +59,6 @@ class AdminController extends Controller {
             } = systemConfigs[0];
 
             let errMsg = '';
-            // console.log('--showImgCode--', showImgCode)
             if (showImgCode && (!fields.imageCode || fields.imageCode != ctx.session.imageCode)) {
                 errMsg = ctx.__("validate_inputCorrect", [ctx.__("label_user_imageCode")])
             }
@@ -70,23 +69,33 @@ class AdminController extends Controller {
 
             const formObj = {
                 userName: fields.userName,
-                password: fields.password
             }
 
-            ctx.validate(adminUserRule.login(ctx), formObj)
-
-
+            ctx.validate(adminUserRule.login(ctx), Object.assign({}, formObj, {
+                password: fields.password
+            }))
 
             let user = await ctx.service.adminUser.item(ctx, {
                 query: formObj,
                 populate: [{
                     path: 'group',
                     select: 'power _id enable name'
+                }, {
+                    path: 'targetEditor',
+                    select: 'userName _id'
                 }],
-                files: 'enable password _id email userName'
+                files: 'enable password _id email userName logo'
             })
 
             if (!_.isEmpty(user)) {
+
+                let userPsd = user.password;
+                // 兼容老的加密方式
+                if (userPsd !== CryptoJS.MD5(this.app.config.salt_md5_key + fields.password).toString() &&
+                    fields.password != ctx.helper.decrypt(userPsd, this.app.config.encrypt_key)) {
+                    throw new Error(ctx.__("validate_user_forbiden"));
+                }
+
                 if (!user.enable) {
                     throw new Error(ctx.__("validate_user_forbiden"));
                 }
@@ -99,7 +108,7 @@ class AdminController extends Controller {
 
                 ctx.cookies.set('admin_' + this.app.config.auth_cookie_name, adminUserToken, {
                     path: '/',
-                    maxAge: 1000 * 60 * 60 * 24 * 30,
+                    maxAge: this.app.config.adminUserMaxAge,
                     signed: true,
                     httpOnly: false
                 }); //cookie 有效期30天
@@ -135,6 +144,7 @@ class AdminController extends Controller {
 
         }
     }
+
 }
 
 module.exports = AdminController;

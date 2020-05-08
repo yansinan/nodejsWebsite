@@ -1,7 +1,13 @@
 <template>
   <div :class="classObj" class="content">
     <div class="main-container">
-      <DirectUser :dialogState="directUserFormState" :ids="selectlist" />
+      <DirectUser
+        :targetEditor="adminUserInfo.targetEditor"
+        :dialogState="directUserFormState"
+        :ids="selectlist"
+      />
+      <DraftTable :dialogState="draftContentDialog" />
+      <MoveCate :dialogState="moveCateFormState" :ids="selectlist" />
       <el-row class="dr-datatable">
         <el-col :span="24">
           <TopBar
@@ -24,6 +30,8 @@
 <script>
 import DataTable from "./dataTable.vue";
 import DirectUser from "./directUser.vue";
+import DraftTable from "./draftTable";
+import MoveCate from "./moveCate.vue";
 import TopBar from "../common/TopBar.vue";
 import Pagination from "../common/Pagination.vue";
 import { mapGetters, mapActions } from "vuex";
@@ -42,7 +50,9 @@ export default {
     DataTable,
     TopBar,
     Pagination,
-    DirectUser
+    DirectUser,
+    MoveCate,
+    DraftTable
   },
   methods: {
     changeSelect(ids) {
@@ -50,7 +60,13 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["contentList", "directUserFormState"]),
+    ...mapGetters([
+      "contentList",
+      "directUserFormState",
+      "adminUserInfo",
+      "moveCateFormState",
+      "draftContentDialog"
+    ]),
     classObj() {
       return {
         hideSidebar: !this.sidebarOpened,
@@ -63,6 +79,7 @@ export default {
   mounted() {
     initEvent(this);
     this.$store.dispatch("content/getContentList");
+    this.$store.dispatch("adminUser/getUserInfo");
   }
 };
 </script>

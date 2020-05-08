@@ -12,11 +12,6 @@ exports.mongoose = {
     package: 'egg-mongoose',
 };
 
-exports.validate = {
-    enable: true,
-    package: 'egg-validate',
-};
-
 exports.session = true;
 
 exports.redis = {
@@ -29,6 +24,20 @@ exports.doraBackUpData = {
     package: 'egg-dora-backupdata',
     path: path.join(__dirname, "../lib/plugin/egg-dora-backupdata")
 };
+
+exports.validate = {
+    enable: true,
+    package: 'egg-dora-validate',
+    
+};
+
+exports.doraUploadFile = {
+    enable: true,
+    package: 'egg-dora-uploadfile',
+    
+};
+
+
 
 
 
@@ -155,13 +164,22 @@ exports.doraMiddleStage = {
 };
 // doraMiddleStagePluginEnd
 
-// doraUploadFilePluginBegin
-exports.doraUploadFile = {
+
+// doraMailTemplatePluginBegin
+exports.doraMailTemplate = {
     enable: true,
-    package: 'egg-dora-uploadfile',
-    
+    package: 'egg-dora-mailtemplate',
+    path: path.join(__dirname, "../lib/plugin/egg-dora-mailtemplate")
 };
-// doraUploadFilePluginEnd
+// doraMailTemplatePluginEnd
+
+// doraMailDeliveryPluginBegin
+exports.doraMailDelivery = {
+    enable: true,
+    package: 'egg-dora-maildelivery',
+    path: path.join(__dirname, "../lib/plugin/egg-dora-maildelivery")
+};
+// doraMailDeliveryPluginEnd
 
 // PLUGIN_NORMALPLUGIN_END
 

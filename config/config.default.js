@@ -2,10 +2,10 @@
 const path = require('path');
 const fs = require('fs');
 module.exports = appInfo => {
-  // console.log('--appInfo-', appInfo);
+
   return {
 
-    keys: 'doracms',
+    keys: 'doracms2',
 
     cluster: {
       listen: {
@@ -14,11 +14,24 @@ module.exports = appInfo => {
       }
     },
 
+    session: {
+      key: 'DORA_SESS',
+      maxAge: 24 * 3600 * 1000, // 1 day
+      httpOnly: true,
+      encrypt: true,
+      renew: true //延长会话有效期
+    },
+
+    // 前台会员登录有效时间
+    userMaxAge: 1000 * 60 * 60 * 24 * 1, // 1 day
+
+    // 后台管理员登录有效时间
+    adminUserMaxAge: 1000 * 60 * 60 * 24 * 1, // 1 day
+
     // 设置网站图标
     siteFile: {
       '/favicon.ico': fs.readFileSync(path.join(appInfo.baseDir, 'app/public/favicon.ico'))
     },
-
 
     // 配置需要的中间件,数组顺序即为中间件的加载顺序
     middleware: ['notfoundHandler', 'crossHeader', 'compress', 'authUserToken', 'authAdminToken', 'authAdminPower'],
@@ -46,6 +59,8 @@ module.exports = appInfo => {
       defaultLocale: 'zh-CN',
     },
 
+    
+
     // cdn域名
     origin: 'https://cdn.html-js.cn',
     // 系统服务提供商
@@ -56,7 +71,6 @@ module.exports = appInfo => {
     temp_locales_forder: process.cwd() + '/config/locale/',
     // 后台管理根目录
     admin_base_path: '/admin',
-    mongo_bin_path: '/usr/local/mongodb/mongodb-linux-x86_64-ubuntu1604-4.0.0/bin/', // mongdb bin 目录
 
     // 加密解密
     session_secret: 'doracms_secret',
@@ -64,8 +78,6 @@ module.exports = appInfo => {
     encrypt_key: 'dora',
     salt_aes_key: "doracms_",
     salt_md5_key: "dora",
-    encryptApp_key: '751f621ea5c8f930',
-    encryptApp_vi: '2624750004598718',
 
     // 安全性校验
     security: {
@@ -98,6 +110,7 @@ module.exports = appInfo => {
     multipart: {
       fileSize: '5mb',
       mode: 'stream',
+      fileExtensions: ['.doc', '.docx'], // 扩展几种上传的文件格式
     },
 
     // 数据备份定时
@@ -108,6 +121,17 @@ module.exports = appInfo => {
     backUpDataRouter: {
       match: [ctx => ctx.path.startsWith('/manage/backupDataManage')],
     },
+
+    uploadFileRouter: {
+      uploadFileFormat: {
+        "upload_path": process.cwd() + '/app/public',
+        "static_root_path": 'cms' // 针对云存储可设置
+      },
+      match: [ctx => ctx.path.startsWith('/manage/uploadFile'), ctx => ctx.path.startsWith('/api/upload/files'), ctx => ctx.path.startsWith('/api/upload/ueditor'), , ctx => ctx.path.startsWith('/api/upload/filePath')],
+    },
+
+    
+
 
     // CONFIG_NORMALPLUGIN_BEGIN
 
@@ -208,10 +232,17 @@ module.exports = appInfo => {
     },
     // doraVersionManagePluginEnd
 
-
-    renderCmsRouter: {
-      match: [ctx => ctx.path.startsWith('/manage/renderCms')],
+    // doraMailTemplatePluginBegin
+    mailTemplateRouter: {
+      match: [ctx => ctx.path.startsWith('/manage/mailTemplate'), ctx => ctx.path.startsWith('/api/mailTemplate')],
     },
+    // doraMailTemplatePluginEnd
+
+    // doraMailDeliveryPluginBegin
+    mailDeliveryRouter: {
+      match: [ctx => ctx.path.startsWith('/manage/mailDelivery'), ctx => ctx.path.startsWith('/api/mailDelivery')],
+    },
+    // doraMailDeliveryPluginEnd
 
 
     // doraMiddleStagePluginBegin
@@ -219,16 +250,6 @@ module.exports = appInfo => {
       match: [ctx => ctx.path.startsWith('/manage/singleUser')],
     },
     // doraMiddleStagePluginEnd
-
-    // doraUploadFilePluginBegin
-    uploadFileRouter: {
-      uploadFileFormat: {
-        "upload_path": process.cwd() + '/app/public',
-        "static_root_path": 'cms' // 针对云存储可设置
-      },
-      match: [ctx => ctx.path.startsWith('/manage/uploadFile'), ctx => ctx.path.startsWith('/api/upload/files'), ctx => ctx.path.startsWith('/api/upload/ueditor')],
-    },
-    // doraUploadFilePluginEnd
 
     // CONFIG_NORMALPLUGIN_END
 

@@ -2,17 +2,12 @@
  * @Author: doramart 
  * @Date: 2019-06-18 17:04:40 
  * @Last Modified by: doramart
- * @Last Modified time: 2019-09-22 17:15:14
+ * @Last Modified time: 2020-03-10 17:18:10
  */
 
 const _ = require('lodash');
 const shortid = require('shortid');
 const moment = require('moment');
-const {
-  cache
-} = require('@utils');
-
-
 
 // 校验合法ID
 global.checkCurrentId = (ids) => {
@@ -71,19 +66,6 @@ global.getDateStr = (addDayCount) => {
 }
 
 
-global.getCacheValueByKey = (key) => {
-  return new Promise((resolve, reject) => {
-    cache.get(key, (targetValue) => {
-      if (targetValue) {
-        resolve(targetValue)
-      } else {
-        resolve('');
-      }
-    })
-  })
-}
-
-
 global.getAuthUserFields = (type = '') => {
   let fieldStr = "id userName category group logo date enable state";
   if (type == 'login') {
@@ -111,16 +93,4 @@ global.getContentListFields = (type = '') => {
   }
   // console.log('--files----', files)
   return files;
-}
-
-global.emailTypeKey = {
-  email_findPsd: 'findPsd',
-  email_reg_active: 'reg_active',
-  email_notice_contentMsg: 'notice_contentMsg',
-  email_notice_admin_byContactUs: 'notice_site_messages',
-  email_notice_user_byContactUs: 'notice_user_site_messages',
-  email_notice_contentBug: 'notice_contentBug',
-  email_notice_user_contentMsg: 'notice_user_contentMsg',
-  email_notice_user_reg: 'notice_user_reg',
-  email_sendMessageCode: 'email_sendMessageCode', // 发送邮箱验证码
 }

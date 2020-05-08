@@ -70,7 +70,7 @@
         width="120"
       >
         <template slot-scope="scope">
-          <span>{{(scope.row.categories&&scope.row.categories[0])?scope.row.categories[0].name:''}}</span>
+          <span>{{(scope.row.categories&&scope.row.categories[scope.row.categories.length-1])?scope.row.categories[scope.row.categories.length-1].name:''}}</span>
         </template>
       </el-table-column>
 
@@ -102,7 +102,7 @@
           </el-button>
           <el-button
             size="mini"
-            type="danger"
+            type="warning"
             plain
             round
             @click="deleteContent(scope.$index, dataList)"
@@ -156,6 +156,9 @@ export default {
         });
         this.multipleSelection = ids;
         this.$emit("changeContentSelectList", ids);
+      } else {
+        this.multipleSelection = "";
+        this.$emit("changeContentSelectList", "");
       }
     },
     editContentInfo(index, rows) {
@@ -208,7 +211,8 @@ export default {
       )
         .then(() => {
           return deleteContent({
-            ids: rows[index]._id
+            ids: rows[index]._id,
+            draft: "1"
           });
         })
         .then(result => {
