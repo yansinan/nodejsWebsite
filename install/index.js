@@ -181,16 +181,16 @@ const installSystemModules = () => {
     const shell = require('shelljs');
     console.log('*****************开始安装全局依赖*****************');
     for (const md of needModules) {
-        shell.exec(`npm install ${md} ${agentStr} -g`);
+        shell.exec(`cnpm install ${md} ${agentStr} -g`);
     }
 
     console.log('*****************开始安装系统依赖*****************');
     shell.exec(`cd ${localPath}`);
-    shell.exec(`npm install ${agentStr}`);
+    shell.exec(`cnpm install ${agentStr}`);
 
 
     console.log('*****************开始安装插件依赖*****************');
-    shell.exec(`npm install ${needInstallPlugin.join(' ')} ${agentStr} --save`);
+    shell.exec(`cnpm install ${needInstallPlugin.join(' ')} ${agentStr} --save`);
 }
 
 const initDataBase = (mongoUri, binPath) => {
