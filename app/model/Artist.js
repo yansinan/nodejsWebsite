@@ -114,12 +114,12 @@ module.exports =app=>{
         //     this.listRefs
         // });
         schema.virtual('dateJoin').get(function () {
-            return this.listDateDur[0];
+            return (this.listDateDur && this.listDateDur[0])?this.listDateDur[0] : false;
         }).set(function(v){
             this.listDateDur[0]=v;
         });
         schema.virtual('dateExit').get(function () {
-            return this.listDateDur[1] || false ;
+            return (this.listDateDur && this.listDateDur[1] )? this.listDateDur[1] : false ;
         }).set(function(v){
             this.listDateDur[1]=v;
         });
