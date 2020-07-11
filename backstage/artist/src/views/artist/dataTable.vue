@@ -181,13 +181,12 @@ export default {
     //推荐
     topContent(index, rows) {
       let contentData = rows[index];
-      // contentData.isTop = contentData.isTop == 1 ? 0 : 1;
       let targetParams = {
         _id: contentData._id,
         isTop: contentData.isTop == 1 ? 0 : 1
       };
       updateToTop(targetParams).then(result => {
-        if (result.data.status === 200) {
+        if (result.status === 200) {
           this.getList();
         } else {
           this.$message.error(result.data.message);
@@ -206,7 +205,7 @@ export default {
         roofPlacement: contentData.roofPlacement == "1" ? "0" : "1"
       };
       roof(targetParams).then(result => {
-        if (result.data.status === 200) {
+        if (result.status === 200) {
           this.getList();
         } else {
           this.$message.error(result.data.message);
