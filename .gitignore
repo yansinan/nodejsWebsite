@@ -16,3 +16,9 @@ dist/*
 app/public/upload
 
 .github
+.config/fish/fish_variables
+.local/share/fish/fish_history
+.npm
+.npminstall_tarball
+.config
+.ash_history
