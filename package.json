@@ -1,7 +1,7 @@
 {
   "name": "doracms2",
   "version": "2.1.6",
-  "description": "",
+  "description": "![DoraCMS](https://ae01.alicdn.com/kf/H114ba4fd0eab4f36a4b16d970e11222dz.png \"DoraCMS\")",
   "dependencies": {
     "archiver": "^3.1.1",
     "await-stream-ready": "^1.0.1",
@@ -91,5 +91,10 @@
     "@validate": "app/validate",
     "@utils": "app/utils"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  }
 }

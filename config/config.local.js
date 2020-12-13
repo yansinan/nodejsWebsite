@@ -66,8 +66,8 @@ module.exports = appInfo => {
         logger: {
             dir: path.join(appInfo.baseDir, 'logs'),
         },
-        server_path: 'http://wx.z-core.cn:8084',
-        server_api: 'http://wx.z-core.cn:8084/api',
+        server_path: 'http://wx.z-core.cn:8791',
+        server_api: 'http://wx.z-core.cn:8791/api',
 
 
     }
