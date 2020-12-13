@@ -75,7 +75,7 @@ const actions = {
   },
   getRegUserList({
     commit
-  }, params = {}) {
+  }, params = {pageSize:100}) {
     regUserList(params).then((result) => {
       commit(types.REGUSERLIST, result.data)
     })
