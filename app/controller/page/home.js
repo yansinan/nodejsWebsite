@@ -241,6 +241,7 @@ class HomeController extends Controller {
             ctx.redirect("/");
         }
     }
+    // 艺术家详情
     async getDataForArtistDetails() {
         const ctx = this.ctx;
         let contentId = ctx.params.id;
@@ -252,8 +253,33 @@ class HomeController extends Controller {
                 await this.app.hooks(ctx, 'messageBoard', {
                     contentId
                 });
-                ctx.pageType = "artist"
-                await ctx.getPageData();
+                // ctx.pageType = "artist"
+                // 获取通用页面信息
+                let {pageData,defaultTemp}=await ctx.getInitPageData("artist");//
+                
+                //数据提取、修改标题；需要根据post信息修改内容：pageData.post,pageData.site,pageData.ogData,ctx.tempPage
+                pageData.post = await ctx.helper.reqJsonData('artist/get', { id: contentId })
+                if (!_.isEmpty(pageData.post)) {
+                    // 更改文档meta
+                    pageData.site.title = pageData.post.name + ' '+ pageData.post.alias + ' | ' + pageData.site.title;
+                    pageData.site.discription = pageData.post.discription;
+                    // 获取文档所属类别下的分类列表
+                    // pageData.currentCateList = await ctx.helper.reqJsonData('contentCategory/getCurrentCategoriesById', {
+                    //     contentId: pageData.post._id
+                    // });
+                    let siteDomain = pageData.site.configs.siteDomain;
+                    pageData.ogData.url = siteDomain + pageData.post.url;
+                    if (pageData.post.sImg && (pageData.post.sImg).indexOf('defaultImg.jpg') < 0) {
+                        pageData.ogData.img = siteDomain + pageData.post.sImg;
+                    }
+                    let parentCateTemp = '';//pageData.post.categories[0].contentTemp;
+                    ctx.tempPage = ctx.getCateOrDetailTemp(defaultTemp, parentCateTemp, 'detail');
+                    
+                } else {
+                    throw new Error(ctx.__('label_page_no_power_content'));
+                }
+                //最终渲染
+                await ctx.renderPageData(pageData);
             }
         } else {
             ctx.redirect("/");

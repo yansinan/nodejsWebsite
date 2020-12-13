@@ -229,27 +229,6 @@ module.exports = {
                 pageData.posts = docs;
                 pageData.pageInfo = pageInfo;
                 pageData.author = author;
-            } else if (ctx.pageType == 'artist') { // 艺术家详情
-                pageData.post = await ctx.helper.reqJsonData('artist/get', {
-                    id: payload.id
-                })
-                if (!_.isEmpty(pageData.post)) {
-                    // 更改文档meta
-                    pageData.site.title = pageData.post.name + ' '+ pageData.post.alias + ' | ' + pageData.site.title;
-                    pageData.site.discription = pageData.post.discription;
-                    // 获取文档所属类别下的分类列表
-                    // pageData.currentCateList = await ctx.helper.reqJsonData('contentCategory/getCurrentCategoriesById', {
-                    //     contentId: pageData.post._id
-                    // });
-                    ogUrl = siteDomain + pageData.post.url;
-                    if (pageData.post.sImg && (pageData.post.sImg).indexOf('defaultImg.jpg') < 0) {
-                        ogImg = siteDomain + pageData.post.sImg;
-                    }
-                    let parentCateTemp = '';//pageData.post.categories[0].contentTemp;
-                    targetTempPage = this.getCateOrDetailTemp(defaultTemp, parentCateTemp, 'detail');
-                } else {
-                    throw new Error(ctx.__('label_page_no_power_content'));
-                }
             }
             pageData.ogData = {
                 url: ogUrl,
@@ -278,8 +257,82 @@ module.exports = {
         } else {
             await ctx.render(defaultTemp.alias + '/' + targetTempPage, pageData);
         }
-    }
+    },
 
+    //所有页面通用信息
+    async getInitPageData(inPageType="") {
+
+        let ctx = this;
+        let payload = ctx.params;
+        let pageData = {
+            pageType: ctx.pageType || inPageType,
+        };
+
+        // console.log('--payload--', payload)
+        // console.log('--pageData--', pageData)
+
+        // let targetTempPage = ctx.tempPage;
+        // 获取当前模板信息
+        let defaultTemp = await ctx.helper.reqJsonData('contentTemplate/getDefaultTempInfo');
+
+        // 获取用户信息
+        if (ctx.session.logined) {
+            pageData.userInfo = ctx.session.user;
+            pageData.logined = ctx.session.logined;
+        }
+        // 静态目录
+        if (!_.isEmpty(defaultTemp)) {
+            pageData.staticforder = defaultTemp.alias;
+        } else {
+            throw new Error(ctx.__('validate_error_params'));
+        }
+
+        // 所有页面都需要的基础数据
+        pageData.navigation = await ctx.helper.reqJsonData('contentCategory/getList', payload);
+        pageData.site = await this.getSiteInfo();
+        pageData.staticRootPath = this.app.config.static.prefix;
+        pageData.staticThemePath = this.app.config.static.prefix + '/themes/' + defaultTemp.alias;
+
+        // 针对分类页和内容详情页动态添加meta
+        // let defaultTempItems = defaultTemp.items;
+        if (!_.isEmpty(pageData.site)) {
+            let siteDomain = pageData.site.configs.siteDomain;
+            let ogUrl = siteDomain;
+            let ogImg = `${siteDomain}${this.app.config.static.prefix}/themes/${defaultTemp.alias}/images/mobile_logo2.jpeg`;
+
+            pageData.ogData = {
+                url: ogUrl,
+                img: ogImg
+            };
+        }
+
+        let targetLocalJson = require('@root/config/locale/zh-CN.json')
+        // 记录针对组件的国际化信息
+        let sysKeys = {};
+        for (let lockey in targetLocalJson) {
+            if (lockey.indexOf('_layer_') > 0 || lockey.indexOf('label_system_') >= 0 || lockey.indexOf('label_uploader_') >= 0) {
+                sysKeys[lockey] = ctx.__(lockey);
+            }
+        }
+
+        // 获取分类标题
+        this.renderCateName(pageData);
+
+        // console.log('----ctx.hooks.---', ctx.locals['HOOK@documentDetailAfter']);
+        pageData.lsk = JSON.stringify(sysKeys);
+        return {pageData,defaultTemp};
+    },
+    //最终渲染
+    async renderPageData(pageData){
+        let ctx = this;
+        if (ctx.tempPage.indexOf('users/') == '0') {
+            pageData.themePublicPath = `../${pageData.staticforder}/default.html`;
+            console.log('--pageData.themePublicPath--', pageData.themePublicPath)
+        } else {
+            ctx.tempPage=pageData.staticforder + '/' + ctx.tempPage;
+        }
+        await ctx.render(ctx.tempPage, pageData);
+    }
 
 
 
