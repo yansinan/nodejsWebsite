@@ -241,7 +241,25 @@ class HomeController extends Controller {
             ctx.redirect("/");
         }
     }
-
+    async getDataForArtistDetails() {
+        const ctx = this.ctx;
+        let contentId = ctx.params.id;
+        if (contentId) {
+            if (!shortid.isValid(contentId)) {
+                ctx.redirect("/");
+            } else {
+                // 挂载钩子
+                await this.app.hooks(ctx, 'messageBoard', {
+                    contentId
+                });
+                ctx.pageType = "artist"
+                await ctx.getPageData();
+            }
+        } else {
+            ctx.redirect("/");
+        }
+    }
+    
     async getDataForSiteMap() {
         const ctx = this.ctx;
         ctx.tempPage = 'sitemap.html';

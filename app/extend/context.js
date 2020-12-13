@@ -229,6 +229,27 @@ module.exports = {
                 pageData.posts = docs;
                 pageData.pageInfo = pageInfo;
                 pageData.author = author;
+            } else if (ctx.pageType == 'artist') { // 艺术家详情
+                pageData.post = await ctx.helper.reqJsonData('artist/get', {
+                    id: payload.id
+                })
+                if (!_.isEmpty(pageData.post)) {
+                    // 更改文档meta
+                    pageData.site.title = pageData.post.name + ' '+ pageData.post.alias + ' | ' + pageData.site.title;
+                    pageData.site.discription = pageData.post.discription;
+                    // 获取文档所属类别下的分类列表
+                    // pageData.currentCateList = await ctx.helper.reqJsonData('contentCategory/getCurrentCategoriesById', {
+                    //     contentId: pageData.post._id
+                    // });
+                    ogUrl = siteDomain + pageData.post.url;
+                    if (pageData.post.sImg && (pageData.post.sImg).indexOf('defaultImg.jpg') < 0) {
+                        ogImg = siteDomain + pageData.post.sImg;
+                    }
+                    let parentCateTemp = '';//pageData.post.categories[0].contentTemp;
+                    targetTempPage = this.getCateOrDetailTemp(defaultTemp, parentCateTemp, 'detail');
+                } else {
+                    throw new Error(ctx.__('label_page_no_power_content'));
+                }
             }
             pageData.ogData = {
                 url: ogUrl,

@@ -50,7 +50,7 @@
       <el-table-column prop="name" :label="$t('docs.name')" width="350" show-overflow-tooltip>
         <template slot-scope="scope">
           <div v-if="scope.row.state">
-            <a :href="'/details/'+scope.row._id+'.html'" target="_blank">{{scope.row.name}}</a>
+            <a :href="'/artist/'+scope.row._id+'.html'" target="_blank">{{scope.row.name}}</a>
           </div>
           <div v-else>{{scope.row.name}}</div>
         </template>
