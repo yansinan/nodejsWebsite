@@ -699,6 +699,9 @@ export default {
         } else {
           this.$message.error(result.message);
         }
+      }).catch(e=>{
+        console.error("getOneContent error:",e)
+        debugger;
       });
     } else {//新创建
       let localContent = this.getLocalContents();

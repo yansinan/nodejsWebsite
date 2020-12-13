@@ -189,7 +189,7 @@ export default {
         if (result.status === 200) {
           this.getList();
         } else {
-          this.$message.error(result.data.message);
+          this.$message.error(result.data.message || result.message);
         }
       });
     },
@@ -208,7 +208,7 @@ export default {
         if (result.status === 200) {
           this.getList();
         } else {
-          this.$message.error(result.data.message);
+          this.$message.error(result.data.message || result.message);
         }
       });
     },
@@ -228,7 +228,8 @@ export default {
           });
         })
         .then(result => {
-          if (result.data.status === 200) {
+
+          if (result.status === 200) {
             Object.assign(this.pageInfo);
             this.getList();
             this.$message({
@@ -236,7 +237,7 @@ export default {
               type: "success"
             });
           } else {
-            this.$message.error(result.data.message);
+            this.$message.error(result.data.message || result.message);
           }
         })
         .catch(() => {

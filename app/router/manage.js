@@ -69,16 +69,16 @@ module.exports = app => {
      * 艺人管理
      * 
      */
-    router.get('/manage/artist/getList', controller.manage.artist.list)
-    router.get('/manage/artist/getContent', controller.manage.artist.getOne)
+    // router.get('/manage/artist/getList', controller.manage.artist.list)
+    // router.get('/manage/artist/getContent', controller.manage.artist.getOne)
 
-    router.post('/manage/artist/addOne', controller.manage.artist.create)
+    // router.post('/manage/artist/addOne', controller.manage.artist.create)
 
-    router.post('/manage/artist/updateOne', controller.manage.artist.update)
+    // router.post('/manage/artist/updateOne', controller.manage.artist.update)
 
-    router.post('/manage/artist/top', controller.manage.artist.updateContentToTop)
-    router.post('/manage/artist/roof', controller.manage.artist.roofPlacement)
-    router.get('/manage/artist/delete', controller.manage.artist.removes)
+    // router.post('/manage/artist/top', controller.manage.artist.updateContentToTop)
+    // router.post('/manage/artist/roof', controller.manage.artist.roofPlacement)
+    // router.get('/manage/artist/delete', controller.manage.artist.removes)
 
     // router.post('/user/addOne', UserController.addOneArtist)
     // router.get('/artist/findByName',UserController.findArtistByName)
