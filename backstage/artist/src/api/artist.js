@@ -4,6 +4,7 @@ let reqJsonData =function(url,params,method="post"){
   return request({
     url: "/"+url,
     params:params,
+    data:params,
     method: method
   })
   
@@ -14,11 +15,12 @@ export function list(params) {
         url: '/manage/'+strMod+'/getList',
         // url: '/manage/content/getList',    
         params:params,
+        data:params,
         method: 'get'
     })
 }
-export function updateToTop(params) {
-    return reqJsonData('manage/'+strMod+'/top', params)
+export function updateToTop(data) {
+    return reqJsonData('manage/'+strMod+'/top', data)
 }
 
 export function roof(params) {
