@@ -21,7 +21,13 @@ module.exports = app => {
     router.get("/details/:id.html", controller.page.home.getDataForContentDetails);
     // 艺术家详情
     router.get("/artist/:id.html", controller.page.home.getDataForArtistDetails);
-
+    // 艺术家列表；类别入口
+    router.get([
+        "/artists___:typeId?",
+        "/artists___:typeId?/:current.html",
+        "/artists/:cate1?___:typeId?",
+        "/artists/:cate1?___:typeId?/:current.html"
+    ], controller.page.home.getDataForArtistsPage);
     // 类别入口
     router.get([
         "/:cate1?___:typeId?",

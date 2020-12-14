@@ -285,7 +285,68 @@ class HomeController extends Controller {
             ctx.redirect("/");
         }
     }
-    
+    //艺术家列表
+    async getDataForArtistsPage() {
+        const ctx = this.ctx;
+        ctx.pageType = "cate"
+        let typeId = ctx.params.typeId;
+        let current = ctx.params.current;
+        if (typeId) {
+            if (!shortid.isValid(typeId)) {
+                ctx.redirect("/");
+            } else {
+                if (current) {
+                    if (validator.isNumeric(current)) {
+                        // await ctx.getPageData();
+                    } else {
+                        ctx.redirect("/");
+                    }
+                }
+                
+                // 获取通用页面信息
+                // ctx.pageType = "cate"
+                let {pageData,defaultTemp}=await ctx.getInitPageData("cate");//
+                let payload = ctx.params;
+                let siteDomain = pageData.site.configs.siteDomain;
+
+                //数据提取、修改标题；需要根据post信息修改内容：pageData.post,pageData.site,pageData.ogData,ctx.tempPage
+                if (payload.typeId) {
+                    // 获取指定类别下的子类列表
+                    pageData.currentCateList = await ctx.helper.reqJsonData('contentCategory/getCurrentCategoriesById', {
+                        typeId: payload.typeId
+                    });
+                    // 获取当前分类的基本信息
+                    pageData.cateInfo = await ctx.helper.reqJsonData('contentCategory/getOne', {
+                        id: payload.typeId
+                    });
+                }
+
+                if (!_.isEmpty(pageData.cateInfo)) {
+                    let {
+                        defaultUrl,
+                        _id,
+                        contentTemp
+                    } = pageData.cateInfo;
+                    pageData.ogData.url = siteDomain + '/' + defaultUrl + '___' + _id;
+                    ctx.tempPage = ctx.getCateOrDetailTemp(defaultTemp, contentTemp, 'cate');
+                }
+                let cateName = _.isEmpty(pageData.cateInfo) ? '' : (' | ' + pageData.cateInfo.name);
+                pageData.site.title = pageData.site.title + cateName;
+                // 获取分类文档列表
+                let {
+                    docs,
+                    pageInfo
+                } = await ctx.helper.reqJsonData('artist/getList', payload);
+                pageData.posts = docs;
+                pageData.pageInfo = pageInfo;
+                //最终渲染
+                await ctx.renderPageData(pageData);
+                
+            }
+        } else {
+            ctx.redirect("/");
+        }
+    }
     async getDataForSiteMap() {
         const ctx = this.ctx;
         ctx.tempPage = 'sitemap.html';
