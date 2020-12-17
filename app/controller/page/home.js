@@ -272,8 +272,14 @@ class HomeController extends Controller {
                     if (pageData.post.sImg && (pageData.post.sImg).indexOf('defaultImg.jpg') < 0) {
                         pageData.ogData.img = siteDomain + pageData.post.sImg;
                     }
-                    let parentCateTemp = '';//pageData.post.categories[0].contentTemp;
-                    ctx.tempPage = ctx.getCateOrDetailTemp(defaultTemp, parentCateTemp, 'detail');
+                    // let parentCateTemp = "";//pageData.post.categories[0].contentTemp;
+                    // ctx.tempPage = ctx.getCateOrDetailTemp(defaultTemp, parentCateTemp, 'detail');
+
+                    // TODO：不要硬编码
+                    // 校验模板的真实路径
+                    let themePath = this.app.config.temp_view_forder + defaultTemp.alias + '/';
+                    let currentPath="2-stage-artist" + "/" + "detail.html"
+                    ctx.tempPage = fs.existsSync(themePath + currentPath)?currentPath:"2-stage-default/detail.html";
                     
                 } else {
                     throw new Error(ctx.__('label_page_no_power_content'));

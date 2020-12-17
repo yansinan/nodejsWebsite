@@ -1,0 +1,34 @@
+<!--
+约定documentList.docs为文档列表数据集合
+item为子元素集合
+-->
+<div class="post-list row">
+	{% if pageType == 'index' %}
+	<h3 class="top-news">
+		<span>{{__('lc_new_document')}}
+			<span>
+	</h3>
+	{% endif %} 
+	
+	{% for item in posts %}
+	<div class="col-md-3">
+		<div class="row">
+			<div class="col-xs-12">
+				<a href="{{item.url}} " target="_blank " class="contentImg ">
+					<img src="{{item.sImg}} " class="img-responsive img-circle" alt="{{item.title}} " />
+				</a>
+			</div>
+			<div class="col-xs-12 ">
+				<h2 class="post-title text-center" alt="{{site.altkey}}{{item.name}}">
+					<a href="{{item.url}} " target="_blank ">
+						{{item.name}}
+					</a>
+				</h2>
+			</div>
+		</div>
+	</div>
+
+	{% endfor %}
+
+
+</div>

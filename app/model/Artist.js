@@ -123,7 +123,10 @@ module.exports =app=>{
         }).set(function(v){
             this.listDateDur[1]=v;
         });
-
+        // url地址
+        schema.virtual('url').get(function () {
+            return `/artist/${this._id}.html`;
+        });
         let model=app.model.Artist || Doc.discriminator("Artist", schema);
         // app.model.Artist=model;
     
