@@ -5,7 +5,8 @@ export default {
   contentTag: {
     form_title: "填写标签信息",
     name: "名称",
-    comments: "备注"
+    comments: "备注",
+    alias:"别名",
   },
   //LangEnd
 }
