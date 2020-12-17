@@ -21,6 +21,9 @@
         <el-form-item :label="$t('contentTag.name')" prop="name">
           <el-input size="small" v-model="dialogState.formData.name"></el-input>
         </el-form-item>
+        <el-form-item :label="$t('contentTag.alias')" prop="alias">
+          <el-input size="small" type="textarea" v-model="dialogState.formData.alias"></el-input>
+        </el-form-item>
         <el-form-item :label="$t('contentTag.comments')" prop="comments">
           <el-input size="small" type="textarea" v-model="dialogState.formData.comments"></el-input>
         </el-form-item>
