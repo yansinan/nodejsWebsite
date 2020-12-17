@@ -123,8 +123,8 @@
         <el-form-item :label="$t('artist.listHotMusics')" prop="listHotMusics">
           <ListURL @list-changed="eListHotMusicChanged" label="歌名" ref="listHotMusics"></ListURL>
         </el-form-item>
-        <el-form-item :label="$t('artist.listLinks')" prop="listLinks">
-          <ListURL @list-changed="eListLinks" label="注释" ref="listLinks"></ListURL>
+        <el-form-item :label="$t('artist.listLinks')">
+          <ListURL @list-changed="eListLinks" label="注释" :listObjURL="formState.formData.listLinks"></ListURL>
         </el-form-item>
         <el-form-item class="dr-submitContent">
           <el-button
@@ -572,9 +572,20 @@ export default {
     // 热门歌曲列表变化
     eListHotMusicChanged(e){
       console.log("热门歌曲列表变化",e);
+      this.formState.formData.listHotMusics=e;
     },
-    eListLinks(e){
+    eListLinks(e){      
+      
+      
+      if(e && e.length > 0 ){
+          e.forEach(objLink => {
+              if(objLink.url.indexOf("weibo.com")!=-1)objLink.icon="/static/themes/dorawhite/images/link/logo_sina_32x32.png";
+              if(objLink.url.indexOf("douban.com")!=-1)objLink.icon="/static/themes/dorawhite/images/link/logo_douban_32x32.png"
+              if(objLink.url.indexOf("music.163.com")!=-1)objLink.icon="/static/themes/dorawhite/images/link/logo_163_32x32.png"
+          });
+      }
       console.log("其他链接列表变化",e);
+      this.formState.formData.listLinks=e;
     },
     // 选择日期
     eChangeDate(e){

@@ -1,8 +1,8 @@
 <template>
     <!-- <div > -->
-    <el-form :inline="true" :model="modalURL" ref="dynamicListForm" label-width="100px" class="demo-dynamic">
+    <el-form :inline="true" label-width="100px">
         <el-form-item
-            v-for="(domain, index) in modalURL.listObjURL"
+            v-for="(domain, index) in listObjURL"
             :label="index +'.' "
             :key="domain.key"
             :prop="'listObjURL[' + index +']'"
@@ -17,7 +17,7 @@
             </el-col>
             <el-col :span="16">
                 <el-input v-model="domain.url">
-                    <template slot="prepend">Http://</template>
+                    <template slot="prepend">Https://</template>
                     <el-button slot="append" icon="el-icon-delete" @click.prevent="removeDomain(domain)"/>
                 </el-input>
             </el-col>
@@ -34,11 +34,11 @@
 </template>
 
 <script>
-    const objURLDefault={
-        name: '',
-        url:'',
-        icon:'',
-    }
+  const objURLDefault={
+      name: '',
+      url:'',
+      icon:'',
+  }
   export default {
     props: {
         title:{
@@ -57,22 +57,22 @@
           listObjURL: this.listObjURL
         },
         //()=>(),
-        res: {
-          listObjURL: ()=>{
-            if(this.listObjURL.length>0 && this.listObjURL[this.listObjURL.length-1] && this.listObjURL[this.listObjURL.length-1].url==''){
-                this.listObjURL.pop();
-            }
-            if(!this.listObjURL.length || this.listObjURL.length==0 )return false;
-            else return this.listObjURL;
-          }
-        },
+        // res: {
+        //   listObjURL: ()=>{
+        //     if(this.listObjURL.length>0 && this.listObjURL[this.listObjURL.length-1] && this.listObjURL[this.listObjURL.length-1].url==''){
+        //         this.listObjURL.pop();
+        //     }
+        //     if(!this.listObjURL.length || this.listObjURL.length==0 )return false;
+        //     else return this.listObjURL;
+        //   }
+        // },
       };
     },
     methods: {
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            if(this.res.listObjURL)this.$emit('list-changed',this.res.listObjURL);
+            if(this.listObjURL)this.$emit('list-changed',this.listObjURL);
             
           } else {
             console.log('error submit!!');
@@ -82,7 +82,7 @@
       },
       resetForm(formName) {
         this.$refs[formName].resetFields();
-        if(this.res.listObjURL)this.$emit('list-changed',this.res.listObjURL);
+        if(this.listObjURL)this.$emit('list-changed',this.listObjURL);
 
       },
       removeDomain(item) {
@@ -90,13 +90,12 @@
         if (index !== -1) {
           this.modalURL.listObjURL.splice(index, 1)
         }
-        if(this.res.listObjURL)this.$emit('list-changed',this.res.listObjURL);
+        if(this.listObjURL)this.$emit('list-changed',this.listObjURL);
 
       },
       addDomain() {
-        this.modalURL.listObjURL.push(Object.assign({},objURLDefault));
-        if(this.res.listObjURL)this.$emit('list-changed',this.res.listObjURL);
-
+        this.listObjURL.push(Object.assign({},objURLDefault));
+        if(this.listObjURL)this.$emit('list-changed',this.listObjURL);
       }
     }
   }
