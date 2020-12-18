@@ -121,10 +121,10 @@
         </el-form-item>
         <!-- 热门歌曲：相关链接 -->
         <el-form-item :label="$t('artist.listHotMusics')" prop="listHotMusics">
-          <ListURL @list-changed="eListHotMusicChanged" label="歌名" ref="listHotMusics"></ListURL>
+          <ListURL @list-changed="eListHotMusicChanged" label="热门歌曲" :listObjURL="formState.formData.listHotMusics"></ListURL>
         </el-form-item>
-        <el-form-item :label="$t('artist.listLinks')">
-          <ListURL @list-changed="eListLinks" label="注释" :listObjURL="formState.formData.listLinks"></ListURL>
+        <el-form-item :label="$t('artist.listLinks')" prop="listLinks">
+          <ListURL @list-changed="eListLinks" label="其他链接" :listObjURL="formState.formData.listLinks"></ListURL>
         </el-form-item>
         <el-form-item class="dr-submitContent">
           <el-button
@@ -332,7 +332,7 @@ export default {
             message: this.$t("validate.rangelength", { min: 5, max: 100000 }),
             trigger: "blur"
           }
-        ]
+        ],
       }
     };
   },
@@ -572,19 +572,39 @@ export default {
     // 热门歌曲列表变化
     eListHotMusicChanged(e){
       console.log("热门歌曲列表变化",e);
+      // 链接验证失败
+      if(!e){
+          // TODO:优化表单验证的方式，目前这个错误数据仍然能够提交
+          this.isValidate=false;
+
+          this.$message.error(
+            this.$t("validate.inputCorrect", { label: "热门歌曲链接" })
+          );
+        return;
+      }
       this.formState.formData.listHotMusics=e;
     },
     eListLinks(e){      
       
       
-      if(e && e.length > 0 ){
-          e.forEach(objLink => {
-              if(objLink.url.indexOf("weibo.com")!=-1)objLink.icon="/static/themes/dorawhite/images/link/logo_sina_32x32.png";
-              if(objLink.url.indexOf("douban.com")!=-1)objLink.icon="/static/themes/dorawhite/images/link/logo_douban_32x32.png"
-              if(objLink.url.indexOf("music.163.com")!=-1)objLink.icon="/static/themes/dorawhite/images/link/logo_163_32x32.png"
-          });
-      }
+      // if(e && e.length > 0 ){
+      //     e.forEach(objLink => {
+      //         if(objLink.url.indexOf("weibo.com")!=-1)objLink.icon="/static/themes/dorawhite/images/link/logo_sina_32x32.png";
+      //         if(objLink.url.indexOf("douban.com")!=-1)objLink.icon="/static/themes/dorawhite/images/link/logo_douban_32x32.png"
+      //         if(objLink.url.indexOf("music.163.com")!=-1)objLink.icon="/static/themes/dorawhite/images/link/logo_163_32x32.png"
+      //     });
+      // }
       console.log("其他链接列表变化",e);
+      // 链接验证失败
+      if(!e){
+        // TODO:优化表单验证的方式，目前这个错误数据仍然能够提交
+        this.isValidate=false;
+        this.$message.error(
+          this.$t("validate.inputCorrect", { label: "其他链接" })
+        );
+        return;
+      }
+
       this.formState.formData.listLinks=e;
     },
     // 选择日期

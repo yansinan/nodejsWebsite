@@ -78,6 +78,7 @@ module.exports =app=>{
             listHotMusics:[{
                 url:{type:String},
                 name:{type:String},
+                type:{type:String,default:"音乐"},
             }],//推荐热门歌曲
             listLinks:[{
                 url:{type:String},
