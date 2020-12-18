@@ -23,7 +23,7 @@
                         <div class="col-xs-12">
                         {% if post.listLinks.length>0%}
                             {% for link in post.listLinks %}
-                            <img src="{{ post.listLinks.url }}" alt="name" class="img-circle">
+                            <a href="{{ link.url }}" target="_blank"><img src="{{ link.icon }}" alt="name" class="img-circle" style="background-color:black;padding:6px;"></a>
                             {% endfor %}
                         {% endif %}
                         </div>
