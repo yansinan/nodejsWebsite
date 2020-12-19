@@ -1,0 +1,338 @@
+/*全局样式*/
+
+// 缩略图效果
+.contentImg {
+    overflow: hidden;
+    -webkit-transition: -webkit-box-shadow .3s ease 0s;
+    transition: -webkit-box-shadow .3s ease 0s;
+    -o-transition: box-shadow .3s ease 0s;
+    transition: box-shadow .3s ease 0s;
+    transition: box-shadow .3s ease 0s, -webkit-box-shadow .3s ease 0s;
+
+    img {
+        -webkit-transition: all 0.3s ease-out 0s;
+        -o-transition: all 0.3s ease-out 0s;
+        transition: all 0.3s ease-out 0s;
+        max-width: 100%;
+    }
+
+    img:hover {
+        -webkit-transform: scale(1.03);
+        -ms-transform: scale(1.03);
+        transform: scale(1.03);
+        -webkit-transition: all .3s ease-out 0s;
+        -o-transition: all .3s ease-out 0s;
+        transition: all .3s ease-out 0s;
+    }
+}
+
+.contentImg:hover {
+    -webkit-box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.3);
+    -webkit-transition: -webkit-box-shadow .3s ease 0s;
+    transition: -webkit-box-shadow .3s ease 0s;
+    -o-transition: box-shadow .3s ease 0s;
+    transition: box-shadow .3s ease 0s;
+    transition: box-shadow .3s ease 0s, -webkit-box-shadow .3s ease 0s;
+}
+
+.mainbody {
+    margin-top: 62px;
+
+    .main-container {
+        margin-top: 15px;
+
+        /*左右框架*/
+        .left-frame {
+            padding-right: 0px;
+        }
+
+        .right-frame {}
+
+        .articel-details {
+            .articel-main {
+                padding: 20px;
+                background-color: #ffffff;
+            }
+
+            .post-meta {
+                position: relative;
+
+                li {
+                    display: inline-block;
+                    margin: 0px 5px;
+                }
+            }
+
+            .content-author {
+                color: #969696;
+                margin: 15px 0;
+
+                li.author-name {
+                    color: $default-main-color;
+                }
+            }
+
+            .tag-list {
+                ul li {
+                    display: inline-block;
+                    margin: 5px;
+
+                    .label-info {
+                        color: $default-main-color;
+                        background: #ecf5ff;
+                        padding: 8px 20px;
+                        border-color: #b3d8ff;
+
+                        a:link,
+                        a:visited {
+                            color: $default-main-color;
+                        }
+                    }
+
+                    .label-info:hover {
+                        background: $default-main-color;
+                        border-color: $default-main-color;
+                        color: #fff;
+
+                        a:link,
+                        a:visited {
+                            color: #fff;
+                        }
+                    }
+                }
+
+                margin: 20px 0;
+            }
+
+            .near-article {
+                margin: 40px 0;
+
+                ul {
+                    li {
+                        height: 30px;
+                        line-height: 30px;
+                    }
+                }
+            }
+
+            .post-content {
+                margin: 40px 0;
+                font-size: 15px;
+                color: #666666;
+                min-height: 70px;
+
+                img {
+                    max-width: 100% !important;
+                }
+            }
+        }
+
+        .column-wrap {
+            position: relative;
+            font-size: 20px;
+            color: #303030;
+            background-color: #ffffff;
+            padding: 0 15px;
+
+            h1 {
+                margin: 0;
+                padding: 0;
+                font-size: 18px;
+                line-height: 48px;
+                font-weight: 500;
+                color: #333;
+                border-bottom: 1px solid #EFEFEF;
+            }
+        }
+    }
+
+}
+
+/*文档列表*/
+
+.top-news {
+    color: $default-main-color;
+    font-weight: 500;
+    padding: 15px 0;
+    margin: 0;
+    font-size: 16px;
+    margin-top: 8px;
+    border-bottom: solid 1px #efefef;
+    background-color: #ffffff;
+
+    span {
+        padding-bottom: 15px;
+        border-bottom: 2px solid $default-main-color;
+    }
+}
+
+.post-list {
+    background-color: #FFFFFF;
+    padding: 0 15px 15px;
+
+    .post {
+        padding: 20px 0;
+
+        &:last-child {
+            border: none;
+        }
+
+        border-bottom: 1px solid #efefef;
+        background-color: #ffffff;
+
+        .discription {
+            min-height: 12rem;
+
+            h2 {
+                font-weight: 500;
+                font-size: 20px;
+
+                .sticky-post {
+                    display: inline-block;
+                    padding: 0 5px;
+                    margin-top: 4px;
+                    font-size: 12px;
+                    font-weight: 400;
+                    line-height: 20px;
+                    color: #fff;
+                    background: #3ca5f6;
+                    border-radius: 3px;
+                    vertical-align: top;
+                    background-image: -webkit-linear-gradient(0deg, #3ca5f6 0%, #a86af9 100%);
+                    background-image: linear-gradient(90deg, #3ca5f6 0%, #a86af9 100%);
+                }
+            }
+
+            .post-content {
+                font-size: 14px;
+                margin: 10px 0;
+                color: #666666;
+                min-height: 70px;
+            }
+
+            .searchkey {
+                color: $default-main-color;
+                font-weight: 500;
+            }
+        }
+
+        .contentImg {
+            img {
+                height: 150px;
+                width: 100%;
+            }
+        }
+
+        .post-title {
+            margin: 0;
+            font-size: 22px;
+            word-break: break-all;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .post-meta {
+            color: #999;
+
+            li {
+                display: inline-block;
+                margin-right: 15px;
+                font-size: 13px;
+
+                i {
+                    font-size: 14px;
+                    margin-right: 5px;
+                    cursor: pointer;
+                }
+            }
+
+            li.author {
+                margin-right: 20px;
+
+                .logo {
+                    display: inline-block;
+                    vertical-align: middle;
+
+                    img {
+                        border-radius: 50%;
+                        width: 22px;
+                        height: 22px;
+                    }
+                }
+
+                span {
+                    display: inline-block;
+                    margin-left: 10px;
+                }
+            }
+        }
+
+        // .post-content {
+        //     margin: 10px 0;
+        //     font-size: 15px;
+        //     color: #666666;
+        //     min-height: 70px;
+        // }
+
+
+        .comment-count {
+            float: right;
+            margin-top: -30px;
+        }
+
+        .item-category {
+            z-index: 1;
+            position: absolute;
+            left: 26px;
+            top: 10px;
+            padding: 5px 6px;
+            font-size: 12px;
+            line-height: 1;
+            color: #fff;
+            background-color: #000;
+            filter: alpha(opacity=60);
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 2px;
+            text-decoration: none;
+        }
+
+    }
+
+    .post:hover {
+        margin: 0 -15px;
+        padding: 20px 15px;
+        background: #fafafa;
+        -webkit-transition: all 0.3s ease 0s;
+        -o-transition: all 0.3s ease 0s;
+        transition: all 0.3s ease 0s;
+    }
+}
+
+
+// 案例展示
+.gap-img-ads {
+    ul {
+        li {
+            margin: 40px 0;
+
+            a {
+                height: 45px;
+                display: block;
+
+                img {
+                    width: 100%;
+                    height: auto;
+                }
+            }
+
+            span {
+                font-size: 11px;
+                text-align: center;
+                color: #aaa;
+                display: block;
+                line-height: 36px;
+            }
+        }
+    }
+}
