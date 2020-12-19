@@ -45,6 +45,19 @@ const INIT_DOC= app=>{
             default: "1"
         }, // 发布类型 1位普通，2为专题
         sortPath: String, //存储所有父节点结构
+        tags: [{
+            type: String,
+            ref: 'ContentTag'
+        }], // 标签 
+        isTop: {
+            type: Number,
+            default: 0
+        }, // 是否推荐，默认不推荐 0为不推荐，1为推荐
+        roofPlacement: {
+            type: String,
+            default: '0'
+        }, // 是否置顶，默认不置顶 0为不置顶，1为置顶
+
         listRefs: [{
             type: String,
             ref: 'Doc'

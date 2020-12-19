@@ -35,18 +35,6 @@ module.exports =app=>{
         var schema = new Schema({
             // title: String,
             // stitle: String,
-            tags: [{
-                type: String,
-                ref: 'ContentTag'
-            }], // 标签 
-            isTop: {
-                type: Number,
-                default: 0
-            }, // 是否推荐，默认不推荐 0为不推荐，1为推荐
-            roofPlacement: {
-                type: String,
-                default: '0'
-            }, // 是否置顶，默认不置顶 0为不置顶，1为置顶
             // likeNum: {
             //     type: Number,
             //     default: 0
