@@ -1,15 +1,13 @@
 <template>
   <div class="dr-toolbar">
     <el-col :xs="12" :md="6" class="option-button">
-      <!-- 艺人列表 -->
-      <div v-if="type === 'artist'">
-        <el-button size="small" type="primary" plain @click="eBnAdd('artist')" round>
-          <svg-icon icon-class="icon_add" />
-        </el-button>
-        <el-button size="small" type="danger" plain round @click="branchDelete('artist')">
-          <svg-icon icon-class="icon_delete" />
-        </el-button>
-      </div>
+      <!-- xxx列表 -->
+      <el-button size="small" type="primary" plain @click="eBnAdd" round>
+        <svg-icon icon-class="icon_add" />
+      </el-button>
+      <el-button size="small" type="danger" plain round @click="branchDelete">
+        <svg-icon icon-class="icon_delete" />
+      </el-button>
       <!-- TOPBARLEFT -->
     </el-col>
 
@@ -20,13 +18,13 @@
   </div>
 </template>
 <script>
-import { remove } from "@/api/artist";
+import {remove} from "@root/publicMethods/apiGeneral"
 import _ from "lodash";
 import { setTimeout } from "timers";
 export default {
   props: {
+    nameMod:String,
     pageInfo: Object,
-    type: String,
     ids: Array,
     code: String,
     path: String,
@@ -53,25 +51,15 @@ export default {
   },
   methods: {
 
-    eBnAdd(strMod) {
-      this.$store.dispatch(strMod+"/showContentForm",{isInit:true});
-      // this.$router.push("/addArtist");
-      this.$router.push(this.$root.adminBasePath + "/artist/addArtist");
+    eBnAdd() {
+      this.$store.dispatch(this.nameMod+"/showContentForm",{isInit:true});
+      this.$router.push(this.$root.adminBasePath + "/"+this.nameMod+"/add");
 
     },
 
-    branchDelete(target) {
-      let _this = this,
-        targetName;
-      if (target === "msg") {
-        targetName = this.$t("topBar.del_message");
-      } else if (target === "user") {
-        targetName = this.$t("topBar.del_user");
-      } else if (target === "systemlogs") {
-        targetName = this.$t("topBar.del_sysopt_log");
-      } else if (target === "systemnotify") {
-        targetName = this.$t("topBar.del_sys_notice");
-      }
+    branchDelete() {
+      let _this = this;
+
       if (_.isEmpty(_this.ids)) {
         this.$message({
           type: "info",
@@ -90,35 +78,30 @@ export default {
           type: "warning"
         }
       )
-        .then(() => {
-          let ids = _this.ids.join();
-          if (target === "artist") {
-            return remove({
-              ids
-            });
-          } 
-        })
-        .then(result => {
-          if (result.data.status === 200) {
-            if (target === "artist") {
-              this.$store.dispatch("artist/list");
-            } else if (target === "content") {
-              this.$store.dispatch("content/getContentList");
-            }
-            this.$message({
-              message: `${this.$t("main.scr_modal_del_succes_info")}`,
-              type: "success"
-            });
-          } else {
-            this.$message.error(result.data.message);
-          }
-        })
-        .catch(err => {
+      .then(() => {
+        let ids = _this.ids.join();
+        return remove({
+          ids
+        },this.nameMod);
+        
+      })
+      .then(result => {
+        if (result.status === 200) {
+          this.$store.dispatch(this.nameMod+"/list");
           this.$message({
-            type: "info",
-            message: this.$t("main.scr_modal_del_error_info")
+            message: `${this.$t("main.scr_modal_del_succes_info")}`,
+            type: "success"
           });
+        } else {
+          this.$message.error(result.data.message || result.message);
+        }
+      })
+      .catch(err => {
+        this.$message({
+          type: "info",
+          message: this.$t("main.scr_modal_del_error_info")
         });
+      });
     },
 
 

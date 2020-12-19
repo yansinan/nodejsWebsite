@@ -22,16 +22,16 @@
         <el-form-item v-if="formState.formData.state == '3'" label="驳回原因" prop="dismissReason">
           <el-input size="small" v-model="formState.formData.dismissReason"></el-input>
         </el-form-item>
-        <el-form-item :label="$t('artist.name')" prop="name">
+        <el-form-item :label="$t(nameMod + '.name')" prop="name">
           <el-input size="small" v-model="formState.formData.name"></el-input>
         </el-form-item>
-        <el-form-item :label="$t('artist.nameAlias')" prop="alias">
+        <el-form-item :label="$t(nameMod + '.nameAlias')" prop="alias">
           <el-input size="small" v-model="formState.formData.alias"></el-input>
         </el-form-item>
-        <el-form-item :label="$t('artist.from')" prop="from">
+        <el-form-item :label="$t(nameMod + '.from')" prop="from">
           <el-input size="small" v-model="formState.formData.from" placeholder="中国/China"></el-input>
         </el-form-item>
-        <el-form-item :label="$t('artist.date')" prop="listDateDur">
+        <el-form-item :label="$t(nameMod + '.date')" prop="listDateDur">
           <el-date-picker
             v-model="formState.formData.listDateDur[0]"
             type="date"
@@ -43,7 +43,7 @@
             placeholder="退出日期" @change="eChangeDate">
           </el-date-picker>
         </el-form-item>
-        <el-form-item :label="$t('artist.listMembers')" prop="listMembers">
+        <el-form-item :label="$t(nameMod + '.listMembers')" prop="listMembers">
           <el-select
             size="medium"
             v-model="formState.formData.listMembers"
@@ -120,10 +120,10 @@
           ></vue-ueditor-wrap>
         </el-form-item>
         <!-- 热门歌曲：相关链接 -->
-        <el-form-item :label="$t('artist.listHotMusics')" prop="listHotMusics">
+        <el-form-item :label="$t(nameMod + '.listHotMusics')" prop="listHotMusics">
           <ListURL @list-changed="eListHotMusicChanged" label="热门歌曲" :listObjURL="formState.formData.listHotMusics"></ListURL>
         </el-form-item>
-        <el-form-item :label="$t('artist.listLinks')" prop="listLinks">
+        <el-form-item :label="$t(nameMod + '.listLinks')" prop="listLinks">
           <ListURL @list-changed="eListLinks" label="其他链接" :listObjURL="formState.formData.listLinks"></ListURL>
         </el-form-item>
         <el-form-item class="dr-submitContent">
@@ -200,20 +200,17 @@
 </style>
 
 <script>
-//需要修改的:
-const nameMod="artist"
-
+import '@/set-public-path'
 import VueUeditorWrap from "vue-ueditor-wrap";
 import { initEvent } from "@root/publicMethods/events";
 import {
   addUser,
-  getOneContent,
-  // addContent,
+  getOne,
   addOne,
-  updateContent,
+  updateOne,
   getRandomContentImg,
   // regUserList,
-} from "@/api/artist";
+} from "@root/publicMethods/apiGeneral";
 import {
   addContentTag,
 } from "@/api/contentTag"
@@ -229,6 +226,7 @@ export default {
   },
   data() {
     return {
+      nameMod:nameMod,
       contentState: [
         { value: "0", label: "退回" },
         { value: "1", label: "待审核" },
@@ -472,7 +470,7 @@ export default {
       let _this = this;
       Object.assign(params,{ pageSize : 200, });
       // this.$store.dispatch("getRegUserList",params);
-      this.$store.dispatch("artist/getArtistList",params);
+      this.$store.dispatch(this.nameMod + "/getMemberList",params);
 
       this.userLoading = false;
     },
@@ -566,7 +564,7 @@ export default {
     backToList() {
       // this.$router.push("/"+nameMod);
       // this.$store.dispatch(nameMod+"/showContentForm",{edit:false,formData:{test:"debug:backToList"},isInit:true});
-      this.$router.push(this.$root.adminBasePath + "/"+nameMod);
+      this.$router.push(this.$root.adminBasePath + "/"+this.nameMod);
 
     },
     // 热门歌曲列表变化
@@ -629,7 +627,7 @@ export default {
           });
           // 更新
           if (this.formState.edit) {
-            updateContent(params).then(result => {
+            updateOne(params,this.nameMod).then(result => {
               if (result.status === 200) {
                 this.backToList();
                 this.$message({
@@ -646,7 +644,7 @@ export default {
             });
           } else {
             // 新增
-            addOne(params).then(result => {
+            addOne(params,this.nameMod).then(result => {
               console.log("新增:",params,result);
               if (result.status === 200) {
                 this.backToList();
@@ -685,7 +683,7 @@ export default {
     // 针对手动页面刷新
     let _this = this;
     if (this.$route.params.id) {
-      getOneContent({ id: this.$route.params.id }).then(result => {
+      getOne({ id: this.$route.params.id },this.nameMod).then(result => {
         if (result.status === 200) {
           if (result.data) {
             let contentObj = result.data,
@@ -731,7 +729,7 @@ export default {
           this.$message.error(result.message);
         }
       }).catch(e=>{
-        console.error("getOneContent error:",e)
+        console.error("getOne error:",e)
         debugger;
       });
     } else {//新创建
@@ -774,7 +772,7 @@ export default {
       pageSize: 200
     });
     // this.$store.dispatch("getRegUserList",{pageSize:200});
-    this.$store.dispatch("artist/getArtistList",{pageSize:200});
+    this.$store.dispatch(this.nameMod + "/getMemberList",{pageSize:200});
   }
 };
 </script>

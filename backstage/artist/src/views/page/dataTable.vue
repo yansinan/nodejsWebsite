@@ -50,7 +50,7 @@
       <el-table-column prop="name" :label="$t('docs.name')" width="350" show-overflow-tooltip>
         <template slot-scope="scope">
           <div v-if="scope.row.state">
-            <a :href="'/artist/'+scope.row._id+'.html'" target="_blank">{{scope.row.name}}</a>
+            <a :href="'/'+nameMod+'/'+scope.row._id+'.html'" target="_blank">{{scope.row.name}}</a>
           </div>
           <div v-else>{{scope.row.name}}</div>
         </template>
@@ -131,7 +131,7 @@
 }
 </style>
 <script>
-import { remove, roof, updateToTop } from "@/api/artist";
+import { remove, roof, updateToTop } from "@root/publicMethods/apiGeneral";
 
 import _ from "lodash";
 // import { mapGetters, mapActions,createNamespacedHelpers} from "vuex";
@@ -176,7 +176,7 @@ export default {
     //编辑按钮
     editContentInfo(index, rows) {
       let rowData = rows[index];
-      this.$router.push("artist/edit_"+this.nameMod+"/" + rowData._id);
+      this.$router.push(this.nameMod+"/edit/" + rowData._id);
     },
     //推荐
     topContent(index, rows) {
@@ -185,7 +185,7 @@ export default {
         _id: contentData._id,
         isTop: contentData.isTop == 1 ? 0 : 1
       };
-      updateToTop(targetParams).then(result => {
+      updateToTop(targetParams,this.nameMod).then(result => {
         if (result.status === 200) {
           this.getList();
         } else {
@@ -204,7 +204,7 @@ export default {
         _id: contentData._id,
         roofPlacement: contentData.roofPlacement == "1" ? "0" : "1"
       };
-      roof(targetParams).then(result => {
+      roof(targetParams,this.nameMod).then(result => {
         if (result.status === 200) {
           this.getList();
         } else {
@@ -225,7 +225,7 @@ export default {
         .then(() => {
           return remove({
             ids: rows[index]._id
-          });
+          },this.nameMod);
         })
         .then(result => {
 

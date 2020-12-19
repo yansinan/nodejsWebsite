@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import settings from "@root/publicMethods/settings";
-import Artist from '@/views/artist'
+import '@/set-public-path'
 
 Vue.use(Router)
 
@@ -12,17 +12,17 @@ const createRouter = () => new Router({
     y: 0
   }),
   routes: [{
-    path: settings.admin_base_path + '/artist',
-    name: 'artist',
-    component: Artist
+    path: settings.admin_base_path + '/' + nameMod,
+    name: "list",
+    component:  () => import('@/views/page')
   }, {
-    path: settings.admin_base_path + '/artist/addArtist',
-    name: 'addArtist',
-    component: () => import( /* webpackChunkName: "addArtist" */ '@/views/artist/contentForm.vue')
+    path: settings.admin_base_path + '/' + nameMod + '/add',
+    name: 'add',
+    component: () => import('@/views/page/contentForm.vue')
   }, {
-    path: settings.admin_base_path + '/artist/edit_artist/:id',
-    name: 'editArtist',
-    component: () => import( /* webpackChunkName: "editArtist" */ '@/views/artist/contentForm.vue')
+    path: settings.admin_base_path + '/' + nameMod + '/edit/:id',
+    name: 'edit',
+    component: () => import('@/views/page/contentForm.vue')
   }]
 })
 

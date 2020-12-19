@@ -3,25 +3,22 @@
     <div class="main-container">
       <el-row class="dr-datatable">
         <el-col :span="24">
-          <TopBar :type="nameMod" :ids="selectlist" :pageInfo="dataList.pageInfo"></TopBar>
+          <TopBar :nameMod="nameMod" :ids="selectlist" :pageInfo="dataList.pageInfo"></TopBar>
           <DataTable
             :nameMod="nameMod"
             :dataList="dataList.docs"
             :pageInfo="dataList.pageInfo"
             @changeContentSelectList="changeSelect"
           ></DataTable>
-          <Pagination :pageInfo="dataList.pageInfo" :pageType="nameMod"></Pagination>
+          <Pagination :pageInfo="dataList.pageInfo" :nameMod="nameMod"></Pagination>
         </el-col>
       </el-row>
     </div>
   </div>
 </template>
 <script>
-//需要修改的:
-const nameMod="artist"
-
+import '@/set-public-path'
 import DataTable from "./dataTable.vue";
-// import DirectUser from "./directUser.vue";
 import TopBar from "../common/TopBar.vue";
 import Pagination from "../common/Pagination.vue";
 import { mapGetters, mapActions,createNamespacedHelpers} from "vuex";
@@ -42,7 +39,6 @@ export default {
     DataTable,
     TopBar,
     Pagination,
-    // DirectUser
   },
   methods: {
     changeSelect(ids) {
@@ -50,8 +46,6 @@ export default {
     }
   },
   computed: {
-    // ...mapGetters(["directUserFormState"]),//全局
-    // 2.1.14
     classObj() {
       return {
         hideSidebar: !this.sidebarOpened,
