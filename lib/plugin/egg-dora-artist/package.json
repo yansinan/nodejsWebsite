@@ -4,9 +4,7 @@
   "description": "artist",
   "eggPlugin": {
     "name": "doraArtist",
-    "alias":"artist",
-    "api":"artist",
-    "controller":"artist"
+    "alias":"artist"
   },
   "keywords": [
     "egg",
