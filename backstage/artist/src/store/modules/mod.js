@@ -1,10 +1,8 @@
 import * as types from '../types.js';
 import {
   list,
-  getOneContent,
-  addUser,
-  findArtists,
-} from '@/api/artist';
+  findMembers,
+} from '@root/publicMethods/apiGeneral';
 import _ from 'lodash';
 
 const defautlFormData={
@@ -47,17 +45,6 @@ const state = {
     state: '',
     err: {}
   },
-  // directUser: {
-  //   formState: {
-  //     show: false,
-  //     edit: false,
-  //     formData: {
-  //       name: '',
-  //       alias: '',
-  //       targetUser: ''
-  //     }
-  //   }
-  // },
   dataMembers:{
     pageInfo:{},
     docs:[],
@@ -72,10 +59,7 @@ const mutations = {
   GET_LIST(state, dataList) {
     state.dataList = dataList
   },
-  // [types.CONTENT_ONE](state, content) {
-  //   state.content = content
-  // },
-  FIND_ARTIST_BY_NAME(state,dataList){
+  FIND_MEMBER_BY_NAME(state,dataList){
     state.dataMembers=dataList;
   },
 }
@@ -96,20 +80,20 @@ const actions = {
   getList({
     commit
   }, params = {mod:"content"}) {
-    list(params).then((result) => {
+    list(params,params.mod).then((result) => {
       commit("GET_LIST", result.data)
     }).catch(error=>{
-      console.log("artist.store.artist.actions.getList获取失败:fail",error);
+      console.log("xxxx.store.xxxx.actions.getList获取失败:fail",error);
     })
   },
   // 获取艺人列表
-  getArtistList({
+  getMemberList({
     commit
   }, params = {}) {
-    findArtists(params).then((result) => {
-      commit("FIND_ARTIST_BY_NAME", result.data)
+    findMembers(params).then((result) => {
+      commit("FIND_MEMBER_BY_NAME", result.data)
     }).catch(error=>{
-      console.log("artist.store.artist.actions.getArtistList获取失败:fail",error);
+      console.log("xxxx.store.xxxx.actions.getList获取失败:fail",error);
     })
   },
 

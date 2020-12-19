@@ -37,7 +37,7 @@ export default {
   props: {
     device: String,
     pageInfo: Object,
-    pageType: String
+    nameMod: String
   },
   methods: {
     renderPageList(current = 1, pageSize = 10) {
@@ -45,15 +45,14 @@ export default {
       let state = this.pageInfo ? this.pageInfo.state : "";
       let user = this.pageInfo ? this.pageInfo.user : "";
       let targetCurrent = current;
-      if (this.pageType === "artist") {
-        this.$store.dispatch("artist/getArtistList", {
-          current: targetCurrent,
-          pageSize,
-          searchkey,
-          state,
-          userId: user
-        });
-      }
+      this.$store.dispatch(this.nameMod+"/getList", {
+        current: targetCurrent,
+        pageSize,
+        searchkey,
+        state,
+        userId: user,
+        mod:this.nameMod,
+      });
 
       //ComponentPaginationEnd
     },
