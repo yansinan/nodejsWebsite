@@ -6,9 +6,7 @@
     "name": "doraArtist",
     "alias":"artist",
     "api":"artist",
-    "controller":"artist",
-    "service":"artist",
-    "model":"Artist"
+    "controller":"artist"
   },
   "keywords": [
     "egg",
