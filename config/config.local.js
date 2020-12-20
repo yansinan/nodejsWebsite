@@ -27,6 +27,7 @@ module.exports = appInfo => {
             // 'versionManage',
             // 'content',
             'artist',
+            'record',
             // 'contentTags',
             // 'contentCategory',
             // 'contentMessage',

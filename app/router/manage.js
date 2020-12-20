@@ -123,6 +123,22 @@ module.exports = app => {
     router.get('/manage/hook/deleteUser', controller.manage.hook.removes)
 
 
+    /**
+     * 唱片管理
+     * 
+     */
+    router.get('/manage/record/getList', controller.manage.record.list)
+    router.get('/manage/record/getOne', controller.manage.record.getOne)
+
+    router.post('/manage/record/addOne', controller.manage.record.create)
+    router.post('/manage/record/updateOne', controller.manage.record.update)
+    router.post('/manage/record/top', controller.manage.record.updateToTop)
+    router.post('/manage/record/roof', controller.manage.record.roofPlacement)
+
+    router.get('/manage/record/delete', controller.manage.record.removes)
+
+    // router.get('/artist/findByName',UserController.findArtistByName)
+    
 
     //ManageRouters
 

@@ -24,6 +24,10 @@ class ServicePlugin extends BaseService {
         },
     
     ]
+    get model(){
+        if(!this._model)this._model=this.ctx.model[__filename.slice(__dirname.length + 1, -3)];
+        return this._model;
+    }
 }
 
 module.exports = ServicePlugin;
