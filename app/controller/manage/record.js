@@ -88,80 +88,76 @@ const renderContentTags = async (ctx, fieldTags) => {
     }
     return newTagArr
 }
-// 乐队成员有效性
-const renderListMembers = async (ctx, fieldTags) => {
-    let newTagArr = [];
-    if (!_.isEmpty(fieldTags) && typeof fieldTags == 'object') {
-        for (const tagItem of fieldTags) {
-            let targetItem;
-            //优先按user.id为准
-            if (shortid.isValid(tagItem)) {
-                targetItem = await ctx.service.user.item(ctx, {
-                    query: {
-                        _id: tagItem
-                    }
-                });
-            }
-            //万一user.id没有，则尝试是否是名字
-            if (_.isEmpty(targetItem)) {
-
-                let thisItem = await ctx.service.user.item(ctx, {
-                    query: {
-                        name: tagItem
-                    }
-                });
-                //tag有名字，更正id；user没找到名字（并且前面确认了不是id），则排除出去
-                if (!_.isEmpty(thisItem)) {
-                    newTagArr.push(thisItem._id);
-                } 
-
-            } else {
-                newTagArr.push(tagItem);
-            }
-        }
-    }
-
-    if (_.isEmpty(newTagArr)) {
-        newTagArr = fieldTags;
-    }
-    return newTagArr
-}
 
 const funGetData = async (ctx,fields) => {
     //检查标签的有效性
     let newTagArr = await renderContentTags(ctx, fields.tags);
-    //TODO 20201213: 检查乐队成员的有效性
-    let newListMember= await renderListMembers(ctx,fields.listMembers);
-    // console.info('udpate: %j', newTagArr)
-    // this.logger.debug('udpate: %j', newTagArr);
     // 友情链接图标
-    if(fields.listLinks && fields.listLinks.length > 0 ){
-        fields.listLinks.forEach(objLink => {
+    if(fields.listShopLink && fields.listShopLink.length > 0 ){
+        fields.listShopLink.forEach(objLink => {
             if(objLink.icon=="" && objLink.url.indexOf("weibo.com")!=-1)objLink.icon="/static/themes/images/link/logo_sina_32x32.png";
             if(objLink.icon=="" && objLink.url.indexOf("douban.com")!=-1)objLink.icon="/static/themes/images/link/logo_douban_32x32.png"
             if(objLink.icon=="" && objLink.url.indexOf("music.163.com")!=-1)objLink.icon="/static/themes/images/link/logo_163_32x32.png"
         });
     }
-
-    return {
+    // 关键字
+    let targetKeyWords = [];
+    if (fields.keywords) {
+        if ((fields.keywords).indexOf(',') >= 0) {
+            targetKeyWords = (fields.keywords).split(',');
+        } else if ((fields.keywords).indexOf('，') >= 0) {
+            targetKeyWords = (fields.keywords).split('，');
+        } else {
+            targetKeyWords = fields.keywords;
+        }
+    }
+    // 作者
+    
+    let formObj = {
+        author: !_.isEmpty(ctx.session.adminUserInfo) ? ctx.session.adminUserInfo._id : '',
+        isTop: fields.isTop || '',
+        discription: xss(fields.discription),
+        simpleComments: xss(fields.simpleComments),
+        updateDate: new Date(),
         name: fields.name,
         alias: fields.alias,
-        listMembers:newListMember,//fields.listMembers,
-        // stitle: fields.stitle,
         type: fields.type,
-        categories: fields.categories,
+        // categories: fields.categories,
         sortPath: fields.sortPath,
-        tags: newTagArr,//fields.tags,
+        tags: newTagArr,
         sImg: fields.sImg,
+        keywords: targetKeyWords,
         state: fields.state,
         dismissReason: fields.dismissReason,
         comments: fields.comments,
         type: fields.type,
-        from:fields.from,
-        listDateDur:fields.listDateDur,
-        listHotMusics:fields.listHotMusics,
-        listLinks:fields.listLinks,
+        // from:fields.from,
+        // listDateDur:fields.listDateDur,
+        // listHotMusics:fields.listHotMusics,
+        listArtist:fields.listArtist,
+        format:fields.format,
+        dateRelease:fields.dateRelease,
+        catalog:fields.catalog,
+        listShopLink:fields.listShopLink,
+    };
+    
+    // 设置显示模式
+    let checkInfo = siteFunc.checkContentType(formObj.simpleComments);
+    formObj.appShowType = checkInfo.type;
+    formObj.imageArr = checkInfo.imgArr;
+    formObj.videoArr = checkInfo.videoArr;
+
+    formObj.simpleComments = siteFunc.renderSimpleContent(formObj.simpleComments, checkInfo.imgArr, checkInfo.videoArr);
+
+    if (checkInfo.type == '3') {
+        formObj.videoImg = checkInfo.defaultUrl;
     }
+
+    // 如果是管理员代发,则指定用户
+    if (ctx.session.adminUserInfo && fields.targetUser) {
+        formObj.uAuthor = fields.targetUser;
+    }
+    return formObj;
 }
 
 let ControllerPlugin = {
@@ -202,55 +198,18 @@ let ControllerPlugin = {
     },
 
     async create(ctx, app) {
-
-
         try {
             let service=ctx.service[SERVICE_NAME];
 
             let fields = ctx.request.body || {};
-
-            let targetKeyWords = [];
-            if (fields.keywords) {
-                if ((fields.keywords).indexOf(',') >= 0) {
-                    targetKeyWords = (fields.keywords).split(',');
-                } else if ((fields.keywords).indexOf('，') >= 0) {
-                    targetKeyWords = (fields.keywords).split('，');
-                } else {
-                    targetKeyWords = fields.keywords;
-                }
-            }
-    
-            const formObjCheck = {
-                keywords: targetKeyWords,
-                author: !_.isEmpty(ctx.session.adminUserInfo) ? ctx.session.adminUserInfo._id : '',
-                isTop: fields.isTop || '',
-                discription: xss(fields.discription),
-                simpleComments: xss(fields.simpleComments),
-                likeUserIds: [],
-            }
-            let formObj=Object.assign({},await funGetData(ctx,fields),formObjCheck);
-            console.log(fields,formObj)
-
+            // 初始化用户喜欢
+            fields.likeUserIds=[];
+            let formObj=await funGetData(ctx,fields);//Object.assign({},await funGetData(ctx,fields));
+            console.log("controller."+SERVICE_NAME,fields,formObj)
+            // 数据有效性
             ctx.validate(checkRule(ctx), formObj);
 
-            // 设置显示模式
-            let checkInfo = siteFunc.checkContentType(formObj.simpleComments);
-            formObj.appShowType = checkInfo.type;
-            formObj.imageArr = checkInfo.imgArr;
-            formObj.videoArr = checkInfo.videoArr;
-            if (checkInfo.type == '3') {
-                formObj.videoImg = checkInfo.defaultUrl;
-            }
-            formObj.simpleComments = siteFunc.renderSimpleContent(formObj.simpleComments, checkInfo.imgArr, checkInfo.videoArr);
-
-
-            // 如果是管理员代发,则指定用户
-            if (ctx.session.adminUserInfo && fields.targetUser) {
-                formObj.uAuthor = fields.targetUser;
-            }
-
             await service.create(formObj);
-
             ctx.helper.renderSuccess(ctx);
 
         } catch (err) {
@@ -258,7 +217,6 @@ let ControllerPlugin = {
                 message: err
             });
         }
-
     },
 
     async getOne(ctx, app) {
@@ -333,65 +291,15 @@ let ControllerPlugin = {
     },
 
     async update(ctx, app) {
-
         try {
             let service=ctx.service[SERVICE_NAME];
 
             let fields = ctx.request.body || {};
-
-            // const formObj = {
-            //     title: fields.title,
-            //     stitle: fields.stitle,
-            //     type: fields.type,
-            //     categories: fields.categories,
-            //     sortPath: fields.sortPath,
-            //     tags: newTagArr,
-            //     // keywords: fields.keywords ? (fields.keywords).split(',') : [],
-            //     sImg: fields.sImg,
-            //     sImgType: fields.sImgType,
-            //     cover: fields.cover,
-            //     // author: !_.isEmpty(ctx.session.adminUserInfo) ? ctx.session.adminUserInfo._id : '',
-            //     state: fields.state,
-            //     dismissReason: fields.dismissReason,
-            //     // isTop: fields.isTop || '',
-            //     // updateDate: new Date(),
-            //     // discription: xss(fields.discription),
-            //     comments: fields.comments,
-            //     // simpleComments: xss(fields.simpleComments),
-            //     type: fields.type
-            // }
-
-            const formObjCheck = {
-                keywords: fields.keywords ? (fields.keywords).split(',') : [],
-                author: !_.isEmpty(ctx.session.adminUserInfo) ? ctx.session.adminUserInfo._id : '',
-                isTop: fields.isTop || '',
-                updateDate: new Date(),
-                discription: xss(fields.discription),
-                simpleComments: xss(fields.simpleComments),
-            }
-            let formObj=Object.assign({},await funGetData(ctx,fields),formObjCheck);
+            let formObj=await funGetData(ctx,fields);//Object.assign({},await funGetData(ctx,fields));
 
             ctx.validate(checkRule(ctx), formObj);
 
-            // 设置显示模式
-            let checkInfo = siteFunc.checkContentType(formObj.simpleComments);
-            formObj.appShowType = checkInfo.type;
-            formObj.imageArr = checkInfo.imgArr;
-            formObj.videoArr = checkInfo.videoArr;
-
-            formObj.simpleComments = siteFunc.renderSimpleContent(formObj.simpleComments, checkInfo.imgArr, checkInfo.videoArr);
-
-            if (checkInfo.type == '3') {
-                formObj.videoImg = checkInfo.defaultUrl;
-            }
-
-            // 如果是管理员代发,则指定用户
-            if (ctx.session.adminUserInfo && fields.targetUser) {
-                formObj.uAuthor = fields.targetUser;
-            }
-
             await service.update(ctx, fields._id, formObj);
-
             ctx.helper.renderSuccess(ctx);
 
         } catch (err) {
