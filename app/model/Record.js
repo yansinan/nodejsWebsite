@@ -22,7 +22,7 @@ module.exports =app=>{
             },
         }
         var schema = new Schema({
-            listArtist:[{
+            listArtists:[{
                 type: String,
                 ref: 'Artist'
             }],//乐队成员

@@ -28,37 +28,33 @@
         <el-form-item :label="$t(nameMod + '.nameAlias')" prop="alias">
           <el-input size="small" v-model="formState.formData.alias"></el-input>
         </el-form-item>
-        <el-form-item :label="$t(nameMod + '.from')" prop="from">
-          <el-input size="small" v-model="formState.formData.from" placeholder="中国/China"></el-input>
+        <el-form-item :label="$t(nameMod + '.format')" prop="format">
+          <el-input size="small" v-model="formState.formData.format" placeholder="CD"></el-input>
         </el-form-item>
-        <el-form-item :label="$t(nameMod + '.date')" prop="listDateDur">
+        <el-form-item :label="$t(nameMod + '.dateRelease')" prop="dateRelease">
           <el-date-picker
-            v-model="formState.formData.listDateDur[0]"
+            v-model="formState.formData.dateRelease"
             type="date"
-            placeholder="加入日期" @change="eChangeDate">
-          </el-date-picker>
-          <el-date-picker
-            v-model="formState.formData.listDateDur[1]"
-            type="date"
-            placeholder="退出日期" @change="eChangeDate">
+            placeholder="发行日期" @change="eChangeDate">
           </el-date-picker>
         </el-form-item>
-        <el-form-item :label="$t(nameMod + '.listMembers')" prop="listMembers">
+        <el-form-item :label="$t(nameMod + '.catalog')" prop="catalog">
+          <el-input size="small" v-model="formState.formData.catalog" placeholder=""></el-input>
+        </el-form-item>
+        <el-form-item :label="$t(nameMod + '.listArtists')" prop="listArtists">
           <el-select
             size="medium"
-            v-model="formState.formData.listMembers"
+            v-model="formState.formData.listArtists"
             filterable
             multiple
             allow-create
-            placeholder="请输入乐队成员名"
+            placeholder="请输入乐队名"
             :remote-method="remoteUserMethod"
             :loading="userLoading"
             @change="changeTargetUser"
           >
-          <!--           remote
-            reserve-keyword -->
             <el-option
-              v-for="item in dataMembers.docs"
+              v-for="item in dataArtists.docs"
               :key="item._id"
               :label="item.name"
               :value="item._id"
@@ -67,11 +63,11 @@
         </el-form-item>
 
         <div v-if="formState.formData.type == '1'">
-          <el-form-item label="乐队关键字" prop="keywords">
+          <el-form-item label="关键字" prop="keywords">
             <el-input size="small" v-model="formState.formData.keywords"></el-input>
           </el-form-item>
 
-          <el-form-item label="乐队标签" prop="tags">
+          <el-form-item label="标签" prop="tags">
             <el-select
               size="medium"
               v-model="formState.formData.tags"
@@ -120,11 +116,8 @@
           ></vue-ueditor-wrap>
         </el-form-item>
         <!-- 热门歌曲：相关链接 -->
-        <el-form-item :label="$t(nameMod + '.listHotMusics')" prop="listHotMusics">
-          <ListURL @list-changed="eListHotMusicChanged" label="热门歌曲" :listObjURL="formState.formData.listHotMusics"></ListURL>
-        </el-form-item>
-        <el-form-item :label="$t(nameMod + '.listLinks')" prop="listLinks">
-          <ListURL @list-changed="eListLinks" label="其他链接" :listObjURL="formState.formData.listLinks"></ListURL>
+        <el-form-item :label="$t(nameMod + '.listShopLink')" prop="listShopLink">
+          <ListURL @list-changed="eListHotMusicChanged" label="购买链接" :listObjURL="formState.formData.listShopLink"></ListURL>
         </el-form-item>
         <el-form-item class="dr-submitContent">
           <el-button
@@ -344,10 +337,10 @@ export default {
     changeTargetUser(value) {
       let that=this;
       //检查 是否有没在列表里的值v=[idUser1,idUser2...text]
-      this.formState.formData.listMembers.forEach((v,idx,arr) => {
-        let tagFound=this.dataMembers.docs.find(user=>(user._id==v));
+      this.formState.formData.listArtists.forEach((v,idx,arr) => {
+        let tagFound=this.dataArtists.docs.find(user=>(user._id==v));
         let isFound = tagFound?true:false;
-        console.log("添加成员：",v,"是否已经创建:",isFound,that.dataMembers.docs);
+        console.log("添加成员：",v,"是否已经创建:",isFound,that.dataArtists.docs);
         if(!isFound){
           //loading停止操作
           that.userLoading=true;
@@ -365,12 +358,11 @@ export default {
                 type: "success"
               });
               //替换文字为idTag//可以在返回结果中获得result.data.data._id{}
-              that.formState.formData.listMembers[idx]=result.data._id;
+              that.formState.formData.listArtists[idx]=result.data._id;
               //关键词里同步
               that.updateKeywords(v);
               //刷新用户列表
               that.userLoading = true;       
-              // that.queryUserListByParams({ searchkey: that.formState.formData.listMembers });
               that.remoteUserMethod();
             } else {
               console.error(result)
@@ -463,14 +455,13 @@ export default {
         this.queryUserListByParams({ searchkey: query, pageSize : 200,});
       } else {
         this.queryUserListByParams({ pageSize : 200,});
-        // this.selectUserList = [];
       }
     },
     queryUserListByParams(params = {}) {
       let _this = this;
-      Object.assign(params,{ pageSize : 200, });
+      Object.assign(params,{ pageSize : 200, files:"name _id sImg"});
       // this.$store.dispatch("getRegUserList",params);
-      this.$store.dispatch(this.nameMod + "/getMemberList",params);
+      this.$store.dispatch(this.nameMod + "/getArtistsList",params);
 
       this.userLoading = false;
     },
@@ -484,15 +475,7 @@ export default {
             let initFormData = Object.assign({}, this.formState.formData, {
               sImg: randomImg
             });
-            // 保留原有指定作者
-            let oldUauthor = localStorage.getItem("contentAuthor");
-            if (oldUauthor) {
-              let targetUser = JSON.parse(oldUauthor);
-              this.queryUserListByParams({
-                searchkey: targetUser.label
-              });
-              Object.assign(initFormData, { targetUser: targetUser.value });
-            }
+
             this.showContentForm({
               formData: initFormData
             });
@@ -674,7 +657,7 @@ export default {
     // },
     ...mod.mapState({
       formState: state => state.formState,
-      dataMembers:state => state.dataMembers,
+      dataArtists:state => state.dataArtists,
     }),//模块的state
   },
   mounted() {
@@ -705,11 +688,10 @@ export default {
             if (contentObj.keywords) {
               contentObj.keywords = contentObj.keywords.join();
             }
-            if (contentObj.listMembers) {
-              let listMembersId=contentObj.listMembers.map(v=>{return v._id});
-              this.remoteUserMethod();//{searchkey: listMembersId}
-              contentObj.listMembers = listMembersId;
-              // contentObj.targetUser = contentObj.listMembers._id;
+            if (contentObj.listArtists) {
+              let listArtistsId=contentObj.listArtists.map(v=>{return v._id});
+              this.remoteUserMethod();
+              contentObj.listArtists = listArtistsId;
             }
 
             this.showContentForm({
@@ -772,7 +754,9 @@ export default {
       pageSize: 200
     });
     // this.$store.dispatch("getRegUserList",{pageSize:200});
-    this.$store.dispatch(this.nameMod + "/getMemberList",{pageSize:200});
+    // this.$store.dispatch(this.nameMod + "/getArtistsList",{pageSize:200});
+    // 获取用户/乐队列表
+    this.queryUserListByParams();
   }
 };
 </script>

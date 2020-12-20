@@ -55,30 +55,14 @@
           <div v-else>{{scope.row.name}}</div>
         </template>
       </el-table-column>
-      <el-table-column prop="author.name" :label="$t('contents.author')" show-overflow-tooltip>
-        <template
-          slot-scope="scope"
-        >{{scope.row.uAuthor?scope.row.uAuthor.userName:(scope.row.author?scope.row.author.userName:'')}}</template>
+      <el-table-column prop="listArtists" :label="$t('contents.author')" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span v-for="artist in scope.row.listArtists" :key="artist._id">{{artist.name+','}}</span>
+        </template>
       </el-table-column>
       <el-table-column prop="date" :label="$t('contents.date')" width="180">
         <template slot-scope="scope">{{scope.row.updateDate}}</template>
       </el-table-column>
-      <!-- <el-table-column prop="type" :label="$t('contents.type')">
-        <template slot-scope="scope">
-          <span v-if="scope.row.type == '1'">普通</span>
-        </template>
-      </el-table-column> -->
-      <el-table-column
-        prop="categories"
-        :label="$t('contents.categories')"
-        show-overflow-tooltip
-        width="120"
-      >
-        <template slot-scope="scope">
-          <span>{{(scope.row.categories&&scope.row.categories[0])?scope.row.categories[0].name:''}}</span>
-        </template>
-      </el-table-column>
-
       <el-table-column prop="tags" :label="$t('contents.tags')" show-overflow-tooltip>
         <template slot-scope="scope">
           <span v-for="tag in scope.row.tags" :key="tag._id">{{tag.name+','}}</span>

@@ -38,15 +38,14 @@ export default {
   docs:{
     name:"名称",
   },
-  artist:{
-    listMembers:"成员",
-    name:"乐队名称",
-    nameAlias:"乐队别名",
-    from:"来自",
-    date:"时间",
-    listHotMusics:"热门歌曲",
-    listLinks:"其他链接",
-    listMembers:"乐队成员",
+  record:{
+    listArtists:"作者",
+    name:"唱片名称",
+    nameAlias:"唱片别名",
+    format:"发行介质",
+    dateRelease:"发行时间",
+    catalog:"发行编号",
+    listShopLink:"购买链接",
   },
   //LangEnd
 }
