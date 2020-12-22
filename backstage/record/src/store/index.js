@@ -16,6 +16,7 @@ const store = new Vuex.Store({
   },
   getters:{
     contentTagList: state => state.contentTag.tagList,
+    formatTagList:state=>state.contentTag.formatTagList,
     getterListData: state => state[nameMod].dataList,
     getterDataMembers:state => state[nameMod].dataMembers,  
   }

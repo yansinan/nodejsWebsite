@@ -27,7 +27,7 @@ const defautlFormData={
   listArtists:[],
   dateRelease:Date.now(),
   catalog:"",
-  format:"",
+  listFormatTags:"",
   alias:"",
   listShopLink:[],
 }

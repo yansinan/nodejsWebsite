@@ -15,3 +15,10 @@ export function addContentTag(data) {
     method: 'post'
   })
 }
+export function contentTagListOf(data) {
+  return request({
+    url: '/manage/contentTag/getListOf',
+    data,
+    method: 'post'
+  })
+}
