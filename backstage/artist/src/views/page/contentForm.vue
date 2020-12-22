@@ -393,15 +393,6 @@ export default {
 
       });
 
-      // let targetUserInfo = _.filter(this.selectUserList, item => {
-      //   return item.value == value;
-      // });
-      // if (!_.isEmpty(targetUserInfo)) {
-      //   localStorage.setItem(
-      //     "contentAuthor",
-      //     JSON.stringify(targetUserInfo[0])
-      //   );
-      // }
     },
     //标签变化
     eChangeTags(e){
@@ -469,7 +460,6 @@ export default {
     queryUserListByParams(params = {}) {
       let _this = this;
       Object.assign(params,{ pageSize : 200, });
-      // this.$store.dispatch("getRegUserList",params);
       this.$store.dispatch(this.nameMod + "/getMemberList",params);
 
       this.userLoading = false;
@@ -484,15 +474,7 @@ export default {
             let initFormData = Object.assign({}, this.formState.formData, {
               sImg: randomImg
             });
-            // 保留原有指定作者
-            let oldUauthor = localStorage.getItem("contentAuthor");
-            if (oldUauthor) {
-              let targetUser = JSON.parse(oldUauthor);
-              this.queryUserListByParams({
-                searchkey: targetUser.label
-              });
-              Object.assign(initFormData, { targetUser: targetUser.value });
-            }
+
             this.showContentForm({
               formData: initFormData
             });
@@ -707,7 +689,7 @@ export default {
             }
             if (contentObj.listMembers) {
               let listMembersId=contentObj.listMembers.map(v=>{return v._id});
-              this.remoteUserMethod();//{searchkey: listMembersId}
+              // this.remoteUserMethod();//{searchkey: listMembersId}
               contentObj.listMembers = listMembersId;
               // contentObj.targetUser = contentObj.listMembers._id;
             }
@@ -771,8 +753,8 @@ export default {
     this.$store.dispatch("contentTag/getContentTagList", {
       pageSize: 200
     });
-    // this.$store.dispatch("getRegUserList",{pageSize:200});
-    this.$store.dispatch(this.nameMod + "/getMemberList",{pageSize:200});
+    // this.$store.dispatch(this.nameMod + "/getMemberList",{pageSize:200});
+    this.queryUserListByParams();
   }
 };
 </script>
