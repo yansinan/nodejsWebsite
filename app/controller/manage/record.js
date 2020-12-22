@@ -15,13 +15,6 @@ const checkRule = (ctx) => {
             message: ctx.__("validate_error_field", [ctx.__("label_content_title")])
 
         },
-        alias: {
-            type: "string",
-            required: true,
-            min: 2,
-            max: 50,
-            message: ctx.__("validate_error_field", [ctx.__("label_content_stitle")])
-        },
         sImg: {
             type: "string",
             required: true,
@@ -134,8 +127,8 @@ const funGetData = async (ctx,fields) => {
         // from:fields.from,
         // listDateDur:fields.listDateDur,
         // listHotMusics:fields.listHotMusics,
-        listArtist:fields.listArtist,
-        format:fields.format,
+        listArtists:fields.listArtists,
+        listFormatTags:fields.listFormatTags,
         dateRelease:fields.dateRelease,
         catalog:fields.catalog,
         listShopLink:fields.listShopLink,

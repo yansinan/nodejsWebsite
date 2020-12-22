@@ -8,7 +8,7 @@ module.exports = appInfo => {
 
     return {
         // 后台管理vue-cli模块的调试环境服务器路径，找到package.json时，dev_modules列表存在时使用
-        admin_root_path: 'http://serverhome.local',//'http://wx.z-core.cn',
+        admin_root_path: "http://wx.z-core.cn",//'http://serverhome.local',//'http://wx.z-core.cn',
         // DEV_CONFIG_MODULES_BEGIN
         dev_modules: [
             // 'navbar',

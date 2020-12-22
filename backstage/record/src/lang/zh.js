@@ -24,8 +24,8 @@ export default {
     discription: "内容摘要",
     comments: "文档详情",
     flashComments: "快讯摘要",
-    rec: "推荐",
-    roofPlacement: "置顶",
+    rec: "推",
+    roofPlacement: "顶",
     date: "创建时间",
     updateDate: "更新时间",
     commentNum: "评论数",
@@ -39,6 +39,7 @@ export default {
     name:"名称",
   },
   record:{
+    sImg:"封面",
     listArtists:"作者",
     name:"唱片名称",
     nameAlias:"唱片别名",

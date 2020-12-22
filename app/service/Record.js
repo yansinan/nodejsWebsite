@@ -22,7 +22,10 @@ class ServicePlugin extends BaseService {
             path: 'tags',
             select: 'name _id alias comments'
         },
-    
+        {
+            path: 'listFormatTags',
+            select: 'name _id alias comments'
+        },
     ]
     get model(){
         if(!this._model)this._model=this.ctx.model[__filename.slice(__dirname.length + 1, -3)];

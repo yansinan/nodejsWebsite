@@ -9,8 +9,8 @@
       style="width: 100%"
       @selection-change="handleContentSelectionChange"
     >
-      <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="isTop" :label="$t('contents.rec')" width="55" show-overflow-tooltip>
+      <el-table-column type="selection" width="30"></el-table-column>
+      <el-table-column prop="isTop" :label="$t('contents.rec')" width="30" show-overflow-tooltip>
         <template slot-scope="scope">
           <svg-icon
             :style="yellow"
@@ -29,7 +29,7 @@
       <el-table-column
         prop="roofPlacement"
         :label="$t('contents.roofPlacement')"
-        width="55"
+        width="30"
         show-overflow-tooltip
       >
         <template slot-scope="scope">
@@ -46,13 +46,15 @@
             icon-class="icon_ding"
           />
         </template>
-      </el-table-column>
-      <el-table-column prop="name" :label="$t('docs.name')" width="350" show-overflow-tooltip>
+      </el-table-column>  
+      <el-table-column prop="sImg" :label="$t('record.sImg')" width="50px" show-overflow-tooltip>
         <template slot-scope="scope">
-          <div v-if="scope.row.state">
-            <a :href="'/'+nameMod+'/'+scope.row._id+'.html'" target="_blank">{{scope.row.name}}</a>
-          </div>
-          <div v-else>{{scope.row.name}}</div>
+          <img :src="scope.row.sImg" class="avatar" width="50px"/>
+        </template>
+      </el-table-column>
+      <el-table-column prop="name" :label="$t('docs.name')" width="150" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <a :href="'/'+nameMod+'/'+scope.row._id+'.html'" target="_blank">{{scope.row.name}}</a>
         </template>
       </el-table-column>
       <el-table-column prop="listArtists" :label="$t('contents.author')" show-overflow-tooltip>
@@ -60,23 +62,19 @@
           <span v-for="artist in scope.row.listArtists" :key="artist._id">{{artist.name+','}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="date" :label="$t('contents.date')" width="180">
-        <template slot-scope="scope">{{scope.row.updateDate}}</template>
-      </el-table-column>
-      <el-table-column prop="tags" :label="$t('contents.tags')" show-overflow-tooltip>
+      <el-table-column prop="tags" :label="$t('contents.tags')" width="250" show-overflow-tooltip>
         <template slot-scope="scope">
           <span v-for="tag in scope.row.tags" :key="tag._id">{{tag.name+','}}</span>
         </template>
       </el-table-column>
-
-      <el-table-column prop="clickNum" :label="$t('contents.clickNum')" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="commentNum" :label="$t('contents.commentNum')" show-overflow-tooltip></el-table-column>
       <el-table-column prop="state" :label="$t('contents.enable')" show-overflow-tooltip>
         <template slot-scope="scope">
           <svg-icon v-show="scope.row.state=='2'" :style="green" icon-class="check-circle-fill" />
           <svg-icon v-show="scope.row.state!='2'" :style="red" icon-class="minus-circle-fill" />
         </template>
       </el-table-column>
+      <el-table-column prop="clickNum" :label="$t('contents.clickNum')" show-overflow-tooltip></el-table-column>
+
       
       <el-table-column :label="$t('main.dataTableOptions')" width="150" fixed="right">
         <template slot-scope="scope">

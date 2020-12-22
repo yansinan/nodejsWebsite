@@ -26,10 +26,10 @@ module.exports =app=>{
                 type: String,
                 ref: 'Artist'
             }],//乐队成员
-            format:{
+            listFormatTags:[{
                 type: String,
-                default:"CD",
-            },//发行介质
+                ref:'ContentTag',
+            }],//发行介质
             dateRelease:{
                 type: Date,
                 default: Date.now,
@@ -50,7 +50,6 @@ module.exports =app=>{
         schema.virtual('url').get(function () {
             return `/record/${this._id}.html`;
         });
-
         let model=app.model.Show || Doc.discriminator("Record", schema);
     
         return model

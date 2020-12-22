@@ -28,8 +28,25 @@
         <el-form-item :label="$t(nameMod + '.nameAlias')" prop="alias">
           <el-input size="small" v-model="formState.formData.alias"></el-input>
         </el-form-item>
-        <el-form-item :label="$t(nameMod + '.format')" prop="format">
-          <el-input size="small" v-model="formState.formData.format" placeholder="CD"></el-input>
+        <el-form-item :label="$t(nameMod + '.format')" prop="listFormatTags">
+          <!-- <el-input size="small" v-model="formState.formData.format" placeholder=""></el-input> -->
+          <el-select
+            size="medium"
+            v-model="formState.formData.listFormatTags"
+            multiple
+            filterable
+            allow-create
+            :loading="userLoading"
+            :placeholder="$t('validate.selectNull', {label: this.$t('contents.tags')})"
+            @change="eChangeFormats"
+          >
+            <el-option
+              v-for="item in formatTagList.docs"
+              :key="item._id"
+              :label="item.name"
+              :value="item._id"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item :label="$t(nameMod + '.dateRelease')" prop="dateRelease">
           <el-date-picker
@@ -47,11 +64,11 @@
             v-model="formState.formData.listArtists"
             filterable
             multiple
-            allow-create
-            placeholder="请输入乐队名"
+            placeholder="作者"
             :remote-method="remoteUserMethod"
+            remote
             :loading="userLoading"
-            @change="changeTargetUser"
+            @change="eChangeArtist"
           >
             <el-option
               v-for="item in dataArtists.docs"
@@ -63,10 +80,6 @@
         </el-form-item>
 
         <div v-if="formState.formData.type == '1'">
-          <el-form-item label="关键字" prop="keywords">
-            <el-input size="small" v-model="formState.formData.keywords"></el-input>
-          </el-form-item>
-
           <el-form-item label="标签" prop="tags">
             <el-select
               size="medium"
@@ -86,6 +99,10 @@
               ></el-option>
             </el-select>
           </el-form-item>
+          <el-form-item label="关键字" prop="keywords">
+            <el-input size="small" v-model="formState.formData.keywords"></el-input>
+          </el-form-item>
+
         </div>
         <el-form-item class="upSimg" :label="$t('contents.sImg')" prop="sImg">
           <el-upload
@@ -197,7 +214,6 @@ import '@/set-public-path'
 import VueUeditorWrap from "vue-ueditor-wrap";
 import { initEvent } from "@root/publicMethods/events";
 import {
-  addUser,
   getOne,
   addOne,
   updateOne,
@@ -226,7 +242,7 @@ export default {
         { value: "2", label: "审核通过" },
         { value: "3", label: "审核不通过" }
       ],
-      selectUserList: [],
+      // selectUserList: [],//author用
       loading: false,
       userLoading: false,//是否loading用户
       loadingTag:false,//是否loading标签
@@ -334,66 +350,74 @@ export default {
   methods: {
     //获取表单信息
     ...mod.mapActions(["showContentForm"]),// 将 `this.showContentForm(params)` 映射为 `this.$store.dispatch(nameMod+'/incrementBy', params)`
-    changeTargetUser(value) {
+    eChangeFormats(e){
       let that=this;
-      //检查 是否有没在列表里的值v=[idUser1,idUser2...text]
-      this.formState.formData.listArtists.forEach((v,idx,arr) => {
-        let tagFound=this.dataArtists.docs.find(user=>(user._id==v));
-        let isFound = tagFound?true:false;
-        console.log("添加成员：",v,"是否已经创建:",isFound,that.dataArtists.docs);
-        if(!isFound){
+      console.log("添加发行方式：",e,this.formState.formData.listFormatTags);
+      //检查 是否有没在列表里的值e=[idTag1,idTag2...text]
+      this.formState.formData.listFormatTags.forEach((v,idx,arr) => {
+        if(!v){
+          that.$message.error("标签undefined：",v);
+          return;
+        }
+        let tagFound=that.formatTagList.docs.find(tag=>(tag._id==v));
+        let isTagFound = tagFound?true:false;
+        if(!isTagFound){
           //loading停止操作
-          that.userLoading=true;
+          that.loadingTag=true;
           //创建标签 // 新增
-          let formData={
+          let formDataTag={
             name:v,
-            comments:"即时创建",
-            group:"乐手",
+            comments:"发行介质",
+            alias:v,
           }
           //添加contentTag标签
-          addUser(formData).then(result => {
+          addContentTag(formDataTag).then(result => {
+            console.log("添加标签返回的result:",result);
             if (result.status === 200) {
+              that.$store.dispatch("contentTag/getContentTagList");
+              that.$store.dispatch("contentTag/getFormatTagList");
               that.$message({
                 message: that.$t("main.addSuccess"),
                 type: "success"
               });
-              //替换文字为idTag//可以在返回结果中获得result.data.data._id{}
-              that.formState.formData.listArtists[idx]=result.data._id;
+              //替换文字为idTag//可以在返回结果中获得result.data._id{}
+              that.formState.formData.listFormatTags[idx]=result.data._id;
+              that.formState.formData.tags.push(result.data._id);
               //关键词里同步
               that.updateKeywords(v);
-              //刷新用户列表
-              that.userLoading = true;       
-              that.remoteUserMethod();
             } else {
-              console.error(result)
-              debugger
-              that.$message.error(result.data.message);
+              that.$message.error("添加标签错误："+result.message,formDataTag);
             }
             //恢复操作
             that.loadingTag=false;
           }).catch(error=>{
-              console.error(error)
-              debugger
-              that.$message.error(error.message);
-
+            that.$message.error("添加标签错误："+error,formDataTag);
+            let t=formDataTag;
+            debugger
           });
           
         }else{
+          // 同步到标签;
+          if(v && v!="")that.formState.formData.tags.push(v);
+          that.formState.formData.tags = [...(new Set(that.formState.formData.tags))];
+
           //关键词里同步
-          this.updateKeywords(tagFound.name);
+          that.updateKeywords(tagFound.name);
         }
-
       });
+    },
+    eChangeArtist(value) {
+      let that=this;
+      console.log("添加乐队：",value,this.formState.formData.listArtists);
 
-      // let targetUserInfo = _.filter(this.selectUserList, item => {
-      //   return item.value == value;
-      // });
-      // if (!_.isEmpty(targetUserInfo)) {
-      //   localStorage.setItem(
-      //     "contentAuthor",
-      //     JSON.stringify(targetUserInfo[0])
-      //   );
-      // }
+      //检查 是否有没在列表里的值v=[idUser1,idUser2...text]
+      this.formState.formData.listArtists.forEach((v,idx,arr) => {
+        let tagFound=this.dataArtists.docs.find(user=>(user._id==v));
+        let isFound = tagFound?true:false;
+        //关键词里同步
+        if(isFound)this.updateKeywords(tagFound.name);
+        console.log("添加乐队：",v,"找到乐队,添加到关键词:",isFound,tagFound.name);
+      });
     },
     //标签变化
     eChangeTags(e){
@@ -447,6 +471,7 @@ export default {
       });
       //console.log(v,this.formState.formData.tags,this.contentTagList.docs);
     },
+    // 查找艺术家列表
     remoteUserMethod(query="") {
       if (query !== "") {
         this.userLoading = true;
@@ -457,6 +482,7 @@ export default {
         this.queryUserListByParams({ pageSize : 200,});
       }
     },
+    // 查找艺术家列表
     queryUserListByParams(params = {}) {
       let _this = this;
       Object.assign(params,{ pageSize : 200, files:"name _id sImg"});
@@ -485,6 +511,7 @@ export default {
           console.log(err);
         });
     },
+    // TOCheck：没用上？
     checkFlashPost(currentType) {
       this.showContentForm({
         edit: this.formState.edit,
@@ -493,6 +520,7 @@ export default {
         })
       });
     },
+    // TOCheck：没用上？
     inputEditor(value) {
       this.showContentForm({
         edit: this.formState.edit,
@@ -502,9 +530,11 @@ export default {
       });
       
     },
+    // TOCheck：没用上？
     changeEditor(value) {
       console.log(value);
     },
+    //TOCheck： 本地缓存，在哪里保存？
     getLocalContents() {
       let localContent = localStorage.getItem("addContent") || "";
       if (localContent) {
@@ -541,9 +571,7 @@ export default {
       }
       return (isJPG || isPNG || isGIF) && isLt2M;
     },
-    // handleChangeCategory(value) {
-    //   console.log(value);
-    // },
+
     backToList() {
       // this.$router.push("/"+nameMod);
       // this.$store.dispatch(nameMod+"/showContentForm",{edit:false,formData:{test:"debug:backToList"},isInit:true});
@@ -590,7 +618,7 @@ export default {
     },
     // 选择日期
     eChangeDate(e){
-      console.log("选取日期变化",e,this.formState.formData.listDateDur);
+      console.log("选取日期变化",e,this.formState.formData.dateRelease);
     },
     // 20191206 自动添加关键词
     updateKeywords(inStr){
@@ -651,7 +679,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["contentTagList", "contentCategoryList"]),//"regUserList",
+    ...mapGetters(["contentTagList", "contentCategoryList","formatTagList"]),//"regUserList",
     // formState() {
     //   return this.$store.getters.contentFormState;
     // },
@@ -671,7 +699,8 @@ export default {
           if (result.data) {
             let contentObj = result.data,
               categoryIdArr = [],
-              tagsArr = [];
+              tagsArr = [],
+              formatTagArr=[];
             console.info("获取乐队信息：",contentObj);
             if (contentObj.categories) {
               contentObj.categories.map((item, index) => {
@@ -690,10 +719,15 @@ export default {
             }
             if (contentObj.listArtists) {
               let listArtistsId=contentObj.listArtists.map(v=>{return v._id});
-              this.remoteUserMethod();
+              // this.remoteUserMethod();
               contentObj.listArtists = listArtistsId;
             }
-
+            // 对象转id
+            if (contentObj.listFormatTags) {
+              contentObj.listFormatTags = contentObj.listFormatTags.map((item, index) => {
+                return item && item._id;
+              });
+            }
             this.showContentForm({
               edit: true,
               formData: contentObj
@@ -745,18 +779,15 @@ export default {
           });
       } else {
         //初始化表單
-
         this.getRandomContentImg();
       }
     }
     this.$store.dispatch("contentCategory/getContentCategoryList");
-    this.$store.dispatch("contentTag/getContentTagList", {
-      pageSize: 200
-    });
-    // this.$store.dispatch("getRegUserList",{pageSize:200});
-    // this.$store.dispatch(this.nameMod + "/getArtistsList",{pageSize:200});
+    this.$store.dispatch("contentTag/getContentTagList", {pageSize: 200});
+    this.$store.dispatch("contentTag/getFormatTagList",{pageSize:200});
     // 获取用户/乐队列表
     this.queryUserListByParams();
+    // this.$store.dispatch(this.nameMod + "/getArtistsList",{pageSize:200});
   }
 };
 </script>
