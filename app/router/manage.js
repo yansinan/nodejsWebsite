@@ -139,7 +139,19 @@ module.exports = app => {
 
     // router.get('/artist/findByName',UserController.findArtistByName)
     
+    /**
+     * 唱片管理
+     * 
+     */
+    router.get('/manage/show/getList', controller.manage.show.list)
+    router.get('/manage/show/getOne', controller.manage.show.getOne)
 
+    router.post('/manage/show/addOne', controller.manage.show.create)
+    router.post('/manage/show/updateOne', controller.manage.show.update)
+    router.post('/manage/show/top', controller.manage.show.updateToTop)
+    router.post('/manage/show/roof', controller.manage.show.roofPlacement)
+
+    router.get('/manage/show/delete', controller.manage.show.removes)
     //ManageRouters
 
 }
