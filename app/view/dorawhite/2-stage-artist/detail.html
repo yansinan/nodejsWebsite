@@ -63,9 +63,9 @@
             <div class="row">
                 <h2 class="">精选单曲</h2>
                 {% for link in post.listHotMusics %}
-                <div class="">
+                <div class="" onclick="window.location.href= '{{ link.url }}';return false">
                     <span class="col-xs-12 col-md-8" >{{ link.name }}</span>
-                    <span class="glyphicon glyphicon-play"  aria-hidden="true" style="margin: 5px;width: 48px;height: 48px;" id="bn-{{ link.url }}"><audio id="audio-{{ link.url }}"><source src="{{ link.url }}"></audio></span>
+                    <span class="col-xs-2 col-md-2 glyphicon glyphicon-play"  aria-hidden="true" style="margin: 5px;" id="bn-{{ link.url }}"></span>
                 </div>
                 {% endfor %}                        
 

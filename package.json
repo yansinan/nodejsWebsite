@@ -63,7 +63,8 @@
     "init": "node ./build/restore",
     "doracms": "node ./install/index.js",
     "start": "cross-env NODE_ENV=production && egg-scripts start --daemon --title=doracms2",
-    "stop": "egg-scripts stop --title=doracms2"
+    "stop": "egg-scripts stop --title=doracms2",
+    "kill": "egg-scripts stop"
   },
   "ci": {
     "version": "8, 9"

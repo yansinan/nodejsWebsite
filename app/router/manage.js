@@ -64,25 +64,7 @@ module.exports = app => {
     router.get('/manage/adminResource/deleteResource', controller.manage.adminResource.removes)
 
     router.get('/manage/adminResource/getListByPower', controller.manage.adminResource.listByPower)
-
-    /**
-     * 艺人管理
-     * 
-     */
-    // router.get('/manage/artist/getList', controller.manage.artist.list)
-    // router.get('/manage/artist/getContent', controller.manage.artist.getOne)
-
-    // router.post('/manage/artist/addOne', controller.manage.artist.create)
-
-    // router.post('/manage/artist/updateOne', controller.manage.artist.update)
-
-    // router.post('/manage/artist/top', controller.manage.artist.updateContentToTop)
-    // router.post('/manage/artist/roof', controller.manage.artist.roofPlacement)
-    // router.get('/manage/artist/delete', controller.manage.artist.removes)
-
-    // router.post('/user/addOne', UserController.addOneArtist)
-    // router.get('/artist/findByName',UserController.findArtistByName)
-    
+  
 
     /**
      * 系统配置
@@ -141,7 +123,35 @@ module.exports = app => {
     router.get('/manage/hook/deleteUser', controller.manage.hook.removes)
 
 
+    /**
+     * 唱片管理
+     * 
+     */
+    router.get('/manage/record/getList', controller.manage.record.list)
+    router.get('/manage/record/getOne', controller.manage.record.getOne)
 
+    router.post('/manage/record/addOne', controller.manage.record.create)
+    router.post('/manage/record/updateOne', controller.manage.record.update)
+    router.post('/manage/record/top', controller.manage.record.updateToTop)
+    router.post('/manage/record/roof', controller.manage.record.roofPlacement)
+
+    router.get('/manage/record/delete', controller.manage.record.removes)
+
+    // router.get('/artist/findByName',UserController.findArtistByName)
+    
+    /**
+     * 唱片管理
+     * 
+     */
+    router.get('/manage/show/getList', controller.manage.show.list)
+    router.get('/manage/show/getOne', controller.manage.show.getOne)
+
+    router.post('/manage/show/addOne', controller.manage.show.create)
+    router.post('/manage/show/updateOne', controller.manage.show.update)
+    router.post('/manage/show/top', controller.manage.show.updateToTop)
+    router.post('/manage/show/roof', controller.manage.show.roofPlacement)
+
+    router.get('/manage/show/delete', controller.manage.show.removes)
     //ManageRouters
 
 }

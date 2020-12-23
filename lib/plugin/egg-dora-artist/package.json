@@ -3,7 +3,8 @@
   "version": "1.0.20",
   "description": "artist",
   "eggPlugin": {
-    "name": "doraArtist"
+    "name": "doraArtist",
+    "alias":"artist"
   },
   "keywords": [
     "egg",

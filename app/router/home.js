@@ -21,12 +21,24 @@ module.exports = app => {
     router.get("/details/:id.html", controller.page.home.getDataForContentDetails);
     // 艺术家详情
     router.get("/artist/:id.html", controller.page.home.getDataForArtistDetails);
+    //检索艺术家的专辑
+    router.get("/record/artist/:idArtist", controller.api.record.list);
+    // 专辑详情
+    router.get("/record/:id.html", controller.page.home.getDataForRecordDetails);
+
     // 艺术家列表；类别入口
     router.get([
         "/artists___:typeId?",
         "/artists___:typeId?/:current.html",
         "/artists/:cate1?___:typeId?",
         "/artists/:cate1?___:typeId?/:current.html"
+    ], controller.page.home.getDataForArtistsPage);
+    // 专辑列表；类别入口
+    router.get([
+        "/records___:typeId?",
+        "/records___:typeId?/:current.html",
+        "/records/:cate1?___:typeId?",
+        "/records/:cate1?___:typeId?/:current.html"
     ], controller.page.home.getDataForArtistsPage);
     // 类别入口
     router.get([
