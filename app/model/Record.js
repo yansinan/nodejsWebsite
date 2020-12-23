@@ -7,7 +7,7 @@ module.exports =app=>{
     {
         const mongoose = app.mongoose
         var Schema = mongoose.Schema;
-    
+        var moment = require('moment')
         // 继承自Doc        
         let Doc=app.model.Doc || require("./Doc")(app) || INIT_DOC(app);//
         
@@ -45,7 +45,12 @@ module.exports =app=>{
                 type:{type:String,default:"购买"},
             }],//购买链接
         });        
-    
+        schema.path('dateRelease').get(function () {
+            return moment(this.dateRelease).format("YYYY-MM-DD");
+        });
+        schema.virtual('dateTimeline').get(function () {
+            return moment(this.dateRelease).format("YYYY-MM-DD");
+        });
         // url地址
         schema.virtual('url').get(function () {
             return `/record/${this._id}.html`;
