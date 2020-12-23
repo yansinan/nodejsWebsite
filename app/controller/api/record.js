@@ -22,7 +22,7 @@ let that={
 
         let files = null;
         if (type == 'normal') {
-            files = '_id url name alias sImg date updateDate discription clickNum roofPlacement type videoImg state dismissReason categories isTop'
+            files = '_id url name alias sImg date updateDate discription clickNum roofPlacement type videoImg state dismissReason categories isTop dateRelease'
         } else if (type == 'simple') {
             files = '_id url name alias sImg stitle date updateDate clickNum roofPlacement type videoImg state dismissReason';
         } else if (type == 'stage1') {
@@ -159,7 +159,7 @@ let ControllerPlugin = {
             let filesType = 'normal'; // 查询模式 full/normal/simple
             let isSingerPage = false; // 是否是单页面
 
-            let idArtist=ctx.query.idArtist;//某乐队的专辑
+            let idArtist=ctx.query.idArtist || ctx.params.idArtist;//某乐队的专辑
             let service=ctx.service[SERVICE_NAME];
 
             let queryObj = {
@@ -225,7 +225,6 @@ let ControllerPlugin = {
                 searchKeys: ['keywords', 'name', 'comments', 'discription'],
                 files: that.getListFields(filesType)
             });
-
             listRes.docs = await that.renderList(ctx, userInfo._id, listRes.docs);
 
             ctx.helper.renderSuccess(ctx, {

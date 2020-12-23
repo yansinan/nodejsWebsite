@@ -39,7 +39,7 @@ module.exports = app => {
         "/records___:typeId?/:current.html",
         "/records/:cate1?___:typeId?",
         "/records/:cate1?___:typeId?/:current.html"
-    ], controller.page.home.getDataForArtistsPage);
+    ], controller.page.home.getDataForRecordsPage);
     // 类别入口
     router.get([
         "/:cate1?___:typeId?",

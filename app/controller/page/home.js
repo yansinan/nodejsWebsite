@@ -390,7 +390,7 @@ class HomeController extends Controller {
                     // TODO：不要硬编码
                     // 校验模板的真实路径
                     let themePath = this.app.config.temp_view_forder + defaultTemp.alias + '/';
-                    let currentPath="2-stage-artist" + "/" + "detail.html"
+                    let currentPath="2-stage-record" + "/" + "detail.html"
                     ctx.tempPage = fs.existsSync(themePath + currentPath)?currentPath:"2-stage-default/detail.html";
                     
                 } else {
@@ -457,6 +457,7 @@ class HomeController extends Controller {
                 } = await ctx.helper.reqJsonData('record/getList', payload);
                 pageData.posts = docs;
                 pageData.pageInfo = pageInfo;
+                
                 //最终渲染
                 await ctx.renderPageData(pageData);
                 

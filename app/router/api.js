@@ -13,5 +13,7 @@ module.exports = app => {
     router.get('/api/systemConfig/getConfig', controller.api.systemConfig.list)
 
     //ApiRouters
-
+    // 专辑
+    router.get('/api/record/getList', controller.api.record.list);
+    router.get('/api/record/get', controller.api.record.getOne);
 }

@@ -95,7 +95,9 @@
             <div class="row">
                 <h2 class="" style="line-height: 60px;">精选专辑</h2>                
                 {% for record in post.objDocsRecords.docs %}
+                    <div class="col-md-4" style="border: black solid 1px">
                     {% include "../public/recordItem.html" %}
+                    </div>
                 {% endfor %}    
             </div>
             <div class="row" class="" style="border-bottom: black solid 2px;height: 40px;">

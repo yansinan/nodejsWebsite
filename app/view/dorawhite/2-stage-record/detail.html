@@ -1,0 +1,68 @@
+{% extends "../default.html" %} {% block content %}
+<div class="container-fluid">
+    <div class="row"  ms-controller="documentInfo">
+        {# 头部 名称，标签，成员 #}
+        <div class="col-md-12 main-container">
+            <input type="hidden" value="{{post._id}}" id="contentId">
+            <div class="row">
+                <div class="col-md-7 main-container">
+                    <div class="row">
+                        <div class="col-xs-12">                        
+                            <h1>{{post.name}} {{post.alias}}</h1>
+                        </div>
+
+                        {# 发行介质 #}
+                        <ol class="col-xs-12 breadcrumb">
+                        {% if post.listFormatTags.length>0%}
+                            {% for tag in post.listFormatTags %}
+                            <li><a href="{{tag.url}}">{{tag.name}}   {{ "" if tag.alias === tag.name else tag.alias }}</a></li>
+                            {% endfor %}
+                            <li>{{post.dateRelease}}</li>
+                            <li>{{post.catalog}}</li>
+                        {% endif %}
+                        </ol>
+                        {# 风格 #}
+                        <ol class="col-xs-12 breadcrumb">
+                        {% if post.tags.length>0%}
+                            {% for tag in post.tags %}
+                            <li><a href="{{tag.url}}">{{tag.name}}   {{ "" if tag.alias === tag.name else tag.alias }}</a></li>
+                            {% endfor %}
+                            <li><a href="{{post.url}}">{{post.from}}</a></li>
+                        {% endif %}
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {# 左侧 #}
+        <div class="col-md-4 main-container">
+            {# 档案 #}
+            <div class="row">                
+                <h2 class="">档案</h2>
+                <article class="">
+                    <div class="">
+                        {{post.comments | safe}}
+                    </div>
+                </article>
+            </div>
+            {# 友链 #}
+            <div class="col-xs-12">
+            {% if post.listShopLink.length>0%}
+                {% for link in post.listShopLink %}
+                <a href="{{ link.url }}" target="_blank"><img src="{{ link.icon }}" alt="name" class="img-circle" style="background-color:black;padding:6px;"></a>
+                {% endfor %}
+            {% endif %}
+            </div>
+        </div>
+        {# 右侧 #}
+        <div class="col-md-8 main-container">
+            {# 乐队图 #}
+            <div class="row">
+                <img src="{{post.sImg}}" class="img-responsive" alt="{{post.name}}">
+            </div>
+            {# 视频 #}
+            
+        </div>
+    </div>
+</div>
+{% endblock %}

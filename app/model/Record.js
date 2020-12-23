@@ -45,8 +45,8 @@ module.exports =app=>{
                 type:{type:String,default:"购买"},
             }],//购买链接
         });        
-        schema.path('dateRelease').get(function () {
-            return moment(this.dateRelease).format("YYYY-MM-DD");
+        schema.path('dateRelease').get(function (v) {
+            return moment(v).format("YYYY-MM-DD");
         });
         schema.virtual('dateTimeline').get(function () {
             return moment(this.dateRelease).format("YYYY-MM-DD");
