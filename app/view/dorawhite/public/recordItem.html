@@ -1,0 +1,28 @@
+<!--
+约定documentList.docs为文档列表数据集合
+item为子元素集合
+-->
+<div class="col-md-4" style="border: black solid 1px">
+    {# 图 #}
+    <div class="row">
+        <img src="{{record.sImg}} " class="img-responsive" alt="{{record.title}} " />
+    </div>
+    {# 专辑名 #}
+	<div class="row" style="border-top: black solid 1px;border-bottom: black solid 1px;height: 45px;padding-top: 5px;">
+        <div class="col-xs-6">
+            <a href="{{record.url}} " target="_blank " class=" "><u>{{record.name}}</u></a>
+        </div>
+        <div class="col-xs-6" >
+            <span  style="border: black solid 1px;padding: 0px 10px;"><u>{{record.dateRelease}}</u></span>
+        </div>
+	</div>
+    <div class="row">
+        {% for artist in record.listArtists %}
+        <h5 class="" alt="{{site.altkey}}{{artist.name}}">
+            <a href="{{artist.url}} " target="_blank ">
+                {{artist.name}}
+            </a>
+        </h5>
+        {% endfor %}
+    </div>
+</div>

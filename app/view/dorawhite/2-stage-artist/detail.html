@@ -1,8 +1,8 @@
 {% extends "../default.html" %} {% block content %}
 <div class="container-fluid">
-    <div class="row">
+    <div class="row"  ms-controller="documentInfo">
         {# 头部 名称，标签，成员 #}
-        <div class="col-md-12 main-container" ms-controller="documentInfo">
+        <div class="col-md-12 main-container">
             <input type="hidden" value="{{post._id}}" id="contentId">
             <div class="row">
                 <div class="col-md-7 main-container">
@@ -32,7 +32,7 @@
             </div>
         </div>
         {# 左侧 #}
-        <div class="col-md-4 main-container" ms-controller="documentInfo">
+        <div class="col-md-4 main-container">
             {# 档案 #}
             <div class="row">                
                 <h2 class="">档案</h2>
@@ -43,12 +43,24 @@
                 </article>
             </div>
             {# 时间线 #}
-            <div class="row">                
-                <h2 class="">时间线</h2>
-                <div class="">
-                    {{post.date}}
-                </div>
+            {% if post.listTimeline.length>0%}
+            <div class="row">
+                <div class="col-md-12">          
+                    <div class="row"><h2 class="">时间线</h2></div>
+                    {% for item in post.listTimeline %}
+                        {%if post.listTimeline[loop.first]  or itme.dateYear!=post.listTimeline[loop.revindex0].dateYear %}
+                        <div class="row"><h3>{{ item.dateYear}}</h3></div>
+                        {% endif %}
+                        <div class="row">
+                            <span class="col-xs-2 col-md-2" style="padding-left:0px">{{ item.dateTimeline}}</span>
+                            <span class="col-xs-12 col-md-8" ><u>{{ item.name }}</u></span>
+                        </div>
+                        
+                    {% endfor %}
+                    <div class="row"><h3></h3></div>
+                </div> 
             </div>
+            {% endif %}
             {# 专辑 #}
             <div class="row bg-primary"><h2 class="">专辑</h2></div>
             {# 视频/MV #}
@@ -71,6 +83,29 @@
 
             </div>
             {% endif %}              
+        </div>
+        {# 右侧 #}
+        <div class="col-md-8 main-container">
+            {# 乐队图 #}
+            <div class="row">
+                <img src="{{post.sImg}}" class="img-responsive" alt="{{post.name}}">
+            </div>
+            {# 专辑 #}
+            {% if post.objDocsRecords.docs.length>0%}
+            <div class="row">
+                <h2 class="" style="line-height: 60px;">精选专辑</h2>                
+                {% for record in post.objDocsRecords.docs %}
+                    {% include "../public/recordItem.html" %}
+                {% endfor %}    
+            </div>
+            <div class="row" class="" style="border-bottom: black solid 2px;height: 40px;">
+                <div class="col-md-1 col-md-offset-11">
+                    <span class="glyphicon glyphicon-plus" />
+                </div>  
+            </div>
+            {% endif %}
+            {# 视频 #}
+            
         </div>
     </div>
 </div>
