@@ -102,15 +102,18 @@ module.exports =app=>{
         // }).set(function(v){
         //     this.listRefs
         // });
-        schema.virtual('dateJoin').get(function () {
+        schema.virtual('dateStart').get(function () {
             return (this.listDateDur && this.listDateDur[0])?this.listDateDur[0] : false;
         }).set(function(v){
             this.listDateDur[0]=v;
         });
-        schema.virtual('dateExit').get(function () {
+        schema.virtual('dateEnd').get(function () {
             return (this.listDateDur && this.listDateDur[1] )? this.listDateDur[1] : false ;
         }).set(function(v){
             this.listDateDur[1]=v;
+        });
+        schema.virtual('dateTimeline').get(function () {
+            return moment(this.dateStart).format("YYYY-MM-DD");
         });
         // url地址
         schema.virtual('url').get(function () {
