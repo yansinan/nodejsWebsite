@@ -8,7 +8,7 @@ module.exports =app=>{
         // const app=this.app;
         const mongoose = app.mongoose
         var Schema = mongoose.Schema;
-    
+        var moment = require('moment')
         // 继承自Doc
         
         let Doc=app.model.Doc || require("./Doc")(app) || INIT_DOC(app);//
@@ -113,7 +113,7 @@ module.exports =app=>{
             this.listDateDur[1]=v;
         });
         schema.virtual('dateTimeline').get(function () {
-            return moment(this.dateStart).format("YYYY-MM-DD");
+            return (this.listDateDur && this.listDateDur[0])?moment(this.listDateDur[0]).format("YYYY-MM-DD") : false;;
         });
         // url地址
         schema.virtual('url').get(function () {
