@@ -466,6 +466,81 @@ class HomeController extends Controller {
             ctx.redirect("/");
         }
     }
+
+    // 时间线
+    async getDataForTimelinePage() {
+        const ctx = this.ctx;
+        ctx.pageType = "cate"
+        let typeId = ctx.params.typeId;
+        let year = ctx.params.year; //按年查询
+        
+        
+        if (typeId) {
+            if (!shortid.isValid(typeId)) {
+                ctx.redirect("/");
+            } else {
+                // TODO:验证数据正确性
+                if (year) {
+                    if (validator.isNumeric(year)) {
+                        // await ctx.getPageData();
+                        ctx.params.dateStart = new Date(year+"-12-31");
+                    } else {
+                        ctx.redirect("/");
+                    }
+                }else{
+                    // TODO:验证日期正确性；
+                    // 如果完全没有定义时间，则默认从现在起
+                    if(!ctx.params.dateStart){
+                        ctx.params.dateStart= (new Date());
+                    }
+                }
+                let dateStart = ctx.params.dateStart; //按周期查询，起始日期往前365*2天
+                
+                // 获取通用页面信息
+                // ctx.pageType = "cate"
+                let {pageData,defaultTemp}=await ctx.getInitPageData("cate");//
+                let payload = ctx.params;
+                let siteDomain = pageData.site.configs.siteDomain;
+
+                //数据提取、修改标题；需要根据post信息修改内容：pageData.post,pageData.site,pageData.ogData,ctx.tempPage
+                if (payload.typeId) {
+                    // 获取指定类别下的子类列表
+                    pageData.currentCateList = await ctx.helper.reqJsonData('contentCategory/getCurrentCategoriesById', {
+                        typeId: payload.typeId
+                    });
+                    // 获取当前分类的基本信息
+                    pageData.cateInfo = await ctx.helper.reqJsonData('contentCategory/getOne', {
+                        id: payload.typeId
+                    });
+                }
+
+                if (!_.isEmpty(pageData.cateInfo)) {
+                    let {
+                        defaultUrl,
+                        _id,
+                        contentTemp
+                    } = pageData.cateInfo;
+                    pageData.ogData.url = siteDomain + '/' + defaultUrl + '___' + _id;
+                    ctx.tempPage = ctx.getCateOrDetailTemp(defaultTemp, contentTemp, 'cate');
+                }
+                let cateName = _.isEmpty(pageData.cateInfo) ? '' : (' | ' + pageData.cateInfo.name);
+                pageData.site.title = pageData.site.title + cateName;
+                // 获取分类文档列表
+                let {
+                    docs,
+                    pageInfo
+                } = await ctx.helper.reqJsonData('timeline/getList', payload);
+                pageData.posts = docs;
+                pageData.pageInfo = pageInfo;
+                
+                //最终渲染
+                await ctx.renderPageData(pageData);
+                
+            }
+        } else {
+            ctx.redirect("/");
+        }
+    }
     async getDataForSiteMap() {
         const ctx = this.ctx;
         ctx.tempPage = 'sitemap.html';

@@ -48,6 +48,12 @@ module.exports =app=>{
         schema.path('dateRelease').get(function (v) {
             return moment(v).format("YYYY-MM-DD");
         });
+        schema.virtual('date').get(function () {
+            return moment(this.dateRelease).format("YYYY-MM-DD");
+        }).set((v)=>{
+            this.dateRelease = v || Date.now;
+            this.date=this.dateRelease || Date.now;
+        });
         schema.virtual('dateTimeline').get(function () {
             return moment(this.dateRelease).format("YYYY-MM-DD");
         });
@@ -55,7 +61,7 @@ module.exports =app=>{
         schema.virtual('url').get(function () {
             return `/record/${this._id}.html`;
         });
-        let model=app.model.Show || Doc.discriminator("Record", schema);
+        let model=app.model.Record || Doc.discriminator("Record", schema);
     
         return model
     }

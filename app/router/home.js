@@ -40,6 +40,13 @@ module.exports = app => {
         "/records/:cate1?___:typeId?",
         "/records/:cate1?___:typeId?/:current.html"
     ], controller.page.home.getDataForRecordsPage);
+    // 时间线
+    router.get([
+        "/timeline___:typeId?",
+        "/timeline______:typeId?/:current.html",
+        "/timeline___/:cate1?___:typeId?",
+        "/timeline___/:cate1?___:typeId?/:current.html"
+    ], controller.page.home.getDataForTimelinePage);
     // 类别入口
     router.get([
         "/:cate1?___:typeId?",

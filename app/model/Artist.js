@@ -105,12 +105,19 @@ module.exports =app=>{
         schema.virtual('dateStart').get(function () {
             return (this.listDateDur && this.listDateDur[0])?this.listDateDur[0] : false;
         }).set(function(v){
-            this.listDateDur[0]=v;
+            this.listDateDur[0]=v || Date.now;
+            this.date=this.listDateDur[0];
         });
         schema.virtual('dateEnd').get(function () {
             return (this.listDateDur && this.listDateDur[1] )? this.listDateDur[1] : false ;
         }).set(function(v){
             this.listDateDur[1]=v;
+        });
+        schema.virtual('date').get(function () {
+            return moment(this.dateStart).format("YYYY-MM-DD");
+        }).set((v)=>{
+            this.dateStart = v || Date.now;
+            this.date=this.dateStart || Date.now;
         });
         schema.virtual('dateTimeline').get(function () {
             return (this.listDateDur && this.listDateDur[0])?moment(this.listDateDur[0]).format("YYYY-MM-DD") : false;;

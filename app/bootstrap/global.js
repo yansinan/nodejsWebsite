@@ -52,8 +52,8 @@ global.getStrLength = (str) => {
 }
 
 
-global.getDateStr = (addDayCount) => {
-  var dd = new Date();
+global.getDateStr = (addDayCount,inDateStart=null) => {
+  var dd = inDateStart || new Date();
   dd.setDate(dd.getDate() + addDayCount); //获取AddDayCount天后的日期
   var y = dd.getFullYear();
   var m = (dd.getMonth() + 1) < 10 ? "0" + (dd.getMonth() + 1) : (dd.getMonth() + 1); //获取当前月份的日期，不足10补0

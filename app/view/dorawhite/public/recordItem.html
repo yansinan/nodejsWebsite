@@ -13,7 +13,7 @@ item为子元素集合
             <a href="{{record.url}} " target="_blank " class=" "><u>{{record.name}}</u></a>
         </div>
         <div class="col-xs-6" >
-            <span  style="border: black solid 1px;padding: 0px 10px;"><u>{{record.dateRelease}}</u></span>
+            <span  style="border: black solid 1px;padding: 0px 10px;"><u>{{ (record.dateYear+'-') if record.dateYear else '' }}{{record.dateTimeline}}</u></span>
         </div>
 	</div>
     <div class="row">

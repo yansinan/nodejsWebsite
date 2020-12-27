@@ -16,4 +16,8 @@ module.exports = app => {
     // 专辑
     router.get('/api/record/getList', controller.api.record.list);
     router.get('/api/record/get', controller.api.record.getOne);
+
+    // 时间线列表
+    router.get("/api/timeline/getList", controller.api.timeline.list);
+    
 }
