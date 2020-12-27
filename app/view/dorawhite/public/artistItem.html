@@ -2,18 +2,18 @@
 约定post为文档列表数据集合
 item为子元素集合
 -->
-<div class="row" style="background-color:black;border:1px solid white;">
-    <div class="col-md-7" style="border-right:1px solid white;">
-        <div class="row" style="padding:15px;">
-            <a href="{{item.url}} " target="_blank " class="contentImg ">
-                <img src="{{item.sImg}} " class="img-responsive img-circle" alt="{{item.title}} " />
+<div class="row border border-light text-light bg-dark" style="">
+    <div class="col" style="">
+        <div class="row p-2" style="">
+            <a href="{{item.url}} " target="_blank " class="">
+                <img src="{{item.sImg}} " class="img-fluid rounded-circle" alt="{{item.title}} " />
             </a>
         </div>
         {# 艺人列表模式，名称在下 #}
         {% if pageInfo.itemTemplate != "timeline" %}
-        <div class="row" style="padding:15px;border-top: 1px solid white;">
-            <h2 class="post-title text-left" alt="{{site.altkey}}{{item.name}}">
-                <a href="{{item.url}} " target="_blank " style="color:white;">
+        <div class="row p-2 border-top border-light" style="">
+            <h2 class="" alt="{{site.altkey}}{{item.name}}">
+                <a href="{{item.url}} " target="_blank " class="text-light">
                     {{item.name}}
                 </a>
             </h2>
@@ -22,27 +22,27 @@ item为子元素集合
     </div>
     {# 时间轴模式，名称在右tags #}
     {% if pageInfo.itemTemplate == "timeline" %}
-    <div class="col-md-5" style="border-left:0px solid white;">
-        <div class="row" style="padding-left:15px;">
-            <span class="post-title text-left" alt="{{site.altkey}}{{item.name}}">
-                <a href="{{item.url}} " target="_blank " style="color:white;">
+    <div class="col-md-5 border-start border-light" style="">
+        <div class="row pt-2" style="">
+            <span class="" alt="{{site.altkey}}{{item.name}}">
+                <a href="{{item.url}} " target="_blank " class=" text-light">
                     <u>{{item.name}}</u>
                 </a>
             </span>
         </div>
-        <div class="row" style="padding-left:15px;">
-            <span class="post-title text-left" alt="{{site.altkey}}{{item.name}}">
-                <a href="{{item.url}} " target="_blank " style="color:white;">
+        <div class="row pb-2" style="">
+            <span class="" alt="{{site.altkey}}{{item.name}}">
+                <a href="{{item.url}} " target="_blank " class=" text-light">
                     签约赤瞳
                 </a>
             </span>
         </div>
         {# 标签 #}
-        <div class="row" style="padding-left:15px;">
-            <ul class="pager" style="text-align:left">
-            {% for tag in item.tags %}
-                <li><a href="{{tag.url}}">{{tag.name}}</a></li>
-            {% endfor %}
+        <div class="row py-2" style="">
+            <ul class="list-inline">
+                {% for tag in item.tags %}
+                    <li class="list-inline-item  px-3 rounded-pill border"><a href="{{tag.url}}" class="text-light">{{tag.name}}</a></li>
+                {% endfor %}
             </ul>
         </div>
     </div>

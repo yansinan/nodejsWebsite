@@ -11,12 +11,12 @@
                         {% for year, yearItems in posts|groupby("dateYear") %}
                             <h1>{{year}}</h1>
                             {% for date, dateItems in yearItems|groupby("dateTimeline") %}
-                            <div class="row">
+                            <div class="row py-4">
                                 <div class="col-md-2"><h3>{{date}}</h3></div>
-                                <div class="col-md-10">
+                                <div class="col">
                                     <div class="row">
                                         {% for item in dateItems %}
-                                        <div class="col-md-{{item.widthTemp}}" style="border: black solid 1px;">
+                                        <div class="col-md-{{item.widthTemp}} border border-dark m-3">
                                             {% include "../public/"+item.strCate+"Item.html" %}
                                         </div>
                                         {% endfor %}

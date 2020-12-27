@@ -4,22 +4,18 @@ item为子元素集合
 -->
     {# 时间轴列表模式，乐队名在上tags #}
     {% if pageInfo.itemTemplate == "timeline" %}
-    <div class="row" style="padding:15px;">
+    <div class="row pt-2">
         {% if item.listArtists[0] %}
-        <div class="col-md-2">
-            <div class="row">
-                <img src="{{item.listArtists[0].sImg}}" alt="..." class="img-circle" style="max-width:75px;">
-            </div>
+        <div class="col-md-auto">
+            <img src="{{item.listArtists[0].sImg}}" alt="..." class="rounded-circle" style="max-width:64px;">
         </div>
-        <div class="col-md-10">
+        <div class="col">
             {% for artist in item.listArtists %}
-            <div class="row">
-                <span class="" alt="{{site.altkey}}{{artist.name}}" style="">
-                    <a href="{{artist.url}} " target="_blank ">
-                        <u>{{artist.name}}</u>
-                    </a>
-                </span>
-            </div>
+            <span class="" alt="{{site.altkey}}{{artist.name}}" style="">
+                <a href="{{artist.url}} " target="_blank ">
+                    <u>{{artist.name}}</u>
+                </a>
+            </span>
             {% endfor %}
             <div class="row">
                 <span class="" alt="{{site.altkey}}{{artist.name}}" style="">
@@ -32,33 +28,34 @@ item为子元素集合
         {% endif %}
     </div>
     {# 标签 #}
-    <div class="row" style="padding:15px;padding-top:0px;padding-bottom:0px;">
-        <ul class="pager" style="text-align:left">
-        {% for tag in item.tags %}
-            <li><a href="{{tag.url}}">{{tag.name}}</a></li>
-        {% endfor %}
+    <div class="row my-3 mb-3" style="">
+        <ul class="list-inline">
+            {% for tag in item.tags %}
+                <li class="list-inline-item  px-3 rounded-pill border"><a href="{{tag.url}}" class="">{{tag.name}}</a></li>
+            {% endfor %}
         </ul>
     </div>
     {% endif  %}
     {# 图和简介 #}
     {% if item.discription %}
-    <div class="row" style="margin-bottom:15px;">
+    <div class="row py-2 border-top border-dark" style="">
         {# 图 #}
         <div class="col-md-5">
-            <a href="{{item.url}} " target="_blank " class=" "><img src="{{item.sImg}} " class="img-responsive" alt="{{item.name}} " /></u></a>
+            <a href="{{item.url}} " target="_blank " class=" "><img src="{{item.sImg}} " class="img-fluid" alt="{{item.name}} " /></u></a>
         </div>
         <div class="col-md-7" >            
-            <div class="row" style=""><h3><small>{{item.name}}</small></h3></div>
+            <div class="row" style=""><h3><small class="text-muted">{{item.name}}</small></h3></div>
             <div class="row" style="margin-bottom:15px;"><h4>{{item.dateStart}}</h4></div>
             <div class="row" style=""><h4>乐队</h4></div>
-            <div class="row" style="">
-                <ul class="pager" style="text-align:left">
-                {% for artist in item.listArtists %}
-                    <li><a href="{{artist.url}}">{{artist.name}}</a></li>
-                {% endfor %}
+            <div class="row py-2" style="">
+                <ul class="list-inline">
+                    {% for artist in item.listArtists %}
+                        <li class="list-inline-item  px-3 rounded-pill border"><a href="{{artist.url}}" class="">{{artist.name}}</a></li>
+                    {% endfor %}
                 </ul>
+
             </div>
-            <div class="row" style="">
+            <div class="row mt-3" style="">
                 <article  style="">{{item.discription}}</article>
             </div>
         </div>
