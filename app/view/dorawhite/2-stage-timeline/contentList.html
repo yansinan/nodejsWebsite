@@ -7,11 +7,23 @@
                     <div class="column-wrap">
                         <h1 alt="{{site.altkey}}{{cateInfo.name}}">{{cateInfo.name}}——唱片</h1>
                     </div>
-                    <div class="post-list row">                       
-                        {% for record in posts %}
-                        <div class="col-md-3" style="border: black solid 1px">
-                            {% include "../public/recordItem.html" %}
-                        </div>
+                    <div class="post-list row">
+                        {% for year, yearItems in posts|groupby("dateYear") %}
+                            <h1>{{year}}</h1>
+                            {% for date, dateItems in yearItems|groupby("dateTimeline") %}
+                            <div class="row">
+                                <div class="col-md-2"><h3>{{date}}</h3></div>
+                                <div class="col-md-10">
+                                    <div class="row">
+                                        {% for item in dateItems %}
+                                        <div class="col-md-{{item.widthTemp}}" style="border: black solid 1px;">
+                                            {% include "../public/"+item.strCate+"Item.html" %}
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
                         {% endfor %}
                     </div>
                     {% include "../public/pagination.html" %}

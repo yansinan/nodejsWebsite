@@ -94,7 +94,7 @@
             {% if post.objDocsRecords.docs.length>0%}
             <div class="row">
                 <h2 class="" style="line-height: 60px;">精选专辑</h2>                
-                {% for record in post.objDocsRecords.docs %}
+                {% for item in post.objDocsRecords.docs %}
                     <div class="col-md-4" style="border: black solid 1px">
                     {% include "../public/recordItem.html" %}
                     </div>

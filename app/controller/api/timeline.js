@@ -11,7 +11,75 @@ const _ = require('lodash');
 const shortid = require('shortid');
 const moment = require("moment");
 
+// groupby相关函数
+var ObjProto = Object.prototype;
+function hasOwnProp(obj, k) {
+    return ObjProto.hasOwnProperty.call(obj, k);
+}
+/**
+ * @param {string|number} attr
+ * @returns {(string|number)[]}
+ * @private
+ */
+function _prepareAttributeParts(attr) {
+    if (!attr) {
+    return [];
+    }
+
+    if (typeof attr === 'string') {
+    return attr.split('.');
+    }
+
+    return [attr];
+}
+function isFunction(obj) {
+    return ObjProto.toString.call(obj) === '[object Function]';
+}
+    
+/**
+ * @param {string}   attribute      Attribute value. Dots allowed.
+ * @returns {function(Object): *}
+ */
+function getAttrGetter(attribute) {
+    const parts = _prepareAttributeParts(attribute);
+
+    return function attrGetter(item) {
+    let _item = item;
+
+    for (let i = 0; i < parts.length; i++) {
+        const part = parts[i];
+
+        // If item is not an object, and we still got parts to handle, it means
+        // that something goes wrong. Just roll out to undefined in that case.
+        if (hasOwnProp(_item, part)) {
+        _item = _item[part];
+        } else {
+        return undefined;
+        }
+    }
+
+    return _item;
+    };
+}
+// 数组分类排序成多维数组
+function groupBy(obj, val, throwOnUndefined) {
+    const result = new Array();
+    const iterator = isFunction(val) ? val : getAttrGetter(val);
+    for (let i = 0; i < obj.length; i++) {
+        const value = obj[i];
+        const key = iterator(value, i);
+        if (key === undefined && throwOnUndefined === true) {
+        throw new TypeError(`groupby: attribute "${val}" resolved to undefined`);
+        }
+        (result[key] || (result[key] = [])).push(value);
+    }
+    return result;
+}
+
 class APIController extends Controller {
+
+
+
     // 字段列表：
     getListFields (type = '') {
         const {
@@ -165,15 +233,23 @@ class APIController extends Controller {
             let listRes = listTimeline.map(v=>{
                 let source=v.url.split("/")[1];//artist,show,record,detail
                 let strDefault="";
+                let widthTemp=6;
                 switch(source) {
                     case "record":
                         strDefault="作品"
+                        widthTemp=4;
                         break;
                     case "show":
                         strDefault="演出"
+                        widthTemp=8;
                         break;
                     case "artist":
                         strDefault="乐队"
+                        widthTemp=6;
+                        break;
+                    case "details":
+                        strDefault="消息"
+                        widthTemp=10;
                         break;
                     default:
                         strDefault=""
@@ -181,22 +257,29 @@ class APIController extends Controller {
                 // TODO：根据文章分类设置strDefault
                 return {
                     _id:v._id,
-                    strCate : strDefault,
+                    strCate : source,
+                    strCateTip : strDefault,
                     // strAlt:
-                    name: (v.stitle || v.title || v.name || v.sTitle || v.alias ),
+                    name: ( ((v.stitle && v.stitle!="") ? v.stitle : v.title) || v.title || v.name || v.sTitle || v.alias ),
+                    alias:(v.stitle || v.sTitle || v.alias || '' ),//副标题
                     dateTimeline: moment(new Date(v.date)).format("MM-DD"),
-                    dateYear:moment(new Date(v.date)).format("YYYY"),
+                    dateYear:moment(new Date(v.date)).format("YYYY")+" ",
                     url:v.url,
                     sImg:v.sImg,
+                    discription:v.discription,
                     tags:v.tags,
-
+                    listArtists:v.listArtists,
+                    widthTemp:widthTemp,//时间轴显示模块的宽度
                 }
             })
+
             let resObj = {
                 docs : (await this.renderList(ctx, listRes)),
+                pageInfo:{
+                    itemTemplate:"timeline",//对象模板使用时间轴模板
+                }
             } 
             
-            debugger
             ctx.helper.renderSuccess(ctx, {
                 data: resObj
             });

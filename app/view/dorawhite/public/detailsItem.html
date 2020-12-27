@@ -1,0 +1,36 @@
+<!--
+约定documentList.docs为文档列表数据集合
+item为子元素集合
+-->
+    {# 时间轴模式，名称在右tags #}
+    {% if pageInfo.itemTemplate == "timeline" %}
+    <div class="row" style="padding-left:15px;">
+        <a href="{{item.url}} " target="_blank " style="">
+            <h1 class="post-title text-left" alt="{{site.altkey}}{{item.name}}">
+                <small><u>{{item.name}}</u></small>
+            </h1>
+        </a>
+    </div>
+    {# 标签 #}
+    <div class="row" style="padding-left:15px;">
+        <ul class="pager" style="text-align:left">
+        {% for tag in item.tags %}
+            <li><a href="{{tag.url}}">{{tag.name}}</a></li>
+        {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    {# 图和简介 #}
+    {% if item.discription %}
+    <div class="row" style="margin-bottom:15px;">
+        {# 图 #}
+        <div class="col-md-8">
+            <a href="{{item.url}} " target="_blank " class="text-center "><img src="{{item.sImg}} " class="img-responsive" alt="{{item.name}} " /></u></a>
+        </div>
+        <div class="col-md-4" >
+            <h4>{{item.alias}}</h4>
+            <article  style="">{{item.discription}}</article>
+        </div>
+    </div>
+    {% endif %}
+

@@ -59,12 +59,12 @@ module.exports =app=>{
         }).set(function(v){
             this.listDateDur[1]=v;
         });
-        schema.virtual('date').get(function () {
-            return moment(this.dateStart).format("YYYY-MM-DD");
-        }).set((v)=>{
-            this.dateStart = v || Date.now;
-            this.date=this.dateStart || Date.now;
-        });
+        // schema.virtual('date').get(function () {
+        //     return moment(this.dateStart).format("YYYY-MM-DD");
+        // }).set((v)=>{
+        //     this.dateStart = v || Date.now;
+        //     this.date=this.dateStart || Date.now;
+        // });
         // url地址
         schema.virtual('url').get(function () {
             return `/show/${this._id}.html`;

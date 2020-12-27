@@ -6,12 +6,12 @@ item为子元素集合
     {% if pageInfo.itemTemplate == "timeline" %}
     <div class="row" style="padding:15px;">
         {% if item.listArtists[0] %}
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="row">
                 <img src="{{item.listArtists[0].sImg}}" alt="..." class="img-circle" style="max-width:75px;">
             </div>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-10">
             {% for artist in item.listArtists %}
             <div class="row">
                 <span class="" alt="{{site.altkey}}{{artist.name}}" style="">
@@ -24,7 +24,7 @@ item为子元素集合
             <div class="row">
                 <span class="" alt="{{site.altkey}}{{artist.name}}" style="">
                     <a href="{{artist.url}} " target="_blank ">
-                        发布专辑
+                        组织演出
                     </a>
                 </span>
             </div>
@@ -40,28 +40,28 @@ item为子元素集合
         </ul>
     </div>
     {% endif  %}
-    {# 图 #}
-    <div class="row">
-        <img src="{{item.sImg}} " class="img-responsive" alt="{{item.title}} " />
-    </div>
-    {# 专辑名 #}
-	<div class="row" style="border-top: black solid 1px;border-bottom: black solid 1px;height: 45px;padding-top: 5px;">
-        <div class="col-xs-6">
-            <a href="{{item.url}} " target="_blank " class=" "><u>{{item.name}}</u></a>
+    {# 图和简介 #}
+    {% if item.discription %}
+    <div class="row" style="margin-bottom:15px;">
+        {# 图 #}
+        <div class="col-md-5">
+            <a href="{{item.url}} " target="_blank " class=" "><img src="{{item.sImg}} " class="img-responsive" alt="{{item.name}} " /></u></a>
         </div>
-        <div class="col-xs-6" >
-            <span  style="border: black solid 1px;padding: 0px 10px;"><u>{{ (item.dateYear+'-') if item.dateYear else '' }}{{item.dateTimeline}}</u></span>
+        <div class="col-md-7" >            
+            <div class="row" style=""><h3><small>{{item.name}}</small></h3></div>
+            <div class="row" style="margin-bottom:15px;"><h4>{{item.dateStart}}</h4></div>
+            <div class="row" style=""><h4>乐队</h4></div>
+            <div class="row" style="">
+                <ul class="pager" style="text-align:left">
+                {% for artist in item.listArtists %}
+                    <li><a href="{{artist.url}}">{{artist.name}}</a></li>
+                {% endfor %}
+                </ul>
+            </div>
+            <div class="row" style="">
+                <article  style="">{{item.discription}}</article>
+            </div>
         </div>
-	</div>
-    {# 唱片列表模式，乐队名在下 #}
-    {% if pageInfo.itemTemplate == "record" %}
-    <div class="row">
-        {% for artist in item.listArtists %}
-        <h5 class="" alt="{{site.altkey}}{{artist.name}}">
-            <a href="{{artist.url}} " target="_blank ">
-                {{artist.name}}
-            </a>
-        </h5>
-        {% endfor %}
     </div>
-    {% endif  %}
+    {% endif %}
+
