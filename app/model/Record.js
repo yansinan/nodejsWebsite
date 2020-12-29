@@ -22,6 +22,11 @@ module.exports =app=>{
             },
         }
         var schema = new Schema({
+            date: {
+                type: Date,
+                default: Date.now,
+                alias: 'dateRelease',
+            },//发行日期
             listArtists:[{
                 type: String,
                 ref: 'Artist'
@@ -30,10 +35,10 @@ module.exports =app=>{
                 type: String,
                 ref:'ContentTag',
             }],//发行介质
-            dateRelease:{
-                type: Date,
-                default: Date.now,
-            },//发行日期
+            // dateRelease:{
+            //     type: Date,
+            //     default: Date.now,
+            // },//发行日期
             catalog:{
                 type: String,
                 default:"CD",
@@ -45,14 +50,22 @@ module.exports =app=>{
                 type:{type:String,default:"购买"},
             }],//购买链接
         });        
-        schema.path('dateRelease').get(function (v) {
+        // schema.path('dateRelease').get(function (v) {
+        //     return moment(v || new Date()).format("YYYY-MM-DD");
+        // }).set(v=>{
+        //     this.date=v || Date.now;
+        //     return v
+        // });
+        // schema.path('date').get(function (v) {
+        //     return (this.dateRelease || v);
+        // }).set(function (v) {
+        //     if ((this instanceof mongoose.Document ) && v != null) {
+        //         return (this.dateRelease || v);
+        //     }
+        //     return v;
+        // });
+        schema.path('date').get(function (v) {
             return moment(v).format("YYYY-MM-DD");
-        });
-        schema.virtual('date').get(function () {
-            return moment(this.dateRelease).format("YYYY-MM-DD");
-        }).set((v)=>{
-            this.dateRelease = v || Date.now;
-            this.date=this.dateRelease || Date.now;
         });
         schema.virtual('dateTimeline').get(function () {
             return moment(this.dateRelease).format("YYYY-MM-DD");

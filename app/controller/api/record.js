@@ -21,12 +21,12 @@ let that={
     getListFields (type = '') {
 
         let files = null;
-        if (type == 'normal') {
-            files = '_id url name alias sImg date updateDate discription clickNum roofPlacement type videoImg state dismissReason categories isTop dateRelease'
+        if (type == 'listRecord') {
+            files = '_id url name alias sImg date discription clickNum roofPlacement type videoImg state isTop dateRelease'
         } else if (type == 'simple') {
             files = '_id url name alias sImg stitle date updateDate clickNum roofPlacement type videoImg state dismissReason';
-        } else if (type == 'stage1') {
-            files = '_id url name alias sImg date updateDate discription comments clickNum roofPlacement type videoImg state dismissReason categories isTop'
+        } else if (type == 'normal') {
+            files = '_id url name alias sImg date discription clickNum roofPlacement type videoImg state isTop dateRelease'
         } else {
             files = '_id url name alias sImg date discription clickNum roofPlacement type appShowType imageArr videoArr duration simpleComments comments videoImg state dismissReason categories isTop listArtists listFormatTags dateRelease catalog listShopLink'
         }
@@ -156,7 +156,7 @@ let ControllerPlugin = {
             let model = ctx.query.model;
             let sortby = ctx.query.sortby;
             let tagName = ctx.query.tagName;
-            let filesType = 'normal'; // 查询模式 full/normal/simple
+            let filesType = 'listRecord'; // 查询模式 full/normal/simple
             let isSingerPage = false; // 是否是单页面
 
             let idArtist=ctx.query.idArtist || ctx.params.idArtist;//某乐队的专辑

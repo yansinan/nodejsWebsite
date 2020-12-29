@@ -92,6 +92,8 @@ class APIController extends Controller {
             files = '_id url name alias sImg stitle date updateDate clickNum roofPlacement type videoImg state dismissReason';
         } else if (type == 'stage1') {
             files = '_id url name alias sImg date updateDate discription comments clickNum roofPlacement type videoImg state dismissReason categories isTop'
+        } else if (type == 'timeline') {
+            files = '_id url stitle title name alias sImg date discription roofPlacement state categories isTop listArtists tags dateTimeline dateYear'
         } else {
             files = '_id url stitle title name alias sImg date discription clickNum roofPlacement state categories isTop listArtists tags dateYear'
         }
@@ -262,6 +264,7 @@ class APIController extends Controller {
                     // strAlt:
                     name: ( ((v.stitle && v.stitle!="") ? v.stitle : v.title) || v.title || v.name || v.sTitle || v.alias ),
                     alias:(v.stitle || v.sTitle || v.alias || '' ),//副标题
+                    date:moment(new Date(v.date)).format("YYYY-MM-DD"),
                     dateTimeline: moment(new Date(v.date)).format("MM-DD"),
                     dateYear: v.dateYear || moment(new Date(v.date)).format("YYYY")+" ",
                     url:v.url,

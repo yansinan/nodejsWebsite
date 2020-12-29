@@ -46,7 +46,7 @@ item为子元素集合
             <a href="{{item.url}} " target="_blank " class=" "><u>{{item.name}}</u></a>
         </div>
         <div class="col" >
-            <span class="border border-dark px-3"><u class=" d-inline-block">{{ (item.dateYear+'-') if item.dateYear else '' }}{{item.dateTimeline}}</u></span>
+            <span class="border border-dark px-3"><u class=" d-inline-block">{{item.date}}</u></span>
         </div>
 	</div>
     {# 唱片列表模式，乐队名在下 #}

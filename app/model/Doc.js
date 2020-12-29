@@ -136,7 +136,7 @@ const INIT_DOC= app=>{
     //     this.listRefs
     // });
     schema.path('date').get(function (v) {
-        return moment(v).format("YYYY-MM-DD HH:mm:ss");
+        return moment(v).format("YYYY-MM-DD");
     });
     schema.path('updateDate').get(function (v) {
         return moment(v).format("YYYY-MM-DD HH:mm:ss");

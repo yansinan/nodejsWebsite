@@ -133,7 +133,8 @@ const funGetData = async (ctx,fields) => {
         catalog:fields.catalog,
         listShopLink:fields.listShopLink,
     };
-    
+    // 变更date为dateRelease
+    if(formObj.dateRelease)formObj.date=formObj.dateRelease;
     // 设置显示模式
     let checkInfo = siteFunc.checkContentType(formObj.simpleComments);
     formObj.appShowType = checkInfo.type;
