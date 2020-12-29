@@ -1,3 +1,4 @@
+{% from "./compListTags.html" import listTags %}
 <!--
 约定post为文档列表数据集合
 item为子元素集合
@@ -39,11 +40,7 @@ item为子元素集合
         </div>
         {# 标签 #}
         <div class="row py-2" style="">
-            <ul class="list-inline">
-                {% for tag in item.tags %}
-                    <li class="list-inline-item  px-3 rounded-pill border"><a href="{{tag.url}}" class="text-light">{{tag.name}}</a></li>
-                {% endfor %}
-            </ul>
+            {{listTags(item.tags,"text-light")}}
         </div>
     </div>
     {% endif %}
