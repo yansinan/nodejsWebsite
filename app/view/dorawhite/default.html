@@ -19,7 +19,7 @@
 
 <body>
     {% include "./public/header.html" %}
-    <div class="mainbody" id="{{pageType}}">
+    <div class="mainbody" id="{{pageType}}" style="width:100%;max-width:1199px;">
         <input type="hidden" value="{{site.lang}}" id="siteLang">
         {% block content %}{% endblock %}
     </div>

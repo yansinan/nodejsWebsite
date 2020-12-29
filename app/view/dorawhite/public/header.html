@@ -28,6 +28,7 @@
         <div class="row">
             <div class="col-md-12 header-box">
                 <div class="row header-main">
+                    {# logo #}
                     <div class="col-sm-2 col-md-2">
                         <div class="site-name ">
                             <a href="{{homelink}}" id="logo">
@@ -36,6 +37,7 @@
                             </a>
                         </div>
                     </div>
+                    {# 导航 #}
                     <div class="col-sm-9 col-md-6" id="navWrapper">
                         <div id="navScroller">
                             <ul>
@@ -48,6 +50,7 @@
                             </ul>
                         </div>
                     </div>
+                    {# search #}
                     <div class="col-sm-1 col-md-4">
                         <div class="text-right topNav">
                             <div class="search-pannel">
@@ -59,6 +62,7 @@
                                     <i ms-click='@searchMe' class="fa fa-search"></i>
                                 </div>
                             </div>
+                            {# 
                             <ul class="navbar-right">
                                 {% if logined == undefined %}
                                 <li>
@@ -90,7 +94,8 @@
                                     <button type="button" ms-on-click="@postArticel"
                                         class="btn btn-primary btn-sm navbar-btn">{{__('lc_myPostArticels')}}</button>
                                 </li>
-                            </ul>
+                            </ul> 
+                            #}
                         </div>
                     </div>
                 </div>

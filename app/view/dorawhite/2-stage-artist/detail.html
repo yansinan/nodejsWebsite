@@ -6,7 +6,7 @@
 <div class="container-fluid">
     <div class="row"  ms-controller="documentInfo">
         {# 头部 名称，标签，成员 #}
-        <div class="col-md-12 main-container">
+        <div class="col-12">
             <input type="hidden" value="{{post._id}}" id="contentId">
             <div class="row">
                 <div class="col main-container">
@@ -14,7 +14,7 @@
                         <div class="col">                        
                             <h1 class="display-1">{{post.name}} {{post.alias}}</h1>
                         </div>
-                        <div class="col-2">                        
+                        <div class="col-md-2 col-sm3">                        
                             {{avatar(post,128)}}
                         </div>
                     </div>
@@ -41,7 +41,7 @@
             </div>
         </div>
         {# 左侧 #}
-        <div class="col-md-4 main-container">
+        <div class="col-md-4 col-sm-12">
             {# 档案 #}
             <div class="row border border-dark pt-2">              
                 <h2 class="">档案</h2>
@@ -86,8 +86,8 @@
             </div>
             {% for link in post.listHotMusics %}
             <div class="row border-bottom border-dark py-3" onclick="window.location.href= '{{ link.url }}';return false">
-                <span class="col-xs-12 col-md-8" >{{ link.name }}</span>
-                <span class="col-xs-2 col-md-2 glyphicon glyphicon-play"  aria-hidden="true" style="margin: 5px;" id="bn-{{ link.url }}"></span>
+                <span class="col" >{{ link.name }}</span>
+                <span class="col-1 d-none d-sm-block fa fa-play"  aria-hidden="true" style="margin: 5px;" id="bn-{{ link.url }}"></span>
             </div>
             {% endfor %}                        
             <div class="row border-2 border-bottom border-dark"></div>
@@ -100,10 +100,10 @@
             {% endif %}
         </div>
         {# 右侧 #}
-        <div class="col-md-8 main-container">
+        <div class="col">
             {# 乐队图 #}
             <div class="row">
-                <img src="{{post.sImg}}" class="img-responsive" alt="{{post.name}}">
+                <img src="{{post.sImg}}" class="img-fluid" alt="{{post.name}}">
             </div>
             {# 专辑 #}
             {% if post.objDocsRecords.docs.length>0%}
