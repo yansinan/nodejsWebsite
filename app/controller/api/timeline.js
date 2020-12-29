@@ -93,7 +93,7 @@ class APIController extends Controller {
         } else if (type == 'stage1') {
             files = '_id url name alias sImg date updateDate discription comments clickNum roofPlacement type videoImg state dismissReason categories isTop'
         } else {
-            files = '_id url stitle title name alias sImg date discription clickNum roofPlacement state categories isTop listArtists tags'
+            files = '_id url stitle title name alias sImg date discription clickNum roofPlacement state categories isTop listArtists tags dateYear'
         }
         // console.log('--files----', files)
         return files;
@@ -263,7 +263,7 @@ class APIController extends Controller {
                     name: ( ((v.stitle && v.stitle!="") ? v.stitle : v.title) || v.title || v.name || v.sTitle || v.alias ),
                     alias:(v.stitle || v.sTitle || v.alias || '' ),//副标题
                     dateTimeline: moment(new Date(v.date)).format("MM-DD"),
-                    dateYear:moment(new Date(v.date)).format("YYYY")+" ",
+                    dateYear: v.dateYear || moment(new Date(v.date)).format("YYYY")+" ",
                     url:v.url,
                     sImg:v.sImg,
                     discription:v.discription,

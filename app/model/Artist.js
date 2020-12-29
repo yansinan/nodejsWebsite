@@ -43,6 +43,10 @@ module.exports =app=>{
             //     type:String,
             //     default:0
             // },//风格
+            date: {
+                type: Date,
+                default: Date.now
+            },
             listMembers:[{
                 type: String,
                 ref: 'User'
@@ -53,7 +57,7 @@ module.exports =app=>{
             },
             listDateDur:[{
                 type: Date,
-                default: Date.now,
+                default: [Date.now],
             }],//加入厂牌时间
             // dateJoin: {
             //     type: Date,
@@ -107,18 +111,30 @@ module.exports =app=>{
         }).set(function(v){
             this.listDateDur[0]=v || Date.now;
             this.date=this.listDateDur[0];
+            return this.listDateDur[0];
         });
         schema.virtual('dateEnd').get(function () {
             return (this.listDateDur && this.listDateDur[1] )? this.listDateDur[1] : false ;
         }).set(function(v){
             this.listDateDur[1]=v;
+            return this.listDateDur[1];
         });
-        schema.virtual('date').get(function () {
-            return moment(this.dateStart).format("YYYY-MM-DD");
-        }).set((v)=>{
-            this.dateStart = v || Date.now;
-            this.date=this.dateStart || Date.now;
+        // TODO:没弄懂，v输出总是undefinded
+        // schema.path('listDateDur').get(v=>(v)).set(function (v) {
+        //     let tmp=this.listDateDur;
+        //     if ((this instanceof mongoose.Document ) && v != null && v.length>0 && v[0]) {
+        //         this.date=v[0];
+        //     }
+        //     return v;
+        // });
+        schema.path('date').get(function (v) {            
+            let res=((this.listDateDur && this.listDateDur[0])?this.listDateDur[0]:false) || v;
+            return res;
+        }).set(function (v) {
+            let res=((this.listDateDur && this.listDateDur[0])?this.listDateDur[0]:false) || v;
+            return res;
         });
+
         schema.virtual('dateTimeline').get(function () {
             return (this.listDateDur && this.listDateDur[0])?moment(this.listDateDur[0]).format("YYYY-MM-DD") : false;;
         });

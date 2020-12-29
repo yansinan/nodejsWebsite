@@ -1,4 +1,5 @@
 {% from "./compListTags.html" import listTags %}
+{% from "./compAvatar.html" import avatar %}
 <!--
 约定documentList.docs为文档列表数据集合
 item为子元素集合
@@ -8,7 +9,9 @@ item为子元素集合
     <div class="row pt-2">
         {% if item.listArtists[0] %}
         <div class="col-md-auto">
-            <img src="{{item.listArtists[0].sImg}}" alt="..." class="rounded-circle" style="max-width:64px;">
+            {# 暂时只用第一作者 #}
+            {{avatar(item.listArtists[0])}}
+            {# <img src="{{item.listArtists[0].sImg}}" alt="..." class="rounded-circle" style="max-width:64px;"> #}
         </div>
         <div class="col">
             {% for artist in item.listArtists %}
@@ -45,12 +48,7 @@ item为子元素集合
             <div class="row" style="margin-bottom:15px;"><h4>{{item.dateStart}}</h4></div>
             <div class="row" style=""><h4>乐队</h4></div>
             <div class="row py-2" style="">
-                <ul class="list-inline">
-                    {% for artist in item.listArtists %}
-                        <li class="list-inline-item  px-3 rounded-pill border"><a href="{{artist.url}}" class="">{{artist.name}}</a></li>
-                    {% endfor %}
-                </ul>
-
+                {{listTags(item.listArtists)}}
             </div>
             <div class="row mt-3" style="">
                 <article  style="">{{item.discription}}</article>

@@ -7,7 +7,8 @@ module.exports =app=>{
     {
         const mongoose = app.mongoose
         var Schema = mongoose.Schema;
-    
+        var moment = require('moment')
+
         // 继承自Doc        
         let Doc=app.model.Doc || require("./Doc")(app) || INIT_DOC(app);//
         
@@ -22,6 +23,10 @@ module.exports =app=>{
             },
         }
         var schema = new Schema({
+            date: {
+                type: Date,
+                default: Date.now
+            },
             listArtists:[{
                 type: String,
                 ref: 'Artist'
@@ -32,7 +37,7 @@ module.exports =app=>{
             },
             listDateDur:[{
                 type: Date,
-                default: Date.now,
+                default: [Date.now],
             }],//活动期间
             listTicketLink:[{
                 url:{type:String},
@@ -81,6 +86,14 @@ module.exports =app=>{
         }).set(function(v){
             this.alias=v;
         });
+        schema.path('date').get(function (v) {            
+            let res=((this.listDateDur && this.listDateDur[0])?this.listDateDur[0]:false) || v;
+            return res;
+        }).set(function (v) {
+            let res=((this.listDateDur && this.listDateDur[0])?this.listDateDur[0]:false) || v;
+            return res;
+        });
+
         let model=app.model.Show || Doc.discriminator("Show", schema);
     
         return model

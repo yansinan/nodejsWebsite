@@ -2,19 +2,18 @@
 约定documentList.docs为文档列表数据集合
 item为子元素集合
 -->
+{% for year,artists in posts|groupby("dateYear") %}
+
 <div class="row">
-	{% if pageType == 'index' %}
-	<h3 class="top-news">
-		<span>{{__('lc_new_document')}}
-			<span>
-	</h3>
-	{% endif %} 
-	
-	{% for item in posts %}
-	<div class="col-md-3 bg-dark" style="">
-		{% include "../public/artistItem.html" %}
+	<div class="col-2 text-center"><span class="display-4"><u>{{year}}</u></span></div>
+	<div class="col">
+		<div class="row">
+			{% for item in artists %}
+			<div class="col-3 bg-dark" style="">
+				{% include "../public/artistItem.html" %}
+			</div>
+			{% endfor %}
+		</div>
 	</div>
-	{% endfor %}
-
-
 </div>
+{% endfor %}

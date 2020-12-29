@@ -8,6 +8,10 @@ const INIT_DOC= app=>{
     if(app.model.DocModel)return app.model.DocModel;
 
     const mongoose = app.mongoose
+    // mongoose.set('useNewUrlParser', true);
+    mongoose.set('useFindAndModify', false);
+    // mongoose.set('useCreateIndex', true);
+    // mongoose.set('useUnifiedTopology', true);
     var Schema = mongoose.Schema;
 
     // 继承自DocBase
@@ -136,6 +140,10 @@ const INIT_DOC= app=>{
     });
     schema.path('updateDate').get(function (v) {
         return moment(v).format("YYYY-MM-DD HH:mm:ss");
+    });
+    // 年份信息
+    schema.virtual('dateYear').get(function () {
+        return moment(new Date(this.date)).format("YYYY") + " ";
     });
     app.model=app.model || {};
     let model=app.model.DocModel || mongoose.model("Doc", schema);

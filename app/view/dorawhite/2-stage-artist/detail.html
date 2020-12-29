@@ -1,29 +1,38 @@
-{% extends "../default.html" %} {% block content %}
+{% from "../public/compListTags.html" import tag as domTag %}
+{% from "../public/compAvatar.html" import avatar %}
+
+{% extends "../default.html" %} 
+{% block content %}
 <div class="container-fluid">
     <div class="row"  ms-controller="documentInfo">
         {# 头部 名称，标签，成员 #}
         <div class="col-md-12 main-container">
             <input type="hidden" value="{{post._id}}" id="contentId">
             <div class="row">
-                <div class="col-md-7 main-container">
+                <div class="col main-container">
                     <div class="row">
-                        <div class="col-xs-12">                        
-                            <h1>{{post.name}} {{post.alias}}</h1>
+                        <div class="col">                        
+                            <h1 class="display-1">{{post.name}} {{post.alias}}</h1>
                         </div>
+                        <div class="col-2">                        
+                            {{avatar(post,128)}}
+                        </div>
+                    </div>
+                    <div class="row">
                         {# 风格 #}
-                        <ol class="col-xs-12 breadcrumb">
-                        {% if post.tags.length>0%}
-                            {% for tag in post.tags %}
-                            <li><a href="{{tag.url}}">{{tag.name}}   {{tag.alias}}</a></li>
-                            {% endfor %}
-                            <li><a href="{{post.url}}">{{post.from}}</a></li>
-                        {% endif %}
-                        </ol>
+                        <ul class="list-inline">
+                            {% if post.tags.length>0%}
+                                {% for tag in post.tags %}
+                                    {{ domTag(tag.name+"   "+tag.alias,tag.url) }}
+                                {% endfor %}
+                            {% endif %}
+                            {{ domTag(post.from,post.url) }}
+                        </ul>
                         {# 友链 #}
                         <div class="col-xs-12">
                         {% if post.listLinks.length>0%}
                             {% for link in post.listLinks %}
-                            <a href="{{ link.url }}" target="_blank"><img src="{{ link.icon }}" alt="name" class="img-circle" style="background-color:black;padding:6px;"></a>
+                                {{avatar(link,32,"bg-dark m-2")}}
                             {% endfor %}
                         {% endif %}
                         </div>
@@ -34,55 +43,61 @@
         {# 左侧 #}
         <div class="col-md-4 main-container">
             {# 档案 #}
-            <div class="row">                
+            <div class="row border border-dark pt-2">              
                 <h2 class="">档案</h2>
+            </div>
+            <div class="row border border-top-0 border-dark">  
                 <article class="">
-                    <div class="">
-                        {{post.comments | safe}}
-                    </div>
+                    {{post.comments | safe}}
                 </article>
             </div>
             {# 时间线 #}
-            {% if post.listTimeline.length>0%}
-            <div class="row">
-                <div class="col-md-12">          
-                    <div class="row"><h2 class="">时间线</h2></div>
-                    {% for item in post.listTimeline %}
+            {% if post.listTimeline.length>0%} 
+                <div class="row border border-top-0 border-dark pt-2"><h2 class="">时间线</h2></div>
+                <div class="row border border-top-0 border-dark pt-2">
+                    <div class="col">
+                        {% for item in post.listTimeline %}
                         {%if post.listTimeline[loop.first]  or itme.dateYear!=post.listTimeline[loop.revindex0].dateYear %}
-                        <div class="row"><h3>{{ item.dateYear}}</h3></div>
+                        <div class="row pt-4"><h3>{{ item.dateYear}}</h3></div>
                         {% endif %}
                         <div class="row">
-                            <span class="col-xs-2 col-md-2" style="padding-left:0px">{{ item.dateTimeline}}</span>
-                            <span class="col-xs-12 col-md-8" ><u>{{ item.name }}</u></span>
-                        </div>
-                        
-                    {% endfor %}
-                    <div class="row"><h3></h3></div>
-                </div> 
-            </div>
+                            <span class="col-xs-2 col-md-2" >{{ item.dateTimeline}}</span>
+                            <span class="col" ><strong><u>{{ item.name }}</u></strong></span>
+                        </div>                            
+                        {% endfor %}
+                        {# 空行 #}
+                        <div class="row pt-4"></div>
+                    </div>
+                </div>
             {% endif %}
             {# 专辑 #}
-            <div class="row bg-primary"><h2 class="">专辑</h2></div>
+            <div class="row border border-top-0 border-light bg-dark text-light pt-2"><h2 class="">专辑</h2></div>
             {# 视频/MV #}
-            <div class="row bg-primary"><h2 class="">视频/MV</h2></div>
+            <div class="row border border-top-0 border-light bg-dark text-light pt-2"><h2 class="">视频/MV</h2></div>
             {# 周边 #}
-            <div class="row bg-primary"><h2 class="">周边</h2></div>
+            <div class="row border border-top-0 border-light bg-dark text-light pt-2"><h2 class="">周边</h2></div>
             {# 演出动态 #}
-            <div class="row bg-primary"><h2 class="">演出/动态</h2></div>
+            <div class="row border border-top-0 border-light bg-dark text-light pt-2"><h2 class="">演出/动态</h2></div>
 
             {# 精选单曲 #}
             {% if post.listHotMusics.length>0%}
-            <div class="row">
+            <div class="row border-2 border-bottom border-dark pt-5 pb-2">
                 <h2 class="">精选单曲</h2>
-                {% for link in post.listHotMusics %}
-                <div class="" onclick="window.location.href= '{{ link.url }}';return false">
-                    <span class="col-xs-12 col-md-8" >{{ link.name }}</span>
-                    <span class="col-xs-2 col-md-2 glyphicon glyphicon-play"  aria-hidden="true" style="margin: 5px;" id="bn-{{ link.url }}"></span>
-                </div>
-                {% endfor %}                        
-
             </div>
-            {% endif %}              
+            {% for link in post.listHotMusics %}
+            <div class="row border-bottom border-dark py-3" onclick="window.location.href= '{{ link.url }}';return false">
+                <span class="col-xs-12 col-md-8" >{{ link.name }}</span>
+                <span class="col-xs-2 col-md-2 glyphicon glyphicon-play"  aria-hidden="true" style="margin: 5px;" id="bn-{{ link.url }}"></span>
+            </div>
+            {% endfor %}                        
+            <div class="row border-2 border-bottom border-dark"></div>
+            {% endif %}
+            {# 相似成员 #}
+            {% if post.listHotMusics.length>0%}
+            <div class="row border-2 border-bottom border-dark pt-5 pb-2">
+                <h2 class="">相似成员</h2>
+            </div>
+            {% endif %}
         </div>
         {# 右侧 #}
         <div class="col-md-8 main-container">

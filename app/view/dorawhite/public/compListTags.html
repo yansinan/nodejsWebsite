@@ -1,12 +1,14 @@
 
-{% macro tag(tag) %}
-    <li class="list-inline-item  px-3 rounded-pill border"><a href="{{tag.url}}" class="">{{tag.name}}</a></li>
+{% macro tag(name,href) %}
+    <li class="list-inline-item px-3 rounded-pill border"><a href="{{href}}" class="">{{name}}</a></li>
 {% endmacro %}
 
 {% macro listTags(listTags,class="") %}
-    <ul class="list-inline">
-        {% for tag in listTags %}
-            <li class="list-inline-item  px-3 rounded-pill border"><a href="{{tag.url}}" class="{{class}}">{{tag.name}}</a></li>
-        {% endfor %}
-    </ul>
+    {% if listTags.length>0%}
+        <ul class="list-inline">
+            {% for tag in listTags %}
+                <li class="list-inline-item  px-3 rounded-pill border"><a href="{{tag.url}}" class="{{class}}">{{tag.name}}</a></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 {% endmacro %}
