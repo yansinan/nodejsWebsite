@@ -47,7 +47,7 @@
           />
         </template>
       </el-table-column>  
-      <el-table-column prop="sImg" :label="$t('record.sImg')" width="50px" show-overflow-tooltip>
+      <el-table-column prop="sImg" :label="$t(nameMod+'.sImg')" width="50px" show-overflow-tooltip>
         <template slot-scope="scope">
           <img :src="scope.row.sImg" class="avatar" width="50px"/>
         </template>
@@ -56,6 +56,9 @@
         <template slot-scope="scope">
           <a :href="'/'+nameMod+'/'+scope.row._id+'.html'" target="_blank">{{scope.row.name}}</a>
         </template>
+      </el-table-column>
+      <el-table-column prop="date" :label="$t(nameMod+'.dateRelease')" width="180">
+        <template slot-scope="scope">{{scope.row.date}}</template>
       </el-table-column>
       <el-table-column prop="listArtists" :label="$t('contents.author')" show-overflow-tooltip>
         <template slot-scope="scope">

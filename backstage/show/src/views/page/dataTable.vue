@@ -62,6 +62,9 @@
           <span v-for="artist in scope.row.listArtists" :key="artist._id">{{artist.name+','}}</span>
         </template>
       </el-table-column>
+      <el-table-column prop="date" :label="$t(nameMod+'.date')" width="100">
+        <template slot-scope="scope">{{scope.row.date}}</template>
+      </el-table-column>
       <el-table-column prop="location" :label="$t(nameMod+'.location')" width="50" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{scope.row.location}}</span>

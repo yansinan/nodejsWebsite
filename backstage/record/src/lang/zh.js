@@ -47,6 +47,7 @@ export default {
     dateRelease:"发行时间",
     catalog:"发行编号",
     listShopLink:"购买链接",
+    dateRelease:"发行日期",
   },
   //LangEnd
 }
