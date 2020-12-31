@@ -38,14 +38,14 @@ item为子元素集合
     {% endif  %}
     {# 图 #}
     <div class="row">
-        <img src="{{item.sImg}} " class="img-fluid px-0" alt="{{item.title}} " />
+        <a href="{{item.url}} " target="_blank " class=" px-0"><img src="{{item.sImg}} " class="img-fluid" alt="{{item.title}} " /></a>
     </div>
     {# 专辑名 #}
 	<div class="row border-top border-dark py-2" style="height: 45px;">
-        <div class="col-6 text-truncate">
+        <div class="col-6 text-truncate text-nowrap">
             <a href="{{item.url}} " target="_blank " class=" "><u>{{item.name}}</u></a>
         </div>
-        <div class="col" >
+        <div class="col text-nowrap" >
             <span class="border border-dark px-3"><u class=" d-inline-block">{{item.date}}</u></span>
         </div>
 	</div>

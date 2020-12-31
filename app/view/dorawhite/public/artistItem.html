@@ -12,7 +12,7 @@ item为子元素集合
         </div>
         {# 艺人列表模式，名称在下 #}
         {% if pageInfo.itemTemplate != "timeline" %}
-        <div class="row p-2 border-top border-light" style="">
+        <div class="row p-2 border-top border-light text-nowrap text-truncate" style="">
             <h2 class="" alt="{{site.altkey}}{{item.name}}">
                 <a href="{{item.url}} " target="_blank " class="text-light">
                     {{item.name}}
