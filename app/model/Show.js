@@ -88,7 +88,7 @@ module.exports =app=>{
         });
         schema.path('date').get(function (v) {            
             let res=((this.listDateDur && this.listDateDur[0])?this.listDateDur[0]:false) || v;
-            return res;
+            return moment(res).format("YYYY-MM-DD");;
         }).set(function (v) {
             let res=((this.listDateDur && this.listDateDur[0])?this.listDateDur[0]:false) || v;
             return res;
