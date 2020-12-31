@@ -99,12 +99,10 @@
             :before-upload="beforeAvatarUpload"
             :data="{action:'uploadimage'}"
           >
-            <img v-if="formState.formData.sImg" :src="formState.formData.sImg" class="avatar" />
+            <img v-if="formState.formData.sImg" :src="formState.formData.sImg" class="avatar" style="height:auto;" />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2m</div>
           </el-upload>
-          <el-button size="mini" @click="getRandomContentImg()" class="refresh-btn" plain round>
-            <svg-icon icon-class="reload" />
-          </el-button>
         </el-form-item>
         <el-form-item :label="$t('contents.discription')" prop="discription">
           <el-input size="small" type="textarea" v-model="formState.formData.discription"></el-input>
@@ -203,7 +201,6 @@ import {
   getOne,
   addOne,
   updateOne,
-  getRandomContentImg,
   // regUserList,
 } from "@root/publicMethods/apiGeneral";
 import {
@@ -422,26 +419,7 @@ export default {
 
       this.userLoading = false;
     },
-    //TODO：20200107默认图片
-    getRandomContentImg(params = {}) {
-      let _this = this;
-      getRandomContentImg(params)
-        .then(result => {
-          if (result.status == 200 && result && result.data) {
-            let randomImg = result.data[0];
-            let initFormData = Object.assign({}, this.formState.formData, {
-              sImg: randomImg
-            });
 
-            this.showContentForm({
-              formData: initFormData
-            });
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
     // TOCheck：没用上？
     checkFlashPost(currentType) {
       this.showContentForm({
@@ -704,7 +682,6 @@ export default {
           });
       } else {
         //初始化表單
-        this.getRandomContentImg();
       }
     }
     this.$store.dispatch("contentCategory/getContentCategoryList");
