@@ -42,6 +42,7 @@ export default {
     sImg:"海报",
     listArtists:"演出乐队",
     name:"活动大标题",
+    date:"演出日期",
     nameAlias:"活动小标题",
     listDateDur:"活动时间",
     location:"地点",
