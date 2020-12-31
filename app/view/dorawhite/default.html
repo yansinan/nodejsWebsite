@@ -19,7 +19,8 @@
 
 <body>
     {% include "./public/header.html" %}
-    <div class="mainbody" id="{{pageType}}" style="width:100%;max-width:1199px;">
+    {# <div class="mainbody" id="{{pageType}}" style="width:100%;max-width:1199px;"> #}
+    <div class="container-xxl" id="{{pageType}}" style="width:100%;">
         <input type="hidden" value="{{site.lang}}" id="siteLang">
         {% block content %}{% endblock %}
     </div>
