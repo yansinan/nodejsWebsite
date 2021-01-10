@@ -33,8 +33,8 @@
                     </div>
                     {% include "../public/pagination.html" %}
                 </div>
-                <div class="col">
-                    {{navAvatar(navigation)}}
+                <div class="col-2">
+                    {{navAvatar(listAvatars,128)}}
                 </div>
             </div>
         </div>
@@ -45,6 +45,10 @@
 var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
 var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
   return new bootstrap.Popover(popoverTriggerEl)
+})
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+  return new bootstrap.Tooltip(tooltipTriggerEl)
 })
 </script>
 {% endblock %}

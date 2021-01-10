@@ -2,7 +2,7 @@
 {% from "./compAvatar.html" import avatar %}
 {% macro navAvatar(navigation,classImg="") %}
 <nav class="navbar flex-column navbar-light bg-light sticky-top" ms-controller="headerCtr">
-    <div class="container-fluid">
+    {# <div class="container-fluid"> #}
         {# 手机缩略菜单 #}
         {# 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".collapseNav-sm" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -10,13 +10,13 @@
         </button> 
         #}
         {# 人物列表 #}
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <ul class="navbar-nav">
             {% for artist in navigation %} 
-            <li class="nav-item text-nowrap px-3 rounded-pill border mx-1" role="presentation">
-                {{avatar(artist)}}
+            <li class="nav-item text-nowrap my-2" role="presentation">
+                {{avatar(artist,128)}}
             </li>
             {% endfor %}
         </ul>
-    </div>
+    {# </div> #}
 </nav>
 {% endmacro %}

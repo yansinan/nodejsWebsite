@@ -292,7 +292,9 @@ module.exports = {
         pageData.site = await this.getSiteInfo();
         pageData.staticRootPath = this.app.config.static.prefix;
         pageData.staticThemePath = this.app.config.static.prefix + '/themes/' + defaultTemp.alias;
-
+        // 人物（艺术家）列表
+        pageData.listAvatars = (await ctx.helper.reqJsonData('artist/getList', {filesType:"navAvatar"})).docs;
+        
         // 针对分类页和内容详情页动态添加meta
         // let defaultTempItems = defaultTemp.items;
         if (!_.isEmpty(pageData.site)) {
