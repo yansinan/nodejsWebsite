@@ -8,9 +8,6 @@
                 <div class="col-md-10 left-frame">
                     <div class="column-wrap">
                         <h1 alt="{{site.altkey}}{{cateInfo.name}}">{{cateInfo.name}}——唱片</h1>
-                        <button type="button" class="btn btn-secondary" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="left" data-bs-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">
-                            Popover on left
-                        </button>
                     </div>
                     <div class="post-list row">
                         {% for year, yearItems in posts|groupby("dateYear") %}
@@ -41,14 +38,5 @@
     </div>
 </div>
 
-<script>
-var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
-var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-  return new bootstrap.Popover(popoverTriggerEl)
-})
-var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-  return new bootstrap.Tooltip(tooltipTriggerEl)
-})
-</script>
+
 {% endblock %}

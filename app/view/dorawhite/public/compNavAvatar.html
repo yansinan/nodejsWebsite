@@ -19,4 +19,45 @@
         </ul>
     {# </div> #}
 </nav>
+<script>
+var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+  return new bootstrap.Popover(popoverTriggerEl,{
+                                popperConfig:{
+                                    modifiers:[
+                                        {
+                                            name: 'offset',
+                                            options: {
+                                                offset:[10, 0],
+                                            }
+                                        },{
+                                            name: 'preventOverflow',
+                                            enable:true,                            
+                                        }
+                                    ]
+                                                                          
+                                },
+  })
+})
+
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+  return new bootstrap.Tooltip(tooltipTriggerEl,{
+                                boundary: 'body',
+                                popperConfig:{
+                                    modifiers:[
+                                        {
+                                            name: 'offset',
+                                            options: {
+                                                offset:[-40, 0],
+                                            }                                       
+                                        },{
+                                            name: 'preventOverflow',
+                                            enable:true,                            
+                                        }
+                                    ]                                   
+                                },
+                            })
+})
+</script>
 {% endmacro %}

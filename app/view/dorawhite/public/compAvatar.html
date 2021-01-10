@@ -5,17 +5,34 @@
 <div class="tooltip" role="tooltip">
     <div class="tooltip-arrow visually-hidden"></div>
     <div class="tooltip-inner bg-transparent text-body text-decoration-underline "></div>
-</div>'
+</div>
 {% endset %}
-    <a hred="{{obj.url}}" alt="{{obj.name}}">
+{% set domPopover %}
+<div class="popover" role="tooltip">
+    <div class="popover-arrow"></div>
+    <h3 class="popover-header bg-transparent border-0 text-body text-decoration-underline "></h3>
+    <div class="popover-body"></div>
+</div>
+{% endset %}
+    <a href="{{obj.url}}"
+        alt="{{obj.name}}"
+        data-bs-toggle="tooltip" 
+        data-bs-placement="left"
+        data-bs-template="{{domTooltip}}"
+        title="{{obj.name}}"
+    >
         <img src="{{obj.sImg or obj.icon}}" 
             alt="{{obj.name}}" 
             class="avatar avatar-{{size}} bg-light rounded-circle text-white p-1 {{classImg}}" 
-            style=""
-            data-bs-toggle="tooltip" 
-            data-bs-placement="left"
-            data-bs-template="{{domTooltip}}"
-            title="{{obj.name}}"
+            data-bs-container="body"
+            data-bs-template="{{domPopover}}"
+            data-bs-toggle="popover" 
+            data-bs-placement="left" 
+            data-bs-content="{{obj.name}}"
+            data-bs-trigger="hover"
         >
+        <div class="position-relative pe-none" style="transform: translate(-15px,-{{size/3-15}}px);height:0px;"><span class="position-absolute top-50 start-100 translate-middle badge border border-light rounded-circle bg-danger p-2">{%if size>64 %}99{%endif%}</span></div>
     </a>
+
+
 {% endmacro %}
