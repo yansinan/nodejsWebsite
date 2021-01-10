@@ -5,7 +5,10 @@
     {% header adaptor="ie" %}
 
     <!-- 引入组件库 -->
-    {% plugin name="twitter-bootstrap font-awesome" %}
+    <!-- Production version -->
+    {# <script src="https://unpkg.com/@popperjs/core@2"></script> #}
+    {# <script src="https://cdn.bootcdn.net/ajax/libs/popper.js/2.6.0/umd/popper.min.js"></script> #}
+    {% plugin name="popper twitter-bootstrap font-awesome" %}
     {% endplugin %}
 
     <!-- 二次开发静态资源 -->
@@ -23,6 +26,7 @@
     <div class="container-xxl" id="{{pageType}}" style="width:100%;">
         <input type="hidden" value="{{site.lang}}" id="siteLang">
         {% block content %}{% endblock %}
+        {# {% block navAvatar %}{% endblock %} #}
     </div>
     {% include "./public/footer.html" %}
 </body>
