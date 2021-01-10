@@ -3,7 +3,8 @@
     <div class="row">
         <h1 class="display-6" alt="{{site.altkey}}{{cateInfo.name}}">{{cateInfo.name}}</h1>
     </div>
-    <div class="row">                       
+
+    <div class="row">
         {% for item in posts %}
         <div class="col-lg-3 col-md-4 col-sm-6 border border-dark" style="border: black solid 1px">
             {% include "../public/recordItem.html" %}
@@ -12,4 +13,11 @@
     </div>
     {% include "../public/pagination.html" %}
 </div>
+{% endblock %}
+
+
+{% block navAvatar %}
+    <div class="col-auto">
+        {{navAvatar(listAvatars,128)}}
+    </div>
 {% endblock %}

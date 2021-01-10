@@ -10,7 +10,8 @@
     {# <script src="https://cdn.bootcdn.net/ajax/libs/popper.js/2.6.0/umd/popper.min.js"></script> #}
     {% plugin name="popper twitter-bootstrap font-awesome" %}
     {% endplugin %}
-
+    {# 模块 #}
+    {% from "./public/compNavAvatar.html" import navAvatar %}
     <!-- 二次开发静态资源 -->
     {% assets 'dora.front.js white.css avatar.css artist.css' %}
     {% endassets %}
@@ -23,9 +24,15 @@
 <body>
     {% include "./public/header.html" %}
     {# <div class="mainbody" id="{{pageType}}" style="width:100%;max-width:1199px;"> #}
-    <div class="container-xxl" id="{{pageType}}" style="width:100%;">
+    <div class="container-fluid" id="{{pageType}}" style="width:100%;">
         <input type="hidden" value="{{site.lang}}" id="siteLang">
-        {% block content %}{% endblock %}
+        <div class="row">
+            <div class="col-10">
+            {% block content %}{% endblock %}
+            </div>
+            {% block navAvatar %}{% endblock %}
+        </div>
+
         {# {% block navAvatar %}{% endblock %} #}
     </div>
     {% include "./public/footer.html" %}

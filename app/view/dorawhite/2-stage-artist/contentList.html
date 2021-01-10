@@ -1,4 +1,5 @@
-{% extends "../default.html" %} {% block content %}
+{% extends "../default.html" %} 
+{% block content %}
 <div class="container-fluid text-light bg-dark">
     <div class="row">
         <div class="col">
@@ -7,4 +8,11 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+
+{% block navAvatar %}
+    <div class="col-auto">
+        {{navAvatar(listAvatars,128)}}
+    </div>
 {% endblock %}
