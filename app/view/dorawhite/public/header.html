@@ -16,90 +16,58 @@
 <input type="hidden" value="{{userInfo._id}}" id="userId">
 <input type="hidden" value="{{logined}}" id="logined">
 <input type="hidden" value="{{tokenId}}" id="tokenId">
-<header class="clearfix" id="header" ms-controller="headerCtr">
-    {% if site.lang == 'zh-TW' %}
-    {% set homelink = '/zh-TW' %}
-    {% set endStr = '_zh-TW' %}
-    {% else %}
-    {% set homelink = '/zh-CN' %}
-    {% set endStr = '' %}
-    {% endif %}
+{% if site.lang == 'zh-TW' %}
+{% set homelink = '/zh-TW' %}
+{% set endStr = '_zh-TW' %}
+{% else %}
+{% set homelink = '/zh-CN' %}
+{% set endStr = '' %}
+{% endif %}
+{# <header class="clearfix" id="header" ms-controller="headerCtr"> #}
+<div class="container-fluid d-none d-md-block" ms-controller="headerCtr">
+    <div class="row justify-content-between p-4">
+        {# <h1 class="display-6 text-white">赤瞳音乐</h1> #}
+        <div class="col-4">
+            <a class="" href="#"><img class="img-fluid" style="min-width:140px" width="200" src="{{site.logo}}" alt="{{site.title}}"/></a>
+        {# <span class="text-muted">Toggleable via the navbar brand.</span> #}
+        </div>
+        {# search #}
+        <div class="col-3 input-group input-group-lg w-auto" :class="['input-area',(@activeSearch? 'active':'')]">
+            <input ms-on-keyup="@onKeyUp" type="text" class="form-control"
+                    ms-duplex="@searchkey" placeholder="Search">                            
+            <span class="input-group-text"><i ms-click='@searchMe' class="fa fa-search"></i></span>
+        </div>
+    </div>
+</div>
+{# toggle内容上部分 #}
+<div class="collapse navbar-collapse collapseNav-sm">
+
+</div>    
+<nav class="navbar navbar-expand-md navbar-light bg-light sticky-top" ms-controller="headerCtr">
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12 header-box">
-                <div class="row header-main">
-                    {# logo #}
-                    <div class="col-sm-2 col-md-2">
-                        <div class="site-name ">
-                            <a href="{{homelink}}" id="logo">
-                                <img src="{{site.logo}}" alt="{{site.title}}" />
-                            </a>
-                            </a>
-                        </div>
-                    </div>
-                    {# 导航 #}
-                    <div class="col-sm-9 col-md-6" id="navWrapper">
-                        <div id="navScroller">
-                            <ul>
-                                {% for cate in navigation %} {% if cate.parentId == '0' %}
-                                <li role="presentation">
-                                    <a role="menuitem" tabindex="-1" alt="{{site.altkey}}{{cate.name}}"
-                                        href="{{cate.url}}">{{cate.name}}</a>
-                                </li>
-                                {% endif %} {% endfor %}
-                            </ul>
-                        </div>
-                    </div>
-                    {# search #}
-                    <div class="col-sm-1 col-md-4">
-                        <div class="text-right topNav">
-                            <div class="search-pannel">
-                                <div :class="['input-area',(@activeSearch? 'active':'')]">
-                                    <div class="el-input el-input--small">
-                                        <input ms-on-keyup="@onKeyUp" type="text" class="form-control"
-                                            ms-duplex="@searchkey" placeholder="{{__('lc_please_write_key')}}">
-                                    </div>
-                                    <i ms-click='@searchMe' class="fa fa-search"></i>
-                                </div>
-                            </div>
-                            {# 
-                            <ul class="navbar-right">
-                                {% if logined == undefined %}
-                                <li>
-                                    <a rel="nofollow" href="/users/login">{{__('lc_login')}}</a>
-                                </li>
-                                <li>
-                                    <a rel="nofollow" href="/users/reg">{{__('lc_newAccount')}}</a>
-                                </li>
-                                {% else %}
-                                <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                        aria-haspopup="true" aria-expanded="false">{{userInfo.userName}}
-                                        <span class="caret"></span>
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <a href="/users/userContents">{{__('lc_userCenter')}}</a>
-                                        </li>
-                                        <li>
-                                            <a href="/users/userCenter">{{__('lc_accountSet')}}</a>
-                                        </li>
-                                        <li>
-                                            <a href="#" id="userLoginOut">{{__('lc_loginOut')}}</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                {% endif %}
-                                <li>
-                                    <button type="button" ms-on-click="@postArticel"
-                                        class="btn btn-primary btn-sm navbar-btn">{{__('lc_myPostArticels')}}</button>
-                                </li>
-                            </ul> 
-                            #}
-                        </div>
-                    </div>
-                </div>
+        {# 手机缩略菜单 #}
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".collapseNav-sm" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        {# logo&name #}
+        <a class="navbar-brand  d-flex d-md-none " href="#"><img class="img-fluid" style="min-width:140px" width="200" src="{{site.logo}}" alt="{{site.title}}"/></a>
+        {# collapse  nav&search #}
+        <div class="collapse navbar-collapse collapseNav-sm">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                {% for cate in navigation %} {% if cate.parentId == '0' %}
+                <li class="nav-item text-nowrap px-3 rounded-pill border mx-1" role="presentation">
+                    <a class="nav-link" role="menuitem" tabindex="-1" alt="{{site.altkey}}{{cate.name}}"
+                        href="{{cate.url}}">{{cate.name}}</a>
+                </li>
+                {% endif %} {% endfor %}
+            </ul>
+            {# search #}
+            <div class="input-group input-group-lg w-auto d-flex d-md-none " :class="['input-area',(@activeSearch? 'active':'')]">
+                <input ms-on-keyup="@onKeyUp" type="text" class="form-control"
+                        ms-duplex="@searchkey" placeholder="Search">                            
+                <span class="input-group-text"><i ms-click='@searchMe' class="fa fa-search"></i></span>
             </div>
         </div>
     </div>
-</header>
+</nav>
+
