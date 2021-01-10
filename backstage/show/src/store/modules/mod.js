@@ -11,7 +11,7 @@ const defautlFormData={
   sortPath: '',
   tags: [],
   keywords: '',
-  sImg: '/upload/images/defaultImg.jpg',
+  sImg: '/static/upload/images/defaultImg.jpg',
   discription: '',
   author: {},
   markDownComments: '',
