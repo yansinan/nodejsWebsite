@@ -8,7 +8,7 @@
     <!-- Production version -->
     {# <script src="https://unpkg.com/@popperjs/core@2"></script> #}
     {# <script src="https://cdn.bootcdn.net/ajax/libs/popper.js/2.6.0/umd/popper.min.js"></script> #}
-    {% plugin name="popper twitter-bootstrap font-awesome" %}
+    {% plugin name="popper twitter-bootstrap font-awesome betterScroll" %}
     {% endplugin %}
     {# 模块 #}
     {% from "./public/compNavAvatar.html" import navAvatar %}
@@ -22,20 +22,66 @@
 </head>
 
 <body>
+    {# 整屏容器 #}
     {% include "./public/header.html" %}
     {# <div class="mainbody" id="{{pageType}}" style="width:100%;max-width:1199px;"> #}
-    <div class="container-fluid" id="{{pageType}}" style="width:100%;">
+    <div class="container-fluid position-absolute" id="{{pageType}}" style="width:100%;top:0px;">
         <input type="hidden" value="{{site.lang}}" id="siteLang">
-        <div class="row">
-            <div class="col">
-            {% block content %}{% endblock %}
+        {# mainpage大红标题 scroll#}
+        <div class="overflow-visible position-relative" style="height:0px;z-index:100;">
+            {# scroll #}
+            <div class="row bs-wrapper overflow-hidden" style="height:100vh;">
+                <div class="col bs-content px-0">
+                    <div class="container-fluid bg-danger text-dark" style="min-height:100vh;">
+                        <div class="row w-100" style="height:40vh;"></div>
+                        <h1 class="display-1">RUBY</h1>
+                        <h1 class="display-1">EYES</h1>
+                        <h1 class="display-1">RECORDS</h1>
+                        <h1 class="display-1">COMMIUNITY</h1>
+                    </div>
+                    {# 空容器 #}
+                    <div class="container-fluid bg-transparent  position-relative" style="min-height:100vh;z-index:-100;"></div>
+                </div>
+            </div>
+        </div>    
+
+        {# 内容区 #}
+        <div class="row position-relative bs-wrapper1" style="top:12vh;height:80vh;overflow:hidden;">
+            <div class="col bs-content px-0">
+                {% block content %}{% endblock %}
             </div>
             {% block navAvatar %}{% endblock %}
         </div>
-
         {# {% block navAvatar %}{% endblock %} #}
     </div>
     {% include "./public/footer.html" %}
+    <script>
+        {# BScroll.use(MouseWheel) #}
+        {# BScroll.use(Slide) #}
+        let slideCover = new BetterScroll.createBScroll('.bs-wrapper', {
+            disableMouse: false,
+            disableTouch: false,
+            mouseWheel: {
+                speed: 20,
+                invert: false,
+                easeTime: 300
+            },
+            slide: {
+                threshold: 100,
+                loop: true,
+                autoplay:false,
+                listenFlick:false,
+            },
+            useTransition: true,
+            momentum: false,
+            bounce: false,
+            stopPropagation: true
+        })
+        slideCover.on('slidePageChanged', (page) => {
+            $('.bs-wrapper').hide();
+            // currentPageIndex = page.pageX
+        })
+    </script>
 </body>
 
 </html>

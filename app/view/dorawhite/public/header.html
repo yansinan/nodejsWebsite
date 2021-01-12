@@ -24,50 +24,49 @@
 {% set endStr = '' %}
 {% endif %}
 {# <header class="clearfix" id="header" ms-controller="headerCtr"> #}
-<div class="container-fluid d-none d-md-block" ms-controller="headerCtr">
-    <div class="row justify-content-between p-4">
-        {# <h1 class="display-6 text-white">赤瞳音乐</h1> #}
-        <div class="col-4">
-            <a class="" href="#"><img class="img-fluid" style="min-width:140px" width="200" src="{{site.logo}}" alt="{{site.title}}"/></a>
-        {# <span class="text-muted">Toggleable via the navbar brand.</span> #}
-        </div>
-        {# search #}
-        <div class="col-3 input-group input-group-lg w-auto" :class="['input-area',(@activeSearch? 'active':'')]">
-            <input ms-on-keyup="@onKeyUp" type="text" class="form-control"
-                    ms-duplex="@searchkey" placeholder="Search">                            
-            <span class="input-group-text"><i ms-click='@searchMe' class="fa fa-search"></i></span>
-        </div>
-    </div>
-</div>
-{# toggle内容上部分 #}
-<div class="collapse navbar-collapse collapseNav-sm">
-
-</div>    
-<nav class="navbar navbar-expand-md navbar-light bg-light sticky-top" ms-controller="headerCtr">
-    <div class="container-fluid">
-        {# 手机缩略菜单 #}
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".collapseNav-sm" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        {# logo&name #}
-        <a class="navbar-brand  d-flex d-md-none " href="#"><img class="img-fluid" style="min-width:140px" width="200" src="{{site.logo}}" alt="{{site.title}}"/></a>
-        {# collapse  nav&search #}
-        <div class="collapse navbar-collapse collapseNav-sm">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                {% for cate in navigation %} {% if cate.parentId == '0' %}
-                <li class="nav-item text-nowrap px-3 rounded-pill border mx-1" role="presentation">
-                    <a class="nav-link" role="menuitem" tabindex="-1" alt="{{site.altkey}}{{cate.name}}"
-                        href="{{cate.url}}">{{cate.name}}</a>
-                </li>
-                {% endif %} {% endfor %}
-            </ul>
+<div class="container-fluid position-absolute" style="height:10vh;z-index:1000;" >
+    <div class="row d-none d-md-block " ms-controller="headerCtr">
+        <div class="row justify-content-between p-4">
+            {# <h1 class="display-6 text-white">赤瞳音乐</h1> #}
+            <div class="col-4">
+                <a class="" href="#"><img class="img-fluid" style="min-width:140px" width="200" src="{{site.logo}}" alt="{{site.title}}"/></a>
+            {# <span class="text-muted">Toggleable via the navbar brand.</span> #}
+            </div>
             {# search #}
-            <div class="input-group input-group-lg w-auto d-flex d-md-none " :class="['input-area',(@activeSearch? 'active':'')]">
+            <div class="col-3 input-group input-group-lg w-auto" :class="['input-area',(@activeSearch? 'active':'')]">
                 <input ms-on-keyup="@onKeyUp" type="text" class="form-control"
                         ms-duplex="@searchkey" placeholder="Search">                            
                 <span class="input-group-text"><i ms-click='@searchMe' class="fa fa-search"></i></span>
             </div>
         </div>
     </div>
-</nav>
-
+    {# toggle内容上部分 #}
+    {# <div class="collapse navbar-collapse collapseNav-sm"></div>     #}
+    <nav class="navbar navbar-expand-md navbar-light bg-transparent sticky-top" ms-controller="headerCtr" style="">
+        <div class="container-fluid">
+            {# 手机缩略菜单 #}
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".collapseNav-sm" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            {# logo&name #}
+            <a class="navbar-brand  d-flex d-md-none " href="#"><img class="img-fluid" style="min-width:140px" width="200" src="{{site.logo}}" alt="{{site.title}}"/></a>
+            {# collapse  nav&search #}
+            <div class="collapse navbar-collapse collapseNav-sm">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    {% for cate in navigation %} {% if cate.parentId == '0' %}
+                    <li class="nav-item text-nowrap px-3 bg-light rounded-pill border mx-1" role="presentation">
+                        <a class="nav-link" role="menuitem" tabindex="-1" alt="{{site.altkey}}{{cate.name}}"
+                            href="{{cate.url}}">{{cate.name}}</a>
+                    </li>
+                    {% endif %} {% endfor %}
+                </ul>
+                {# search #}
+                <div class="input-group input-group-lg w-auto d-flex d-md-none " :class="['input-area',(@activeSearch? 'active':'')]">
+                    <input ms-on-keyup="@onKeyUp" type="text" class="form-control"
+                            ms-duplex="@searchkey" placeholder="Search">                            
+                    <span class="input-group-text"><i ms-click='@searchMe' class="fa fa-search"></i></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>
