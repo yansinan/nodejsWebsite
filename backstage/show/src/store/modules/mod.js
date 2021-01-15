@@ -24,7 +24,7 @@ const defautlFormData={
   // commentNum: 0,
   // likeNum: 0,
   dismissReason: '',
-  listArtists:[],
+  listRefs:[],
   listDateDur:[Date.now()],
   location:"",
   listTicketLink:[],

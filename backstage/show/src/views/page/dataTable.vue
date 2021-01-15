@@ -57,9 +57,9 @@
           <a :href="'/'+nameMod+'/'+scope.row._id+'.html'" target="_blank">{{scope.row.name}}</a>
         </template>
       </el-table-column>
-      <el-table-column prop="listArtists" :label="$t(nameMod+'.listArtists')" show-overflow-tooltip>
+      <el-table-column prop="listRefs" :label="$t(nameMod+'.listArtists')" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span v-for="artist in scope.row.listArtists" :key="artist._id">{{artist.name+','}}</span>
+          <span v-for="artist in scope.row.listRefs" :key="artist._id">{{artist.name+','}}</span>
         </template>
       </el-table-column>
       <el-table-column prop="date" :label="$t(nameMod+'.date')" width="100">

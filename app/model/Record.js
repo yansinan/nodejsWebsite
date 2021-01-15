@@ -27,10 +27,10 @@ module.exports =app=>{
                 default: Date.now,
                 alias: 'dateRelease',
             },//发行日期
-            listArtists:[{
-                type: String,
-                ref: 'Artist'
-            }],//乐队成员
+            // listArtists:[{
+            //     type: String,
+            //     ref: 'Artist'
+            // }],//乐队成员
             listFormatTags:[{
                 type: String,
                 ref:'ContentTag',
@@ -73,6 +73,9 @@ module.exports =app=>{
         // url地址
         schema.virtual('url').get(function () {
             return `/record/${this._id}.html`;
+        });
+        schema.virtual('listArtists').get(function () {
+            return this.listRefs;
         });
         let model=app.model.Record || Doc.discriminator("Record", schema);
     

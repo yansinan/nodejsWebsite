@@ -15,7 +15,7 @@ const BaseService = require(path.join(process.cwd(), 'lib/plugin/egg-dora-artist
 class ServicePlugin extends BaseService {
     constListPopulate=[
         {
-            path: 'listArtists',
+            path: 'listRefs',
             select: 'name _id sImg'
         },
         {
