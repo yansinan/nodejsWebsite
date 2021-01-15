@@ -1,0 +1,19 @@
+            <div class="post-list row" dr-dom="timeline">
+                {% for year, yearItems in posts|groupby("dateYear") %}
+                    <h1>{{year}}</h1>
+                    {% for date, dateItems in yearItems|groupby("dateTimeline") %}
+                    <div class="row py-4 ">
+                        <div class="col-sm-2 col-xs-3 pt-3 text-nowrap"><h3>{{date}}</h3></div>
+                        <div class="col-10">
+                            <div class="row">
+                                {% for item in dateItems %}
+                                <div class="col-md-{{item.widthTemp}} border border-dark m-3 ">
+                                    {% include "../public/"+item.strCate+"Item.html" %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>

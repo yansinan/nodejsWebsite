@@ -144,7 +144,8 @@ class APIController extends Controller {
             let isSingerPage = false; // 是否是单页面
             let dateStart=(new Date(ctx.query.dateStart)) || (new Date());
             let idArtist=ctx.query.idArtist || ctx.params.idArtist;//某乐队的时间线
-
+            // 请求类型page 整页；dom 局部;
+            let type = payload.type || "page";
             // 基础时间排序
             let sortDate={
                 // dateRelease: -1,
@@ -286,7 +287,10 @@ class APIController extends Controller {
             let resObj = {
                 docs : (await this.renderList(ctx, listRes)),
                 pageInfo:Object.assign({itemTemplate:"timeline",},resDocs.pageInfo),//对象模板使用时间轴模板                
-            } 
+            }
+            let path="../view/dorawhite/2-stage-timeline/listTempTimeline.html";//app/view/dorawhite/2-stage-timeline/listTempTimeline.html
+            
+            if(type=="dom")resObj.dom=await ctx.renderView(path,{posts:resObj.docs});
             // debugger;
             ctx.helper.renderSuccess(ctx, {
                 data: resObj

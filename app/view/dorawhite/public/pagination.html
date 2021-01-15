@@ -1,5 +1,5 @@
 <!--分页模块-->
-<div class="pagenation text-center">
+<div class="pagenation text-center" ms-controller="pagination">
     <ul>
         {% if pageInfo.totalItems > 0 %}
         {% set localUrl = "" %}
@@ -65,4 +65,39 @@
         {% endif %}
 
     </ul>
+    {% if posts.length > 0 %}
+	<div class="loading-more" ms-on-click="@getMoreNews">
+		<i :visible="!@loadingState" class="fa fa-sort-down" aria-hidden="true"></i>
+		<i :visible="@loadingState" class="fa fa-spin fa-spinner"></i>
+	</div>
+    <script>
+        {# 下拉刷新 #}
+        var pageType = "{{pageType}}";
+        var cateId = "{{cateInfo._id}}"
+        {# 插入点 #}
+        let domListTimeline=document.querySelector("[dr-dom=timeline]");
+
+        var appendNewsVm = avalon.define({
+            $id: 'pagination',
+            current: 1,
+            appendDocumentList: [],
+            loadingState: false,
+            getMoreNews: function () {
+                fetch('/api/timeline/getList?type=dom&typeId=' + cateId + '&current=' + 2).then(function(data){
+                    // text()方法属于fetchAPI的一部分，它返回一个Promise实例对象，
+                    // 用于获取后台返回的数据 return data.text();
+                    return data.text();
+                }).then(function (data) {
+                    // 在这个then里面我们能拿到最终的数据
+                    console.log(data);
+                    let objData=JSON.parse(data);
+                    let strToAppend=objData.data.dom
+                    let domToAppend = document.createRange().createContextualFragment(strToAppend);
+                    domListTimeline.append(domToAppend)
+                    {# debugger; #}
+                })
+            }
+        })
+    </script>
+	{% endif %}
 </div>
