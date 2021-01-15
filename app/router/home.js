@@ -43,7 +43,7 @@ module.exports = app => {
     // 时间线
     router.get([
         "/timeline___:typeId?",
-        "/timeline______:typeId?/:current.html",
+        "/timeline___:typeId?/:current.html",
         "/timeline___/:cate1?___:typeId?",
         "/timeline___/:cate1?___:typeId?/:current.html"
     ], controller.page.home.getDataForTimelinePage);

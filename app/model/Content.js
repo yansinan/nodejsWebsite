@@ -2,16 +2,14 @@
  * Created by Administrator on 2015/4/15.
  * 管理员用户组对象
  */
-
-module.exports = app => {
-    return app.model["Content"];
-}
-/*
 module.exports = app => {
     const mongoose = app.mongoose
     var Schema = mongoose.Schema;
     var moment = require('moment')
     var shortid = require('shortid');
+    // 继承自Doc
+    
+    let Doc=app.model.Doc || require("./Doc")(app) || INIT_DOC(app);//
 
     var ContentSchema = new Schema({
         _id: {
@@ -140,9 +138,11 @@ module.exports = app => {
     ContentSchema.virtual('url').get(function () {
         return `/details/${this._id}.html`;
     });
+    let model=app.model.Content || Doc.discriminator("Content", ContentSchema);
+    // app.model.Artist=model;
 
-    return mongoose.model("Content", ContentSchema, 'contents');
+    return model//mongoose.model("Artist", schema);
+
+    // return mongoose.model("Content", ContentSchema, 'contents');
 
 }
-
- */

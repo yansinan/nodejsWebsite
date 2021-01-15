@@ -473,7 +473,8 @@ class HomeController extends Controller {
         ctx.pageType = "cate"
         let typeId = ctx.params.typeId;
         let year = ctx.params.year; //按年查询
-        
+        let current = ctx.params.current;
+
         
         if (typeId) {
             if (!shortid.isValid(typeId)) {
@@ -494,6 +495,11 @@ class HomeController extends Controller {
                         ctx.params.dateStart= (new Date());
                     }
                 }
+                // 验证页码的正确性
+                if (current && !validator.isNumeric(current)) {
+                    ctx.redirect("/");
+                }
+
                 let dateStart = ctx.params.dateStart; //按周期查询，起始日期往前365*2天
                 
                 // 获取通用页面信息

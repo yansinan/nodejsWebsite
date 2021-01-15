@@ -155,10 +155,10 @@ class APIController extends Controller {
             let rangeTime = getDateStr(-365*2,dateStart);
             let queryObj = {
                     state: '2',
-                    date: {
-                        "$gte": new Date(rangeTime.startTime),
-                        "$lte": new Date(rangeTime.endTime)
-                    }
+                    // date: {
+                    //     "$gte": new Date(rangeTime.startTime),
+                    //     "$lte": new Date(rangeTime.endTime)
+                    // }
                 },
                 sortObj = sortDate;
             // 首页推荐
@@ -195,43 +195,50 @@ class APIController extends Controller {
             //     }
             // }
             // （赤瞳所有）按年文章列表
-            let listContents = (await ctx.service.content.find(payload, {
-                sort: sortObj,
-                query: queryObj,
-                // searchKeys: ['userName', 'title', 'comments', 'discription'],
-                files: this.getListFields(filesType)
-            })).docs;
-            // 所有乐队按年时间线
-            let listArtists = (await ctx.service.artist.find(payload, {
-                sort: sortObj,
-                query: queryObj,
-                // searchKeys: ['keywords', 'name', 'comments', 'discription'],
-                files: this.getListFields(filesType)
-            })).docs;
-            // 所有唱片按年时间线
-            let listRecords = (await ctx.service.record.find(payload, {
-                sort: sortObj,
-                query: queryObj,
-                // searchKeys: ['keywords', 'name', 'comments', 'discription'],
-                files: this.getListFields(filesType)
-            })).docs;
-            // 所有演出按年时间线
-            let listShows = (await ctx.service.show.find(payload, {
-                sort: sortObj,
-                query: queryObj,
-                // searchKeys: ['keywords', 'name', 'comments', 'discription'],
-                files: this.getListFields(filesType)
-            })).docs;
+            // let listContents = (await ctx.service.content.find(payload, {
+            //     sort: sortObj,
+            //     query: queryObj,
+            //     // searchKeys: ['userName', 'title', 'comments', 'discription'],
+            //     files: this.getListFields(filesType)
+            // })).docs;
+            // // 所有乐队按年时间线
+            // let listArtists = (await ctx.service.artist.find(payload, {
+            //     sort: sortObj,
+            //     query: queryObj,
+            //     // searchKeys: ['keywords', 'name', 'comments', 'discription'],
+            //     files: this.getListFields(filesType)
+            // })).docs;
+            // // 所有唱片按年时间线
+            // let listRecords = (await ctx.service.record.find(payload, {
+            //     sort: sortObj,
+            //     query: queryObj,
+            //     // searchKeys: ['keywords', 'name', 'comments', 'discription'],
+            //     files: this.getListFields(filesType)
+            // })).docs;
+            // // 所有演出按年时间线
+            // let listShows = (await ctx.service.show.find(payload, {
+            //     sort: sortObj,
+            //     query: queryObj,
+            //     // searchKeys: ['keywords', 'name', 'comments', 'discription'],
+            //     files: this.getListFields(filesType)
+            // })).docs;
 
-            // 合并
-            let listTimeline=[...listArtists || [] , ...listRecords || [],...listContents || [],...listShows || []];
+            // // 合并
+            // let listTimeline=[...listArtists || [] , ...listRecords || [],...listContents || [],...listShows || []];
 
-            // 排序
-            listTimeline=listTimeline.sort((a,b)=>{
-                let timeA=new Date(a.date);
-                let timeB=new Date(b.date);
-                return timeB.getTime()-timeA.getTime();
-            })
+            // // 排序
+            // listTimeline=listTimeline.sort((a,b)=>{
+            //     let timeA=new Date(a.date);
+            //     let timeB=new Date(b.date);
+            //     return timeB.getTime()-timeA.getTime();
+            // })
+            let resDocs = await ctx.service.doc.find(payload, {
+                sort: sortObj,
+                query: queryObj,
+                // searchKeys: ['keywords', 'name', 'comments', 'discription'],
+                files: this.getListFields(filesType)
+            });
+            let listTimeline = resDocs.docs;
             let listRes = listTimeline.map(v=>{
                 let source=v.url.split("/")[1];//artist,show,record,detail
                 let strDefault="";
@@ -275,14 +282,12 @@ class APIController extends Controller {
                     widthTemp:widthTemp,//时间轴显示模块的宽度
                 }
             })
-
+            // 组合页面信息和数组
             let resObj = {
                 docs : (await this.renderList(ctx, listRes)),
-                pageInfo:{
-                    itemTemplate:"timeline",//对象模板使用时间轴模板
-                }
+                pageInfo:Object.assign({itemTemplate:"timeline",},resDocs.pageInfo),//对象模板使用时间轴模板                
             } 
-            
+            // debugger;
             ctx.helper.renderSuccess(ctx, {
                 data: resObj
             });
