@@ -288,9 +288,9 @@ class APIController extends Controller {
                 docs : (await this.renderList(ctx, listRes)),
                 pageInfo:Object.assign({itemTemplate:"timeline",},resDocs.pageInfo),//对象模板使用时间轴模板                
             }
+            //这里直接渲染模板?
             let path="../view/dorawhite/2-stage-timeline/listTempTimeline.html";//app/view/dorawhite/2-stage-timeline/listTempTimeline.html
-            
-            if(type=="dom")resObj.dom=await ctx.renderView(path,{posts:resObj.docs});
+            if(type=="dom")resObj.docs=await ctx.renderView(path,{posts:resObj.docs});
             // debugger;
             ctx.helper.renderSuccess(ctx, {
                 data: resObj

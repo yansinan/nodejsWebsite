@@ -1,106 +1,123 @@
 <!--分页模块-->
-<div class="pagenation text-center" ms-controller="pagination">
+<div class="pagenation text-center" ms-controller="">
+    {# 
     <ul>
         {% if pageInfo.totalItems > 0 %}
-        {% set localUrl = "" %}
-        {% set param = "" %}
-        {% set pageInfo = pageInfo %}
+            {% set localUrl = "" %}
+            {% set param = "" %}
+            {% set pageInfo = pageInfo %}
 
-        {% if pageType == 'index' %}
-        {% set localUrl = "/page" %}
-        {% elif pageType == 'cate' %}
-        {% set localUrl = cateInfo.url %}
-        {% elif pageType == 'search' %}
-        {% set param = '?searchKey=' + pageInfo.searchkey %}
-        {% set localUrl = '/search/' + pageInfo.searchkey %}
-        {% elif pageType == 'tag' %}
-        {% set param = '?tagKey=' + targetTagName %}
-        {% set localUrl = '/tag/' + targetTagName %}
-        {% elif pageType == 'replies' %}
-        {% set localUrl = '/users/userReplies/p' %}
-        {% elif pageType == 'notifies' %}
-        {% set localUrl = '/users/userNotifies/p' %}
+            {% if pageType == 'index' %}
+            {% set localUrl = "/page" %}
+            {% elif pageType == 'cate' %}
+            {% set localUrl = cateInfo.url %}
+            {% elif pageType == 'search' %}
+            {% set param = '?searchKey=' + pageInfo.searchkey %}
+            {% set localUrl = '/search/' + pageInfo.searchkey %}
+            {% elif pageType == 'tag' %}
+            {% set param = '?tagKey=' + targetTagName %}
+            {% set localUrl = '/tag/' + targetTagName %}
+            {% elif pageType == 'replies' %}
+            {% set localUrl = '/users/userReplies/p' %}
+            {% elif pageType == 'notifies' %}
+            {% set localUrl = '/users/userNotifies/p' %}
+            {% endif %}
+
+            {% set totalItems = pageInfo.totalItems %}
+            {% set pageSize = pageInfo.pageSize %}
+            {% set totalPage = pageInfo.totalPage%}
+
+            {% if pageInfo.current - 2 > 0 %}
+            {% set page_start = pageInfo.current - 2 %}
+            {% else %}
+            {% set page_start = 1 %}
+            {% endif %}
+
+            {% if page_start + 4 >= totalPage %}
+            {% set page_end = totalPage %}
+            {% else %}
+            {% set page_end = page_start + 4 %}
+            {% endif %}
+
+            {% if pageInfo.current != 1 %}
+            <li><a href="{{localUrl}}/1.html{{param}}">«</a></li>
+            {% endif %}
+
+            {% if page_start > 1 %}
+            <li><a>...</a></li>
+            {% endif %}
+
+            {% for i in range(page_start, page_end + 1) -%}
+            {% if i ==  pageInfo.current%}
+            <li class="active"><a>{{i}}</a></li>
+            {% else %}
+            <li><a href="{{localUrl}}/{{i}}.html">{{i}}</a></li>
+            {% endif %}
+            {%- endfor %}
+
+            {% if page_end < totalPage %}
+            <li><a>...</a></li>
+            {% endif %}
+
+            {% if pageInfo.current != totalPage %}
+            <li><a href="{{localUrl}}/{{totalPage}}.html{{param}}">»</a></li>
+            {% endif %}
+
         {% endif %}
-
-        {% set totalItems = pageInfo.totalItems %}
-        {% set pageSize = pageInfo.pageSize %}
-        {% set totalPage = pageInfo.totalPage%}
-
-        {% if pageInfo.current - 2 > 0 %}
-        {% set page_start = pageInfo.current - 2 %}
-        {% else %}
-        {% set page_start = 1 %}
-        {% endif %}
-
-        {% if page_start + 4 >= totalPage %}
-        {% set page_end = totalPage %}
-        {% else %}
-        {% set page_end = page_start + 4 %}
-        {% endif %}
-
-        {% if pageInfo.current != 1 %}
-        <li><a href="{{localUrl}}/1.html{{param}}">«</a></li>
-        {% endif %}
-
-        {% if page_start > 1 %}
-        <li><a>...</a></li>
-        {% endif %}
-
-        {% for i in range(page_start, page_end + 1) -%}
-        {% if i ==  pageInfo.current%}
-        <li class="active"><a>{{i}}</a></li>
-        {% else %}
-        <li><a href="{{localUrl}}/{{i}}.html">{{i}}</a></li>
-        {% endif %}
-        {%- endfor %}
-
-        {% if page_end < totalPage %}
-        <li><a>...</a></li>
-        {% endif %}
-
-        {% if pageInfo.current != totalPage %}
-        <li><a href="{{localUrl}}/{{totalPage}}.html{{param}}">»</a></li>
-        {% endif %}
-
-        {% endif %}
-
     </ul>
+    #}
     {% if posts.length > 0 %}
-	<div class="loading-more" ms-on-click="@getMoreNews">
+	<div class="loading-more mt-4" ms-on-click="@getMoreNews">
 		<i :visible="!@loadingState" class="fa fa-sort-down" aria-hidden="true"></i>
 		<i :visible="@loadingState" class="fa fa-spin fa-spinner"></i>
 	</div>
     <script>
         {# 下拉刷新 #}
-        var pageType = "{{pageType}}";
-        var cateId = "{{cateInfo._id}}"
-        {# 插入点 #}
-        let domListTimeline=document.querySelector("[dr-dom=timeline]");
+        {# var pageType = "{{pageType}}"; #}
+        {# var cateId = "{{cateInfo._id}}" #}
 
-        var appendNewsVm = avalon.define({
-            $id: 'pagination',
+        this["vm-"+"{{infoPagination.page}}"] = avalon.define({
+            $id: '{{infoPagination.idDOM}}',
+            cateId:"{{cateInfo._id}}",
+            namePage:"{{infoPagination.page}}",
+            urlApi:"{{infoPagination.api}}",
             current: 1,
+            totalPage:{{pageInfo.totalPage}},
             appendDocumentList: [],
             loadingState: false,
             getMoreNews: function () {
+                let that=this;
+                let next=(this.current<this.totalPage)?(this.current+1):false;
+                return new Promise((resolve, reject) => {
+                    if(next){
+                        fetch(that.urlApi+'?type=dom&typeId=' + that.cateId + '&current=' + next).then(function(data){
+                            {# // text()方法属于fetchAPI的一部分，它返回一个Promise实例对象， #}
+                            {# // 用于获取后台返回的数据 return data.text(); #}
+                            return data.text();
+                        }).then(function (data) {
+                            // 在这个then里面我们能拿到最终的数据
+                            let objData=JSON.parse(data);
+                            if(objData.status==200){
+                                that.current=objData.data.pageInfo.current;
+                                that.totalPage=objData.data.pageInfo.totalPage;
+                                let strToAppend=objData.data.docs;
+                                let domToAppend = document.createRange().createContextualFragment(strToAppend);
+                                {# 插入点 #}
+                                let domList=document.querySelector("[dr-dom-append="+that.$id+"]");
 
+                                domList.append(domToAppend)
+                                {# debugger; #}
+                                resolve({msg:"succ",isEnd:that.totalPage<=that.current});
+                            }else{
+                                reject({msg:"服务器返回错误 ", objData});
+                            }
+                        })
+                                         
+                    }else resolve({msg:"succ",isEnd:that.totalPage<=that.current})
+                });                
             }
         })
-        let funNextPage=function(){
-            fetch('/api/timeline/getList?type=dom&typeId=' + cateId + '&current=' + 2).then(function(data){
-                // text()方法属于fetchAPI的一部分，它返回一个Promise实例对象，
-                // 用于获取后台返回的数据 return data.text();
-                return data.text();
-            }).then(function (data) {
-                // 在这个then里面我们能拿到最终的数据
-                console.log(data);
-                let objData=JSON.parse(data);
-                let strToAppend=objData.data.dom
-                let domToAppend = document.createRange().createContextualFragment(strToAppend);
-                domListTimeline.append(domToAppend)
-                {# debugger; #}
-            })
-        }
+
     </script>
 	{% endif %}
 </div>

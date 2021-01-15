@@ -81,31 +81,7 @@
             // currentPageIndex = page.pageX
         })
     </script>
-    <script>
-        {# BScroll.use(MouseWheel) #}
-        {# BScroll.use(Slide) #}
-        {# BScroll.use(Pullup) #}
-        let slideMain = new BetterScroll.createBScroll('.bs-wrapper-main', {
-            disableMouse: false,
-            disableTouch: false,
-            mouseWheel: {
-                speed: 20,
-                invert: false,
-                easeTime: 300
-            },
-            pullUpLoad: true,
-            
-        })
-        slideMain.on('pullingUp', ()=>{
-            isPullUpLoad = true
-            console.log("pullingUp刷新")
-            funNextPage();
 
-            slideMain.finishPullUp()
-            slideMain.refresh()
-            isPullUpLoad = false
-        })
-    </script>
 
 </body>
 

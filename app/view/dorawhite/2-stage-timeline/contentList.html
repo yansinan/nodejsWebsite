@@ -1,19 +1,50 @@
 {% extends "../default.html" %} 
 {% block content %}
+{% set infoPagination={page:"timeline",idDOM:"list-timeline",api:"/api/timeline/getList"} %}
+
 <div class="container-fluid">
-    <div class="row">
-        <div class="col">
+    <div class="row position-relative" dr-bs-wrapper="{{infoPagination.idDOM}}" style="height:88vh;overflow:hidden;">
+        <div class="col" ms-controller="{{infoPagination.idDOM}}">
             <div class="column-wrap">
-                <h1 alt="{{site.altkey}}{{cateInfo.name}}">{{cateInfo.name}}——唱片</h1>
+                <h1 alt="{{site.altkey}}{{cateInfo.name}}">{{cateInfo.name}}</h1>
             </div>
             {% include "./listTempTimeline.html" %}
 
             {% include "../public/pagination.html" %}
         </div>
-
     </div>
 </div>
+    <script>
+        {# BScroll.use(MouseWheel) #}
+        {# BScroll.use(Slide) #}
+        {# BScroll.use(Pullup) #}
+        {# BScroll.use(ScrollBar) #}
 
+        this["bs-"+"{{infoPagination.page}}"] = new BetterScroll.createBScroll("[dr-bs-wrapper={{infoPagination.idDOM}}]", {
+            {# specifiedIndexAsContent:1, #}
+            disableMouse: false,
+            disableTouch: false,
+            mouseWheel: {
+                speed: 20,
+                invert: false,
+                easeTime: 300
+            },
+            pullUpLoad: true,
+            scrollbar: true,
+        })
+        {# 上拉事件 #}
+        this["bs-"+"{{infoPagination.page}}"].on('pullingUp', (e)=>{
+            this["vm-"+"{{infoPagination.page}}"].loadingState = true;
+            this["vm-"+"{{infoPagination.page}}"].getMoreNews().then((res)=>{
+                this["bs-"+"{{infoPagination.page}}"].finishPullUp()
+                this["bs-"+"{{infoPagination.page}}"].refresh()
+                this["vm-"+"{{infoPagination.page}}"].loadingState = false
+                if(res.isEnd)this["bs-"+"{{infoPagination.page}}"].closePullUp()
+            }).catch(e=>{
+                console.error("加载更多出错:",e);
+            });
+        })
+    </script>
 
 {% endblock %}
 
