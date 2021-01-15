@@ -44,10 +44,10 @@
         <el-form-item :label="$t(nameMod + '.location')" prop="location">
           <el-input size="small" v-model="formState.formData.location" placeholder=""></el-input>
         </el-form-item>
-        <el-form-item :label="$t(nameMod + '.listArtists')" prop="listArtists">
+        <el-form-item :label="$t(nameMod + '.listArtists')" prop="listRefs">
           <el-select
             size="medium"
-            v-model="formState.formData.listArtists"
+            v-model="formState.formData.listRefs"
             filterable
             multiple
             placeholder="选择乐队"
@@ -336,10 +336,10 @@ export default {
 
     eChangeArtist(value) {
       let that=this;
-      console.log("添加乐队：",value,this.formState.formData.listArtists);
+      console.log("添加乐队：",value,this.formState.formData.listRefs);
 
       //检查 是否有没在列表里的值v=[idUser1,idUser2...text]
-      this.formState.formData.listArtists.forEach((v,idx,arr) => {
+      this.formState.formData.listRefs.forEach((v,idx,arr) => {
         let tagFound=this.dataArtists.docs.find(user=>(user._id==v));
         let isFound = tagFound?true:false;
         //关键词里同步
@@ -625,10 +625,10 @@ export default {
             if (contentObj.keywords) {
               contentObj.keywords = contentObj.keywords.join();
             }
-            if (contentObj.listArtists) {
-              let listArtistsId=contentObj.listArtists.map(v=>{return v._id});
+            if (contentObj.listRefs) {
+              let listRefsId=contentObj.listRefs.map(v=>{return v._id});
               // this.remoteUserMethod();
-              contentObj.listArtists = listArtistsId;
+              contentObj.listRefs = listRefsId;
             }
 
             this.showContentForm({

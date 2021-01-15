@@ -60,9 +60,9 @@
       <el-table-column prop="date" :label="$t(nameMod+'.dateRelease')" width="180">
         <template slot-scope="scope">{{scope.row.date}}</template>
       </el-table-column>
-      <el-table-column prop="listArtists" :label="$t('contents.author')" show-overflow-tooltip>
+      <el-table-column prop="listRefs" :label="$t('contents.author')" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span v-for="artist in scope.row.listArtists" :key="artist._id">{{artist.name+','}}</span>
+          <span v-for="artist in scope.row.listRefs" :key="artist._id">{{artist.name+','}}</span>
         </template>
       </el-table-column>
       <el-table-column prop="tags" :label="$t('contents.tags')" width="250" show-overflow-tooltip>

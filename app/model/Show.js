@@ -27,10 +27,10 @@ module.exports =app=>{
                 type: Date,
                 default: Date.now
             },
-            listArtists:[{
-                type: String,
-                ref: 'Artist'
-            }],//乐队成员
+            // listArtists:[{
+            //     type: String,
+            //     ref: 'Artist'
+            // }],//乐队成员
             location:{
                 type: String,
                 default:"中国/China",
@@ -92,6 +92,9 @@ module.exports =app=>{
         }).set(function (v) {
             let res=((this.listDateDur && this.listDateDur[0])?this.listDateDur[0]:false) || v;
             return res;
+        });
+        schema.virtual('listArtists').get(function () {
+            return this.listRefs;
         });
 
         let model=app.model.Show || Doc.discriminator("Show", schema);

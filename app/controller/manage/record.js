@@ -127,7 +127,7 @@ const funGetData = async (ctx,fields) => {
         // from:fields.from,
         // listDateDur:fields.listDateDur,
         // listHotMusics:fields.listHotMusics,
-        listArtists:fields.listArtists,
+        listRefs:fields.listRefs,
         listFormatTags:fields.listFormatTags,
         dateRelease:fields.dateRelease,
         catalog:fields.catalog,

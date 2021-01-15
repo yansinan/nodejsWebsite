@@ -24,7 +24,7 @@ const defautlFormData={
   // commentNum: 0,
   // likeNum: 0,
   dismissReason: '',
-  listArtists:[],
+  listRefs:[],
   dateRelease:Date.now(),
   catalog:"",
   listFormatTags:"",
