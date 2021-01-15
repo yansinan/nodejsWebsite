@@ -7,7 +7,7 @@
 
 'use strict';
 const path = require('path')
-const BaseService = require(path.join(process.cwd(), 'lib/plugin/egg-dora-artist/app/service/Artist'));
+const BaseService = require('./Doc');//require(path.join(process.cwd(), 'lib/plugin/egg-dora-artist/app/service/Artist'));
 
 // const Model_NAME=__filename.slice(__dirname.length + 1, -3);
 
