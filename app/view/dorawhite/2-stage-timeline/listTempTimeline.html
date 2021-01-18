@@ -1,4 +1,4 @@
-            <div class="post-list row" dr-dom-append="{{infoPagination.idDOM}}">
+            <div class="row" dr-dom-append="{{infoPagination.idDOM}}">
                 {% for year, yearItems in posts|groupby("dateYear") %}
                     <h1>{{year}}</h1>
                     {% for date, dateItems in yearItems|groupby("dateTimeline") %}
