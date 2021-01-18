@@ -1,6 +1,6 @@
 
 {# {% set infoPagination={page:"timeline",idDOM:"list-timeline",api:"/api/timeline/getList",pageInfo:pageInfo,cateInfo:cateInfo} %} #}
-{% macro containerOfList(infoPagination,posts,tempList) %}
+{% macro containerOfList(infoPagination,tempList) %}
 <div class="container-fluid  main-container position-relative" style="height:88vh;overflow:hidden;" dr-bs-wrapper="{{infoPagination.idDOM}}" ms-controller="{{infoPagination.idDOM}}">
         <div class="row">
             <h1 alt="{{site.altkey}}{{infoPagination.cateInfo.name}}">{{infoPagination.cateInfo.name}}</h1>
@@ -50,6 +50,11 @@
         totalPage:{{infoPagination.pageInfo.totalPage}},
         appendDocumentList: [],
         vmPageNation:this["vm-pagenation-"+"{{infoPagination.page}}"] || {},
+        {# 初始化数据 #}
+        init:function(){
+            this.current=0;
+            this.getMoreNews();
+        },
         getMoreNews: function () {
             let that=this;
             let next=(this.current<this.totalPage)?(this.current+1):false;
@@ -86,6 +91,7 @@
             });                
         }
     })
+    this["vm-"+"{{infoPagination.page}}"].init();
 </script>
 
 {% endmacro %}

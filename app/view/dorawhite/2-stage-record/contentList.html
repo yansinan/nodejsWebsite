@@ -1,16 +1,22 @@
 {% extends "../default.html" %} 
 {% block content %}
-{% set infoPagination={page:"records",idDOM:"list-records",api:"/api/record/getList",pageInfo:pageInfo,cateInfo:cateInfo} %}
-{% set tempList %}
-    <div class="row">
-        {% for item in posts %}
-        <div class="col-lg-3 col-md-4 col-sm-6 border border-dark" style="border: black solid 1px">
-            {% include "../public/recordItem.html" %}
+    {% set infoPagination={page:"records",idDOM:"list-records",api:"/api/record/getList",pageInfo:pageInfo,cateInfo:cateInfo} %}
+    {# 临时设置，确保不输出默认数据，且有posts #}
+    {% set posts=[] %}
+    {% set tempList %}
+        {# 
+        <div class="row" dr-dom-append="{{infoPagination.idDOM}}">
+            {% for item in posts %}
+            <div class="col-lg-3 col-md-4 col-sm-6 border border-dark" style="border: black solid 1px">
+                {% include "../public/recordItem.html" %}
+            </div>
+            {% endfor %}
         </div>
-        {% endfor %}
-    </div>
-{% endset %}
-{{containerOfList(infoPagination,posts,tempList)}}
+         #}
+        {% include '../2-stage-record/listTempRecord.html' %}
+
+    {% endset %}
+    {{containerOfList(infoPagination,tempList)}}
 
 {% endblock %}
 

@@ -1,10 +1,12 @@
 {% extends "../default.html" %} 
 {% block content %}
     {% set infoPagination={page:"timeline",idDOM:"list-timeline",api:"/api/timeline/getList",pageInfo:pageInfo,cateInfo:cateInfo} %}
+    {# 临时设置，确保不输出默认数据，且有posts #}
+    {% set posts=[] %}
     {% set tempList %}
         {% include '../2-stage-timeline/listTempTimeline.html' %}
     {% endset %}
-    {{containerOfList(infoPagination,posts,tempList)}}
+    {{containerOfList(infoPagination,tempList)}}
 
 {% endblock %}
 

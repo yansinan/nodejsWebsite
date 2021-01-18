@@ -1,10 +1,9 @@
-<!--
+{# 
 约定documentList.docs为文档列表数据集合
-item为子元素集合
--->
+item为子元素集合 
+#}
+<div class="row" dr-dom-append="{{infoPagination.idDOM}}">
 {% for year,artists in posts|groupby("dateYear") %}
-
-<div class="row">
 	<div class="col-2 text-center"><span class="display-4"><u>{{year}}</u></span></div>
 	<div class="col-md col-sm-12">
 		<div class="row">
@@ -15,5 +14,6 @@ item为子元素集合
 			{% endfor %}
 		</div>
 	</div>
-</div>
+	<div class="w-100"></div>
 {% endfor %}
+</div>
