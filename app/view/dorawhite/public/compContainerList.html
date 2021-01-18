@@ -1,97 +1,105 @@
 
 {# {% set infoPagination={page:"timeline",idDOM:"list-timeline",api:"/api/timeline/getList",pageInfo:pageInfo,cateInfo:cateInfo} %} #}
 {% macro containerOfList(infoPagination,tempList) %}
-<div class="container-fluid  main-container position-relative" style="height:88vh;overflow:hidden;" dr-bs-wrapper="{{infoPagination.idDOM}}" ms-controller="{{infoPagination.idDOM}}">
-        <div class="row">
-            <h1 alt="{{site.altkey}}{{infoPagination.cateInfo.name}}">{{infoPagination.cateInfo.name}}</h1>
-        </div>
-        {{tempList | safe}}
-        {% include "./pagination.html" %}
-</div>
-<script>
-    {# BScroll.use(MouseWheel) #}
-    {# BScroll.use(Slide) #}
-    {# BScroll.use(Pullup) #}
-    {# BScroll.use(ScrollBar) #}
+<div class="container-fluid  main-container position-relative d-inline-block" style="height:88vh;overflow:hidden;white-space:normal;" dr-bs-wrapper="{{infoPagination.idDOM}}" ms-controller="{{infoPagination.idDOM}}">
+    <div class="row">
+        <h1 alt="{{site.altkey}}{{infoPagination.cateInfo.name}}">{{infoPagination.cateInfo.name}}</h1>
+    </div>
+    <div class="row" dr-dom-append="{{infoPagination.idDOM}}">
+    {{tempList | safe}}
+    </div>
 
-    this["bs-"+"{{infoPagination.page}}"] = new BetterScroll.createBScroll("[dr-bs-wrapper={{infoPagination.idDOM}}]", {
-        specifiedIndexAsContent:1,
-        disableMouse: false,
-        disableTouch: false,
-        mouseWheel: {
-            speed: 20,
-            invert: false,
-            easeTime: 300
-        },
-        pullUpLoad: true,
-        scrollbar: true,
-    })
-    {# 上拉事件 #}
-    this["bs-"+"{{infoPagination.page}}"].on('pullingUp', (e)=>{
-        this["vm-"+"{{infoPagination.page}}"].vmPageNation.loadingState = true;
-        this["vm-"+"{{infoPagination.page}}"].getMoreNews().then((res)=>{
-            this["bs-"+"{{infoPagination.page}}"].finishPullUp()
-            this["bs-"+"{{infoPagination.page}}"].refresh()
-            this["vm-"+"{{infoPagination.page}}"].vmPageNation.loadingState = false
-            if(res.isEnd)this["bs-"+"{{infoPagination.page}}"].closePullUp()
-        }).catch(e=>{
-            console.error("加载更多出错:",e);
-        });
-    })
-</script>
-<script>
-    {# 内容显示控制 #}
-    this["vm-"+"{{infoPagination.page}}"] = avalon.define({
-        $id: '{{infoPagination.idDOM}}',
-        cateId:"{{infoPagination.cateInfo._id}}",
-        namePage:"{{infoPagination.page}}",
-        urlApi:"{{infoPagination.api}}",
-        current: 1,
-        totalPage:{{infoPagination.pageInfo.totalPage}},
-        appendDocumentList: [],
-        vmPageNation:this["vm-pagenation-"+"{{infoPagination.page}}"] || {},
-        {# 初始化数据 #}
-        init:function(){
-            this.current=0;
-            this.getMoreNews();
-        },
-        getMoreNews: function () {
-            let that=this;
-            let next=(this.current<this.totalPage)?(this.current+1):false;
-            return new Promise((resolve, reject) => {
-                if(next){
-                    fetch(that.urlApi+'?type=dom&typeId=' + that.cateId + '&current=' + next)
-                    .then(function(data){
-                        return data.text();
-                    }).then(function (data) {
-                        // 在这个then里面我们能拿到最终的数据
-                        let objData=JSON.parse(data);
-                        if(objData.status==200){
-                            that.current=objData.data.pageInfo.current;
-                            that.totalPage=objData.data.pageInfo.totalPage;
-                            if(that.vmPageNation){
-                                that.vmPageNation.current=that.current;
-                                that.vmPageNation.totalPage=that.totalPage;
+    {% include "./pagination.html" %}
+    <script>
+        {# BScroll.use(MouseWheel) #}
+        {# BScroll.use(Slide) #}
+        {# BScroll.use(Pullup) #}
+        {# BScroll.use(ScrollBar) #}
+
+        this["bs-"+"{{infoPagination.page}}"] = this["bs-"+"{{infoPagination.page}}"] || new BetterScroll.createBScroll("[dr-bs-wrapper={{infoPagination.idDOM}}]", {
+            specifiedIndexAsContent:1,
+            disableMouse: false,
+            disableTouch: false,
+            mouseWheel: {
+                speed: 20,
+                invert: false,
+                easeTime: 300
+            },
+            pullUpLoad: true,
+            scrollbar: true,
+        })
+        {# TODO：可循环 
+        this["bs-"+"{{infoPagination.page}}"].scroller.hooks.on('scrollEnd', (position) => {
+            console.log("bs-"+"{{infoPagination.page}}:::",position);
+        })
+        #}
+        {# 上拉事件 #}
+        this["bs-"+"{{infoPagination.page}}"].on('pullingUp', (e)=>{
+            this["vm-"+"{{infoPagination.page}}"].vmPageNation.loadingState = true;
+            this["vm-"+"{{infoPagination.page}}"].getMoreNews().then((res)=>{
+                this["bs-"+"{{infoPagination.page}}"].finishPullUp()
+                this["bs-"+"{{infoPagination.page}}"].refresh()
+                this["vm-"+"{{infoPagination.page}}"].vmPageNation.loadingState = false
+                if(res.isEnd)this["bs-"+"{{infoPagination.page}}"].closePullUp()
+            }).catch(e=>{
+                console.error("加载更多出错:",e);
+            });
+        })
+    </script>
+    <script>
+        {# 内容显示控制 #}
+        this["vm-"+"{{infoPagination.page}}"] = this["vm-"+"{{infoPagination.page}}"] || avalon.define({
+            $id: '{{infoPagination.idDOM}}',
+            cateId:"{{infoPagination.cateInfo._id}}",
+            namePage:"{{infoPagination.page}}",
+            urlApi:"{{infoPagination.api}}",
+            current: 1,
+            totalPage:{{infoPagination.pageInfo.totalPage}},
+            appendDocumentList: [],
+            vmPageNation:this["vm-pagenation-"+"{{infoPagination.page}}"] || {},
+            {# 初始化数据 #}
+            init:function(){
+                this.current=0;
+                this.getMoreNews();
+            },
+            getMoreNews: function () {
+                let that=this;
+                let next=(this.current<this.totalPage)?(this.current+1):false;
+                return new Promise((resolve, reject) => {
+                    if(next){
+                        fetch(that.urlApi+'?type=dom&typeId=' + that.cateId + '&current=' + next)
+                        .then(function(data){
+                            return data.text();
+                        }).then(function (data) {
+                            // 在这个then里面我们能拿到最终的数据
+                            let objData=JSON.parse(data);
+                            if(objData.status==200){
+                                that.current=objData.data.pageInfo.current;
+                                that.totalPage=objData.data.pageInfo.totalPage;
+                                if(that.vmPageNation){
+                                    that.vmPageNation.current=that.current;
+                                    that.vmPageNation.totalPage=that.totalPage;
+                                }
+                                let strToAppend=objData.data.docs;
+                                let domToAppend = document.createRange().createContextualFragment(strToAppend);
+                                {# 插入点 ,用querySelectorAll 防止slider复制后内容缺失#}
+                                let listDomContainerOfList=document.querySelectorAll("[dr-dom-append="+that.$id+"]");
+                                listDomContainerOfList.forEach(domList=>{domList.append(domToAppend.cloneNode(true))});
+                                slideMain.refresh();
+                                resolve({msg:"succ",isEnd:that.totalPage<=that.current});
+                            }else{
+                                reject({msg:"服务器返回错误 ", objData});
                             }
-                            let strToAppend=objData.data.docs;
-                            let domToAppend = document.createRange().createContextualFragment(strToAppend);
-                            {# 插入点 #}
-                            let domList=document.querySelector("[dr-dom-append="+that.$id+"]");
-
-                            domList.append(domToAppend)
-                            resolve({msg:"succ",isEnd:that.totalPage<=that.current});
-                        }else{
-                            reject({msg:"服务器返回错误 ", objData});
-                        }
-                    })
-                                        
-                } else {
-                    resolve({msg:"succ",isEnd:that.totalPage<=that.current})
-                }
-            });                
-        }
-    })
-    this["vm-"+"{{infoPagination.page}}"].init();
-</script>
+                        })
+                                            
+                    } else {
+                        resolve({msg:"succ",isEnd:that.totalPage<=that.current})
+                    }
+                });                
+            }
+        })
+        this["vm-"+"{{infoPagination.page}}"].init();
+    </script>
+</div>
 
 {% endmacro %}

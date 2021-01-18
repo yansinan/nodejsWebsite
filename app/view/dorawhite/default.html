@@ -29,25 +29,67 @@
     <div class="container-fluid position-absolute" id="{{pageType}}" style="width:100%;top:0px;">
         <input type="hidden" value="{{site.lang}}" id="siteLang">
         {# mainpage大红标题 scroll#}
-        <div class="overflow-visible position-relative" style="height:0px;z-index:100;">
-            {# scroll #}
-            <div class="row bs-wrapper-cover overflow-hidden" style="height:100vh;">
-                <div class="col bs-content px-0">
-                    <div class="container-fluid bg-danger text-dark" style="min-height:100vh;">
-                        <div class="row w-100" style="height:40vh;"></div>
-                        <h1 class="display-1">RUBY</h1>
-                        <h1 class="display-1">EYES</h1>
-                        <h1 class="display-1">RECORDS</h1>
-                        <h1 class="display-1">COMMIUNITY</h1>
+        {% block cover %}
+            <div class="overflow-visible position-relative" style="height:0px;z-index:100;">
+                {# scroll #}
+                <div class="row bs-wrapper-cover overflow-hidden" style="height:100vh;">
+                    <div class="col bs-content px-0">
+                        <div class="container-fluid bg-danger text-dark" style="min-height:100vh;">
+                            <div class="row w-100" style="height:40vh;"></div>
+                            <h1 class="display-1">RUBY</h1>
+                            <h1 class="display-1">EYES</h1>
+                            <h1 class="display-1">RECORDS</h1>
+                            <h1 class="display-1">COMMIUNITY</h1>
+                        </div>
+                        {# 空容器 #}
+                        <div class="container-fluid bg-transparent  position-relative" style="min-height:100vh;z-index:-100;"></div>
                     </div>
-                    {# 空容器 #}
-                    <div class="container-fluid bg-transparent  position-relative" style="min-height:100vh;z-index:-100;"></div>
                 </div>
             </div>
+            <script>
+                let slideCover = new BetterScroll.createBScroll('.bs-wrapper-cover', {
+                    disableMouse: false,
+                    disableTouch: false,
+                    mouseWheel: {
+                        speed: 20,
+                        invert: false,
+                        easeTime: 300
+                    },
+                    nestedScroll: {
+                        groupId: 'cover-scroll'
+                    },
+                    slide: {
+                        threshold: 100,
+                        loop: false,
+                        autoplay:false,
+                        listenFlick:false,
+                    },
+                    useTransition: true,
+                    momentum: false,
+                    bounce: false,
+                    stopPropagation: true
+                })
+                slideCover.on('slidePageChanged', (page) => {
+                    $('.bs-wrapper-cover').hide();
+                    // currentPageIndex = page.pageX
+                })
+            </script>    
+        {% endblock %}
+        {#         
+        <div class="row bs-wrapper-main" style="top:12vh;height:89vh;overflow:hidden;white-space:nowrap;">
+            <div class="col bs-content px-0 d-inline-block" style="max-width:none;">
+                <div class="container-fluid d-inline-block bg-dark" style="height:88vh;overflow:hidden;"></div>
+                <div class="container-fluid d-inline-block bg-danger" style="height:88vh;overflow:hidden;"></div>
+                <div class="container-fluid d-inline-block bg-dark" style="height:88vh;overflow:hidden;"></div>
+                <div class="container-fluid d-inline-block bg-danger" style="height:88vh;overflow:hidden;"></div>
+
+            </div>
         </div>
+        #}
+        
         {# 内容区 #}
-        <div class="row position-relative bs-wrapper-main" style="top:12vh;height:88vh;overflow:hidden;">
-            <div class="col bs-content px-0">
+        <div class="row position-relative bs-wrapper-main" style="top:12vh;height:88vh;overflow:hidden;white-space:nowrap;">
+            <div class="col bs-content px-0 d-inline-block" style="max-width:none;max-height:100%;">
                 {# 单页模式 #}
                 {% block content %}{% endblock %}
                 {# 多页横播 #}
@@ -68,56 +110,29 @@
         {# {% block navAvatar %}{% endblock %} #}
     </div>
     {% include "./public/footer.html" %}
+
+    {# #}
     <script>
         {# BScroll.use(MouseWheel) #}
         {# BScroll.use(Slide) #}
-        let slideCover = new BetterScroll.createBScroll('.bs-wrapper-cover', {
-            disableMouse: false,
-            disableTouch: false,
-            mouseWheel: {
-                speed: 20,
-                invert: false,
-                easeTime: 300
-            },
-            slide: {
-                threshold: 100,
-                loop: true,
-                autoplay:false,
-                listenFlick:false,
-            },
-            useTransition: true,
-            momentum: false,
-            bounce: false,
-            stopPropagation: true
-        })
-        slideCover.on('slidePageChanged', (page) => {
-            $('.bs-wrapper-cover').hide();
-            // currentPageIndex = page.pageX
-        })
-    </script>
-    {# 
-    <script>
 
+        {# BScroll.use(NestedScroll) #}
         let slideMain = new BetterScroll.createBScroll('.bs-wrapper-main', {
             disableMouse: false,
             disableTouch: false,
             scrollX: true,
             scrollY: false,
-            mouseWheel: {
-                speed: 20,
-                invert: false,
-                easeTime: 300
-            },
             slide: {
                 threshold: 100,
-                loop: true,
+                loop: false,//TODO：可以优化为循环slide；注意：复制出来的slide需要querySelector and 设置translateY同步
                 autoplay:false,
                 listenFlick:false,
             },
             useTransition: true,
             momentum: false,
             bounce: false,
-            stopPropagation: true            
+            stopPropagation: true,
+            probeType: 2,
         })
         slideMain.on('slidePageChanged', (page) => {
             // currentPageIndex = page.pageX
@@ -127,7 +142,7 @@
             console.log("slideMain.on(slideWillChange)",page);
         })
     </script>
-     #}
+     
 
 </body>
 
