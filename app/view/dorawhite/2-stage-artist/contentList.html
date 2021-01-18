@@ -1,6 +1,6 @@
 {% extends "../default.html" %} 
 {% block content %}
-{% set infoPagination={page:"timeline",idDOM:"list-timeline",api:"/api/timeline/getList"} %}
+{% set infoPagination={page:"artists",idDOM:"list-artists",api:"/api/artist/getList"} %}
 <div class="container-fluid text-light bg-dark position-relative" style="height:88vh;overflow:hidden;" dr-bs-wrapper="{{infoPagination.idDOM}}" ms-controller="{{infoPagination.idDOM}}">
     <div class="row">
         <h1 class="display-6" alt="{{site.altkey}}{{cateInfo.name}}">{{cateInfo.name}}——艺术家</h1>
