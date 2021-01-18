@@ -12,6 +12,7 @@
     {% endplugin %}
     {# 模块 #}
     {% from "./public/compNavAvatar.html" import navAvatar %}
+    {% from "./public/compContainerList.html" import containerOfList %}
     <!-- 二次开发静态资源 -->
     {% assets 'dora.front.js white.css avatar.css artist.css' %}
     {% endassets %}
@@ -47,13 +48,21 @@
         {# 内容区 #}
         <div class="row position-relative bs-wrapper-main" style="top:12vh;height:88vh;overflow:hidden;">
             <div class="col bs-content px-0">
+                {# 单页模式 #}
                 {% block content %}{% endblock %}
+                {# 多页横播 #}
+                {# {% set listPages = ['timeline','artists','records'] %} #}
+                {# {% for page in navigation %} #}
+                {# {% include navigation.pathListTemp %} #}
+                {# {% else %} #}
+                {# <div class="container-fluid  main-container position-relative" style="height:88vh;overflow:hidden;">loading</div> #}
+                {# {% endfor %} #}
+                {# {% block slideContent %}{% endblock %} #}
             </div>
             {% block navAvatar %}
             <div class="col-auto">
                 {{navAvatar(listAvatars,128)}}
             </div>
-
             {% endblock %}
         </div>
         {# {% block navAvatar %}{% endblock %} #}
@@ -86,7 +95,39 @@
             // currentPageIndex = page.pageX
         })
     </script>
+    {# 
+    <script>
 
+        let slideMain = new BetterScroll.createBScroll('.bs-wrapper-main', {
+            disableMouse: false,
+            disableTouch: false,
+            scrollX: true,
+            scrollY: false,
+            mouseWheel: {
+                speed: 20,
+                invert: false,
+                easeTime: 300
+            },
+            slide: {
+                threshold: 100,
+                loop: true,
+                autoplay:false,
+                listenFlick:false,
+            },
+            useTransition: true,
+            momentum: false,
+            bounce: false,
+            stopPropagation: true            
+        })
+        slideMain.on('slidePageChanged', (page) => {
+            // currentPageIndex = page.pageX
+        })
+        slideMain.on('slideWillChange', (page) => {
+            currentPageIndex = page.pageX
+            console.log("slideMain.on(slideWillChange)",page);
+        })
+    </script>
+     #}
 
 </body>
 

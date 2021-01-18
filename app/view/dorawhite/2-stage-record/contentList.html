@@ -1,12 +1,7 @@
 {% extends "../default.html" %} 
 {% block content %}
-{% set infoPagination={page:"records",idDOM:"list-records",api:"/api/record/getList"} %}
-
-<div class="container-fluid  main-container position-relative" style="height:88vh;overflow:hidden;" dr-bs-wrapper="{{infoPagination.idDOM}}" ms-controller="{{infoPagination.idDOM}}">
-    <div class="row">
-        <h1 class="display-6" alt="{{site.altkey}}{{cateInfo.name}}">{{cateInfo.name}}</h1>
-    </div>
-
+{% set infoPagination={page:"records",idDOM:"list-records",api:"/api/record/getList",pageInfo:pageInfo,cateInfo:cateInfo} %}
+{% set tempList %}
     <div class="row">
         {% for item in posts %}
         <div class="col-lg-3 col-md-4 col-sm-6 border border-dark" style="border: black solid 1px">
@@ -14,38 +9,8 @@
         </div>
         {% endfor %}
     </div>
-    {% include "../public/pagination.html" %}
-</div>
-<script>
-    {# BScroll.use(MouseWheel) #}
-    {# BScroll.use(Slide) #}
-    {# BScroll.use(Pullup) #}
-    {# BScroll.use(ScrollBar) #}
+{% endset %}
+{{containerOfList(infoPagination,posts,tempList)}}
 
-    this["bs-"+"{{infoPagination.page}}"] = new BetterScroll.createBScroll("[dr-bs-wrapper={{infoPagination.idDOM}}]", {
-        specifiedIndexAsContent:1,
-        disableMouse: false,
-        disableTouch: false,
-        mouseWheel: {
-            speed: 20,
-            invert: false,
-            easeTime: 300
-        },
-        pullUpLoad: true,
-        scrollbar: true,
-    })
-    {# 上拉事件 #}
-    this["bs-"+"{{infoPagination.page}}"].on('pullingUp', (e)=>{
-        this["vm-"+"{{infoPagination.page}}"].loadingState = true;
-        this["vm-"+"{{infoPagination.page}}"].getMoreNews().then((res)=>{
-            this["bs-"+"{{infoPagination.page}}"].finishPullUp()
-            this["bs-"+"{{infoPagination.page}}"].refresh()
-            this["vm-"+"{{infoPagination.page}}"].loadingState = false
-            if(res.isEnd)this["bs-"+"{{infoPagination.page}}"].closePullUp()
-        }).catch(e=>{
-            console.error("加载更多出错:",e);
-        });
-    })
-</script>
 {% endblock %}
 
