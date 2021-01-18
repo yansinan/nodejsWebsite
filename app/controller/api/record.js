@@ -158,6 +158,8 @@ let ControllerPlugin = {
             let tagName = ctx.query.tagName;
             let filesType = 'listRecord'; // 查询模式 full/normal/simple
             let isSingerPage = false; // 是否是单页面
+            // 请求类型page 整页；dom 局部;
+            let type = payload.type || "page";
 
             let idArtist=ctx.query.idArtist || ctx.params.idArtist;//某乐队的专辑
             let service=ctx.service[SERVICE_NAME];
@@ -226,6 +228,9 @@ let ControllerPlugin = {
                 files: that.getListFields(filesType)
             });
             listRes.docs = await that.renderList(ctx, userInfo._id, listRes.docs);
+            //这里直接渲染模板?
+            let path="../view/dorawhite/2-stage-record/listTempRecord.html";//app/view/dorawhite/2-stage-timeline/listTempTimeline.html
+            if(type=="dom")listRes.docs=await ctx.renderView(path,{posts:listRes.docs});
 
             ctx.helper.renderSuccess(ctx, {
                 data: listRes
