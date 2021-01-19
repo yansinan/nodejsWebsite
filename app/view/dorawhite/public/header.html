@@ -54,8 +54,8 @@
             <div class="collapse navbar-collapse collapseNav-sm">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     {% for cate in navigation %} {% if cate.parentId == '0' %}
-                    <li class="nav-item text-nowrap px-3 bg-light rounded-pill border mx-1" role="presentation">
-                        <a class="nav-link" role="menuitem" tabindex="-1" alt="{{site.altkey}}{{cate.name}}"
+                    <li class="nav-item text-nowrap px-3 bg-light rounded-pill border mx-1" role="presentation" dr-dom-nav-bn="{{cate.defaultUrl}}">
+                        <a class="nav-link" style="color: inherit" role="menuitem" tabindex="-1" alt="{{site.altkey}}{{cate.name}}"
                             href="{{cate.url}}">{{cate.name}}</a>
                     </li>
                     {% endif %} {% endfor %}

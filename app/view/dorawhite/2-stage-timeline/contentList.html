@@ -7,16 +7,18 @@
         {% include '../2-stage-timeline/listTempTimeline.html' %}
     {% endset %}
     {{containerOfList(infoPagination,tempList)}}
-                {# 唱片 #}
-                {% set infoPagination={page:"records",idDOM:"list-records",api:"/api/record/getList",pageInfo:pageInfo,cateInfo:cateInfo} %}
-                {% set tempList %}
-                    {% include '../2-stage-record/listTempRecord.html' %}
-                {% endset %}
-                {{containerOfList(infoPagination,tempList)}}
+    
     {# 艺术家 #}
     {% set infoPagination={page:"artists",idDOM:"list-artists",api:"/api/artist/getList",pageInfo:pageInfo,cateInfo:cateInfo} %}
     {% set tempList %}
         {% include '../2-stage-artist/listTempArtist.html' %}
+    {% endset %}
+    {{containerOfList(infoPagination,tempList)}}
+
+    {# 唱片 #}
+    {% set infoPagination={page:"records",idDOM:"list-records",api:"/api/record/getList",pageInfo:pageInfo,cateInfo:cateInfo} %}
+    {% set tempList %}
+        {% include '../2-stage-record/listTempRecord.html' %}
     {% endset %}
     {{containerOfList(infoPagination,tempList)}}
 

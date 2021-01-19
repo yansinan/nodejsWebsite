@@ -71,6 +71,8 @@
                 })
                 slideCover.on('slidePageChanged', (page) => {
                     $('.bs-wrapper-cover').hide();
+                    {# 导航更新 #}
+                    this.funNavChange("timeline");
                     // currentPageIndex = page.pageX
                 })
             </script>    
@@ -132,15 +134,37 @@
             momentum: false,
             bounce: false,
             stopPropagation: true,
-            probeType: 2,
+            probeType: 3,
         })
+        slideMain.listNav=[{% for cate in navigation %} {% if cate.parentId == '0' %}'{{cate.defaultUrl}}',{% endif %} {% endfor %}];
         slideMain.on('slidePageChanged', (page) => {
             // currentPageIndex = page.pageX
         })
         slideMain.on('slideWillChange', (page) => {
-            currentPageIndex = page.pageX
-            console.log("slideMain.on(slideWillChange)",page);
+            currentPageIndex = page.pageX;
+            console.log("slideMain.on(slideWillChange)",page,slideMain.listNav[currentPageIndex]);
+            {# 更新导航状态 #}
+            this.funNavChange(slideMain.listNav[currentPageIndex])
+            //listBnNav.addClass("bg-light text-dark").removeClass("bg-dark text-light");
+            //bnNav.addClass("bg-dark text-light").removeClass("bg-light text-dark");             
         })
+        {# 更新导航状态 #}
+        this.funNavChange=function(strAliasNav="timeline"){
+            let listBnNav=document.querySelectorAll("[dr-dom-nav-bn]");
+            let bnNav=document.querySelectorAll("[dr-dom-nav-bn="+strAliasNav+"]");
+            listBnNav.forEach(bn=>{
+                bn.setAttribute("aria-selected", "false");
+                bn.classList.add("bg-light","text-dark");
+                bn.classList.remove("bg-dark","text-light");
+            })
+            bnNav.forEach(bn=>{
+                bn.setAttribute("aria-selected", "true");
+                bn.classList.remove("bg-light","text-dark");
+                bn.classList.add("bg-dark","text-light");
+
+            })
+        }
+        
     </script>
      
 

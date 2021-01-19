@@ -66,7 +66,7 @@
         {% endif %}
     </ul>
     #}
-    {% if posts.length > 0 %}
+    {% if infoPagination.pageInfo.totalPage > 1 %}
 	<div class="loading-more mt-4 fs-1" ms-on-click="@getMoreNews">
 		<i :visible="!@loadingState" class="fa fa-sort-down" aria-hidden="true"></i>
 		<i :visible="@loadingState" class="fa fa-spin fa-spinner"></i>
