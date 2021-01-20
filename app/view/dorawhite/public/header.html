@@ -86,6 +86,13 @@
             this.header.funSetNav(this.header.strAliasNav);                
         }
     }
+    const eBnNav=function(strAliasNav){
+        let currentPageIndex=this.header.listNav.findIndex(v=>(v.defaultUrl==strAliasNav));
+        if(this.header.idxNav>=0){
+            window.history.pushState({}, "{{site.title}}|"+ this.header.listNav[currentPageIndex].name, this.header.listNav[currentPageIndex].url);//设置状态
+            slideMain.goToPage(this.header.idxNav,0);
+        }
+    }
 </script>
 <input type="hidden" value="{{userInfo._id}}" id="userId">
 <input type="hidden" value="{{logined}}" id="logined">
@@ -180,7 +187,7 @@
                     {% for cate in navigation %} {% if cate.parentId == '0' %}
                     <li class="nav-item text-nowrap px-3 bg-light rounded-pill border mx-1" role="presentation" dr-dom-nav-bn="{{cate.defaultUrl}}">
                         <a class="nav-link" style="color: inherit" role="menuitem" tabindex="-1" alt="{{site.altkey}}{{cate.name}}"
-                            href="{{cate.url}}">{{cate.name}}</a>
+                            href="javascript:void(0)" onclick="eBnNav('{{cate.defaultUrl}}')" name="{{cate.defaultUrl}}">{{cate.name}}</a>
                     </li>
                     {% endif %} {% endfor %}
                 </ul>
