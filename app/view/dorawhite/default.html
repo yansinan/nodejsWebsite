@@ -73,7 +73,7 @@
         })
         slideMain.on('slideWillChange', (page) => {
             currentPageIndex = page.pageX;
-            console.log("slideMain.on(slideWillChange)",page,slideMain.listNav[currentPageIndex]);
+            console.log("slideMain.on(slideWillChange)",page,this.header.listNav[currentPageIndex]);
             {# history路由 #}
             window.history.pushState({}, "{{site.title}}|"+ this.header.listNav[currentPageIndex].name, this.header.listNav[currentPageIndex].url);//设置状态
             //listBnNav.addClass("bg-light text-dark").removeClass("bg-dark text-light");

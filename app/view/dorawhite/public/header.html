@@ -31,10 +31,7 @@
                     bn.classList.add("bg-dark","text-light");
 
                 })
-                $('.bs-wrapper-cover').hide();
             }else{
-                //首页则显示SlideCover
-                $('.bs-wrapper-cover').show();
             }
         },
         listNav:[
@@ -51,7 +48,8 @@
             let strAliasNav=path.split("__")[0];
             return strAliasNav;
         },
-        get idxNav(){return this.listNav.findIndex(v=>(v.defaultUrl==this.strAliasNav))},
+        get idxNav(){let idx=this.listNav.findIndex(v=>(v.defaultUrl==this.strAliasNav));return idx==-1?0:idx;},
+        get objNav(){return this.listNav[this.idxNav]},
     };
 </script>
 <script>
@@ -69,28 +67,37 @@
     window.history.pushState = listener('pushState');
     window.history.replaceState = listener('replaceState');
     //应用事件
-    window.addEventListener('pushState', ePopState, false);
-    window.addEventListener('popstate', ePopState, false);
-    window.addEventListener('replaceState', ePopState, false);
-    window.addEventListener('DOMContentLoaded', ePopState, false);
+    window.addEventListener('pushState', ePopStateHeader, false);
+    window.addEventListener('popstate', ePopStateHeader, false);
+    window.addEventListener('replaceState', ePopStateHeader, false);
+    window.addEventListener('DOMContentLoaded', ePopStateHeader, false);
 
-    function ePopState(event){
+    function ePopStateHeader(event){
         
         console.log("window.popstate::",event.type,"strAliasNav=",this.header.strAliasNav);
         {# 非首页需要跳转相应页 #}
         if(event.type =="DOMContentLoaded" || event.type =="Load"){
             {# 导入页显示 #}                
             this.header.funSetNav("index");
+            //首页则显示SlideCover
+            $('.bs-wrapper-cover').show();
+
         }else{
             {# 更新导航状态 #}
-            this.header.funSetNav(this.header.strAliasNav);                
+            this.header.funSetNav(this.header.strAliasNav);
+            {# $('.bs-wrapper-cover').hide(); #}
+            
         }
     }
     const eBnNav=function(strAliasNav){
         let currentPageIndex=this.header.listNav.findIndex(v=>(v.defaultUrl==strAliasNav));
-        if(this.header.idxNav>=0){
+        if(currentPageIndex>=0){
+            {# 先改地址 #}
             window.history.pushState({}, "{{site.title}}|"+ this.header.listNav[currentPageIndex].name, this.header.listNav[currentPageIndex].url);//设置状态
+            {# 内容页跳转 #}
             slideMain.goToPage(this.header.idxNav,0);
+            {# 封面收起 #}
+            this.slideCover.next();
         }
     }
 </script>
@@ -123,7 +130,8 @@
         </div>
     </div>
     <script>
-        let slideCover = new BetterScroll.createBScroll('.bs-wrapper-cover', {
+        
+        this.slideCover=new BetterScroll.createBScroll('.bs-wrapper-cover', {
             disableMouse: false,
             disableTouch: false,
             mouseWheel: {
@@ -147,9 +155,10 @@
         })
         {# //初始化slideCover后隐藏Cover，后面再判断是否显示 #}
         $('.bs-wrapper-cover').hide();
-        slideCover.on('slidePageChanged', (page) => {
+        this.slideCover.on('slidePageChanged', (page) => {
             {# 导航更新 #}
             this.header.funSetNav(this.header.strAliasNav || "timeline");
+            $('.bs-wrapper-cover').hide();
             {# // currentPageIndex = page.pageX #}
         })
     </script>    
