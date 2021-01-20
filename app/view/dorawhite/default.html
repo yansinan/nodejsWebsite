@@ -27,33 +27,12 @@
     {% include "./public/header.html" %}
     {# <div class="mainbody" id="{{pageType}}" style="width:100%;max-width:1199px;"> #}
     <div class="container-fluid position-absolute" id="{{pageType}}" style="width:100%;top:0px;">
-        <input type="hidden" value="{{site.lang}}" id="siteLang">
-
-        {#         
-        <div class="row bs-wrapper-main" style="top:12vh;height:89vh;overflow:hidden;white-space:nowrap;">
-            <div class="col bs-content px-0 d-inline-block" style="max-width:none;">
-                <div class="container-fluid d-inline-block bg-dark" style="height:88vh;overflow:hidden;"></div>
-                <div class="container-fluid d-inline-block bg-danger" style="height:88vh;overflow:hidden;"></div>
-                <div class="container-fluid d-inline-block bg-dark" style="height:88vh;overflow:hidden;"></div>
-                <div class="container-fluid d-inline-block bg-danger" style="height:88vh;overflow:hidden;"></div>
-
-            </div>
-        </div>
-        #}
-        
+        <input type="hidden" value="{{site.lang}}" id="siteLang">       
         {# 内容区 #}
         <div class="row position-relative bs-wrapper-main" style="top:12vh;height:88vh;overflow:hidden;white-space:nowrap;">
             <div class="col bs-content px-0 d-inline-block" style="max-width:none;max-height:100%;">
                 {# 单页模式 #}
                 {% block content %}{% endblock %}
-                {# 多页横播 #}
-                {# {% set listPages = ['timeline','artists','records'] %} #}
-                {# {% for page in navigation %} #}
-                {# {% include navigation.pathListTemp %} #}
-                {# {% else %} #}
-                {# <div class="container-fluid  main-container position-relative" style="height:88vh;overflow:hidden;">loading</div> #}
-                {# {% endfor %} #}
-                {# {% block slideContent %}{% endblock %} #}
             </div>
             {% block navAvatar %}
             <div class="col-auto">
@@ -66,37 +45,6 @@
     {% include "./public/footer.html" %}
 
     {# #}
-    <script>
-        {# 通过hash同步、切换页面 #}
-        let that = this;
-        window.addEventListener("hashchange", function (event) {
-            //当点击返回键时，hash会回退到上一页的hash值
-            //获取上一页的hash值，并转化为对应view的id
-            var id = window.location.hash.substr(1) || "index";
-            {# 更新导航状态 #}
-            {# this.header.funSetNav(id); #}
-            // 判断当前页面不是首页，
-        }, false);
-        window.addEventListener('load', (event) => {
-            console.log('window.load::',event);
-        });
-
-        document.addEventListener('readystatechange', (event) => {
-            console.log(`window.readystate: ${document.readyState}\n`,event);
-        });
-
-        document.addEventListener('DOMContentLoaded', (event) => {
-            console.log(`window.DOMContentLoaded\n`,event);
-            let hash=window.location.hash.substr(1);
-            {# 非首页需要跳转相应页 #}
-            if(hash || hash !="index"){
-                {# 主页拉走 #}
-                {# $('.bs-wrapper-cover').hide(); #}
-                window.location.hash=window.location.hash;
-                
-            }
-        });
-    </script>
 
     <script>
         {# BScroll.use(MouseWheel) #}
@@ -120,15 +68,12 @@
             stopPropagation: true,
             probeType: 3,
         })
-        slideMain.listNav=[{% for cate in navigation %} {% if cate.parentId == '0' %}'{{cate.defaultUrl}}',{% endif %} {% endfor %}];
         slideMain.on('slidePageChanged', (page) => {
             // currentPageIndex = page.pageX
         })
         slideMain.on('slideWillChange', (page) => {
             currentPageIndex = page.pageX;
             console.log("slideMain.on(slideWillChange)",page,slideMain.listNav[currentPageIndex]);
-            {# 设置hash状态  #}
-            {# window.location.hash = slideMain.listNav[currentPageIndex]; #}
             {# history路由 #}
             window.history.pushState({}, "{{site.title}}|"+ this.header.listNav[currentPageIndex].name, this.header.listNav[currentPageIndex].url);//设置状态
             //listBnNav.addClass("bg-light text-dark").removeClass("bg-dark text-light");
@@ -136,11 +81,9 @@
         })
         {# 页面重新加载时，路由到指定的slide页 #}
         window.addEventListener('DOMContentLoaded', (event) => {
-            let idxCate = this.header.listNav.find(v=>{v.defaultUrl==this.header.strAliasNav});
-            if(idxCate>=0){
-                slideMain.goToPage(idxCate,0);
+            if(this.header.idxNav>=0){
+                slideMain.goToPage(this.header.idxNav,0);
             }
-
         });
     </script>
      

@@ -51,6 +51,7 @@
             let strAliasNav=path.split("__")[0];
             return strAliasNav;
         },
+        get idxNav(){return this.listNav.findIndex(v=>(v.defaultUrl==this.strAliasNav))},
     };
 </script>
 <script>
@@ -142,8 +143,7 @@
         slideCover.on('slidePageChanged', (page) => {
             {# 导航更新 #}
             this.header.funSetNav(this.header.strAliasNav || "timeline");
-            {# window.location.hash="timeline"; #}
-            // currentPageIndex = page.pageX
+            {# // currentPageIndex = page.pageX #}
         })
     </script>    
 {% endblock %}
