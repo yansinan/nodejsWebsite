@@ -12,6 +12,79 @@
             });
         })
     }
+    
+    {# 更新导航状态 #}
+    this.header={
+        funSetNav:function(strAliasNav="timeline"){
+            let listBnNav=document.querySelectorAll("[dr-dom-nav-bn]");
+            listBnNav.forEach(bn=>{
+                bn.setAttribute("aria-selected", "false");
+                bn.classList.add("bg-light","text-dark");
+                bn.classList.remove("bg-dark","text-light");
+            })
+            if(strAliasNav!="index"){
+                {# 设置当前导航按钮 #}                
+                let bnNav=document.querySelectorAll("[dr-dom-nav-bn="+strAliasNav+"]");
+                bnNav.forEach(bn=>{
+                    bn.setAttribute("aria-selected", "true");
+                    bn.classList.remove("bg-light","text-dark");
+                    bn.classList.add("bg-dark","text-light");
+
+                })
+                $('.bs-wrapper-cover').hide();
+            }else{
+                //首页则显示SlideCover
+                $('.bs-wrapper-cover').show();
+            }
+        },
+        listNav:[
+            {% for cate in navigation %} {% if cate.parentId == '0' %}
+            {
+                defaultUrl:"{{cate.defaultUrl}}",
+                url:"{{cate.url}}",
+                name:"{{cate.name}}"
+            },
+            {% endif %} {% endfor %}
+        ],
+        get strAliasNav(){
+            let path=window.location.pathname.split("/")[1];///artists___KuvrGBz9e
+            let strAliasNav=path.split("__")[0];
+            return strAliasNav;
+        },
+    };
+</script>
+<script>
+    {# pushState和replaceState被调用时，是不会触发触发 popstate 事件的解决方案 #}
+    const listener = function (type) {
+        var orig = history[type];
+        return function () {
+            var rv = orig.apply(this, arguments);
+            var e = new Event(type);
+            e.arguments = arguments;
+            window.dispatchEvent(e);
+            return rv;
+        };
+    };
+    window.history.pushState = listener('pushState');
+    window.history.replaceState = listener('replaceState');
+    //应用事件
+    window.addEventListener('pushState', ePopState, false);
+    window.addEventListener('popstate', ePopState, false);
+    window.addEventListener('replaceState', ePopState, false);
+    window.addEventListener('DOMContentLoaded', ePopState, false);
+
+    function ePopState(event){
+        
+        console.log("window.popstate::",event.type,"strAliasNav=",this.header.strAliasNav);
+        {# 非首页需要跳转相应页 #}
+        if(event.type =="DOMContentLoaded" || event.type =="Load"){
+            {# 导入页显示 #}                
+            this.header.funSetNav("index");
+        }else{
+            {# 更新导航状态 #}
+            this.header.funSetNav(this.header.strAliasNav);                
+        }
+    }
 </script>
 <input type="hidden" value="{{userInfo._id}}" id="userId">
 <input type="hidden" value="{{logined}}" id="logined">
@@ -23,6 +96,57 @@
 {% set homelink = '/zh-CN' %}
 {% set endStr = '' %}
 {% endif %}
+{# mainpage大红标题 scroll#}
+{% block cover %}
+    <div class="container-fluid overflow-visible position-relative" style="height:0px;z-index:100;">
+        {# scroll #}
+        <div class="row bs-wrapper-cover overflow-hidden" style="height:100vh;">
+            <div class="col bs-content px-0">
+                <div class="container-fluid bg-danger text-dark" style="min-height:100vh;">
+                    <div class="row w-100" style="height:40vh;"></div>
+                    <h1 class="display-1">RUBY</h1>
+                    <h1 class="display-1">EYES</h1>
+                    <h1 class="display-1">RECORDS</h1>
+                    <h1 class="display-1">COMMIUNITY</h1>
+                </div>
+                {# 空容器 #}
+                <div class="container-fluid bg-transparent  position-relative" style="min-height:100vh;z-index:-100;"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        let slideCover = new BetterScroll.createBScroll('.bs-wrapper-cover', {
+            disableMouse: false,
+            disableTouch: false,
+            mouseWheel: {
+                speed: 20,
+                invert: false,
+                easeTime: 300
+            },
+            nestedScroll: {
+                groupId: 'cover-scroll'
+            },
+            slide: {
+                threshold: 100,
+                loop: false,
+                autoplay:false,
+                listenFlick:false,
+            },
+            useTransition: true,
+            momentum: false,
+            bounce: false,
+            stopPropagation: true
+        })
+        {# //初始化slideCover后隐藏Cover，后面再判断是否显示 #}
+        $('.bs-wrapper-cover').hide();
+        slideCover.on('slidePageChanged', (page) => {
+            {# 导航更新 #}
+            this.header.funSetNav(this.header.strAliasNav || "timeline");
+            {# window.location.hash="timeline"; #}
+            // currentPageIndex = page.pageX
+        })
+    </script>    
+{% endblock %}
 {# <header class="clearfix" id="header" ms-controller="headerCtr"> #}
 <div class="container-fluid position-absolute" style="height:10vh;z-index:1000;" >
     <div class="row d-none d-md-block " ms-controller="headerCtr">
