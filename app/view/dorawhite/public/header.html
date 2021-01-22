@@ -97,7 +97,7 @@
             {# 内容页跳转 #}
             slideMain.goToPage(this.header.idxNav,0);
             {# 封面收起 #}
-            this.slideCover.next();
+            this.slideCover.goToPage(0,1);
         }
     }
 </script>
@@ -151,11 +151,13 @@
             useTransition: true,
             momentum: false,
             bounce: false,
-            stopPropagation: true
+            stopPropagation: true,
+            probeType: 3,
+
         })
         {# //初始化slideCover后隐藏Cover，后面再判断是否显示 #}
         $('.bs-wrapper-cover').hide();
-        this.slideCover.on('slidePageChanged', (page) => {
+        this.slideCover.on('slideWillChange', (page) => {
             {# 导航更新 #}
             this.header.funSetNav(this.header.strAliasNav || "timeline");
             $('.bs-wrapper-cover').hide();
