@@ -117,7 +117,8 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2m</div>
           </el-upload>
-        </el-form-item>
+        </el-form-item>        
+        <Cropper v-if="formState.formData.sImg" :src="formState.formData.sImg"></Cropper>
         <el-form-item :label="$t('contents.discription')" prop="discription">
           <el-input size="small" type="textarea" v-model="formState.formData.discription"></el-input>
         </el-form-item>
@@ -221,6 +222,7 @@ import {
   addContentTag,
 } from "@/api/contentTag"
 import ListURL from "../common/ListURL.vue";
+import Cropper from "../common/Cropper.vue";
 
 import _ from "lodash";
 import { mapGetters, mapActions,createNamespacedHelpers} from "vuex";
@@ -343,6 +345,7 @@ export default {
   components: {
     VueUeditorWrap,
     ListURL,
+    Cropper,
   },
   methods: {
     //获取表单信息
