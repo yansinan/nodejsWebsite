@@ -149,11 +149,12 @@ let getFileInfoByStream = (ctx, uploadOptions, stream) => {
     } = getUploadConfig(uploadOptions);
     let fileParams = stream.fields || stream.fieldname;
     let askFileType = fileParams.action || 'uploadimage'; // 默认上传图片
-    debugger
     if (Object.keys(uploadType).includes(askFileType)) {
         const actionName = uploadType[askFileType]
         let pathFormat = setFullPath(conf[actionName + 'PathFormat']).split('/')
         let newFileName = pathFormat.pop()
+        // 在upload/images下，按控制器分文件夹
+        pathFormat.splice(pathFormat.findIndex(v=>(v=='images'))+1,0,uploadOptions.subdirMod);
 
         let uploadForder = path.join('.', ...pathFormat);
         // 所有表单字段都能通过 `stream.fields` 获取到
@@ -235,7 +236,6 @@ class UserController extends Controller {
             // const stream = await ctx.getFileStream();//单个文件使用
             const parts = ctx.multipart({ autoFields: true });
             let part;
-            
             while ((part = await parts()) != null) {
                 if (part.length) {
                     console.log("field: " + part[0]);
@@ -248,17 +248,20 @@ class UserController extends Controller {
                     console.log("filename: " + part.filename);
                     console.log("encoding: " + part.encoding);
                     console.log("mime: " + part.mime);
+                    // 在upload/images下，按控制器分文件夹
+                    options.subdirMod=parts.field.nameMod?parts.field.nameMod:'';
+                    
                     let beforeUploadFileInfo = await getFileInfoByStream(ctx, options, part);                    
                     let {
                         uploadForder,
                         uploadFileName,
                         fileType
                     } = beforeUploadFileInfo;
-                    debugger;
+
                     const publicDir = options.upload_path || (process.cwd() + '/app/public');
                     uploadPath = `${publicDir}/${uploadForder}`
                     if (!fs.existsSync(uploadPath)) {
-                        fs.mkdirSync(uploadPath);
+                        fs.mkdirSync(uploadPath,{recursive: true});
                     }
                     const target = path.join(uploadPath, `${uploadFileName+fileType}`)
                     const writeStream = fs.createWriteStream(target)

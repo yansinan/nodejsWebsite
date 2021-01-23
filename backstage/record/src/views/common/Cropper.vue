@@ -5,9 +5,9 @@
         <input type="file" @change="uploadImg" />
     </div>
     <div class="cropperPreview" style="">
-        <div :src="src" class="avatar avatar-32" style="overflow:hidden;display: inline-block;"></div>
-        <div :src="src" class="avatar avatar-64" style="overflow:hidden;display: inline-block;" ></div>
         <div :src="src" class="avatar avatar-96" style="overflow:hidden;display: inline-block;" ></div>
+        <div :src="src" class="avatar avatar-64" style="overflow:hidden;display: inline-block;" ></div>
+        <div :src="src" class="avatar avatar-32" style="overflow:hidden;display: inline-block;"></div>
         <div @click="uploadCropImg">上传</div>
     </div>
 
@@ -390,6 +390,7 @@
 
 </style>
 <script>
+import '@/set-public-path'
 import Cropper from 'cropperjs'
 import 'cropperjs/dist/cropper.min.css'
  
@@ -400,6 +401,20 @@ export default {
           type:String,
           default:"",
       },
+      cropSetting:{
+        type:Object,
+        default:{
+          width: 512,
+          height: 512,
+          minWidth: 256,
+          minHeight: 256,
+          maxWidth: 1024,
+          maxHeight: 1024,
+          fillColor: '#fff',
+          imageSmoothingEnabled: false,
+          imageSmoothingQuality: 'high',
+        }
+      }
     },
     watch: {
         src(newV,oldV) {
@@ -428,17 +443,21 @@ export default {
                 preview:".avatar"
             });
         },
+        // 浏览
         uploadImg (event) {
             const img = event.target.files[0]
             this.src = URL.createObjectURL(img);
             this.imgName = img.name;
         },
+        // 上传
         uploadCropImg () {
             const _this = this;
-            this.cropper.getCroppedCanvas().toBlob(async function(blob) {
+            this.cropper.getCroppedCanvas(this.cropSetting).toBlob(async function(blob) {
                 const params = new FormData()
-                params.append('upload_file', blob, _this.imgName)
+                // 路径相关:
+                params.append("nameMod",nameMod);
 
+                params.append('upload_file', blob, _this.imgName)
                 let uploadFileRequest = new Request(`/api/dr/uploadFiles`, {
                     method: 'post',
                     //指定header会eggjs接收不到multipart
@@ -452,10 +471,12 @@ export default {
                     let objData=JSON.parse(res);
                     if(objData.status==200){
                       console.log("resUpload::",objData);
+                      _this.src=objData.data.path;
                     }
                 })
             }, 'image/jpeg')
         },
+        //另存裁切后的图片
         saveCropImg () {
             const _this = this
             this.cropper.getCroppedCanvas().toBlob(function(blob) {
