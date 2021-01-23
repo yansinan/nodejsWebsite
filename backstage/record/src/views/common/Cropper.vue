@@ -8,6 +8,7 @@
         <div :src="src" class="avatar avatar-32" style="overflow:hidden;display: inline-block;"></div>
         <div :src="src" class="avatar avatar-64" style="overflow:hidden;display: inline-block;" ></div>
         <div :src="src" class="avatar avatar-96" style="overflow:hidden;display: inline-block;" ></div>
+        <div @click="uploadCropImg">上传</div>
     </div>
 
 </el-form-item>
@@ -433,23 +434,26 @@ export default {
             this.imgName = img.name;
         },
         uploadCropImg () {
-            const _this = this
+            const _this = this;
             this.cropper.getCroppedCanvas().toBlob(async function(blob) {
                 const params = new FormData()
                 params.append('upload_file', blob, _this.imgName)
-                // Use `jQuery.ajax` method
-                // $.ajax('/path/to/upload', {
-                //     method: "POST",
-                //     data: formData,
-                //     processData: false,
-                //     contentType: false,
-                //     success() {
-                //     console.log('Upload success');
-                //     },
-                //     error() {
-                //     console.log('Upload error');
-                //     },
-                // });
+
+                let uploadFileRequest = new Request(`/api/dr/uploadFiles`, {
+                    method: 'post',
+                    //指定header会eggjs接收不到multipart
+                    // headers: {'Content-Type': 'multipart/form-data'},
+                    body:params,
+                })
+                fetch(uploadFileRequest).then(response => {
+                    return response.text();
+                }).then(res => {
+                    // 在这个then里面我们能拿到最终的数据
+                    let objData=JSON.parse(res);
+                    if(objData.status==200){
+                      console.log("resUpload::",objData);
+                    }
+                })
             }, 'image/jpeg')
         },
         saveCropImg () {

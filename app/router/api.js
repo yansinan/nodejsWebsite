@@ -19,5 +19,10 @@ module.exports = app => {
 
     // 时间线列表
     router.get("/api/timeline/getList", controller.api.timeline.list);
-    
+    /**
+     * 上传文件blocb 多文件管理
+     * 
+     */
+    router.post('/api/dr/uploadFiles', controller.api.uploadFiles.create)
+
 }
