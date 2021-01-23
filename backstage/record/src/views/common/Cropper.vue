@@ -2,6 +2,7 @@
 <el-form-item :label="头像" prop="sImg">    
     <div class="cropper" style="width: 750px; height: 500px; margin: 20px; border: dashed #cacaca 1px; text-align: center;">
         <img :src="src" style="max-width: 100%" ref="img">
+        <input type="file" @change="uploadImg" />
     </div>
     <div class="cropperPreview" style="">
         <div :src="src" class="avatar avatar-32" style="overflow:hidden;display: inline-block;"></div>
@@ -425,6 +426,44 @@ export default {
                 aspectRatio:1,
                 preview:".avatar"
             });
+        },
+        uploadImg (event) {
+            const img = event.target.files[0]
+            this.src = URL.createObjectURL(img);
+            this.imgName = img.name;
+        },
+        uploadCropImg () {
+            const _this = this
+            this.cropper.getCroppedCanvas().toBlob(async function(blob) {
+                const params = new FormData()
+                params.append('upload_file', blob, _this.imgName)
+                // Use `jQuery.ajax` method
+                // $.ajax('/path/to/upload', {
+                //     method: "POST",
+                //     data: formData,
+                //     processData: false,
+                //     contentType: false,
+                //     success() {
+                //     console.log('Upload success');
+                //     },
+                //     error() {
+                //     console.log('Upload error');
+                //     },
+                // });
+            }, 'image/jpeg')
+        },
+        saveCropImg () {
+            const _this = this
+            this.cropper.getCroppedCanvas().toBlob(function(blob) {
+                const href = window.URL.createObjectURL(blob);
+                const downloadElement = document.createElement('a');
+                downloadElement.href = href;
+                downloadElement.download = _this.imgName
+                document.body.appendChild(downloadElement);
+                downloadElement.click();
+                document.body.removeChild(downloadElement);
+                window.URL.revokeObjectURL(href);
+            }, 'image/jpeg')
         },
     }
 }
