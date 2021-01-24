@@ -91,22 +91,21 @@
             </el-select>
           </el-form-item>
         </div>
-        <el-form-item class="upSimg" :label="$t('contents.sImg')" prop="sImg">
-          <el-upload
-            class="avatar-uploader"
-            action="/api/upload/files"
-            :show-file-list="false"
-            :on-success="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload"
-            :data="{action:'uploadimage'}"
-          >
-            <img v-if="formState.formData.sImg" :src="formState.formData.sImg" class="avatar" />
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-          </el-upload>
-          <el-button size="mini" @click="getRandomContentImg()" class="refresh-btn" plain round>
-            <svg-icon icon-class="reload" />
-          </el-button>
-        </el-form-item>
+        <Cropper v-if="formState.formData.sImg" 
+          :nameMod="nameMod"
+          :srcPreview="formState.formData.sImg" 
+          :label="$t('contents.sImg')" 
+          prop="sImg"
+          api="/api/dr/uploadFiles"
+          :on-success="handleAvatarSuccess"
+          ></Cropper>
+        <Album  
+          :label="$t('contents.sImg')" 
+          prop="sImg"
+          api="/api/dr/uploadFiles"
+          :listImages="formState.formData.listImages"
+          :on-success="handleAlbumSuccess"
+          ></Album>
         <el-form-item :label="$t('contents.discription')" prop="discription">
           <el-input size="small" type="textarea" v-model="formState.formData.discription"></el-input>
         </el-form-item>
@@ -215,6 +214,9 @@ import {
   addContentTag,
 } from "@/api/contentTag"
 import ListURL from "../common/ListURL.vue";
+import Cropper from "../common/Cropper.vue";
+// 相册上传
+import Album from "../common/Album.vue";
 
 import _ from "lodash";
 import { mapGetters, mapActions,createNamespacedHelpers} from "vuex";
@@ -337,6 +339,9 @@ export default {
   components: {
     VueUeditorWrap,
     ListURL,
+    Album,
+    Cropper,
+
   },
   methods: {
     //获取表单信息
@@ -525,21 +530,18 @@ export default {
         })
       });
     },
-    beforeAvatarUpload(file) {
-      const isJPG = file.type === "image/jpeg";
-      const isPNG = file.type === "image/png";
-      const isGIF = file.type === "image/gif";
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isJPG && !isPNG && !isGIF) {
-        this.$message.error(this.$t("validate.limitUploadImgType"));
-      }
-      if (!isLt2M) {
-        this.$message.error(
-          this.$t("validate.limitUploadImgSize", { size: 2 })
-        );
-      }
-      return (isJPG || isPNG || isGIF) && isLt2M;
+    //相册上传成功，更新
+    handleAlbumSuccess(res, file) {
+      // let listPath = res.data.listPath;
+      let isUploaded=this.formState.formData.listImages.find(v=>(v.url==res.data.path));
+      if(!isUploaded)this.formState.formData.listImages.push({url:res.data.path,name:file.raw.name,type:file.raw.type});
+
+      this.showContentForm({
+        edit: this.formState.edit,
+        formData: Object.assign({}, this.formState.formData)
+      });
     },
+
     // handleChangeCategory(value) {
     //   console.log(value);
     // },
