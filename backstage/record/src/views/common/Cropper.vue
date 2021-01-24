@@ -1,10 +1,10 @@
 <template>
   <el-form-item class="" :label="label" :prop="prop">
-      <input v-show="false" type="file" accept="image/*" @change="uploadImg" ref="inputFile"/>
+      <input v-show="false" type="file" multiple="" accept="image/png,image/gif,image/jpeg" @change="uploadImg" ref="inputFile"/>
       <el-button @click="eClickOpenImg" type="primary" icon="el-icon-upload2" style="width:200px;"> 选择文件</el-button>
 
       <img v-if="srcPreview" :src="srcPreview" class="avatar" style="position:relative;z-index:-1;max-height:none;height:auto;border-radius:4px; border: dashed #cacaca 1px;padding:4px;margin-top: 7px;"/>
-      <div class="el-upload__tip">只能上传jpg/png文件，且不超过2m</div>
+      <div class="el-upload__tip">只能上传jpg/png文件，上传前自动裁切</div>
 
     <el-dialog
       :xs="20"
