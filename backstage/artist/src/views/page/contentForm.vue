@@ -100,6 +100,7 @@
           :on-success="handleAvatarSuccess"
           ></Cropper>
         <Album  
+          :nameMod="nameMod"
           :label="$t('contents.sImg')" 
           prop="sImg"
           api="/api/dr/uploadFiles"

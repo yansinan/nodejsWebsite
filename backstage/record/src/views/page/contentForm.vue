@@ -105,12 +105,12 @@
 
         </div>
         <Cropper v-if="formState.formData.sImg" 
+          :nameMod="nameMod"
           :srcPreview="formState.formData.sImg" 
           :label="$t('contents.sImg')" 
           prop="sImg"
           api="/api/dr/uploadFiles"
           :on-success="handleAvatarSuccess"
-          :before-crop="beforeAvatarCrop"
           ></Cropper>
         <el-form-item :label="$t('contents.discription')" prop="discription">
           <el-input size="small" type="textarea" v-model="formState.formData.discription"></el-input>
@@ -530,30 +530,7 @@ export default {
         })
       });
     },
-    beforeAvatarUpload(file) {
-      const isJPG = file.type === "image/jpeg";
-      const isPNG = file.type === "image/png";
-      const isGIF = file.type === "image/gif";
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isJPG && !isPNG && !isGIF) {
-        this.$message.error(this.$t("validate.limitUploadImgType"));
-      }
-      if (!isLt2M) {
-        this.$message.error(
-          this.$t("validate.limitUploadImgSize", { size: 2 })
-        );
-      }
-      return (isJPG || isPNG || isGIF) && isLt2M;
-    },
-    beforeAvatarCrop(file) {
-      const isJPG = file.type === "image/jpeg";
-      const isPNG = file.type === "image/png";
-      const isGIF = file.type === "image/gif";
-      if (!isJPG && !isPNG && !isGIF) {
-        this.$message.error(this.$t("validate.limitUploadImgType"));
-      }
-      return (isJPG || isPNG || isGIF);
-    },
+
     backToList() {
       // this.$router.push("/"+nameMod);
       // this.$store.dispatch(nameMod+"/showContentForm",{edit:false,formData:{test:"debug:backToList"},isInit:true});

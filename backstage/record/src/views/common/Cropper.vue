@@ -415,13 +415,16 @@
 
 </style>
 <script>
-import '@/set-public-path'
 import Cropper from 'cropperjs'
 import 'cropperjs/dist/cropper.min.css'
  
 export default {
     name: "ImgCropper",
     props: {
+      nameMod:{
+        type:String,
+        default:"rubyeyes"
+      },
       api:{
         type:String,
         default:"/api/dr/uploadFiles",
@@ -455,7 +458,15 @@ export default {
       // 用户浏览图片，外部验证
       "before-crop":{
         type:Function,
-        default:null,
+        default:function(file) {
+          const isJPG = file.type === "image/jpeg";
+          const isPNG = file.type === "image/png";
+          const isGIF = file.type === "image/gif";
+          if (!isJPG && !isPNG && !isGIF) {
+            this.$message.error(this.$t("validate.limitUploadImgType"));
+          }
+          return (isJPG || isPNG || isGIF);
+        },
       },
       // 用户上传图片完成
       "on-success":{
@@ -525,7 +536,7 @@ export default {
             this.cropper.getCroppedCanvas(this.cropSetting).toBlob(async function(blob) {
                 const params = new FormData()
                 // 路径相关:
-                params.append("nameMod",nameMod);
+                params.append("nameMod",_this.nameMod);
 
                 params.append('upload_file', blob, _this.imgName)
                 let uploadFileRequest = new Request(_this.api, {
