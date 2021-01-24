@@ -104,21 +104,14 @@
           </el-form-item>
 
         </div>
-        <el-form-item class="upSimg" :label="$t('contents.sImg')" prop="sImg">
-          <el-upload
-            class="avatar-uploader"
-            action="/api/upload/files"
-            :show-file-list="false"
-            :on-success="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload"
-            :data="{action:'uploadimage'}"
-          >
-            <img v-if="formState.formData.sImg" :src="formState.formData.sImg" class="avatar" style="height:auto;"/>
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2m</div>
-          </el-upload>
-        </el-form-item>        
-        <Cropper v-if="formState.formData.sImg" :src="formState.formData.sImg"></Cropper>
+        <Cropper v-if="formState.formData.sImg" 
+          :srcPreview="formState.formData.sImg" 
+          :label="$t('contents.sImg')" 
+          prop="sImg"
+          api="/api/dr/uploadFiles"
+          :on-success="handleAvatarSuccess"
+          :before-crop="beforeAvatarCrop"
+          ></Cropper>
         <el-form-item :label="$t('contents.discription')" prop="discription">
           <el-input size="small" type="textarea" v-model="formState.formData.discription"></el-input>
         </el-form-item>
@@ -552,7 +545,15 @@ export default {
       }
       return (isJPG || isPNG || isGIF) && isLt2M;
     },
-
+    beforeAvatarCrop(file) {
+      const isJPG = file.type === "image/jpeg";
+      const isPNG = file.type === "image/png";
+      const isGIF = file.type === "image/gif";
+      if (!isJPG && !isPNG && !isGIF) {
+        this.$message.error(this.$t("validate.limitUploadImgType"));
+      }
+      return (isJPG || isPNG || isGIF);
+    },
     backToList() {
       // this.$router.push("/"+nameMod);
       // this.$store.dispatch(nameMod+"/showContentForm",{edit:false,formData:{test:"debug:backToList"},isInit:true});

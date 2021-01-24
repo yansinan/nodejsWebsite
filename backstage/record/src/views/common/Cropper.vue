@@ -1,19 +1,44 @@
 <template>
-<el-form-item :label="头像" prop="sImg">    
-    <div class="cropper" style="width: 750px; height: 500px; margin: 20px; border: dashed #cacaca 1px; text-align: center;">
-        <img :src="src" style="max-width: 100%" ref="img">
-        <input type="file" @change="uploadImg" />
-    </div>
-    <div class="cropperPreview" style="">
-        <div :src="src" class="avatar avatar-96" style="overflow:hidden;display: inline-block;" ></div>
-        <div :src="src" class="avatar avatar-64" style="overflow:hidden;display: inline-block;" ></div>
-        <div :src="src" class="avatar avatar-32" style="overflow:hidden;display: inline-block;"></div>
-        <div @click="uploadCropImg">上传</div>
-    </div>
+  <el-form-item class="" :label="label" :prop="prop">
+      <input v-show="false" type="file" accept="image/*" @change="uploadImg" ref="inputFile"/>
+      <el-button @click="eClickOpenImg" type="primary" icon="el-icon-upload2" style="width:200px;"> 选择文件</el-button>
 
-</el-form-item>
+      <img v-if="srcPreview" :src="srcPreview" class="avatar" style="position:relative;z-index:-1;max-height:none;height:auto;border-radius:4px; border: dashed #cacaca 1px;padding:4px;margin-top: 7px;"/>
+      <div class="el-upload__tip">只能上传jpg/png文件，且不超过2m</div>
+
+    <el-dialog
+      :xs="20"
+      title="上传图片"
+      width="80%"
+      :visible.sync="dialogVisible"
+      :before-close="handleClose"
+      @opened="initCropper">
+      <div class="cropper" style="width: 100%; height: auto; border: dashed #cacaca 1px; text-align: center;">
+          <img :src="src" style="max-width: 100%" ref="img">
+      </div>
+      <div class="cropperPreview" style="display: flex;align-items: center;justify-content: space-around;">
+          <div>
+            <div :src="src" class="avatar avatar-96" style="overflow:hidden;display: inline-block;" ></div>
+            像素尺寸96px*96px
+          </div>
+          <div>
+            <div :src="src" class="avatar avatar-64" style="overflow:hidden;display: inline-block;" ></div>
+            像素尺寸64px*64px
+          </div>
+          <div>
+            <div :src="src" class="avatar avatar-32" style="overflow:hidden;display: inline-block;"></div>
+            像素尺寸32px*32px
+          </div>
+          
+          
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="handleClose">取 消</el-button>
+        <el-button type="primary" @click="uploadCropImg">上 传</el-button>
+      </span>
+    </el-dialog>
+  </el-form-item>
 </template>
-
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
@@ -397,7 +422,19 @@ import 'cropperjs/dist/cropper.min.css'
 export default {
     name: "ImgCropper",
     props: {
-      src: {
+      api:{
+        type:String,
+        default:"/api/dr/uploadFiles",
+      },
+      prop:{
+        type:String,
+        default:"sImg"
+      },
+      label:{
+        type:String,
+        default:"主图"
+      },
+      srcPreview: {
           type:String,
           default:"",
       },
@@ -414,40 +451,73 @@ export default {
           imageSmoothingEnabled: false,
           imageSmoothingQuality: 'high',
         }
-      }
+      },
+      // 用户浏览图片，外部验证
+      "before-crop":{
+        type:Function,
+        default:null,
+      },
+      // 用户上传图片完成
+      "on-success":{
+        type:Function,
+        default:null,
+      },
+
     },
     watch: {
         src(newV,oldV) {
-            // do something
-            console.log(newV,oldV);
-            this.cropper.replace(newV);
-        } 
+            // 先控制显示/隐藏
+            this.dialogVisible=(this.src=='')?false:true;
+            if(this.cropper)this.cropper.replace(newV);
+        },
     },
     data () {
         return {
             cropperImg: '',
             cropper: '',
-            imgName: ''
+            src:"",
+            imgName: '',
+            dialogVisible:false,
         }
     },
     mounted () {
-        this.initCropper()
+        // this.initCropper()
     },
     methods: {
+
+        handleClose(e){
+          this.src = "";
+          this.cropper.reset();
+          //用inputFile.value同步，否则同一个文件不能再次上传;
+          this.$refs.inputFile.value=this.src;
+        },
         initCropper () {
-            this.cropper = new Cropper(this.$refs.img, {
+            if(!this.cropper)this.cropper = new Cropper(this.$refs.img, {
                 viewMode: 1,
-                aspectRatio: 16/9,
+                // aspectRatio: 16/9,
                 dragMode:"move",
                 aspectRatio:1,
                 preview:".avatar"
             });
         },
         // 浏览
+        eClickOpenImg() {
+          this.$refs.inputFile.click();
+        },
         uploadImg (event) {
-            const img = event.target.files[0]
-            this.src = URL.createObjectURL(img);
-            this.imgName = img.name;
+          let that=this;
+          const img = event.target.files[0]
+          //外部验证数据有效性
+          let resIfDialog=(typeof this["beforeCrop"] === "function")?this["beforeCrop"](img):false;
+          
+          if(resIfDialog){
+            // 显示对话框
+            // this.dialogVisible=true;
+            that.src = URL.createObjectURL(img);
+            that.imgName = img.name;
+          }else{
+            that.handleClose();
+          }
         },
         // 上传
         uploadCropImg () {
@@ -458,7 +528,7 @@ export default {
                 params.append("nameMod",nameMod);
 
                 params.append('upload_file', blob, _this.imgName)
-                let uploadFileRequest = new Request(`/api/dr/uploadFiles`, {
+                let uploadFileRequest = new Request(_this.api, {
                     method: 'post',
                     //指定header会eggjs接收不到multipart
                     // headers: {'Content-Type': 'multipart/form-data'},
@@ -472,9 +542,12 @@ export default {
                     if(objData.status==200){
                       console.log("resUpload::",objData);
                       _this.src=objData.data.path;
+                      // if(objData.data.path)this.$emit('on-success',objData);
+                      if(typeof _this["onSuccess"] === "function")_this["onSuccess"](objData)
+                      _this.handleClose();
                     }
                 })
-            }, 'image/jpeg')
+            }, 'image/jpeg',1)
         },
         //另存裁切后的图片
         saveCropImg () {
