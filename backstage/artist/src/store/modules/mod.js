@@ -31,6 +31,8 @@ const defautlFormData={
   listDateDur:[],
   listHotMusics:[],
   listLinks:[],
+  listVideos:[],
+  listImages:[],
 }
 const state = {
   formState: {

@@ -78,6 +78,16 @@ module.exports =app=>{
                 icon:{type:String},
                 type:{type:String,default:"社交"},
             }],//相关链接
+            listImages:[{
+                url:{type:String},
+                name:{type:String},
+                type:{type:String,default:"link"},
+            }],//相关照片
+            listVideos:[{
+                url:{type:String},
+                name:{type:String},
+                type:{type:String,default:"link"},
+            }],//相关视频
         });
         
         
