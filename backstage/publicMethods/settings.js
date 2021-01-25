@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: 'DoraCMS Admin',
+  title: 'RobyEyesCMS Admin',
 
   /**
    * @type {boolean} true | false
