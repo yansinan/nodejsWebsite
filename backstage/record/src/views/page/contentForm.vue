@@ -215,7 +215,7 @@ import {
   addContentTag,
 } from "@/api/contentTag"
 import ListURL from "../common/ListURL.vue";
-import Cropper from "../common/Cropper.vue";
+// import Cropper from "../common/Cropper.vue";
 
 import _ from "lodash";
 import { mapGetters, mapActions,createNamespacedHelpers} from "vuex";
@@ -338,7 +338,7 @@ export default {
   components: {
     VueUeditorWrap,
     ListURL,
-    Cropper,
+    Cropper: () => import('@root/publicMethods/vue/Cropper.vue'),
   },
   methods: {
     //获取表单信息

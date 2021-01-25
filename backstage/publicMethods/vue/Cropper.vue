@@ -3,7 +3,7 @@
       <input v-show="false" type="file" multiple="" accept="image/png,image/gif,image/jpeg" @change="uploadImg" ref="inputFile"/>
       <el-button @click="eClickOpenImg" type="primary" icon="el-icon-upload2" style="width:200px;"> 选择文件</el-button>
 
-      <img v-if="srcPreview" :src="srcPreview" class="avatar" style="position:relative;z-index:-1;max-height:none;height:auto;border-radius:4px; border: dashed #cacaca 1px;padding:4px;margin-top: 7px;"/>
+      <img v-if="srcPreview" :src="srcPreview" class="imgResult avatar avatar-128" style=""/>
       <div class="el-upload__tip">只能上传jpg/png文件，上传前自动裁切</div>
 
     <el-dialog
@@ -42,9 +42,23 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+img{
+  object-fit:contain;
+}
+img.imgResult{
+  position:relative;
+  z-index:-1;
+  max-height:none;
+  height:auto;
+  border-radius:4px; 
+  border: dashed #cacaca 1px;
+  padding:4px;
+  margin-top: 7px;
+  width:200px;
+}
 .avatar {
   position: relative;
-  display: inline-block;
+  /* display: inline-block; */
   vertical-align: middle;
   margin: 0;
   padding: 0;
@@ -69,36 +83,12 @@
   width: 100%;
 }
 
-.avatar-16 {
-  max-height: 16px;
-  width: 16px;
-  height: 100%;
-  font-size: 11px;
-  line-height: 16px;
-}
-
-.avatar-24 {
-  max-height: 24px;
-  width: 24px;
-  height: 100%;
-  font-size: 16px;
-  line-height: 24px;
-}
-
 .avatar-32 {
   max-height: 32px;
   width: 32px;
   height: 100%;
   font-size: 21px;
   line-height: 32px;
-}
-
-.avatar-48 {
-  max-height: 48px;
-  width: 48px;
-  height: 100%;
-  font-size: 32px;
-  line-height: 48px;
 }
 
 .avatar-64 {
@@ -109,14 +99,6 @@
   line-height: 64px;
 }
 
-.avatar-96 {
-  max-height: 96px;
-  width: 96px;
-  height: 100%;
-  font-size: 64px;
-  line-height: 96px;
-}
-
 .avatar-128 {
   max-height: 128px;
   width: 128px;
@@ -124,295 +106,6 @@
   font-size: 85px;
   line-height: 128px;
 }
-
-@media (min-width: 576px) {
-  .avatar-sm-16 {
-    max-height: 16px;
-    width: 16px;
-    height: 100%;
-    font-size: 11px;
-    line-height: 16px;
-  }
-
-  .avatar-sm-24 {
-    max-height: 24px;
-    width: 24px;
-    height: 100%;
-    font-size: 16px;
-    line-height: 24px;
-  }
-
-  .avatar-sm-32 {
-    max-height: 32px;
-    width: 32px;
-    height: 100%;
-    font-size: 21px;
-    line-height: 32px;
-  }
-
-  .avatar-sm-48 {
-    max-height: 48px;
-    width: 48px;
-    height: 100%;
-    font-size: 32px;
-    line-height: 48px;
-  }
-
-  .avatar-sm-64 {
-    max-height: 64px;
-    width: 64px;
-    height: 100%;
-    font-size: 43px;
-    line-height: 64px;
-  }
-
-  .avatar-sm-96 {
-    max-height: 96px;
-    width: 96px;
-    height: 100%;
-    font-size: 64px;
-    line-height: 96px;
-  }
-
-  .avatar-sm-128 {
-    max-height: 128px;
-    width: 128px;
-    height: 100%;
-    font-size: 85px;
-    line-height: 128px;
-  }
-}
-@media (min-width: 768px) {
-  .avatar-md-16 {
-    max-height: 16px;
-    width: 16px;
-    height: 100%;
-    font-size: 11px;
-    line-height: 16px;
-  }
-
-  .avatar-md-24 {
-    max-height: 24px;
-    width: 24px;
-    height: 100%;
-    font-size: 16px;
-    line-height: 24px;
-  }
-
-  .avatar-md-32 {
-    max-height: 32px;
-    width: 32px;
-    height: 100%;
-    font-size: 21px;
-    line-height: 32px;
-  }
-
-  .avatar-md-48 {
-    max-height: 48px;
-    width: 48px;
-    height: 100%;
-    font-size: 32px;
-    line-height: 48px;
-  }
-
-  .avatar-md-64 {
-    max-height: 64px;
-    width: 64px;
-    height: 100%;
-    font-size: 43px;
-    line-height: 64px;
-  }
-
-  .avatar-md-96 {
-    max-height: 96px;
-    width: 96px;
-    height: 100%;
-    font-size: 64px;
-    line-height: 96px;
-  }
-
-  .avatar-md-128 {
-    max-height: 128px;
-    width: 128px;
-    height: 100%;
-    font-size: 85px;
-    line-height: 128px;
-  }
-}
-@media (min-width: 992px) {
-  .avatar-lg-16 {
-    max-height: 16px;
-    width: 16px;
-    height: 100%;
-    font-size: 11px;
-    line-height: 16px;
-  }
-
-  .avatar-lg-24 {
-    max-height: 24px;
-    width: 24px;
-    height: 100%;
-    font-size: 16px;
-    line-height: 24px;
-  }
-
-  .avatar-lg-32 {
-    max-height: 32px;
-    width: 32px;
-    height: 100%;
-    font-size: 21px;
-    line-height: 32px;
-  }
-
-  .avatar-lg-48 {
-    max-height: 48px;
-    width: 48px;
-    height: 100%;
-    font-size: 32px;
-    line-height: 48px;
-  }
-
-  .avatar-lg-64 {
-    max-height: 64px;
-    width: 64px;
-    height: 100%;
-    font-size: 43px;
-    line-height: 64px;
-  }
-
-  .avatar-lg-96 {
-    max-height: 96px;
-    width: 96px;
-    height: 100%;
-    font-size: 64px;
-    line-height: 96px;
-  }
-
-  .avatar-lg-128 {
-    max-height: 128px;
-    width: 128px;
-    height: 100%;
-    font-size: 85px;
-    line-height: 128px;
-  }
-}
-@media (min-width: 1200px) {
-  .avatar-xl-16 {
-    max-height: 16px;
-    width: 16px;
-    height: 100%;
-    font-size: 11px;
-    line-height: 16px;
-  }
-
-  .avatar-xl-24 {
-    max-height: 24px;
-    width: 24px;
-    height: 100%;
-    font-size: 16px;
-    line-height: 24px;
-  }
-
-  .avatar-xl-32 {
-    max-height: 32px;
-    width: 32px;
-    height: 100%;
-    font-size: 21px;
-    line-height: 32px;
-  }
-
-  .avatar-xl-48 {
-    max-height: 48px;
-    width: 48px;
-    height: 100%;
-    font-size: 32px;
-    line-height: 48px;
-  }
-
-  .avatar-xl-64 {
-    max-height: 64px;
-    width: 64px;
-    height: 100%;
-    font-size: 43px;
-    line-height: 64px;
-  }
-
-  .avatar-xl-96 {
-    max-height: 96px;
-    width: 96px;
-    height: 100%;
-    font-size: 64px;
-    line-height: 96px;
-  }
-
-  .avatar-xl-128 {
-    max-height: 128px;
-    width: 128px;
-    height: 100%;
-    font-size: 85px;
-    line-height: 128px;
-  }
-}
-@media (min-width: 1400px) {
-  .avatar-xxl-16 {
-    max-height: 16px;
-    width: 16px;
-    height: 100%;
-    font-size: 11px;
-    line-height: 16px;
-  }
-
-  .avatar-xxl-24 {
-    max-height: 24px;
-    width: 24px;
-    height: 100%;
-    font-size: 16px;
-    line-height: 24px;
-  }
-
-  .avatar-xxl-32 {
-    max-height: 32px;
-    width: 32px;
-    height: 100%;
-    font-size: 21px;
-    line-height: 32px;
-  }
-
-  .avatar-xxl-48 {
-    max-height: 48px;
-    width: 48px;
-    height: 100%;
-    font-size: 32px;
-    line-height: 48px;
-  }
-
-  .avatar-xxl-64 {
-    max-height: 64px;
-    width: 64px;
-    height: 100%;
-    font-size: 43px;
-    line-height: 64px;
-  }
-
-  .avatar-xxl-96 {
-    max-height: 96px;
-    width: 96px;
-    height: 100%;
-    font-size: 64px;
-    line-height: 96px;
-  }
-
-  .avatar-xxl-128 {
-    max-height: 128px;
-    width: 128px;
-    height: 100%;
-    font-size: 85px;
-    line-height: 128px;
-  }
-}
-
-/*# sourceMappingURL=avatar.css.map */
-
 </style>
 <script>
 import Cropper from 'cropperjs'

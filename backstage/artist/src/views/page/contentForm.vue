@@ -215,7 +215,6 @@ import {
   addContentTag,
 } from "@/api/contentTag"
 import ListURL from "../common/ListURL.vue";
-import Cropper from "../common/Cropper.vue";
 // 相册上传
 import Album from "../common/Album.vue";
 
@@ -341,7 +340,7 @@ export default {
     VueUeditorWrap,
     ListURL,
     Album,
-    Cropper,
+    Cropper: () => import('@root/publicMethods/vue/Cropper.vue'),
 
   },
   methods: {
