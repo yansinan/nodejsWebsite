@@ -24,8 +24,8 @@ export default {
     discription: "内容摘要",
     comments: "文档详情",
     flashComments: "快讯摘要",
-    rec: "推荐",
-    roofPlacement: "置顶",
+    rec: "推",
+    roofPlacement: "顶",
     date: "创建时间",
     updateDate: "更新时间",
     commentNum: "评论数",
@@ -47,6 +47,8 @@ export default {
     listHotMusics:"热门歌曲",
     listLinks:"其他链接",
     listMembers:"乐队成员",
+    listImages:"图集",
+    listVideos:"视频",
   },
   //LangEnd
 }
