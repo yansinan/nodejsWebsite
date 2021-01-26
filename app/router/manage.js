@@ -152,6 +152,11 @@ module.exports = app => {
     router.post('/manage/show/roof', controller.manage.show.roofPlacement)
 
     router.get('/manage/show/delete', controller.manage.show.removes)
+    /**
+     * 上传文件blocb 多文件管理
+     * 
+     */
+    router.post('/manage/dr/uploadFiles', controller.manage.uploadFiles.create)
     //ManageRouters
 
 }

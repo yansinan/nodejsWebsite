@@ -1,62 +1,79 @@
 <template>
-  <el-form-item class="" :label="label" :prop="prop">
-    <el-upload
-        class=""
-        ref="upload"
-        multiple
-        show-file-list="true"
-        list-type="picture-card"
-        accept="image/png,image/gif,image/jpeg"
-        :auto-upload="false"
-        :action="api"
-        :file-list="listImages"
-        :on-success="onSuccess"
-        :on-preview="handlePictureCardPreview"
-        :on-remove="handleRemove"
-        :before-upload="beforeUpload"
-        :data="{action:'uploadimage',nameMod:nameMod}"
-    >
-        <!-- <el-button slot="trigger" size="small" type="primary">选取文件</el-button> -->
-        <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
-        <i slot="trigger" class="el-icon-plus"></i>
-        <!-- 
-        <div slot="file" slot-scope="{file}">
-            <img
-                class="el-upload-list__item-thumbnail"
-                :src="file.url" alt=""
-            >
-            <span class="el-upload-list__item-actions">
-                <span
-                class="el-upload-list__item-preview"
-                @click="handlePictureCardPreview(file)"
-                >
-                <i class="el-icon-zoom-in"></i>
-                </span>
-                <span
-                v-if="!disabled"
-                class="el-upload-list__item-delete"
-                @click="handleDownload(file)"
-                >
-                <i class="el-icon-download"></i>
-                </span>
-                <span
-                v-if="!disabled"
-                class="el-upload-list__item-delete"
-                @click="handleRemove(file)"
-                >
-                <i class="el-icon-delete"></i>
-                </span>
-            </span>
+<div>
+    <el-dialog
+        :xs="20"
+        title="图集"
+        width="80%"
+        v-loading="infoImageUploading.isLoading"
+        :element-loading-text="'正在上传'+infoImageUploading.name"
+        :visible.sync="dialogState.isShow"
+        :before-close="handleClose">
+        <div slot="title" class="el-dialog__title">
+            <el-avatar :src="dialogState.formData.sImg" fit="cover"/>{{dialogState.formData.name}}的{{label}}
         </div>
-        -->
-        <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过2M</div>
-    </el-upload>
-    <el-dialog :visible.sync="dialogVisible">
+        <el-upload
+            class=""
+            ref="upload"
+            multiple
+            show-file-list="true"
+            list-type="picture-card"
+            accept="image/png,image/gif,image/jpeg"
+            :auto-upload="false"
+            :action="api"
+            :file-list="dialogState.formData.listImages"
+            :on-success="handleSuccess"
+            :on-progress="handleProgress"
+            :on-preview="handlePictureCardPreview"
+            :on-remove="handleRemove"
+            :before-upload="beforeUpload"
+            :data="getObjField()"
+        >
+            <!-- <el-button slot="trigger" size="small" type="primary">选取文件</el-button> -->
+            <!-- <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload" ref="bnUpload">上传到服务器</el-button> -->
+            <i slot="trigger" class="el-icon-plus"></i>
+            <!-- 
+            <div slot="file" slot-scope="{file}">
+                <img
+                    class="el-upload-list__item-thumbnail"
+                    :src="file.url" alt=""
+                >
+                <span class="el-upload-list__item-actions">
+                    <span
+                    class="el-upload-list__item-preview"
+                    @click="handlePictureCardPreview(file)"
+                    >
+                    <i class="el-icon-zoom-in"></i>
+                    </span>
+                    <span
+                    v-if="!disabled"
+                    class="el-upload-list__item-delete"
+                    @click="handleDownload(file)"
+                    >
+                    <i class="el-icon-download"></i>
+                    </span>
+                    <span
+                    v-if="!disabled"
+                    class="el-upload-list__item-delete"
+                    @click="handleRemove(file)"
+                    >
+                    <i class="el-icon-delete"></i>
+                    </span>
+                </span>
+            </div>
+            -->
+            <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过2M</div>
+        </el-upload>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="handleClose">取 消</el-button>
+            <el-button type="success" @click="submitUpload">上 传</el-button>
+        </span>
+    </el-dialog>
+    <el-dialog :visible.sync="dialogPreviewVisible">
         <img width="100%" :src="dialogImageUrl" alt="">
-    </el-dialog>    
-  </el-form-item>
+    </el-dialog>
+</div>
 </template>
-<style scoped>
+<style lang="scss">
 /* 
 .el-upload__text{
     position: absolute;
@@ -64,31 +81,43 @@
     width: 100%;
 } 
 */
-
+.el-dialog__title{
+    display:flex;
+    align-items: center;
+    .el-avatar{
+      margin-right:5px;
+      margin-left:5px;
+      min-width: 40px;
+    }
+}
+.el-upload-list__item-thumbnail{
+    object-fit: cover;
+}
 </style>
 <script>
 import '@/set-public-path'
+import request from '@root/publicMethods/request'
 
 export default {
     name: "Album",
     props: {
       api:{
         type:String,
-        default:"/api/dr/uploadFiles",
-      },
-      prop:{
-        type:String,
-        default:"sImg"
+        default:"/manage/artist/updateAlbum",
       },
       label:{
         type:String,
         default:"主图"
       },
-      listImages:{
-          type:Array,
-          default:[],
+      dialogState:{
+          type:Object,
+          default:{
+            isShow:false,
+            isEdited:false,
+            formData:{},
+          }
       },
-      // 用户上传图片完成
+      // 每张图片上传成功后都触发
       "on-success":{
         type:Function,
         default:null,
@@ -108,8 +137,16 @@ export default {
                 this.$t("validate.limitUploadImgSize", { size: 2 })
                 );
             }
-            return (isJPG || isPNG || isGIF) && isLt2M;
+            let isValidate=(isJPG || isPNG || isGIF) && isLt2M;
+            if(!isValidate)this.infoImageUploading=Object.assign(file,{isLoading:false,progress:0,});
+            else this.infoImageUploading=Object.assign(file,{isLoading:true,progress:0,});
+            return isValidate;
         }
+      },
+      // 所有合规的图片都上传完成
+      "on-complete":{
+        type:Function,
+        default:null,
       },
     },
     watch: {
@@ -117,58 +154,68 @@ export default {
     },
     data () {
         return {
-            dialogVisible:false,
+            dialogPreviewVisible:false,
             dialogImageUrl: '',
             disabled: false,
             nameMod:nameMod,
+            infoImageUploading:{
+                isLoading:false,
+                name:"",
+                url:"",
+                progress:0,
+            },
         }
     },
     mounted () {
     },
     methods: {
+        handleSuccess(res, file,fileList){
+            let _this=this;
+            //传一个更新一遍,在服务器端完成;
+            //服务器返回路径，返回listImages么？
+            // res.data._doc是文档最新数据
+
+            if(typeof _this["onSuccess"] === "function")_this["onSuccess"](res,file,fileList)
+            // _this.handleClose();
+            if(!fileList.find(v=>(v.status!="success"))){//合规的图片已全部上传完成                
+                if(typeof _this["onComplete"] === "function")_this["onComplete"](res, file,fileList);
+                // 上传按钮变浏览?
+                debugger;
+            }
+        },
+
         handleRemove(file) {
+            // 已经上传过的文件删除
+            if(file.status=="success"){
+
+            }//file.status=="ready"预览删除,可能是不合规
             console.log(file);
         },
         handlePictureCardPreview(file) {
             this.dialogImageUrl = file.url;
-            this.dialogVisible = true;
+            this.dialogPreviewVisible = true;
         },
         handleClose(e){
 
         },
+        handleProgress(e,file,fileList){
+            // console.log(e,file,fileList)
+            this.infoImageUploading.progress=e.percent;
+            // this.infoImageUploading.isLoading=file.isLoading;
+            // this.infoImageUploading=Object.assign(file.raw,{isLoading:(e.type=="progress"),progress:e.percent,});
+        },
+        // 服务器端接收文件&艺术家更新listImages
         submitUpload() {
             this.$refs.upload.submit();
         },
-        // 上传
-        uploadCropImg () {
-            const _this = this;
-            this.cropper.getCroppedCanvas(this.cropSetting).toBlob(async function(blob) {
-                const params = new FormData()
-                // 路径相关:
-                params.append("nameMod",nameMod);
-
-                params.append('upload_file', blob, _this.imgName)
-                let uploadFileRequest = new Request(_this.api, {
-                    method: 'post',
-                    //指定header会eggjs接收不到multipart
-                    // headers: {'Content-Type': 'multipart/form-data'},
-                    body:params,
-                })
-                fetch(uploadFileRequest).then(response => {
-                    debugger;
-                    return response.text();
-                }).then(res => {
-                    // 在这个then里面我们能拿到最终的数据
-                    let objData=JSON.parse(res);
-                    if(objData.status==200){
-                      console.log("resUpload::",objData);
-                      _this.src=objData.data.path;
-                      // if(objData.data.path)this.$emit('on-success',objData);
-                      if(typeof _this["onSuccess"] === "function")_this["onSuccess"](objData)
-                      _this.handleClose();
-                    }
-                })
-            }, 'image/jpeg',1)
+        // 生成上传数据
+        getObjField(){
+            return {
+                action:'uploadimage',
+                nameMod:this.nameMod,
+                subPath:this.dialogState.formData.id,
+                _id:this.dialogState.formData.id,
+            }
         },
     }
 }

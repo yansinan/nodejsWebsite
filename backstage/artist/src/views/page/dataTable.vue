@@ -35,8 +35,8 @@
       <el-table-column prop="listImages" :label="$t('artist.listImages')" width="80" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-badge :value="scope.row.listImages.length" :hidden="scope.row.listImages.length==0?true:false" :max="99" type="info">
-            <el-button size="large" plain icon="el-icon-picture-outline" :type="scope.row.listImages.length==0?'':'primary'" circle></el-button>  
-          </el-badge>          
+            <el-button @click="eAlbumEdit(scope.$index,dataList)" size="large" plain icon="el-icon-picture-outline" :type="scope.row.listImages.length==0?'':'primary'" circle></el-button>  
+          </el-badge>
         </template>
       </el-table-column>
       <!-- 视频 -->
@@ -59,6 +59,11 @@
         </template>
       </el-table-column>
     </el-table>
+          <Album 
+            :nameMod="nameMod"
+            :label="$t('artist.listImages')"
+            :dialogState="dialogStateAlbum"
+            :on-complete="getList"></Album>
   </div>
 </template>
 <style lang="scss">
@@ -75,8 +80,6 @@
     display:flex;
     align-items: center;
     text-align: center;
-    display:flex;
-    align-items:center;
 
     .el-button--text{
       color:#303133;
@@ -101,6 +104,9 @@
 </style>
 <script>
 import { remove, roof, updateToTop } from "@root/publicMethods/apiGeneral";
+import ListURL from "../common/ListURL.vue";
+// 相册上传
+import Album from "../common/Album.vue";
 
 import _ from "lodash";
 // import { mapGetters, mapActions,createNamespacedHelpers} from "vuex";
@@ -123,8 +129,18 @@ export default {
         color: "#CCC"
       },
       green: { color: "#13CE66" },
-      red: { color: "#FF4949" }
+      red: { color: "#FF4949" },
+      // 编辑图集弹窗
+      dialogStateAlbum:{
+        isShow:false,
+        isEdited:false,
+        formData:{},
+      }
     };
+  },
+  components: {
+    Album,
+    ListURL,
   },
 
   methods: {
@@ -216,9 +232,20 @@ export default {
           });
         });
     },
-    eLink(url,target){
-      window.open(url,target);
-    }
+    // 编辑图集;
+    eAlbumEdit(index,rows){
+      let contentData = rows[index];
+      this.dialogStateAlbum = {
+        // _id: contentData._id,
+        // name:contentData.name,
+        // listImages: contentData.listImages,
+        isShow:true,
+        isEdited:false,
+        formData:contentData,
+      };
+    },
+    // 新开页面（预览）
+    eLink(url,target){window.open(url,target);},
   },
   computed: {}
 };
