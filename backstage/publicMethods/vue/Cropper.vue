@@ -124,7 +124,7 @@ export default {
       },
       api:{
         type:String,
-        default:"/api/dr/uploadFiles",
+        default:"/manage/dr/uploadFiles",
       },
       prop:{
         type:String,
