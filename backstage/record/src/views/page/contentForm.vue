@@ -109,7 +109,6 @@
           :srcPreview="formState.formData.sImg" 
           :label="$t('contents.sImg')" 
           prop="sImg"
-          api="/api/dr/uploadFiles"
           :on-success="handleAvatarSuccess"
           ></Cropper>
         <el-form-item :label="$t('contents.discription')" prop="discription">

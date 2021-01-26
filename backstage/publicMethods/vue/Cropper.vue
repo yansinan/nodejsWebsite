@@ -18,8 +18,8 @@
       </div>
       <div class="cropperPreview" style="display: flex;align-items: center;justify-content: space-around;">
           <div>
-            <div :src="src" class="avatar avatar-96" style="overflow:hidden;display: inline-block;" ></div>
-            像素尺寸96px*96px
+            <div :src="src" class="avatar avatar-128" style="overflow:hidden;display: inline-block;" ></div>
+            像素尺寸128px*128px
           </div>
           <div>
             <div :src="src" class="avatar avatar-64" style="overflow:hidden;display: inline-block;" ></div>
@@ -41,7 +41,7 @@
 </template>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style>
 img{
   object-fit:contain;
 }
@@ -117,6 +117,10 @@ export default {
       nameMod:{
         type:String,
         default:"rubyeyes"
+      },
+      subPath:{
+        type:String,
+        default:""
       },
       api:{
         type:String,
@@ -230,7 +234,7 @@ export default {
                 const params = new FormData()
                 // 路径相关:
                 params.append("nameMod",_this.nameMod);
-
+                params.append("subPath",_this.subPath);
                 params.append('upload_file', blob, _this.imgName)
                 let uploadFileRequest = new Request(_this.api, {
                     method: 'post',
@@ -238,6 +242,7 @@ export default {
                     // headers: {'Content-Type': 'multipart/form-data'},
                     body:params,
                 })
+
                 fetch(uploadFileRequest).then(response => {
                     return response.text();
                 }).then(res => {

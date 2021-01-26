@@ -96,17 +96,8 @@
           :srcPreview="formState.formData.sImg" 
           :label="$t('contents.sImg')" 
           prop="sImg"
-          api="/api/dr/uploadFiles"
           :on-success="handleAvatarSuccess"
           ></Cropper>
-        <Album  
-          :nameMod="nameMod"
-          :label="$t('contents.sImg')" 
-          prop="sImg"
-          api="/api/dr/uploadFiles"
-          :listImages="formState.formData.listImages"
-          :on-success="handleAlbumSuccess"
-          ></Album>
         <el-form-item :label="$t('contents.discription')" prop="discription">
           <el-input size="small" type="textarea" v-model="formState.formData.discription"></el-input>
         </el-form-item>
@@ -215,8 +206,6 @@ import {
   addContentTag,
 } from "@/api/contentTag"
 import ListURL from "../common/ListURL.vue";
-// 相册上传
-import Album from "../common/Album.vue";
 
 import _ from "lodash";
 import { mapGetters, mapActions,createNamespacedHelpers} from "vuex";
@@ -339,7 +328,6 @@ export default {
   components: {
     VueUeditorWrap,
     ListURL,
-    Album,
     Cropper: () => import('@root/publicMethods/vue/Cropper.vue'),
 
   },
@@ -530,21 +518,7 @@ export default {
         })
       });
     },
-    //相册上传成功，更新
-    handleAlbumSuccess(res, file) {
-      // let listPath = res.data.listPath;
-      let isUploaded=this.formState.formData.listImages.find(v=>(v.url==res.data.path));
-      if(!isUploaded)this.formState.formData.listImages.push({url:res.data.path,name:file.raw.name,type:file.raw.type});
 
-      this.showContentForm({
-        edit: this.formState.edit,
-        formData: Object.assign({}, this.formState.formData)
-      });
-    },
-
-    // handleChangeCategory(value) {
-    //   console.log(value);
-    // },
     backToList() {
       // this.$router.push("/"+nameMod);
       // this.$store.dispatch(nameMod+"/showContentForm",{edit:false,formData:{test:"debug:backToList"},isInit:true});
