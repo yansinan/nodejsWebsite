@@ -272,6 +272,48 @@ class ServicePlugin extends Service {
         // 设置响应内容和响应状态码
         return res
     }
+    // 删除单个文件
+    async delete(inPayload) {
+        const {
+            ctx,
+            app
+        } = this;            
+        // if (!checkCurrentId(ids)) {
+        //     throw new Error(ctx.__("validate_error_params"));
+        // } else {
+        //     ids = ids.split(',');
+        // }
+        let payload=inPayload || ctx.request.body || ctx.query || {} ;
+        let urlFile=payload.url;
+        //存放路径
+        let options = !_.isEmpty(app.config.doraUploadFile.uploadFileFormat) ? app.config.doraUploadFile.uploadFileFormat : {};
+        const publicDir = options.upload_path || (process.cwd() + '/app/public');
+        let res={
+            status:"fail",
+            message:"",
+            data:payload,
+        }
+        if(urlFile){
+            res.urlFile=urlFile;
+            // 文件本地路径：
+            let pathFile=urlFile.split(`${app.config.server_path}${app.config.static.prefix}/`);
+            pathFile=`${publicDir}/`+pathFile[1];
+
+            res.pathFile=pathFile;
+            // 文件是否存在;
+            if (!fs.existsSync(pathFile)) {
+                res.status="fail:no-exist";
+                res.message="no-exist:"+pathFile;
+                return res;
+            }
+            fs.unlinkSync(pathFile);
+            res.status="success";
+            return res;
+        }
+        res.status="fail:no-url";
+        res.message="no-url:"+ JSON.stringify(payload)
+        return res;
+    }
     get model(){
         if(!this._model)this._model=this.ctx.model[__filename.slice(__dirname.length + 1, -3)];
         return this._model;

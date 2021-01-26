@@ -4,8 +4,7 @@
         :xs="20"
         title="图集"
         width="80%"
-        v-loading="infoImageUploading.isLoading"
-        :element-loading-text="'正在上传'+infoImageUploading.name"
+        :close-on-click-modal="false"
         :visible.sync="dialogState.isShow"
         :before-close="handleClose">
         <div slot="title" class="el-dialog__title">
@@ -18,6 +17,8 @@
             show-file-list="true"
             list-type="picture-card"
             accept="image/png,image/gif,image/jpeg"
+            v-loading="infoImageUploading.isLoading"
+            :element-loading-text="'正在'+infoImageUploading.name"
             :auto-upload="false"
             :action="api"
             :file-list="dialogState.formData.listImages"
@@ -25,6 +26,7 @@
             :on-progress="handleProgress"
             :on-preview="handlePictureCardPreview"
             :on-remove="handleRemove"
+            :before-remove="handleBeforeRemove"
             :before-upload="beforeUpload"
             :data="getObjField()"
         >
@@ -138,8 +140,8 @@ export default {
                 );
             }
             let isValidate=(isJPG || isPNG || isGIF) && isLt2M;
-            if(!isValidate)this.infoImageUploading=Object.assign(file,{isLoading:false,progress:0,});
-            else this.infoImageUploading=Object.assign(file,{isLoading:true,progress:0,});
+            // if(!isValidate)Object.assign(this.infoImageUploading,file,{isLoading:false,progress:0,});
+            // else Object.assign(this.infoImageUploading,file,{isLoading:true,progress:0,});
             return isValidate;
         }
       },
@@ -161,7 +163,6 @@ export default {
             infoImageUploading:{
                 isLoading:false,
                 name:"",
-                url:"",
                 progress:0,
             },
         }
@@ -176,32 +177,77 @@ export default {
             // res.data._doc是文档最新数据
 
             if(typeof _this["onSuccess"] === "function")_this["onSuccess"](res,file,fileList)
-            // _this.handleClose();
+            // 
             if(!fileList.find(v=>(v.status!="success"))){//合规的图片已全部上传完成                
-                if(typeof _this["onComplete"] === "function")_this["onComplete"](res, file,fileList);
+                // if(typeof _this["onComplete"] === "function")_this["onComplete"](res, file,fileList);
+                _this.handleClose();
+                _this.infoImageUploading.isLoading=false;
+
                 // 上传按钮变浏览?
-                debugger;
             }
         },
 
-        handleRemove(file) {
-            // 已经上传过的文件删除
-            if(file.status=="success"){
+        handleRemove(file,fileList) {
+            this.infoImageUploading.isLoading=false;
+        },
+        handleBeforeRemove(file,fileList){
+            const _this = this;
+            return new Promise((resolve, reject) => {
+                // 已经上传过的文件删除
+                if(file.status=="success"){
+                    const params = {
+                        "url":file.url,
+                        "_id":_this.dialogState.formData.id
+                    }
+                    let removeFileRequest = new Request("/manage/artist/removeAlbum", {
+                        method: 'post',
+                        //指定header会eggjs接收不到multipart
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body:JSON.stringify(params),
+                    })
+                    //loading显示
+                    _this.infoImageUploading.isLoading=true;
+                    _this.infoImageUploading.name="移除";
+                    fetch(removeFileRequest).then(response => {
+                        return response.text();
+                    }).then(res => {
+                        // 在这个then里面我们能拿到最终的数据
+                        let objData=JSON.parse(res);
+                        if(objData.status==200){
+                            console.log("resDelete::",objData);
+                            Object.assign(_this.dialogState.formData,objData._doc);
+                            // if(objData.data.path)this.$emit('on-success',objData);
+                            // if(typeof _this["onSuccess"] === "function")_this["onSuccess"](objData)
+                            // artist被编辑过
+                            // _this.dialogState.isEdited=true;
+                            resolve(objData);
+                        }else reject(objData);
+                    })
+                }else if(file.status=="ready"){ //预览删除,可能是不合规
+                    resolve();
+                }
 
-            }//file.status=="ready"预览删除,可能是不合规
-            console.log(file);
+            });
+            // console.log(file);
         },
         handlePictureCardPreview(file) {
             this.dialogImageUrl = file.url;
             this.dialogPreviewVisible = true;
         },
         handleClose(e){
-
+            if(typeof this["onComplete"] === "function")this["onComplete"]();
+            this.dialogState.isShow=false;
+            // 清空数据
+            this.dialogState.formData.listImages=[];
         },
         handleProgress(e,file,fileList){
             // console.log(e,file,fileList)
             this.infoImageUploading.progress=e.percent;
-            // this.infoImageUploading.isLoading=file.isLoading;
+            this.infoImageUploading.isLoading=file.isLoading || e.percent;
+            this.infoImageUploading.name="上传:"+file.name;
+
             // this.infoImageUploading=Object.assign(file.raw,{isLoading:(e.type=="progress"),progress:e.percent,});
         },
         // 服务器端接收文件&艺术家更新listImages
