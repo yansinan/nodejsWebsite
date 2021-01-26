@@ -26,8 +26,8 @@
       <!-- 名称 -->
       <el-table-column prop="name" :label="$t('docs.name')" min-width="250" show-overflow-tooltip>
         <template slot-scope="scope">
-          <el-avatar :src="scope.row.sImg" fit="cover" size="large" />
-          <el-button type="text" size="large">{{scope.row.name}}</el-button>
+          <el-avatar :src="scope.row.sImg" fit="cover" size="large"  @click="eLink('/'+nameMod+'/'+scope.row._id+'.html')" />
+          <el-button type="text" size="large" @click="editContentInfo(scope.$index, dataList)">{{scope.row.name}}  <i class="el-icon-edit" /></el-button>
           <!-- <div v-else class="col-name hide" ><el-avatar :src="scope.row.sImg" :fit="cover"/>{{scope.row.name}}</div> -->
         </template>
       </el-table-column>
@@ -47,6 +47,22 @@
           </el-badge>          
         </template>
       </el-table-column>      
+      <!-- 热门歌曲 -->
+      <el-table-column prop="listHotMusics" :label="$t('artist.listHotMusics')" width="80" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <el-badge :value="scope.row.listHotMusics.length" :hidden="scope.row.listHotMusics.length==0?true:false" :max="99" type="info">
+            <el-button @click="eListHotMusicsEdit(scope.$index,dataList)" size="large" plain icon="el-icon-headset" :type="scope.row.listHotMusics.length==0?'':'primary'" circle></el-button>  
+          </el-badge>          
+        </template>
+      </el-table-column>      
+      <!-- 其他链接 -->
+      <el-table-column prop="listLinks" :label="$t('artist.listLinks')" width="80" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <el-badge :value="scope.row.listLinks.length" :hidden="scope.row.listLinks.length==0?true:false" :max="99" type="info">
+            <el-button @click="eListLinksEdit(scope.$index,dataList)" size="large" plain icon="el-icon-link" :type="scope.row.listLinks.length==0?'':'primary'" circle></el-button>  
+          </el-badge>          
+        </template>
+      </el-table-column>      
 
       <!-- 右侧固定栏 -->
       <el-table-column :label="$t('main.dataTableOptions')" width="200" fixed="right">
@@ -59,11 +75,13 @@
         </template>
       </el-table-column>
     </el-table>
-          <Album 
-            :nameMod="nameMod"
-            :label="$t('artist.listImages')"
-            :dialogState="dialogStateAlbum"
-            :on-complete="getList"></Album>
+    <Album 
+      :nameMod="nameMod"
+      :label="$t('artist.listImages')"
+      :dialogState="dialogStateAlbum"
+      :on-complete="getList"></Album>
+    <ListURL :on-complete="getList" :nameMod="nameMod" :label="$t('artist.listHotMusics')" :dialogState="dialogStateMusic"></ListURL>
+    <ListURL :on-complete="getList" :nameMod="nameMod" :label="$t('artist.listLinks')" :dialogState="dialogStateLink"></ListURL>
   </div>
 </template>
 <style lang="scss">
@@ -104,7 +122,6 @@
 </style>
 <script>
 import { remove, roof, updateToTop } from "@root/publicMethods/apiGeneral";
-import ListURL from "../common/ListURL.vue";
 // 相册上传
 import Album from "../common/Album.vue";
 
@@ -135,12 +152,26 @@ export default {
         isShow:false,
         isEdited:false,
         formData:{},
+      },
+      // 编辑热门歌曲弹窗
+      dialogStateMusic:{
+        isShow:false,
+        isEdited:false,
+        formData:{},
+        strListObjURL:"listHotMusics"
+      },
+      // 编辑相关链接弹窗
+      dialogStateLink:{
+        isShow:false,
+        isEdited:false,
+        formData:{},
+        strListObjURL:"listLinks"
       }
     };
   },
   components: {
     Album,
-    ListURL,
+    ListURL:() => import("@root/publicMethods/vue/ListURL.vue"),
   },
 
   methods: {
@@ -234,14 +265,31 @@ export default {
     },
     // 编辑图集;
     eAlbumEdit(index,rows){
-      let contentData = rows[index];
       this.dialogStateAlbum = {
         // _id: contentData._id,
         // name:contentData.name,
         // listImages: contentData.listImages,
         isShow:true,
         isEdited:false,
-        formData:contentData,
+        formData:rows[index],
+      };
+    },
+    // 编辑热门歌曲;
+    eListHotMusicsEdit(index,rows){
+      this.dialogStateMusic = {
+        isShow:true,
+        isEdited:false,
+        formData:rows[index],
+        strListObjURL:"listHotMusics",
+      };
+    },
+    // 编辑相关链接;
+    eListLinksEdit(index,rows){
+      this.dialogStateLink = {
+        isShow:true,
+        isEdited:false,
+        formData:rows[index],
+        strListObjURL:"listLinks",
       };
     },
     // 新开页面（预览）
