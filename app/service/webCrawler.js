@@ -28,7 +28,7 @@ class ServicePlugin extends Service {
 
             return {
                 status:res.data.code,
-                data:res.data.result,
+                data:res.data.result || res.data,
                 message:res.statusText,
             }
         } catch (err) {
