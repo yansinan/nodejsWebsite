@@ -11,7 +11,7 @@
             <el-avatar :src="dialogState.formData.sImg" fit="cover"/>{{dialogState.formData.name}}的{{label}}
         </div>
 
-        <el-form :model="listObjURL" ref="formUpdate" status-icon inline-message="true" label-width="40px" @validate="eValidate">
+        <el-form :model="listObjURL" ref="formUpdate" status-icon inline-message="true" label-width="0px" @validate="eValidate">
             <el-form-item
                 v-for="(domain, index) in listObjURL"
                 :key="domain._id"
@@ -30,7 +30,7 @@
               </el-input>
             </el-form-item>  
         </el-form>
-        <el-form :model="objToAdd" ref="formAdd" status-icon label-width="40px" @validate="eValidate">
+        <el-form :model="objToAdd" ref="formAdd" status-icon label-width="0px" @validate="eValidate">
             <el-form-item
                 inline-message="true"
                 :key="'add'"
