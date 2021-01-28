@@ -122,6 +122,21 @@ module.exports = app => {
 
     router.get('/manage/hook/deleteUser', controller.manage.hook.removes)
 
+    /**
+     * 艺人管理
+     * 
+     */
+    router.get('/manage/artist/getList', controller.manage.artist.list)
+    router.get('/manage/artist/getOne', controller.manage.artist.getOne)
+
+    router.post('/manage/artist/addOne', controller.manage.artist.create)
+    router.post('/manage/artist/updateOne', controller.manage.artist.update)
+    router.post('/manage/artist/top', controller.manage.artist.updateToTop)
+    router.post('/manage/artist/roof', controller.manage.artist.roofPlacement)
+
+    router.get('/manage/artist/delete', controller.manage.artist.removes)
+    router.post('/manage/artist/updateAlbum', controller.manage.artist.updateAlbum)
+    router.post('/manage/artist/removeAlbum', controller.manage.artist.removeAlbum)
 
     /**
      * 唱片管理

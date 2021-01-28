@@ -164,9 +164,9 @@ module.exports = appInfo => {
 
 
     // doraArtistPluginBegin
-    artistRouter: {
-      match: [ctx => ctx.path.startsWith('/manage/artist'), ctx => ctx.path.startsWith('/api/artist')],
-    },
+    // artistRouter: {
+    //   match: [ctx => ctx.path.startsWith('/manage/artist'), ctx => ctx.path.startsWith('/api/artist')],
+    // },
     // doraArtistPluginEnd
 
 

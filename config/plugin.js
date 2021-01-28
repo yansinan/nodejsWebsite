@@ -78,11 +78,11 @@ exports.doraContent = {
 // doraContentPluginEnd
 
 // doraArtistPluginBegin
-exports.doraArtist = {
-    enable: true,
-    package: 'egg-dora-artist',
-    path: path.join(__dirname, "../lib/plugin/egg-dora-artist")
-};
+// exports.doraArtist = {
+//     enable: true,
+//     package: 'egg-dora-artist',
+//     path: path.join(__dirname, "../lib/plugin/egg-dora-artist")
+// };
 // doraArtistPluginEnd
 
 

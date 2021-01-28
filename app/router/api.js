@@ -13,6 +13,27 @@ module.exports = app => {
     router.get('/api/systemConfig/getConfig', controller.api.systemConfig.list)
 
     //ApiRouters
+    // 艺人
+    let API="artist";
+    let frontApi= [
+        {
+            url: API + '/getList',
+            method: 'get',
+            controllerName: 'list',
+            details: '获取文档列表',
+        }, 
+        {
+            url: API + '/get',
+            method: 'get',
+            controllerName: 'getOne',
+            details: '获取单个文档信息',
+        }, 
+    ]
+    frontApi.forEach(obj=>router[obj.method]('/api/'+obj.url, controller.api[API][obj.controllerName]))
+
+    // router.get('/api/artist/getList', controller.api.artist.list);
+    // router.get('/api/artist/get', controller.api.artist.getOne);
+
     // 专辑
     router.get('/api/record/getList', controller.api.record.list);
     router.get('/api/record/get', controller.api.record.getOne);
