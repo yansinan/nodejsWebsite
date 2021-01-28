@@ -11,9 +11,8 @@ const Service = require('egg').Service;
 const Axios = require("axios");
 // const Model_NAME=__filename.slice(__dirname.length + 1, -3);
 
-const urlBase="http://192.168.1.202:3000";
-
 class ServicePlugin extends Service {
+    // let tmp=await ctx.service.webCrawler.api("/search",{keywords:listRes.docs[0].name,type:10});
     // "/search",{keywords:listRes.docs[0].name,type:10}// type: 搜索类型；默认为 1 即单曲 , 取值意义 : 1: 单曲, 10: 专辑, 100: 歌手, 1000: 歌单, 1002: 用户, 1004: MV, 1006: 歌词, 1009: 电台, 1014: 视频, 1018:综合
     // res={
     //     status:200,
@@ -24,7 +23,7 @@ class ServicePlugin extends Service {
     // }    
     async api(api,payload){
         try{
-            let res=await Axios.get(urlBase+api,{ params:payload,});
+            let res=await Axios.get(this.app.config.server_neteaseCloudMusicApi+api,{ params:payload,});
 
             return {
                 status:res.data.code,

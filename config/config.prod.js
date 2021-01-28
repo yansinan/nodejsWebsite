@@ -35,6 +35,7 @@ module.exports = appInfo => {
         // 服务地址配置
         server_path: 'http://wx.z-core.cn:8084',
         server_api: 'http://wx.z-core.cn:8084/api',
+        server_neteaseCloudMusicApi:"http://192.168.1.202:3000",
 
     }
 };
