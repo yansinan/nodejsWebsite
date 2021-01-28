@@ -99,45 +99,7 @@
     },
     methods: {
         idNCM(){
-            let idNCM="";
-            // 是否有现成的163链接在listLinks;
-            let objLink=this.dialogState.formData.listLinks.find(v=>(v.url.indexOf("music.163.com")!=-1));            
-            if(objLink){
-                idNCM=objLink.url.split("artist?id=")[1] || "";//https://music.163.com/#/artist?id=12371
-            }
-            // 没有现成链接，用乐队名手动搜索api
-            if(idNCM!="")return Promise.resove({status:"success",msg:"",data:{idNCM:idNCM}});
-            // 没有则需要手动搜索
-            let nameArtist=this.dialogState.formData.name;
-            return new Promise((resolve,reject)=>{
-                let nameArtist=this.dialogState.formData.name;
-                fetch("http://192.168.1.202/cloudsearch?keywords="+nameArtist).then(function(data){
-                    // text()方法属于fetchAPI的一部分，它返回一个Promise实例对象，// 用于获取后台返回的数据 return data.text();
-                    return data.text();
-                }).then(function (data) {
-                    // 在这个then里面我们能拿到最终的数据
-                    let res=JSON.parse(data);
-                    if(res.data && res.data.code==200){
-                        debugger;
-                        that.$message({
-                            message: "找到网易云音乐歌手信息，准备同步...",
-                            type: "success"
-                        });
-                        idNCM=res.data.result.artist[0];
-                        debugger
-                        resolve({
-                            status:"success",
-                            msg:"",
-                            data:{
-                                idNCM:idNCM,
-                            }
-                        });
-                    }else{
-                        reject(res);
-                    }
 
-                })
-            })
         },
         // 弹窗打开时
         eDialogOpen(e){

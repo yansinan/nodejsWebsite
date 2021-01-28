@@ -1,3 +1,4 @@
+const Controller = require('egg').Controller;
 const xss = require("xss");
 const _ = require('lodash');
 const shortid = require('shortid');
@@ -143,6 +144,9 @@ const funGetData = async (ctx,fields) => {
             if(objLink.icon=="" && objLink.url.indexOf("music.163.com")!=-1)objLink.icon="/static/themes/images/link/logo_163_32x32.png"
         });
     }
+    // 网易云音乐id
+    fields.idNCM=await ctx.service.artist.checkIdNCM(fields) || "";
+
     // 关键字
     let targetKeyWords = [];
     if (fields.keywords) {
@@ -181,6 +185,7 @@ const funGetData = async (ctx,fields) => {
         listLinks:fields.listLinks,
         listImages:fields.listImages,
         listVideos:fields.listVideos,
+        idNCM:fields.idNCM,
     }
     // 设置创建日期为加入日期
     if(formObj.listDateDur && formObj.listDateDur[0]){
@@ -206,11 +211,15 @@ const funGetData = async (ctx,fields) => {
     
 }
 
-let ControllerPlugin = {
+class APIController extends Controller {
 // const Controller = require('egg').Controller;
 // /class ControllerPlugin extends Controller {
 
-    async list(ctx, app) {
+    async list() {
+        const {
+            ctx,
+            app
+        } = this;
         try {
             let service=ctx.service[SERVICE_NAME];
 
@@ -241,10 +250,13 @@ let ControllerPlugin = {
             });
 
         }
-    },
+    }
 
-    async create(ctx, app) {
-
+    async create() {
+        const {
+            ctx,
+            app
+        } = this;
 
         try {
             let service=ctx.service[SERVICE_NAME];
@@ -266,10 +278,13 @@ let ControllerPlugin = {
             });
         }
 
-    },
+    }
 
-    async getOne(ctx, app) {
-
+    async getOne() {
+        const {
+            ctx,
+            app
+        } = this;
         try {
             let service=ctx.service[SERVICE_NAME];
 
@@ -280,7 +295,8 @@ let ControllerPlugin = {
                     _id: _id
                 },
             });
-
+            // 网易云音乐id
+            target.idNCM=await service.checkIdNCM(target);
             ctx.helper.renderSuccess(ctx, {
                 data: target
             });
@@ -291,11 +307,14 @@ let ControllerPlugin = {
             });
         }
 
-    },
+    }
 
     // 文章推荐
-    async updateToTop(ctx, app) {
-
+    async updateToTop() {
+        const {
+            ctx,
+            app
+        } = this;
         try {
             let service=ctx.service[SERVICE_NAME];
 
@@ -316,11 +335,14 @@ let ControllerPlugin = {
             });
         }
 
-    },
+    }
 
     // 文章置顶
-    async roofPlacement(ctx, app) {
-
+    async roofPlacement() {
+        const {
+            ctx,
+            app
+        } = this;
         try {
             let service=ctx.service[SERVICE_NAME];
 
@@ -337,10 +359,13 @@ let ControllerPlugin = {
             });
         }
 
-    },
+    }
 
-    async update(ctx, app) {
-
+    async update() {
+        const {
+            ctx,
+            app
+        } = this;
         try {
             let service=ctx.service[SERVICE_NAME];
 
@@ -361,10 +386,13 @@ let ControllerPlugin = {
 
         }
 
-    },
+    }
     // 相册上传
-    async updateAlbum(ctx, app) {
-
+    async updateAlbum() {
+        const {
+            ctx,
+            app
+        } = this;
         try {
             let service=ctx.service[SERVICE_NAME];
             // 接收上传文件以及parts.field
@@ -421,9 +449,13 @@ let ControllerPlugin = {
             ctx.helper.renderFail(ctx, {message: err.message,stack:err.stack});
         }
 
-    },
+    }
     // 相册删除payload:_id,url
-    async removeAlbum(ctx,app){
+    async removeAlbum(){
+        const {
+            ctx,
+            app
+        } = this;
         try {
             let service=ctx.service[SERVICE_NAME];
             let payload = ctx.request.body || {};
@@ -491,9 +523,12 @@ let ControllerPlugin = {
             debugger
             ctx.helper.renderFail(ctx, {message: err.message,stack:err.stack});
         }
-    },
-    async removes(ctx, app) {
-
+    }
+    async removes() {
+        const {
+            ctx,
+            app
+        } = this;
         try {            
             let service=ctx.service[SERVICE_NAME];
 
@@ -525,7 +560,17 @@ let ControllerPlugin = {
                 message: err
             });
         }
-    },
+    }
+
+    //同步网易云音乐;
+    async ncmUpdate(){
+        const {
+            ctx,
+            app
+        } = this;
+        let service=ctx.service[SERVICE_NAME];
+        let targetIds = ctx.query.ids;
+    }
 }
 
-module.exports = ControllerPlugin;
+module.exports = APIController;

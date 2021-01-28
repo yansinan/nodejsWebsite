@@ -241,7 +241,7 @@ let ControllerPlugin = {
             ctx.helper.renderFail(ctx, {
                 message: err
             });
-
+            debugger
         }
     },
 

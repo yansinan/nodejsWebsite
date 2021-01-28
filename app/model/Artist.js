@@ -87,7 +87,12 @@ module.exports =app=>{
                 url:{type:String},
                 name:{type:String},
                 type:{type:String,default:"link"},
+                date:{type:Date,default:Date.now},
             }],//相关视频
+            idNCM:{
+                type:String,
+                default:""
+            },//网易云音乐id,idNCM=="ignore"则忽略更新
         });
         
         

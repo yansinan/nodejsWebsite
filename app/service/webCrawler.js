@@ -24,6 +24,7 @@ class ServicePlugin extends Service {
     async api(api,payload){
         try{
             let res=await Axios.get(this.app.config.server_neteaseCloudMusicApi+api,{ params:payload,});
+            console.warn("跨域网络请求:网易云音乐",api,res);
 
             return {
                 status:res.data.code,

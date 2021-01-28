@@ -43,7 +43,7 @@
       <el-table-column prop="listVideos" :label="$t('artist.listVideos')" width="80" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-badge :value="scope.row.listVideos.length" :hidden="scope.row.listVideos.length==0?true:false" :max="99" type="info">
-            <el-button size="large" plain icon="el-icon-video-camera" :type="scope.row.listVideos.length==0?'':'primary'" circle></el-button>  
+            <el-button @click="eListVideosEdit(scope.$index,dataList)" size="large" plain icon="el-icon-video-camera" :type="scope.row.listVideos.length==0?'':'primary'" circle></el-button>  
           </el-badge>          
         </template>
       </el-table-column>      
@@ -82,6 +82,8 @@
       :on-complete="getList"></Album>
     <ListURL :on-complete="getList" :nameMod="nameMod" :label="$t('artist.listHotMusics')" :dialogState="dialogStateMusic"></ListURL>
     <ListURL :on-complete="getList" :nameMod="nameMod" :label="$t('artist.listLinks')" :dialogState="dialogStateLink"></ListURL>
+    <ListVideos :on-complete="getList" :nameMod="nameMod" :label="$t('artist.listVideos')" :dialogState="dialogStateVideos"></ListVideos>
+
   </div>
 </template>
 <style lang="scss">
@@ -166,12 +168,21 @@ export default {
         isEdited:false,
         formData:{},
         strListObjURL:"listLinks"
-      }
+      },
+      // 编辑相关视频弹窗
+      dialogStateVideos:{
+        isShow:false,
+        isEdited:false,
+        formData:{},
+        strListObjURL:"listVideos",
+      },
     };
   },
   components: {
     Album,
     ListURL:() => import("@root/publicMethods/vue/ListURL.vue"),
+    ListVideos:()=> import("../common/ListVideos.vue"),
+
   },
 
   methods: {
@@ -290,6 +301,15 @@ export default {
         isEdited:false,
         formData:rows[index],
         strListObjURL:"listLinks",
+      };
+    },
+    // 编辑视频列表;
+    eListVideosEdit(index,rows){
+      this.dialogStateVideos = {
+        isShow:true,
+        isEdited:false,
+        formData:rows[index],
+        strListObjURL:"listVideos",
       };
     },
     // 新开页面（预览）
