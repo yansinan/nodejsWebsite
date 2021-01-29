@@ -33,6 +33,12 @@ module.exports = app => {
             method:"get",
             controllerName:"ncmGetAtistMV",
             details:"抓取网易云音乐中乐队的MV列表，并转格式返回list"
+        }, 
+        {
+            url: API + "/fetchNCMArtist",
+            method:"get",
+            controllerName:"ncmGetAtist",
+            details:"抓取网易云音乐中乐队，并转格式返回"
         }
     ]
     frontApi.forEach(obj=>router[obj.method]('/api/'+obj.url, controller.api[API][obj.controllerName]))

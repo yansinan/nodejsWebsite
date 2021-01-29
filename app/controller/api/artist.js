@@ -567,6 +567,29 @@ class APIController extends Controller {
             ctx.helper.renderFail(ctx, { message: err });
         }
     }
+    // 抓网易乐队信息
+    async ncmGetAtist(){
+        const {
+            ctx,
+            app
+        } = this;
+        let service=ctx.service[SERVICE_NAME];
+        let name = ctx.query.name;
+        let idNCM=ctx.query.idNCM;
+
+        try{
+            if (!name && !idNCM) throw new Error(ctx.__('validate_error_params')+"name and idNCM all miss");
+
+            let resArtistNCM=await service.ncmArtist({name,idNCM});
+
+            ctx.helper.renderSuccess(ctx,{
+                data: resArtistNCM
+            });
+        } catch (err) {
+            debugger
+            ctx.helper.renderFail(ctx, { message: err });
+        }
+    }
 }
 
 

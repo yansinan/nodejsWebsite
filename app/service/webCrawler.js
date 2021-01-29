@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-01-28 04:34:44 
  * @Last Modified by: dr
- * @Last Modified time: 2021-01-29 08:50:08
+ * @Last Modified time: 2021-01-29 10:21:46
  */
 
 
@@ -33,7 +33,7 @@ class ServicePlugin extends Service {
             if(res.status!=200 || !res.data ) throw new Error("webCrawler连接服务器错误,status:"+res.status);
             return {
                 status:res.data.code,
-                data:res.data.result || res.data,
+                data:res.data.result || res.data.data || res.data,
                 message:res.statusText,
             }
         } catch (err) {

@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-24 13:20:49 
  * @Last Modified by: dr
- * @Last Modified time: 2021-01-29 04:34:05
+ * @Last Modified time: 2021-01-29 10:42:02
  */
 
 'use strict';
@@ -52,8 +52,7 @@ class ServicePlugin extends BaseService {
         return idNCM
     }
     
-    //获取网易云音乐id,payload={_id:"",...},idNCM=="ignore"则忽略更新
-    // _id,name,listLinks  任一即可分析，优先使用数据库内的idNCM,
+    //获取网易云音乐id,payload={_id:"",...},idNCM=="ignore"则忽略更新,_id,name,listLinks  任一即可分析，优先使用数据库内的idNCM,
     // let resNCM=await this.ctx.service.webCrawler.api("/cloudsearch",{keywords:name,type:100});
     // {
     //     status: 200,
@@ -85,7 +84,7 @@ class ServicePlugin extends BaseService {
             let idNCM=payload.idNCM;
             //读取数据库信息 
             if((!idNCM || idNCM=="") && idNCM!="ignore"){
-                let listLinks=(payload.listLinks.constructor.name === "CoreDocumentArray")?payload.listLinks.toObject():payload.listLinks;
+                let listLinks=(payload.listLinks && payload.listLinks.constructor.name === "CoreDocumentArray")?payload.listLinks.toObject():payload.listLinks;
                 let _id=payload._id || payload.id;
                 let name=payload.name;
                 let alias=payload.alias;
@@ -102,7 +101,7 @@ class ServicePlugin extends BaseService {
                         
                     }else throw new Error("_id,name,listLinks都没有,真没辙");
                 }
-                listLinks=(payload.listLinks.constructor.name === "CoreDocumentArray")?payload.listLinks.toObject():payload.listLinks;
+                listLinks=(payload.listLinks && payload.listLinks.constructor.name === "CoreDocumentArray")?payload.listLinks.toObject():payload.listLinks;
                 _id=payload._id;
                 name=payload.name;
                 alias=payload.alias;
@@ -113,7 +112,7 @@ class ServicePlugin extends BaseService {
                 if(listLinks){
                     this.findIdInLink(listLinks);
                     // 分析成功，返回结果；是否要自动保存到数据库？
-                    if(idNCM && idNCM!=""){
+                    if(idNCM && idNCM!="" && _id){
                         let resUpdate=await this.update(this.ctx,_id,{idNCM});
                         console.warn("idNCM网络请求:","乐手获取到idNCM,自动保存结果:",idNCM);
                         return idNCM;
@@ -128,8 +127,8 @@ class ServicePlugin extends BaseService {
                 // 双验证
                 // let listArtistAlias=listArtists.filter(v=>(v.name.indexOf(alias)!=-1));
                 // 默认第一个的id
-                if(listArtists[0].id){
-                    idNCM=listArtists[0].id;
+                if(listArtists[0].id)idNCM=listArtists[0].id;
+                if(_id){
                     let resUpdate=await this.update(this.ctx,_id,{idNCM});
                     console.warn("idNCM网络请求:","乐手获取到idNCM,自动保存结果:",idNCM);
                 }
@@ -216,10 +215,139 @@ class ServicePlugin extends BaseService {
                 console.warn("网易云音乐ncmListArtistMV:",e);
                 return [];
             }
+        }else{
+            return [];
         }
-
     }
+    // 搜索网易云音乐的乐手信息
+    // {
+    //     code: 200,
+    //     message: "ok",
+    //     data: {
+    //       videoCount: 10,
+    //       vipRights: {
+    //         rightsInfoDetailDtoList: [
+    //           {
+    //             vipCode: 220,
+    //             expireTime: 1652543999000,
+    //             sign: false,
+    //             signIap: false,
+    //           },
+    //           {
+    //             vipCode: 100,
+    //             expireTime: 1652543999000,
+    //             sign: false,
+    //             signIap: false,
+    //           },
+    //         ],
+    //         oldProtocol: false,
+    //         redVipAnnualCount: 1,
+    //       },
+    //       identify: {
+    //         imageUrl: "https://p5.music.126.net/obj/wo3DlcOGw6DClTvDisK1/4874132307/4499/f228/d867/da64b9725e125943ad4e14e4c72d0884.png",
+    //         imageDesc: "网易音乐人",
+    //         actionUrl: "orpheus://rnpage?component=music-reactnative-artistwiki&artistId=12371",
+    //       },
+    //       artist: {
+    //         id: 12371,
+    //         cover: "https://p1.music.126.net/yYudcBFmVRCDdDnGjK5HFQ==/109951164565744552.jpg",
+    //         name: "不优雅（biuya）",
+    //         transNames: [
+    //         ],
+    //         identities: [
+    //         ],
+    //         identifyTag: [
+    //           "网易音乐人",
+    //         ],
+    //         briefDesc: "indie rock band（独立摇滚乐队），来自北京。吉他&主唱张秋爽，贝斯&主唱元帅，鼓手&和声赵九龙。乐队组建于2008年，至今共发表2张专辑和2张EP：2019年EP《人情公园》，2017年专辑 《阴天王国》，2012年专辑 《The Tree Ever Green（常青树）》，2010年EP 《Demo.1》。关注乐队微博（@不优雅乐队-biuya）查收最新动态。",
+    //         rank: null,
+    //         albumSize: 5,
+    //         musicSize: 64,
+    //         mvSize: 7,
+    //       },
+    //       blacklist: false,
+    //       preferShow: 7,
+    //       showPriMsg: true,
+    //       eventCount: 589,
+    //       user: {
+    //         backgroundUrl: "http://p1.music.126.net/NL5x1X7l3gUih81UEdsnUA==/18657612813467546.jpg",
+    //         birthday: 1222185600000,
+    //         detailDescription: null,
+    //         authenticated: true,
+    //         gender: 1,
+    //         city: 110101,
+    //         signature: "多难兴band。曾用名Mr.Graceless、不优雅先生、不优雅（中文版）、biuya（英文版）。群聊微信16601105464",
+    //         description: null,
+    //         remarkName: null,
+    //         shortUserName: "18910225464",
+    //         accountStatus: 0,
+    //         locationStatus: 30,
+    //         avatarImgId: 109951164565717310,
+    //         defaultAvatar: false,
+    //         province: 110000,
+    //         nickname: "不优雅_biuya",
+    //         expertTags: null,
+    //         djStatus: 10,
+    //         avatarUrl: "http://p1.music.126.net/Xcxv5YJnBOmdyCL8dDg0Bg==/109951164565717309.jpg",
+    //         accountType: 1,
+    //         authStatus: 1,
+    //         vipType: 11,
+    //         userName: "1_18910225464",
+    //         followed: false,
+    //         userId: 3789718,
+    //         lastLoginIP: "240e:404:1e20:a3be:fc5f:6dad:44e2:f98b",
+    //         lastLoginTime: 1611639423754,
+    //         authenticationTypes: 8,
+    //         mutual: false,
+    //         createTime: 1383289407485,
+    //         anchor: false,
+    //         authority: 0,
+    //         backgroundImgId: 18657612813467544,
+    //         userType: 4,
+    //         experts: null,
+    //         avatarDetail: {
+    //           userType: 4,
+    //           identityLevel: 1,
+    //           identityIconUrl: "https://p5.music.126.net/obj/wo3DlcOGw6DClTvDisK1/4874132307/4499/f228/d867/da64b9725e125943ad4e14e4c72d0884.png",
+    //         },
+    //       },
+    //     },
+    //   }
+    async ncmArtist(payload={}){
+        let console=this.logger;
+        let idNCM=await this.checkIdNCM(payload);
+        if(this.isNCM(idNCM)){
+            try{
+                let resNCM=await this.ctx.service.webCrawler.api("/artist/detail",{id:idNCM});
+                // 万一失去链接，直接返回，不影响
+                if(resNCM.error || !resNCM.data || !resNCM.data.artist) throw new Error("webCrawler连接服务器错误,status:"+resNCM.status);
+                let artistNCM={
+                    idNCM: resNCM.data.artist.id,
+                    sImg:resNCM.data.artist.cover,// "https://p1.music.126.net/yYudcBFmVRCDdDnGjK5HFQ==/109951164565744552.jpg",
+                    discription:resNCM.data.artist.briefDesc,
+                    alias:resNCM.data.artist.transNames[0] || "",
+                    comments:"",
+                    link:"https://music.163.com/#/artist?id="+resNCM.data.artist.id,
+                }
+                let resNCMDesc=await this.ctx.service.webCrawler.api("/artist/desc",{id:idNCM});
+                // 万一失去链接，直接返回，不影响
+                if(resNCMDesc.error || !resNCMDesc.data || !resNCMDesc.data.introduction || !resNCMDesc.data.introduction[0]) {
 
+                }else{
+                    debugger;
+                    artistNCM.comments=resNCMDesc.data.introduction[0] || "";
+                }
+
+                return artistNCM;
+            }catch(e){
+                debugger
+                console.warn("网易云音乐ncmArtist:",e);
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
 
 }
 
