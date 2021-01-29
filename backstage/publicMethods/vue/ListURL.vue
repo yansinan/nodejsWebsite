@@ -57,6 +57,7 @@
 
 <script>
   import { updateOne } from "@root/publicMethods/apiGeneral";
+  // import request from '@root/publicMethods/request'
   const objURLDefault={
       name: '',
       url:'',
@@ -100,7 +101,12 @@
       // 更新到服务器
       submitUpload(){
         let that=this;
-        updateOne(this.dialogState.formData,this.nameMod).then(result => {
+        let payload={
+          _id:this.dialogState.formData._id,
+          funUpdate:"updateList",
+          [this.dialogState.strListObjURL]:this.listObjURL,
+        }
+        updateOne(payload,this.nameMod).then(result => {
           if (result.status === 200) {
             that.$message({
               message: that.$t("main.updateSuccess"),
@@ -115,7 +121,7 @@
           
         }).catch(error=>{
           debugger
-          console.error(that.nameMod,"更新:fail,",error,params);
+          console.error(that.nameMod,"更新:fail,",error);
           that.$message.error(JSON.stringify(error));
         });
       },

@@ -28,6 +28,12 @@ module.exports = app => {
             controllerName: 'getOne',
             details: '获取单个文档信息',
         }, 
+        {
+            url: API + "/fetchNCMMV",
+            method:"get",
+            controllerName:"ncmGetAtistMV",
+            details:"抓取网易云音乐中乐队的MV列表，并转格式返回list"
+        }
     ]
     frontApi.forEach(obj=>router[obj.method]('/api/'+obj.url, controller.api[API][obj.controllerName]))
 

@@ -544,7 +544,29 @@ class APIController extends Controller {
             });
         }
     }
+    //同步网易云音乐;
+    async ncmGetAtistMV(){
+        const {
+            ctx,
+            app
+        } = this;
+        let service=ctx.service[SERVICE_NAME];
+        let _id = ctx.query.id;
 
+        try{
+            if (!shortid.isValid(_id)) throw new Error(ctx.__('validate_error_params')+_id);
+
+            let payload=await service.item(ctx,{query:{_id:_id},files:"_id name listLinks idNCM"})
+            let ncmlistVideos=await ctx.service.artist.ncmListArtistMV(payload);
+
+            ctx.helper.renderSuccess(ctx,{
+                data: ncmlistVideos
+            });
+        } catch (err) {
+            debugger
+            ctx.helper.renderFail(ctx, { message: err });
+        }
+    }
 }
 
 

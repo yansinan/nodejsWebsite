@@ -7,7 +7,7 @@
         :close-on-click-modal="false"
         :visible.sync="dialogState.isShow"
         :before-close="handleClose"
-        :open="eDialogOpen">
+        @open="eDialogOpen">
         <div slot="title" class="el-dialog__title">
             <el-avatar :src="dialogState.formData.sImg" fit="cover"/>{{dialogState.formData.name}}的{{label}}
         </div>
@@ -15,17 +15,17 @@
         <el-form :model="listObjURL" ref="formUpdate" status-icon inline-message="true" label-width="0px" @validate="eValidate">
             <el-form-item
                 v-for="(domain, index) in listObjURL"
-                :key="domain._id"
-                :prop="'['+index+'].url'"
+                :key="domain.idURL"
+                :prop="'['+index+'].link'"
                 :rules="{
                 required: true, type: 'url', message: '请输入有效链接', trigger: 'blur'
                 }"
                 :error="strErrorUpdate"
             >
-              <el-input v-model="domain.url" @input="eChangeURL({index,objLink:domain})">
+            <span v-if="domain.name" style="">{{domain.name}}</span>
+              <el-input v-model="domain.link" @input="eChangeURL({index,objLink:domain})">
                   <template slot="prepend" >
-                    <span v-if="domain.type==='音乐' && domain.name" style="width:120px;">{{domain.name}}</span>
-                    <img v-else :src="domain.icon" class="img-circle" style="width:32px">
+                    <el-image :src="domain.urlImg" :fit="contain" style="width:132px"/>
                   </template>
                   <el-button slot="append" icon="el-icon-delete" @click.prevent="removeDomain(domain)"/>
               </el-input>
@@ -35,21 +35,22 @@
             <el-form-item
                 inline-message="true"
                 :key="'add'"
-                :prop="url"
+                :prop="link"
                 :rules="{
                 required: true, type: 'url', message: '请输入有效链接', trigger: 'blur'
                 }"
                 :error="strErrorAdd"
             >
-              <el-input v-model="objToAdd.url" @input="eAddURL">
+              <el-input v-model="objToAdd.link" @input="eAddURL">
                   <template slot="prepend" style=""><span style="width:32px;text-align:center;" >其他</span></template>
               </el-input>
             </el-form-item>     
         </el-form>
         
         <span slot="footer" class="dialog-footer">
+            <el-button v-if="dialogState.formData.idNCM" type="warning" @click="eBnSyncNCM">同步网易云音乐</el-button>
+            <el-button type="success" @click="submitUpload">保 存</el-button>
             <el-button @click="handleClose">取 消</el-button>
-            <el-button type="success" @click="submitUpload">更 新</el-button>
         </span>
     </el-dialog>
 
@@ -59,10 +60,14 @@
 <script>
   import { updateOne } from "@root/publicMethods/apiGeneral";
   const objURLDefault={
-      name: '',
-      url:'',
-      icon:'',
-      error:''
+    name:"",
+    type:"link:music.163.com",
+    date:"",
+    idURL:"",
+    status:"",
+    urlImg:"",
+    urlVideo:"",
+    link:"",
   }
   export default {
     props: {
@@ -94,41 +99,67 @@
     computed: {
       // 主要列表
       listObjURL: function () {
+        //   let list=this.dialogState.formData[this.dialogState.strListObjURL]?this.dialogState.formData[this.dialogState.strListObjURL].filter(v=>(v)):[];
           return this.dialogState.formData[this.dialogState.strListObjURL] || [];
       }
     },
     methods: {
-        idNCM(){
+        eBnSyncNCM(e){
+          let that=this;
+          fetch("/api/artist/fetchNCMMV?id="+this.dialogState.formData._id)
+          .then((data)=>data.text())
+          .then((data)=> {
+              // 在这个then里面我们能拿到最终的数据
+              let res=JSON.parse(data);
+              if(res.status==200 && res.data.length>0){
+                that.$message({
+                  message: "找到网易云音乐MV信息，自动填充",
+                  type: "success"
+                });
+                
+                //去重 & 合并
+                // let list=res.data.concat(that.listObjURL);
+                // list=[...new Set(list)];
+                // that.listObjURL.splice(0,that.listObjURL.length,...list);
+                let msg="剔除重复MV：";
+                let listNew=res.data.filter(vNew=>{
+                  let isOld= (that.listObjURL.find(vOld=>(vNew.idNCM==vOld.idNCM)));
+                  if(isOld)msg+=vNew.name+","
+                  return !isOld;
+                })
+                that.listObjURL.unshift(...listNew);
+                if(listNew.length<res.data.length)that.$message({
+                  message: msg,
+                  type: "success"
+                });
+                // 去空数据
+                // that.listObjURL=that.listObjURL.filter(v=>(v));
+                // 触发事件;
+                if(that.listObjURL)that.$emit('list-changed',that.listObjURL);
+
+              }else{
+                that.$message.error(
+                  that.$t("validate.inputCorrect", { label: "网易云音乐获取MV" })
+                );
+              }
+              // console.log(res.songs[0].name);
+              
+          })
 
         },
         // 弹窗打开时
         eDialogOpen(e){
-            // let tmp=await ctx.service.webCrawler.findVideo("https://music.163.com/#/mv?id=10921982");
-            // let tmp=await ctx.service.webCrawler.api("/search",{keywords:listRes.docs[0].name,type:10});
-            debugger
-            let idNCM="";
-            this.idNCM().then(resIdNCM=>{
-                let idNCM=resIdNCM.data.idNCM;
-                return fetch("http://192.168.1.202//artist/mv?id="+idNCM);
-            }).then(data=>{
-                return data.text();
-            }).then(resListMV=>{
-                // 在这个then里面我们能拿到最终的数据
-                resListMV=JSON.parse(resListMV);
-                if(resListMV.data && resListMV.data.code==200){
-                    debugger;
-                    that.$message({
-                        message: "找到网易云音乐歌手的MC信息，准备同步...",
-                        type: "success"
-                    });
-                }
-            }).catch(e=>console.error(e));            
-
+   
         },
       // 更新到服务器
       submitUpload(){
         let that=this;
-        updateOne(this.dialogState.formData,this.nameMod).then(result => {
+        let payload={
+          _id:this.dialogState.formData._id,
+          funUpdate:"updateList",
+          [this.dialogState.strListObjURL]:this.listObjURL,
+        }
+        updateOne(payload,this.nameMod).then(result => {
           if (result.status === 200) {
             that.$message({
               message: that.$t("main.updateSuccess"),
@@ -157,7 +188,7 @@
       },
       // 删除链接
       removeDomain(item) {
-        var index = this.listObjURL.findIndex((v,idx)=>(v.url==item.url))
+        var index = this.listObjURL.findIndex((v,idx)=>(v.link==item.link))
         if (index !== -1) {
           this.listObjURL.splice(index, 1)
         }
@@ -168,73 +199,34 @@
       getURLData(objLink,formName){
         let that=this;
         // 判断更新图标和objLink.icon
-        if(objLink.url.indexOf("weibo.com") != -1 ) objLink.icon="/static/themes/images/link/logo_sina_32x32.png";
-        if(objLink.url.indexOf("douban.com") !=-1 ) objLink.icon="/static/themes/images/link/logo_douban_32x32.png";
-        if(objLink.url.indexOf("music.163.com")!=-1)objLink.icon="/static/themes/images/link/logo_163_32x32.png";
+        if(objLink.link.indexOf("weibo.com") != -1 ) objLink.icon="/static/themes/images/link/logo_sina_32x32.png";
+        if(objLink.link.indexOf("douban.com") !=-1 ) objLink.icon="/static/themes/images/link/logo_douban_32x32.png";
+        if(objLink.link.indexOf("music.163.com")!=-1)objLink.icon="/static/themes/images/link/logo_163_32x32.png";
         // 更新name
-        if(objLink.url.indexOf("weibo.com") != -1 ) objLink.name="微博";
-        if(objLink.url.indexOf("douban.com") !=-1 ) objLink.name="豆瓣小站";
-        if(objLink.url.indexOf("music.163.com")!=-1){
-          objLink.name="网易云音乐";
-          // 如果是歌曲链接
-          if(objLink.url.indexOf("song?id=")!=-1){
-            objLink.type="音乐";
-            objLink.name="歌曲名";
-            let idSong=objLink.url.split("song?id=")[1];
-            // name根据网易api自动读取;
-            // Fetch会返回Promise 所以我们可以使用then 拿到请求成功的结果
-            fetch("https://api.imjad.cn/cloudmusic/?type=detail&id="+idSong).then(function(data){
-                // text()方法属于fetchAPI的一部分，它返回一个Promise实例对象，
-                // 用于获取后台返回的数据 return data.text();
-                return data.text();
-            }).then(function (data) {
-                // 在这个then里面我们能拿到最终的数据
-                let res=JSON.parse(data);
-                if(res.code==200 && res.songs.length>0 && res.songs[0].name){
-                  objLink.name=res.songs[0].name;
-                  that.$message({
-                    message: "找到网易云音乐歌曲信息，自动填充："+objLink.name,
-                    type: "success"
-                  });
-                  // 触发事件;
-                  if(that.listObjURL)that.$emit('list-changed',that.listObjURL);
+        if(objLink.link.indexOf("music.163.com")!=-1){
 
-                }else{
-                  objLink.name="歌曲无效";
-                  that.$message.error(
-                    that.$t("validate.inputCorrect", { label: "网易云音乐获取歌曲名称" })
-                  );
-                  if(formName=="formUpdate")that.strErrorUpdate="未找到网易云音乐歌曲信息："+objLink.url;
-                  if(formName=="formAdd")that.strErrorAdd="未找到网易云音乐歌曲信息："+objLink.url;
-                }
-                // console.log(res.songs[0].name);
-                
-            })
-          }else{
-            
-          }
+        }else{
+
         }
-
-
         return objLink;
       },
       eChangeURL(e){
         let {index,objLink}=e;
         // console.log("更新链接：",e);
         // 处理http
-        // if((objLink.url.toLowerCase()).indexOf("http://")==0){
+        // if((objLink.link.toLowerCase()).indexOf("http://")==0){
         //   objLink.urlHead="Http://";
-        //   objLink.url=(objLink.url.toLowerCase()).split("http://")[1];
+        //   objLink.link=(objLink.link.toLowerCase()).split("http://")[1];
         // }
-        // if((objLink.url.toLowerCase()).indexOf("https://")==0){
+        // if((objLink.link.toLowerCase()).indexOf("https://")==0){
         //   objLink.urlHead="Https://";
-        //   objLink.url=(objLink.url.toLowerCase()).split("https://")[1];
+        //   objLink.link=(objLink.link.toLowerCase()).split("https://")[1];
         // }        
         this.getURLData(objLink,"formUpdate");
 
       },
-      eAddURL(url){
-        this.objToAdd.url=url;
+      eAddURL(link){
+        this.objToAdd.link=link;
 
         this.getURLData(this.objToAdd,"formAdd");
         // 验证表单
@@ -257,9 +249,10 @@
       },
       eValidate(prop,res){
         // console.debug("链接验证结果：this.listObjURL",prop,res);//表单项 prop 值，校验是否通过
+        debugger
         if(res){
           // 如果是新增验证通过
-          // if(prop=="url"){
+          // if(prop=="link"){
           //   this.listObjURL.push(this.objToAdd);
           //   this.objToAdd=Object.assign({},objURLDefault);
           // }
