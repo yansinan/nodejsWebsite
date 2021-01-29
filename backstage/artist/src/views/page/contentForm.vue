@@ -23,7 +23,7 @@
           <el-input size="small" v-model="formState.formData.dismissReason"></el-input>
         </el-form-item>
         <el-form-item :label="$t(nameMod + '.name')" prop="name">
-          <el-input size="small" v-model="formState.formData.name"></el-input>
+          <el-input size="small" v-model="formState.formData.name" @change="eChangeName"></el-input>
         </el-form-item>
         <el-form-item :label="$t(nameMod + '.nameAlias')" prop="alias">
           <el-input size="small" v-model="formState.formData.alias"></el-input>
@@ -115,7 +115,7 @@
           <ListURL @list-changed="eListHotMusicChanged" label="热门歌曲" :listObjURL="formState.formData.listHotMusics"></ListURL>
         </el-form-item>
         <el-form-item :label="$t(nameMod + '.listLinks')" prop="listLinks">
-          <ListURL @list-changed="eListLinks" label="其他链接" :listObjURL="formState.formData.listLinks"></ListURL>
+          <ListURL @list-changed="eListLinks" label="其他链接" :listObjURL="formState.formData.listLinks" ref="listLinks"></ListURL>
         </el-form-item>
         <el-form-item class="dr-submitContent">
           <el-button
@@ -623,6 +623,40 @@ export default {
           return false;
         }
       });
+    },
+    eChangeName(e){
+      let that=this;
+      fetch("/api/artist/fetchNCMArtist?name="+e)
+      .then((data)=>data.text())
+      .then((data)=> {
+          // 在这个then里面我们能拿到最终的数据
+          let res=JSON.parse(data);
+          if(res.status==200 && res.data && res.data.idNCM){
+
+            that.$message({
+              message: "网易云音乐数据自动填充",
+              type: "success"
+            });
+            // idNCM: resNCM.data.artist.id,
+            // sImg:resNCM.data.artist.cover,// "https://p1.music.126.net/yYudcBFmVRCDdDnGjK5HFQ==/109951164565744552.jpg",
+            // discription:resNCM.data.artist.briefDesc,
+            // alias:resNCM.data.artist.transNames[0] || "",
+            // comments:"",
+
+            this.formState.formData.idNCM=this.formState.formData.idNCM?this.formState.formData.idNCM:res.data.idNCM;
+            this.formState.formData.sImg=this.formState.formData.sImg?this.formState.formData.sImg:res.data.sImg;
+            this.formState.formData.discription=this.formState.formData.discription?this.formState.formData.discription:res.data.discription;
+            this.formState.formData.alias=this.formState.formData.alias?this.formState.formData.alias:res.data.alias;
+            this.formState.formData.comments=this.formState.formData.comments?this.formState.formData.comments:res.data.comments;
+            let isLinked=this.formState.formData.listLinks.find(v=>(v.url==res.data.link));
+            if(!isLinked)this.$refs.listLinks.eAddURL(res.data.link);
+            console.warn("网易云音乐数据自动填充",res.data);
+          }else{
+            that.$message.error(
+              that.$t("validate.inputCorrect", { label: "网易云音乐未找到数据" })
+            );
+          }
+      })
     }
   },
   computed: {
