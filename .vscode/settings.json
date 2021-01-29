@@ -1,3 +1,5 @@
 {
-    "debug.node.autoAttach": "on"
+    "debug.node.autoAttach": "on",
+    "fileheader.LastModifiedBy": "dr",
+    "fileheader.Author": "dr"
 }

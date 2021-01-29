@@ -1,9 +1,10 @@
 /*
- * @Author: doramart 
- * @Date: 2019-06-24 13:20:49 
- * @Last Modified by: dr
- * @Last Modified time: 2020-5-11 14:02:45
+ * @Author: dr 
+ * @Date: 2021-01-28 04:34:44 
+ * @Last Modified by:   dr 
+ * @Last Modified time: 2021-01-29 04:34:44 
  */
+
 
 'use strict';
 const path = require('path')
@@ -22,10 +23,14 @@ class ServicePlugin extends Service {
     //     }
     // }    
     async api(api,payload){
-        try{
-            let res=await Axios.get(this.app.config.server_neteaseCloudMusicApi+api,{ params:payload,});
-            console.warn("跨域网络请求:网易云音乐",api,res);
+        let console=this.logger;
 
+        let res={};
+        try{
+            if(!api)throw new Error({api});
+            res=await Axios.get(this.app.config.server_neteaseCloudMusicApi+api,{ params:payload,});
+            console.warn("跨域网络请求:网易云音乐",api,res);
+            if(res.status!=200 || !res.data ) throw new Error("webCrawler连接服务器错误,status:"+res.status);
             return {
                 status:res.data.code,
                 data:res.data.result || res.data,
@@ -33,8 +38,9 @@ class ServicePlugin extends Service {
             }
         } catch (err) {
             debugger
-            throw new Error(res);
-            return err
+            console.warn("网易云音乐:api.webCrawler:",err);
+            res.error=err;
+            return res;
         }
     }
     // keywords:listRes.docs[0].name,type:10
@@ -47,7 +53,6 @@ class ServicePlugin extends Service {
             return this.api("/search",payload);
         } catch (err) {
             debugger
-            throw new Error(res);
             return err
         }
     }
