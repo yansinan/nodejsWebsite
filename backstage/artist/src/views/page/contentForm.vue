@@ -387,11 +387,12 @@ export default {
       });
 
     },
-    //标签变化
+    //标签变化e=id or string created
     eChangeTags(e){
+      let that=this;
       //检查 是否有没在列表里的值e=[idTag1,idTag2...text]
-      this.formState.formData.tags.forEach((v,idx,arr) => {
-        // console.log("添加标签e,v:",e,this.formState.formData.tags,v);
+      this.formState.formData.tags.forEach((v,idx,arr) => {        
+        console.log("添加标签e,v,tags:",e,v,this.formState.formData.tags);
         if(!v){
           this.$message.error("标签undefined：",v);
           return;
@@ -420,7 +421,7 @@ export default {
               //替换文字为idTag//可以在返回结果中获得result.data._id{}
               this.formState.formData.tags[idx]=result.data._id;
               //关键词里同步
-              this.updateKeywords(v);
+              this.updateKeywords(result.data.name);
             } else {
               this.$message.error("添加标签错误："+result.message,formDataTag);
             }
@@ -433,6 +434,10 @@ export default {
           });
           
         }else{
+          // 添加到标签;
+          if(v && v!="")that.formState.formData.tags.push(tagFound._id);
+          that.formState.formData.tags = [...(new Set(that.formState.formData.tags))];
+
           //关键词里同步
           this.updateKeywords(tagFound.name);
         }
@@ -444,9 +449,9 @@ export default {
         this.userLoading = true;
         let _this = this;
         
-        this.queryUserListByParams({ searchkey: query, pageSize : 200,});
+        this.queryUserListByParams({ searchkey: query, pageSize : 2000,});
       } else {
-        this.queryUserListByParams({ pageSize : 200,});
+        this.queryUserListByParams({ pageSize : 2000,});
         // this.selectUserList = [];
       }
     },
@@ -624,6 +629,7 @@ export default {
         }
       });
     },
+    // 名字改变，搜索网易云
     eChangeName(e){
       let that=this;
       fetch("/api/artist/fetchNCMArtist?name="+e)
@@ -760,9 +766,7 @@ export default {
       }
     }
     this.$store.dispatch("contentCategory/getContentCategoryList");
-    this.$store.dispatch("contentTag/getContentTagList", {
-      pageSize: 200
-    });
+    this.$store.dispatch("contentTag/getContentTagList");
     // this.$store.dispatch(this.nameMod + "/getMemberList",{pageSize:200});
     this.queryUserListByParams();
   }
