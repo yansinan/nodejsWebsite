@@ -70,26 +70,7 @@
           <el-form-item label="乐队关键字" prop="keywords">
             <el-input size="small" v-model="formState.formData.keywords"></el-input>
           </el-form-item>
-
-          <el-form-item label="乐队标签" prop="tags">
-            <el-select
-              size="medium"
-              v-model="formState.formData.tags"
-              multiple
-              filterable
-              allow-create
-              :loading="userLoading"
-              :placeholder="$t('validate.selectNull', {label: this.$t('contents.tags')})"
-              @change="eChangeTags"
-            >
-              <el-option
-                v-for="item in contentTagList.docs"
-                :key="item._id"
-                :label="item.name"
-                :value="item._id"
-              ></el-option>
-            </el-select>
-          </el-form-item>
+          <SelectTags @change="eChangeTag" :listIdTags="formState.formData.tags" :label="this.$t(nameMod+'.tags')" :nameMode="nameMod"/>
         </div>
         <Cropper v-if="formState.formData.sImg" 
           :nameMod="nameMod"
@@ -130,7 +111,7 @@
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss"> 
 .dr-contentForm {
   margin: 15px 0;
   width: 80%;
@@ -202,9 +183,7 @@ import {
   getRandomContentImg,
   // regUserList,
 } from "@root/publicMethods/apiGeneral";
-import {
-  addContentTag,
-} from "@/api/contentTag"
+
 import ListURL from "../common/ListURL.vue";
 
 import _ from "lodash";
@@ -329,7 +308,7 @@ export default {
     VueUeditorWrap,
     ListURL,
     Cropper: () => import('@root/publicMethods/vue/Cropper.vue'),
-
+    SelectTags: () => import('@root/publicMethods/vue/SelectTags.vue'),
   },
   methods: {
     //获取表单信息
@@ -350,7 +329,7 @@ export default {
             comments:"即时创建",
             group:"乐手",
           }
-          //添加contentTag标签
+          //添加乐队成员标签
           addUser(formData).then(result => {
             if (result.status === 200) {
               that.$message({
@@ -386,63 +365,6 @@ export default {
 
       });
 
-    },
-    //标签变化e=id or string created
-    eChangeTags(e){
-      let that=this;
-      //检查 是否有没在列表里的值e=[idTag1,idTag2...text]
-      this.formState.formData.tags.forEach((v,idx,arr) => {        
-        console.log("添加标签e,v,tags:",e,v,this.formState.formData.tags);
-        if(!v){
-          this.$message.error("标签undefined：",v);
-          return;
-        }
-        let tagFound=this.contentTagList.docs.find(tag=>(tag._id==v));
-        let isTagFound = tagFound?true:false;
-        if(!isTagFound){
-          //loading停止操作
-          this.loadingTag=true;
-          //创建标签 // 新增
-          let formDataTag={
-            name:v,
-            comments:"即时创建",
-            alias:v,
-          }
-          //添加contentTag标签
-          addContentTag(formDataTag).then(result => {
-            console.log("添加标签返回的result:",result);
-            if (result.status === 200) {
-              // this.$store.dispatch("hideContentTagForm");
-              this.$store.dispatch("contentTag/getContentTagList");
-              this.$message({
-                message: this.$t("main.addSuccess"),
-                type: "success"
-              });
-              //替换文字为idTag//可以在返回结果中获得result.data._id{}
-              this.formState.formData.tags[idx]=result.data._id;
-              //关键词里同步
-              this.updateKeywords(result.data.name);
-            } else {
-              this.$message.error("添加标签错误："+result.message,formDataTag);
-            }
-            //恢复操作
-            this.loadingTag=false;
-          }).catch(error=>{
-            this.$message.error("添加标签错误："+error,formDataTag);
-            let t=formDataTag;
-            debugger
-          });
-          
-        }else{
-          // 添加到标签;
-          if(v && v!="")that.formState.formData.tags.push(tagFound._id);
-          that.formState.formData.tags = [...(new Set(that.formState.formData.tags))];
-
-          //关键词里同步
-          this.updateKeywords(tagFound.name);
-        }
-      });
-      //console.log(v,this.formState.formData.tags,this.contentTagList.docs);
     },
     remoteUserMethod(query="") {
       if (query !== "") {
@@ -532,30 +454,18 @@ export default {
     },
     // 热门歌曲列表变化
     eListHotMusicChanged(e){
-      console.log("热门歌曲列表变化",e);
+      console.info("热门歌曲列表变化",e);
       // 链接验证失败
       if(!e){
-          // TODO:优化表单验证的方式，目前这个错误数据仍然能够提交
-          this.isValidate=false;
-
-          this.$message.error(
-            this.$t("validate.inputCorrect", { label: "热门歌曲链接" })
-          );
+        // TODO:优化表单验证的方式，目前这个错误数据仍然能够提交
+        this.isValidate=false;
+        this.$message.error( this.$t("validate.inputCorrect", { label: "热门歌曲链接" }));
         return;
       }
       this.formState.formData.listHotMusics=e;
     },
     eListLinks(e){      
-      
-      
-      // if(e && e.length > 0 ){
-      //     e.forEach(objLink => {
-      //         if(objLink.url.indexOf("weibo.com")!=-1)objLink.icon="/static/themes/dorawhite/images/link/logo_sina_32x32.png";
-      //         if(objLink.url.indexOf("douban.com")!=-1)objLink.icon="/static/themes/dorawhite/images/link/logo_douban_32x32.png"
-      //         if(objLink.url.indexOf("music.163.com")!=-1)objLink.icon="/static/themes/dorawhite/images/link/logo_163_32x32.png"
-      //     });
-      // }
-      console.log("其他链接列表变化",e);
+      console.info("其他链接列表变化",e);
       // 链接验证失败
       if(!e){
         // TODO:优化表单验证的方式，目前这个错误数据仍然能够提交
@@ -570,13 +480,36 @@ export default {
     },
     // 选择日期
     eChangeDate(e){
-      console.log("选取日期变化",e,this.formState.formData.listDateDur);
+      console.info("选取日期变化",e,this.formState.formData.listDateDur);
     },
-    // 20191206 自动添加关键词
-    updateKeywords(inStr){
+    // SelectTags变化;
+    // {
+    //     listTagDiff:listObjDiff,
+    //     listIdTags:listIds,
+    //     strAction:(isAdd?"add":"delete")
+    // }
+    eChangeTag(e){
+      this.formState.formData.tags=e.listIdTags;
+      this.updateKeywords(e.listTagDiff,e.strAction=="delete");
+    },
+
+    // 20191206 自动添加关键词 
+    // 20210131 输入改为单个字符串，或name字符串数组
+    updateKeywords(newVal,isDelete=false){
       //两处自动复制：乐队成员，标签
       let listTmp=this.formState.formData.keywords.split(",");
-      if(inStr && inStr!="")listTmp.push(inStr);
+      let listName=[];
+      if(newVal && newVal!="" && newVal instanceof String)listName=[newVal];
+      if(newVal && newVal.length>0 && newVal instanceof Array){
+        // 筛选，数组元素要么是有name的对象，要么直接是string;
+        listName=newVal.filter(v=>((v && v.name) || v instanceof String));
+        listName=listName.map(v=>(v.name || v));
+      }
+      if(!isDelete){
+        listTmp.push(...listName);
+      }else{
+        listTmp=listTmp.filter(v=>(listName.indexOf(v)===-1))
+      }
       listTmp = [...(new Set(listTmp))];
       this.formState.formData.keywords=listTmp.join();
       return this.formState.formData.keywords;
@@ -666,7 +599,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["contentTagList", "contentCategoryList"]),//"regUserList",
+    ...mapGetters(["contentCategoryList"]),//"regUserList",
     // formState() {
     //   return this.$store.getters.contentFormState;
     // },
@@ -766,7 +699,6 @@ export default {
       }
     }
     this.$store.dispatch("contentCategory/getContentCategoryList");
-    this.$store.dispatch("contentTag/getContentTagList");
     // this.$store.dispatch(this.nameMod + "/getMemberList",{pageSize:200});
     this.queryUserListByParams();
   }

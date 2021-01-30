@@ -40,6 +40,7 @@ export default {
   },
   artist:{
     listMembers:"成员",
+    tags:"乐队标签",
     name:"乐队名称",
     nameAlias:"乐队别名",
     from:"来自",
