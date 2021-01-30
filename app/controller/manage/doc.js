@@ -139,6 +139,7 @@ class APIController extends Controller {
             type: fields.type,
             categories: fields.categories,
             sortPath: fields.sortPath,
+            keywords:fields.keywords,
             tags: newTagArr,//fields.tags,
             sImg: fields.sImg,
             state: fields.state,
