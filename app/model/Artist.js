@@ -84,10 +84,16 @@ module.exports =app=>{
                 type:{type:String,default:"link"},
             }],//相关照片
             listVideos:[{
-                url:{type:String},
+                // _id:{type:String,default:''},
+                // url:{type:String},
                 name:{type:String},
                 type:{type:String,default:"link"},
                 date:{type:Date,default:Date.now},
+                idURL:{type:String,default:""},
+                status:{type:String,default:""},
+                urlImg:{type:String,default:""},
+                urlVideo:{type:String,default:""},
+                link:{type:String},//外链网页，用于分析id数据
             }],//相关视频
             idNCM:{
                 type:String,
