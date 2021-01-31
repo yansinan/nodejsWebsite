@@ -23,13 +23,13 @@
         <el-form-item
             inline-message="true"
             :key="'add'"
-            :prop="url"
+            :prop="'url'"
             :rules="{
-            required: true, type: 'url', message: '请输入有效链接', trigger: 'blur'
+            required: true, type: 'url', message: '请输入有效链接', trigger: ['change','input']
             }"
             :error="strErrorAdd"
         >
-          <el-input v-model="objToAdd.url" @input="eAddURL">
+          <el-input v-model="objToAdd.url" @change="eAddURL">
               <template slot="prepend" style=""><span style="width:32px;text-align:center;" >其他</span></template>
           </el-input>
         </el-form-item>     
@@ -124,28 +124,28 @@
 
         return objLink;
       },
-      eChangeURL(e){
-        let {index,objLink}=e;
-        // console.log("更新链接：",e);
-        // 处理http
-        // if((objLink.url.toLowerCase()).indexOf("http://")==0){
-        //   objLink.urlHead="Http://";
-        //   objLink.url=(objLink.url.toLowerCase()).split("http://")[1];
-        // }
-        // if((objLink.url.toLowerCase()).indexOf("https://")==0){
-        //   objLink.urlHead="Https://";
-        //   objLink.url=(objLink.url.toLowerCase()).split("https://")[1];
-        // }        
-        this.getURLData(objLink,"formUpdate");
+      // eChangeURL(e){
+      //   let {index,objLink}=e;
+      //   // console.log("更新链接：",e);
+      //   // 处理http
+      //   // if((objLink.url.toLowerCase()).indexOf("http://")==0){
+      //   //   objLink.urlHead="Http://";
+      //   //   objLink.url=(objLink.url.toLowerCase()).split("http://")[1];
+      //   // }
+      //   // if((objLink.url.toLowerCase()).indexOf("https://")==0){
+      //   //   objLink.urlHead="Https://";
+      //   //   objLink.url=(objLink.url.toLowerCase()).split("https://")[1];
+      //   // }        
+      //   this.getURLData(objLink,"formUpdate");
 
-      },
+      // },
       eAddURL(url){
-        this.objToAdd.url=url;
+        // this.objToAdd.url=url;
 
-        this.getURLData(this.objToAdd,"formAdd");
         // 验证表单
         this.$refs["formAdd"].validate((valid) => {
           if (valid) {
+            this.getURLData(this.objToAdd,"formAdd");
             this.listObjURL.push(this.objToAdd);
             this.objToAdd=Object.assign({},objURLDefault);
             // console.log("增加链接：",this.objToAdd);
@@ -169,13 +169,13 @@
           //   this.listObjURL.push(this.objToAdd);
           //   this.objToAdd=Object.assign({},objURLDefault);
           // }
-          this.$emit('list-changed',this.listObjURL);
+          // this.$emit('list-changed',this.listObjURL);
         }else {
             // console.error('新增链接表单验证失败',this.listObjURL[prop],prop,res);
-            this.$message.error(
-              this.$t("validate.inputCorrect", { label: this.label })
-            );
-            this.$emit('list-changed',false);
+            // this.$message.error(
+            //   this.$t("validate.inputCorrect", { label: this.label })
+            // );
+            // this.$emit('list-changed',false);
             return false;
         }
       }
