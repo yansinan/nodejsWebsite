@@ -10,7 +10,7 @@
             }"
             :error="strErrorUpdate"
         >
-          <el-input v-model="domain.url" @input="eChangeURL({index,objLink:domain})">
+          <el-input v-model="domain.url" disabled @input="eChangeURL({index,objLink:domain})">
               <template slot="prepend" >
                 <span v-if="domain.type==='音乐' && domain.name" style="width:120px;">{{domain.name}}</span>
                 <img v-else :src="domain.icon" class="img-circle" style="width:32px">
@@ -103,7 +103,7 @@
                     type: "success"
                   });
                   // 触发事件;
-                  if(this.listObjURL)this.$emit('list-changed',this.listObjURL);
+                  if(that.listObjURL)that.$emit('list-changed',that.listObjURL);
 
                 }else{
                   objLink.name="歌曲无效";

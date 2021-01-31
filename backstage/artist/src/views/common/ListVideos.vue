@@ -16,12 +16,12 @@
         <!-- <el-form :model="listObjURL" ref="formUpdate" status-icon inline-message="true" label-width="0px" @validate="eValidate"> -->
           <el-col v-for="(domain, index) in listObjURL" :key="domain.idURL" :md="11" style="margin-bottom:40px;">
             <el-card :body-style="{ padding: '0px' }" shadow="hover">
-              <el-form-item style=""
+              <!-- <el-form-item style=""
                 :prop="'['+index+'].link'"
                 :rules="{
                   required: true, type: 'url', message: '请输入有效链接', trigger: 'blur'
                 }"
-                :error="strErrorUpdate">
+                :error="strErrorUpdate"> -->
                 <el-input v-model="domain.link" disabled>
                   <img slot="prepend" v-if="domain.icon" :src="domain.icon" class="img-circle" style="width:32px">
                   <span slot="prepend" v-else style="text-align:center;font-size: 18px;" ><i class="el-icon-link"/>视频</span>
@@ -32,7 +32,7 @@
                 <span v-if="domain.name">{{domain.name}}</span>
                 <el-button type="danger" plain slot="append" icon="el-icon-delete" @click.prevent="removeDomain(domain)"/>
               </div>
-              </el-form-item>
+              <!-- </el-form-item> -->
             </el-card>
           </el-col>
         <!-- </el-form> -->
@@ -139,24 +139,25 @@
               // 在这个then里面我们能拿到最终的数据
               let res=JSON.parse(data);
               if(res.status==200 && res.data.length>0){
-                that.$message({
-                  message: "找到网易云音乐MV信息，自动填充",
-                  type: "success"
-                });
-                
+               
                 //去重 & 合并
                 // let list=res.data.concat(that.listObjURL);
                 // list=[...new Set(list)];
                 // that.listObjURL.splice(0,that.listObjURL.length,...list);
-                let msg="剔除重复MV：";
+                let msg="";
                 let listNew=res.data.filter(vNew=>{
-                  let isOld= (that.listObjURL.find(vOld=>(vNew.idNCM==vOld.idNCM)));
+                  let isOld= (that.listObjURL.find(vOld=>(vNew.idURL==vOld.idURL)));
                   if(isOld)msg+=vNew.name+","
                   return !isOld;
                 })
+                msg="剔除重复"+listNew.length+"条V,新增:"+msg;
                 that.listObjURL.unshift(...listNew);
-                if(listNew.length<res.data.length)that.$message({
-                  message: msg,
+                // if(listNew.length<res.data.length)that.$message({
+                //   message: msg,
+                //   type: "success"
+                // });
+                that.$message({
+                  message: "找到网易"+res.data.length+"条。"+msg,
                   type: "success"
                 });
                 // 去空数据

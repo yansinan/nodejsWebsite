@@ -21,12 +21,12 @@
                 }"
                 :error="strErrorUpdate"
             >
-              <el-input v-model="domain.url" @input="eChangeURL({index,objLink:domain})">
+              <el-input v-model="domain.url" disabled @input="eChangeURL({index,objLink:domain})">
                   <template slot="prepend" >
                     <span v-if="domain.type==='音乐' && domain.name" style="width:120px;">{{domain.name}}</span>
                     <img v-else :src="domain.icon" class="img-circle" style="width:32px">
                   </template>
-                  <el-button slot="append" icon="el-icon-delete" @click.prevent="removeDomain(domain)"/>
+                  <el-button slot="append" type="danger" icon="el-icon-delete" @click.prevent="removeDomain(domain)"/>
               </el-input>
             </el-form-item>  
         </el-form>
