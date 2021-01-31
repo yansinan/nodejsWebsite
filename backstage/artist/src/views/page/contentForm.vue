@@ -44,13 +44,13 @@
           </el-date-picker>
         </el-form-item>
         <!-- 乐队成员 -->
-        <SelectTags :label="this.$t(nameMod+'.listMembers')" @change="eChangeMember" :listIds="formState.formData.listMembers" :nameMode="nameMod" apiAdd="/manage/regUser/addOneName" apiFind="/manage/regUser/findByName" :initTag="createMember"/>
+        <SelectIds :label="this.$t(nameMod+'.listMembers')" @change="eChangeMember" :listIds="formState.formData.listMembers" :nameMode="nameMod" apiAdd="/manage/regUser/addOneName" apiFind="/manage/regUser/findByName" :initTag="createMember"/>
 
         <div v-if="formState.formData.type == '1'">
           <el-form-item label="乐队关键字" prop="keywords">
             <el-input size="small" v-model="formState.formData.keywords"></el-input>
           </el-form-item>
-          <SelectTags :label="this.$t(nameMod+'.tags')" @change="eChangeTag" :listIds="formState.formData.tags" :nameMode="nameMod" :initTag="createTag" />
+          <SelectIds :label="this.$t(nameMod+'.tags')" @change="eChangeTag" :listIds="formState.formData.tags" :nameMode="nameMod" :initTag="createTag" />
         </div>
         <Cropper v-if="formState.formData.sImg" 
           :nameMod="nameMod"
@@ -282,7 +282,7 @@ export default {
     VueUeditorWrap,
     ListURL,
     Cropper: () => import('@root/publicMethods/vue/Cropper.vue'),
-    SelectTags: () => import('@root/publicMethods/vue/SelectTags.vue'),
+    SelectIds: () => import('@root/publicMethods/vue/SelectIds.vue'),
   },
   methods: {
     //获取表单信息
@@ -296,12 +296,12 @@ export default {
         group:"乐手",
       }
     },
-    // SelectTags变化;
+    // SelectIds变化;
     eChangeMember(e){
       this.formState.formData.listMembers=e.listIds;
       this.updateKeywords(e.listObjDiff,e.strAction=="delete");
     },
-    // SelectTags变化;
+    // SelectIds变化;
     // {
     //     listObjDiff:listObjDiff,
     //     listIds:listIds,

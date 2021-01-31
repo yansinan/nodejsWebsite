@@ -25,6 +25,7 @@
 
 <script>
     import request from '@root/publicMethods/request';
+    // listAllTasg必须至少有_id和name两个属性
     // 有add事件，delete事件，change事件；TODO：loading事件
   export default {
     props: {
