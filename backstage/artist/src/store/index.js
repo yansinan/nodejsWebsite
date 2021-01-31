@@ -14,7 +14,7 @@ const store = new Vuex.Store({
   },
   getters:{
     getterListData: state => state[nameMod].dataList,
-    getterDataMembers:state => state[nameMod].dataMembers,  
+    // getterDataMembers:state => state[nameMod].dataMembers,  
   }
 })
 

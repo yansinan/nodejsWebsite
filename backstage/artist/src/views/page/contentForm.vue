@@ -43,34 +43,14 @@
             placeholder="退出日期" @change="eChangeDate">
           </el-date-picker>
         </el-form-item>
-        <el-form-item :label="$t(nameMod + '.listMembers')" prop="listMembers">
-          <el-select
-            size="medium"
-            v-model="formState.formData.listMembers"
-            filterable
-            multiple
-            allow-create
-            placeholder="请输入乐队成员名"
-            :remote-method="remoteUserMethod"
-            :loading="userLoading"
-            @change="changeTargetUser"
-          >
-          <!--           remote
-            reserve-keyword -->
-            <el-option
-              v-for="item in dataMembers.docs"
-              :key="item._id"
-              :label="item.name"
-              :value="item._id"
-            ></el-option>
-          </el-select>
-        </el-form-item>
+        <!-- 乐队成员 -->
+        <SelectTags :label="this.$t(nameMod+'.listMembers')" @change="eChangeMember" :listIds="formState.formData.listMembers" :nameMode="nameMod" apiAdd="/manage/regUser/addOneName" apiFind="/manage/regUser/findByName" :initTag="createMember"/>
 
         <div v-if="formState.formData.type == '1'">
           <el-form-item label="乐队关键字" prop="keywords">
             <el-input size="small" v-model="formState.formData.keywords"></el-input>
           </el-form-item>
-          <SelectTags @change="eChangeTag" :listIdTags="formState.formData.tags" :label="this.$t(nameMod+'.tags')" :nameMode="nameMod"/>
+          <SelectTags :label="this.$t(nameMod+'.tags')" @change="eChangeTag" :listIds="formState.formData.tags" :nameMode="nameMod" :initTag="createTag" />
         </div>
         <Cropper v-if="formState.formData.sImg" 
           :nameMod="nameMod"
@@ -176,12 +156,10 @@ import '@/set-public-path'
 import VueUeditorWrap from "vue-ueditor-wrap";
 import { initEvent } from "@root/publicMethods/events";
 import {
-  addUser,
   getOne,
   addOne,
   updateOne,
   getRandomContentImg,
-  // regUserList,
 } from "@root/publicMethods/apiGeneral";
 
 import ListURL from "../common/ListURL.vue";
@@ -203,11 +181,7 @@ export default {
         { value: "2", label: "审核通过" },
         { value: "3", label: "审核不通过" }
       ],
-      selectUserList: [],
       loading: false,
-      userLoading: false,//是否loading用户
-      loadingTag:false,//是否loading标签
-      selectSpecialList: [],
       content: "",
       simpleComments: "",
       isflash: false,
@@ -313,77 +287,59 @@ export default {
   methods: {
     //获取表单信息
     ...mod.mapActions(["showContentForm"]),// 将 `this.showContentForm(params)` 映射为 `this.$store.dispatch(nameMod+'/incrementBy', params)`
-    changeTargetUser(value) {
-      let that=this;
-      //检查 是否有没在列表里的值v=[idUser1,idUser2...text]
-      this.formState.formData.listMembers.forEach((v,idx,arr) => {
-        let tagFound=this.dataMembers.docs.find(user=>(user._id==v));
-        let isFound = tagFound?true:false;
-        console.log("添加成员：",v,"是否已经创建:",isFound,that.dataMembers.docs);
-        if(!isFound){
-          //loading停止操作
-          that.userLoading=true;
-          //创建标签 // 新增
-          let formData={
-            name:v,
-            comments:"即时创建",
-            group:"乐手",
-          }
-          //添加乐队成员标签
-          addUser(formData).then(result => {
-            if (result.status === 200) {
-              that.$message({
-                message: that.$t("main.addSuccess"),
-                type: "success"
-              });
-              //替换文字为idTag//可以在返回结果中获得result.data.data._id{}
-              that.formState.formData.listMembers[idx]=result.data._id;
-              //关键词里同步
-              that.updateKeywords(v);
-              //刷新用户列表
-              that.userLoading = true;       
-              // that.queryUserListByParams({ searchkey: that.formState.formData.listMembers });
-              that.remoteUserMethod();
-            } else {
-              console.error(result)
-              debugger
-              that.$message.error(result.data.message);
-            }
-            //恢复操作
-            that.loadingTag=false;
-          }).catch(error=>{
-              console.error(error)
-              debugger
-              that.$message.error(error.message);
 
-          });
-          
-        }else{
-          //关键词里同步
-          this.updateKeywords(tagFound.name);
-        }
-
-      });
-
-    },
-    remoteUserMethod(query="") {
-      if (query !== "") {
-        this.userLoading = true;
-        let _this = this;
-        
-        this.queryUserListByParams({ searchkey: query, pageSize : 2000,});
-      } else {
-        this.queryUserListByParams({ pageSize : 2000,});
-        // this.selectUserList = [];
+    // 创建新乐手时上传的基本数据
+    createMember(v){
+      return {
+        name:v,
+        comments:"即时创建",
+        group:"乐手",
       }
     },
-    queryUserListByParams(params = {}) {
-      let _this = this;
-      Object.assign(params,{ pageSize : 200, });
-      this.$store.dispatch(this.nameMod + "/getMemberList",params);
-
-      this.userLoading = false;
+    // SelectTags变化;
+    eChangeMember(e){
+      this.formState.formData.listMembers=e.listIds;
+      this.updateKeywords(e.listObjDiff,e.strAction=="delete");
     },
+    // SelectTags变化;
+    // {
+    //     listObjDiff:listObjDiff,
+    //     listIds:listIds,
+    //     strAction:(isAdd?"add":"delete")
+    // }
+    eChangeTag(e){
+      this.formState.formData.tags=e.listIds;
+      this.updateKeywords(e.listObjDiff,e.strAction=="delete");
+    },
+    // 创建新标签时上传的基本数据
+    createTag(v){
+      return {
+          name:v,
+          comments:"即时创建",
+          alias:v,
+      }
+    },
+    // 20191206 自动添加关键词 
+    // 20210131 输入改为单个字符串，或name字符串数组
+    updateKeywords(newVal,isDelete=false){
+      //两处自动复制：乐队成员，标签
+      let listTmp=this.formState.formData.keywords.split(",");
+      let listName=[];
+      if(newVal && newVal!="" && newVal instanceof String)listName=[newVal];
+      if(newVal && newVal.length>0 && newVal instanceof Array){
+        // 筛选，数组元素要么是有name的对象，要么直接是string;
+        listName=newVal.filter(v=>((v && v.name) || v instanceof String));
+        listName=listName.map(v=>(v.name || v));
+      }
+      if(!isDelete){
+        listTmp.push(...listName);
+      }else{
+        listTmp=listTmp.filter(v=>(listName.indexOf(v)===-1))
+      }
+      listTmp = [...(new Set(listTmp))];
+      this.formState.formData.keywords=listTmp.join();
+      return this.formState.formData.keywords;
+    },    
     //TODO：20200107默认图片
     getRandomContentImg(params = {}) {
       let _this = this;
@@ -482,38 +438,7 @@ export default {
     eChangeDate(e){
       console.info("选取日期变化",e,this.formState.formData.listDateDur);
     },
-    // SelectTags变化;
-    // {
-    //     listTagDiff:listObjDiff,
-    //     listIdTags:listIds,
-    //     strAction:(isAdd?"add":"delete")
-    // }
-    eChangeTag(e){
-      this.formState.formData.tags=e.listIdTags;
-      this.updateKeywords(e.listTagDiff,e.strAction=="delete");
-    },
 
-    // 20191206 自动添加关键词 
-    // 20210131 输入改为单个字符串，或name字符串数组
-    updateKeywords(newVal,isDelete=false){
-      //两处自动复制：乐队成员，标签
-      let listTmp=this.formState.formData.keywords.split(",");
-      let listName=[];
-      if(newVal && newVal!="" && newVal instanceof String)listName=[newVal];
-      if(newVal && newVal.length>0 && newVal instanceof Array){
-        // 筛选，数组元素要么是有name的对象，要么直接是string;
-        listName=newVal.filter(v=>((v && v.name) || v instanceof String));
-        listName=listName.map(v=>(v.name || v));
-      }
-      if(!isDelete){
-        listTmp.push(...listName);
-      }else{
-        listTmp=listTmp.filter(v=>(listName.indexOf(v)===-1))
-      }
-      listTmp = [...(new Set(listTmp))];
-      this.formState.formData.keywords=listTmp.join();
-      return this.formState.formData.keywords;
-    },
     submitForm(formName, type = "") {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -605,7 +530,6 @@ export default {
     // },
     ...mod.mapState({
       formState: state => state.formState,
-      dataMembers:state => state.dataMembers,
     }),//模块的state
   },
   mounted() {
@@ -638,9 +562,7 @@ export default {
             }
             if (contentObj.listMembers) {
               let listMembersId=contentObj.listMembers.map(v=>{return v._id});
-              // this.remoteUserMethod();//{searchkey: listMembersId}
               contentObj.listMembers = listMembersId;
-              // contentObj.targetUser = contentObj.listMembers._id;
             }
 
             this.showContentForm({
@@ -699,8 +621,6 @@ export default {
       }
     }
     this.$store.dispatch("contentCategory/getContentCategoryList");
-    // this.$store.dispatch(this.nameMod + "/getMemberList",{pageSize:200});
-    this.queryUserListByParams();
   }
 };
 </script>

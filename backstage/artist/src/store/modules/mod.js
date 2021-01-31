@@ -1,7 +1,7 @@
 import * as types from '../types.js';
 import {
   list,
-  findMembers,
+  // findMembers,
 } from '@root/publicMethods/apiGeneral';
 import _ from 'lodash';
 
@@ -47,10 +47,10 @@ const state = {
     state: '',
     err: {}
   },
-  dataMembers:{
-    pageInfo:{},
-    docs:[],
-  }
+  // dataMembers:{
+  //   pageInfo:{},
+  //   docs:[],
+  // }
 }
 
 const mutations = {
@@ -61,9 +61,9 @@ const mutations = {
   GET_LIST(state, dataList) {
     state.dataList = dataList
   },
-  FIND_MEMBER_BY_NAME(state,dataList){
-    state.dataMembers=dataList;
-  },
+  // FIND_MEMBER_BY_NAME(state,dataList){
+  //   state.dataMembers=dataList;
+  // },
 }
 
 const actions = {
@@ -88,16 +88,16 @@ const actions = {
       console.log("xxxx.store.xxxx.actions.getList获取失败:fail",error);
     })
   },
-  // 获取艺人列表
-  getMemberList({
-    commit
-  }, params = {}) {
-    findMembers(params).then((result) => {
-      commit("FIND_MEMBER_BY_NAME", result.data)
-    }).catch(error=>{
-      console.log("xxxx.store.xxxx.actions.getList获取失败:fail",error);
-    })
-  },
+  // // 获取艺人列表
+  // getMemberList({
+  //   commit
+  // }, params = {}) {
+  //   findMembers(params).then((result) => {
+  //     commit("FIND_MEMBER_BY_NAME", result.data)
+  //   }).catch(error=>{
+  //     console.log("xxxx.store.xxxx.actions.getList获取失败:fail",error);
+  //   })
+  // },
 
 }
 
