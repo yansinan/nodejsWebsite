@@ -24,7 +24,7 @@
                 :error="strErrorUpdate"> -->
                 <el-input v-model="domain.link" disabled>
                   <img slot="prepend" v-if="domain.icon" :src="domain.icon" class="img-circle" style="width:32px">
-                  <span slot="prepend" v-else style="text-align:center;font-size: 18px;" ><i class="el-icon-link"/>视频</span>
+                  <span slot="prepend" v-else style="text-align:center;font-size: 18px;" ><i class="el-icon-link"/>视频 {{index+1}}</span>
                   <!-- <el-button slot="append" icon="el-icon-delete" @click.prevent="removeDomain(domain)"/> -->
                 </el-input>
               <el-image :span="24" :src="domain.urlImg" :fit="contain"/>
@@ -281,8 +281,8 @@
                   message: "找到网易云音乐MV信息，自动填充",
                   type: "success"
                 });
-                // TODO:去重
                 that.listObjURL.push(resVideo);
+                // 去重
                 that.listObjURL=[new Set(...that.listObjURL)]
                 // 新增恢复初始值
                 that.objToAdd=Object.assign({},objURLDefault);
