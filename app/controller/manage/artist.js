@@ -91,7 +91,6 @@ class APIController extends BaseController {
                 }
             }
         }
-
         if (_.isEmpty(newTagArr)) {
             newTagArr = fieldTags;
         }
@@ -99,11 +98,10 @@ class APIController extends BaseController {
     }
     async funGetData(fields){
         const {ctx}=this;
-        let formObj=super.funGetData(fields);
+        let formObj=await super.funGetData(fields);
 
         //TODO 20201213: 检查乐队成员的有效性
         let newListMember= await this.renderListMembers(fields.listMembers);
-
         // 友情链接图标
         if(fields.listLinks && fields.listLinks.length > 0 ){
             fields.listLinks.forEach(objLink => {
