@@ -140,8 +140,8 @@
 
       // },
       eAddURL(url){
-        // this.objToAdd.url=url;
-
+        // 设置一下，为了外部调用传入url时可用
+        this.objToAdd.url=url;
         // 验证表单
         this.$refs["formAdd"].validate((valid) => {
           if (valid) {
