@@ -1,8 +1,8 @@
 <template>
   <el-form-item class="" :label="label" :prop="prop">
       <input v-show="false" type="file" multiple="" accept="image/png,image/gif,image/jpeg" @change="uploadImg" ref="inputFile"/>
-      <el-button @click="eClickOpenImg" type="primary" icon="el-icon-upload2" style="width:200px;"> 选择文件</el-button>
-
+      <el-button @click="eClickOpenImg" type="primary" plain icon="el-icon-upload2" style="width:200px;">图 片</el-button>
+      <!-- <div @click="eClickOpenImg" type="text" plain icon="el-icon-upload2" class="imgResult bnUpload "> <i class="el-icon-upload2" />文件</div> -->
       <img v-if="srcPreview" :src="srcPreview" class="imgResult avatar avatar-128" style=""/>
       <div class="el-upload__tip">只能上传jpg/png文件，上传前自动裁切</div>
 
@@ -42,20 +42,7 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-img{
-  object-fit:contain;
-}
-img.imgResult{
-  position:relative;
-  z-index:-1;
-  max-height:none;
-  height:auto;
-  border-radius:4px; 
-  border: dashed #cacaca 1px;
-  padding:4px;
-  margin-top: 7px;
-  width:200px;
-}
+
 .avatar {
   position: relative;
   /* display: inline-block; */
@@ -105,6 +92,31 @@ img.imgResult{
   height: 100%;
   font-size: 85px;
   line-height: 128px;
+}
+
+img{
+  object-fit:contain;
+}
+.imgResult{
+  position:relative;
+  z-index:-1;
+  max-height:none;
+  height:auto;
+  border-radius:4px; 
+  border: dashed #cacaca 1px;
+  padding:4px;
+  margin-top: 7px;
+  width:200px;
+}
+.bnUpload{
+  font-size:20px;
+  color:#cacaca;
+  width:200px;
+  height:200px;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 36px;
 }
 </style>
 <script>
@@ -178,6 +190,14 @@ export default {
             this.dialogVisible=(this.src=='')?false:true;
             if(this.cropper)this.cropper.replace(newV);
         },
+        // 如果srcPreview是网络地址（网易地址），下载并上传;
+        srcPreview(newV,oldV){
+          // TODO分析非本域名下
+          if(newV.indexOf("music.126.net")!=-1){
+            // 网易获取的图片
+            this.fetchImgURL(newV,"");
+          }
+        }
     },
     data () {
         return {
@@ -212,52 +232,85 @@ export default {
         eClickOpenImg() {
           this.$refs.inputFile.click();
         },
-        uploadImg (event) {
+        // 文件加载，有效性检验，开启Cropper
+        //blobImg= {  blob类型
+        //   type:"image/jpeg",
+        //   size:xxxx,
+        //   name:"xxxx.jpeg",
+        // }
+        checkBlob(blobImg){
           let that=this;
-          const img = event.target.files[0]
           //外部验证数据有效性
-          let resIfDialog=(typeof this["beforeCrop"] === "function")?this["beforeCrop"](img):false;
+          let resIfDialog=(typeof this["beforeCrop"] === "function")?this["beforeCrop"](blobImg):false;
           
           if(resIfDialog){
             // 显示对话框
             // this.dialogVisible=true;
-            that.src = URL.createObjectURL(img);
-            that.imgName = img.name;
+            that.src = URL.createObjectURL(blobImg);
+            that.imgName = blobImg.name || "unknow."+blobImg.type.split("/")[1];
           }else{
             that.handleClose();
           }
         },
-        // 上传
-        uploadCropImg () {
-            const _this = this;
-            this.cropper.getCroppedCanvas(this.cropSetting).toBlob(async function(blob) {
-                const params = new FormData()
-                // 路径相关:
-                params.append("nameMod",_this.nameMod);
-                params.append("subPath",_this.subPath);
-                params.append('upload_file', blob, _this.imgName)
-                let uploadFileRequest = new Request(_this.api, {
-                    method: 'post',
-                    //指定header会eggjs接收不到multipart
-                    // headers: {'Content-Type': 'multipart/form-data'},
-                    body:params,
-                })
-
-                fetch(uploadFileRequest).then(response => {
-                    return response.text();
-                }).then(res => {
-                    // 在这个then里面我们能拿到最终的数据
-                    let objData=JSON.parse(res);
-                    if(objData.status==200){
-                      console.log("resUpload::",objData);
-                      _this.src=objData.data.path;
-                      // if(objData.data.path)this.$emit('on-success',objData);
-                      if(typeof _this["onSuccess"] === "function")_this["onSuccess"](objData)
-                      _this.handleClose();
-                    }
-                })
-            }, 'image/jpeg',1)
+        // 获取网络图片，相当于浏览网络文件;
+        async fetchImgURL(url,name){
+          let that=this;
+          let image = new Image()
+          image.setAttribute('crossOrigin', 'anonymous')
+          image.src = url
+          image.onload = () => {
+            let canvas = document.createElement('canvas')
+            canvas.width = image.width
+            canvas.height = image.height
+            let ctx = canvas.getContext('2d')
+            ctx.drawImage(image, 0, 0, image.width, image.height)
+            // canvas.toBlob(that.uploadBlob);
+            // 这里缺少验证数据有效性
+            canvas.toBlob(blob=>that.checkBlob(blob));
+          }          
         },
+        // 浏览文件
+        uploadImg (event) {
+          let that=this;
+          const img = event.target.files[0]
+          that.checkBlob(img);
+        },
+        // 上传blob到后台
+        async uploadBlob(blob){
+          let _this=this;
+          const params = new FormData()
+          // 路径相关:
+          params.append("nameMod",_this.nameMod);
+          params.append("subPath",_this.subPath);
+          params.append('upload_file', blob, _this.imgName)
+          let uploadFileRequest = new Request(_this.api, {
+              method: 'post',
+              //指定header会eggjs接收不到multipart
+              // headers: {'Content-Type': 'multipart/form-data'},
+              body:params,
+          })
+          fetch(uploadFileRequest).then(response => {
+              return response.text();
+          }).then(res => {
+              // 在这个then里面我们能拿到最终的数据
+              let objData=JSON.parse(res);
+              if(objData.status==200){
+                console.log("resUpload::",objData);
+                _this.src=objData.data.path;
+                // if(objData.data.path)this.$emit('on-success',objData);
+                if(typeof _this["onSuccess"] === "function")_this["onSuccess"](objData)
+                _this.handleClose();
+              }
+          }).catch(e=>{
+            debugger
+          })
+        },
+        // 裁切后上传
+        uploadCropImg () {
+            const that = this;
+            this.cropper.getCroppedCanvas(this.cropSetting).toBlob(that.uploadBlob, 'image/jpeg',1)
+        },
+
         //另存裁切后的图片
         saveCropImg () {
             const _this = this

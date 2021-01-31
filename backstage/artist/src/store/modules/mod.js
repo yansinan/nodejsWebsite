@@ -12,7 +12,7 @@ const defautlFormData={
   sortPath: '',
   tags: [],
   keywords: '',
-  sImg: '/static/upload/images/defaultImg.jpg',
+  sImg: '',///static/upload/images/defaultImg.jpg
   discription: '',
   author: {},
   listMembers: [],

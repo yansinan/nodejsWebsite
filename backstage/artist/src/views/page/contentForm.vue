@@ -52,7 +52,7 @@
           </el-form-item>
           <SelectIds :label="this.$t(nameMod+'.tags')" @change="eChangeTag" :listIds="formState.formData.tags" :nameMode="nameMod" :initTag="createTag" />
         </div>
-        <Cropper v-if="formState.formData.sImg" 
+        <Cropper 
           :nameMod="nameMod"
           :srcPreview="formState.formData.sImg" 
           :label="$t('contents.sImg')" 
@@ -159,7 +159,6 @@ import {
   getOne,
   addOne,
   updateOne,
-  getRandomContentImg,
 } from "@root/publicMethods/apiGeneral";
 
 import ListURL from "../common/ListURL.vue";
@@ -340,26 +339,7 @@ export default {
       this.formState.formData.keywords=listTmp.join();
       return this.formState.formData.keywords;
     },    
-    //TODO：20200107默认图片
-    getRandomContentImg(params = {}) {
-      let _this = this;
-      getRandomContentImg(params)
-        .then(result => {
-          if (result.status == 200 && result && result.data) {
-            let randomImg = result.data[0];
-            let initFormData = Object.assign({}, this.formState.formData, {
-              sImg: randomImg
-            });
 
-            this.showContentForm({
-              formData: initFormData
-            });
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
     checkFlashPost(currentType) {
       this.showContentForm({
         edit: this.formState.edit,
@@ -507,13 +487,13 @@ export default {
             // alias:resNCM.data.artist.transNames[0] || "",
             // comments:"",
 
-            this.formState.formData.idNCM=this.formState.formData.idNCM?this.formState.formData.idNCM:res.data.idNCM;
-            this.formState.formData.sImg=this.formState.formData.sImg?this.formState.formData.sImg:res.data.sImg;
-            this.formState.formData.discription=this.formState.formData.discription?this.formState.formData.discription:res.data.discription;
-            this.formState.formData.alias=this.formState.formData.alias?this.formState.formData.alias:res.data.alias;
-            this.formState.formData.comments=this.formState.formData.comments?this.formState.formData.comments:res.data.comments;
-            let isLinked=this.formState.formData.listLinks.find(v=>(v.url==res.data.link));
-            if(!isLinked)this.$refs.listLinks.eAddURL(res.data.link);
+            that.formState.formData.idNCM=that.formState.formData.idNCM?that.formState.formData.idNCM:res.data.idNCM;
+            that.formState.formData.sImg=(that.formState.formData.sImg && that.formState.formData.sImg!="/static/upload/images/defaultImg.jpg")?that.formState.formData.sImg:(res.data.sImg || "");
+            that.formState.formData.discription=that.formState.formData.discription?that.formState.formData.discription:(res.data.discription || "");
+            that.formState.formData.alias=that.formState.formData.alias?that.formState.formData.alias:(res.data.alias || "");
+            that.formState.formData.comments=that.formState.formData.comments?that.formState.formData.comments:(res.data.comments.txt || "");
+            let isLinked=that.formState.formData.listLinks.find(v=>(v.url==res.data.link));
+            if(!isLinked)that.$refs.listLinks.eAddURL(res.data.link);
             console.warn("网易云音乐数据自动填充",res.data);
           }else{
             that.$message.error(
@@ -617,7 +597,6 @@ export default {
       } else {
         //初始化表單
 
-        this.getRandomContentImg();
       }
     }
     this.$store.dispatch("contentCategory/getContentCategoryList");
