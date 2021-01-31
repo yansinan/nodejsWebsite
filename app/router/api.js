@@ -39,12 +39,28 @@ module.exports = app => {
             method:"get",
             controllerName:"ncmGetAtist",
             details:"抓取网易云音乐中乐队，并转格式返回"
-        }
+        },
     ]
-    frontApi.forEach(obj=>router[obj.method]('/api/'+obj.url, controller.api[API][obj.controllerName]))
-
     // router.get('/api/artist/getList', controller.api.artist.list);
     // router.get('/api/artist/get', controller.api.artist.getOne);
+    frontApi.forEach(obj=>router[obj.method]('/api/'+obj.url, controller.api[API][obj.controllerName]))
+    // 视频
+    API="video";
+    frontApi= [
+        {
+            url: API + '/item',
+            method: 'get',
+            controllerName: 'getNCMMVDetail',
+            details: '获取MV详情idNCMMV',
+        }, 
+        {
+            url: API + '/url',
+            method: 'get',
+            controllerName: 'getNCMMVURL',
+            details: '获取播放地址',
+        },
+    ]    
+    frontApi.forEach(obj=>router[obj.method]('/api/'+obj.url, controller.api[API][obj.controllerName]))
 
     // 专辑
     router.get('/api/record/getList', controller.api.record.list);

@@ -1,62 +1,88 @@
 <template>
   <div>
-        <el-dialog
-        :xs="20"
-        title="图集"
-        width="80%"
-        :close-on-click-modal="false"
-        :visible.sync="dialogState.isShow"
-        :before-close="handleClose"
-        @open="eDialogOpen">
-        <div slot="title" class="el-dialog__title">
-            <el-avatar :src="dialogState.formData.sImg" fit="cover"/>{{dialogState.formData.name}}的{{label}}
-        </div>
+    <el-dialog
+    :xs="20"
+    title="图集"
+    width="80%"
+    :close-on-click-modal="false"
+    :visible.sync="dialogState.isShow"
+    :before-close="handleClose"
+    @open="eDialogOpen">
+    <div slot="title" class="el-dialog__title">
+        <el-avatar :src="dialogState.formData.sImg" fit="cover"/>{{dialogState.formData.name}}的{{label}}
+    </div>
 
-        <el-form :model="listObjURL" ref="formUpdate" status-icon inline-message="true" label-width="0px" @validate="eValidate">
-            <el-form-item
-                v-for="(domain, index) in listObjURL"
-                :key="domain.idURL"
+      <el-row :gutter="40">
+        <!-- <el-form :model="listObjURL" ref="formUpdate" status-icon inline-message="true" label-width="0px" @validate="eValidate"> -->
+          <el-col v-for="(domain, index) in listObjURL" :key="domain.idURL" :md="11" style="margin-bottom:40px;">
+            <el-card :body-style="{ padding: '0px' }" shadow="hover">
+              <el-form-item style=""
                 :prop="'['+index+'].link'"
                 :rules="{
-                required: true, type: 'url', message: '请输入有效链接', trigger: 'blur'
+                  required: true, type: 'url', message: '请输入有效链接', trigger: 'blur'
                 }"
-                :error="strErrorUpdate"
-            >
-            <span v-if="domain.name" style="">{{domain.name}}</span>
-              <el-input v-model="domain.link" @input="eChangeURL({index,objLink:domain})">
-                  <template slot="prepend" >
-                    <el-image :src="domain.urlImg" :fit="contain" style="width:132px"/>
-                  </template>
-                  <el-button slot="append" icon="el-icon-delete" @click.prevent="removeDomain(domain)"/>
-              </el-input>
-            </el-form-item>  
-        </el-form>
-        <el-form :model="objToAdd" ref="formAdd" status-icon label-width="0px" @validate="eValidate">
-            <el-form-item
-                inline-message="true"
-                :key="'add'"
-                :prop="link"
-                :rules="{
-                required: true, type: 'url', message: '请输入有效链接', trigger: 'blur'
-                }"
-                :error="strErrorAdd"
-            >
-              <el-input v-model="objToAdd.link" @input="eAddURL">
-                  <template slot="prepend" style=""><span style="width:32px;text-align:center;" >其他</span></template>
-              </el-input>
-            </el-form-item>     
-        </el-form>
-        
-        <span slot="footer" class="dialog-footer">
-            <el-button v-if="dialogState.formData.idNCM" type="warning" @click="eBnSyncNCM">同步网易云音乐</el-button>
-            <el-button type="success" @click="submitUpload">保 存</el-button>
-            <el-button @click="handleClose">取 消</el-button>
-        </span>
+                :error="strErrorUpdate">
+                <el-input v-model="domain.link" disabled>
+                  <img slot="prepend" v-if="domain.icon" :src="domain.icon" class="img-circle" style="width:32px">
+                  <span slot="prepend" v-else style="text-align:center;font-size: 18px;" ><i class="el-icon-link"/>视频</span>
+                  <!-- <el-button slot="append" icon="el-icon-delete" @click.prevent="removeDomain(domain)"/> -->
+                </el-input>
+              <el-image :span="24" :src="domain.urlImg" :fit="contain"/>
+              <div class="titleVideo" style="">
+                <span v-if="domain.name">{{domain.name}}</span>
+                <el-button type="danger" plain slot="append" icon="el-icon-delete" @click.prevent="removeDomain(domain)"/>
+              </div>
+              </el-form-item>
+            </el-card>
+          </el-col>
+        <!-- </el-form> -->
+        <!-- 新增 -->
+        <el-col :md="11" style="height:100%">
+          <el-card :body-style="{ padding: '0px' }" shadow="hover">
+            <div>
+              <!-- <span style="font-size: 18px;">添加视频链接</span> -->
+              <!-- <div :span="24" style="border-top: 2px dashed #eee;height:auto;"><i class="el-icon-plus"/></div> -->
+              <el-form :model="objToAdd" ref="formAdd" status-icon label-width="0px">
+                <el-form-item :span="11"
+                      inline-message="true"
+                      :key="'add'"
+                      :prop="'link'"
+                      :rules="[{
+                        type: 'url', message: '请输入有效链接',trigger:'change'
+                      }]"
+                      :error="strErrorAdd">
+                  <el-input v-model="objToAdd.link" @change="eAddURL">
+                    <template slot="prepend" style=""><span style="text-align:center;font-size: 18px;" >新链接</span></template>
+                    <el-button slot="append" icon="el-icon-plus" @click="eAddURL"/>
+                  </el-input>
+                </el-form-item>
+              </el-form>
+            </div>
+            <div style="font-size: 18px;padding: 18px 20px;">可使用网易云音乐MV链接</div>
+          </el-card>
+        </el-col>
+        <!--  -->
+      </el-row>
+      
+      <span slot="footer" class="dialog-footer">
+          <el-button v-if="dialogState.formData.idNCM" type="warning" @click="eBnSyncNCM">同步网易云音乐</el-button>
+          <el-button type="success" @click="submitUpload">保 存</el-button>
+          <el-button @click="handleClose">取 消</el-button>
+      </span>
     </el-dialog>
-
   </div>
 </template>
-
+<style scoped>
+.el-form-item{
+  margin-bottom:0px !important;
+}
+.titleVideo{
+  display: flex;
+  justify-content: space-between;
+  font-size: 18px;
+  padding: 18px 20px;
+}
+</style>
 <script>
   import { updateOne } from "@root/publicMethods/apiGeneral";
   const objURLDefault={
@@ -104,6 +130,7 @@
       }
     },
     methods: {
+      // 手动同步网易云的乐队MV
         eBnSyncNCM(e){
           let that=this;
           fetch("/api/artist/fetchNCMMV?id="+this.dialogState.formData._id)
@@ -142,8 +169,12 @@
                   that.$t("validate.inputCorrect", { label: "网易云音乐获取MV" })
                 );
               }
-              // console.log(res.songs[0].name);
-              
+          }).catch(e=>{
+            debugger
+            that.$message.error(
+              that.$t("validate.inputCorrect", { label: "网易云音乐获取MV" })
+            );
+            console.error(e)
           })
 
         },
@@ -151,7 +182,7 @@
         eDialogOpen(e){
    
         },
-      // 更新到服务器
+      // 手动更新到服务器
       submitUpload(){
         let that=this;
         let payload={
@@ -203,69 +234,79 @@
         if(objLink.link.indexOf("douban.com") !=-1 ) objLink.icon="/static/themes/images/link/logo_douban_32x32.png";
         if(objLink.link.indexOf("music.163.com")!=-1)objLink.icon="/static/themes/images/link/logo_163_32x32.png";
         // 更新name
-        if(objLink.link.indexOf("music.163.com")!=-1){
+        return new Promise((resolve,reject)=>{
+          // 分析idNCMMV,
+          let idNCMMV=objLink.link.split("music.163.com/#/mv?id=")[1];
+          if(objLink.link.indexOf("music.163.com")!=-1 && idNCMMV){
+            // 接口
+            fetch("/api/video/item?idNCMMV="+idNCMMV)
+            .then((data)=>data.json())
+            .then((data)=> {
+                // 在这个then里面我们能拿到最终的数据
+                let res=data;
+                if(res.status==200 && res.data){
+                  resolve(res.data);
+                }else{
+                  reject(res)
+                }
+            }).catch(e=>{
+              debugger
+              reject(e)
+              console.error(e)
+            })
+          }else{
+            reject({
+              msg:"非网易云音乐MV链接"+objLink.link,
+              err:"链接错误",
+              data:objLink,
+            })
 
-        }else{
-
-        }
-        return objLink;
+          }
+        })
       },
-      eChangeURL(e){
-        let {index,objLink}=e;
-        // console.log("更新链接：",e);
-        // 处理http
-        // if((objLink.link.toLowerCase()).indexOf("http://")==0){
-        //   objLink.urlHead="Http://";
-        //   objLink.link=(objLink.link.toLowerCase()).split("http://")[1];
-        // }
-        // if((objLink.link.toLowerCase()).indexOf("https://")==0){
-        //   objLink.urlHead="Https://";
-        //   objLink.link=(objLink.link.toLowerCase()).split("https://")[1];
-        // }        
-        this.getURLData(objLink,"formUpdate");
 
-      },
-      eAddURL(link){
-        this.objToAdd.link=link;
-
-        this.getURLData(this.objToAdd,"formAdd");
+      eAddURL(e){
+        let that=this;
+        let link=this.objToAdd.link;
+        if(!link)return;
         // 验证表单
         this.$refs["formAdd"].validate((valid) => {
           if (valid) {
-            this.listObjURL.push(this.objToAdd);
-            this.objToAdd=Object.assign({},objURLDefault);
-            // console.log("增加链接：",this.objToAdd);
-            if(this.listObjURL)this.$emit('list-changed',this.listObjURL);
-            
+            // this.objToAdd.link=link;
+            // 获取具体数据
+            this.getURLData(this.objToAdd,"formAdd").then(resVideo=>{
+              if(resVideo && resVideo.name){
+                that.$message({
+                  message: "找到网易云音乐MV信息，自动填充",
+                  type: "success"
+                });
+                // TODO:去重
+                that.listObjURL.push(resVideo);
+                that.listObjURL=[new Set(...that.listObjURL)]
+                // 新增恢复初始值
+                that.objToAdd=Object.assign({},objURLDefault);
+                // console.log("增加链接：",this.objToAdd);
+                if(that.listObjURL)that.$emit('list-changed',this.listObjURL);
+              }else{
+                that.$message.error(
+                  that.$t("validate.error_params", { label: "网易云返回数据异常" })
+                );                
+              }
+            }).catch(e=>{
+              debugger
+              console.error(e);
+              that.$message.error( that.$t("validate.inputCorrect", { label: "网易云音乐MV详情"+link }) );
+
+            });            
           } else {
             // console.log('新增链接表单验证失败');
             this.$message.error(
-              this.$t("validate.inputCorrect", { label: this.label })
+              this.$t("validate.inputCorrect", { label: "链接" })
             );
             return false;
           }
         });
-
       },
-      eValidate(prop,res){
-        // console.debug("链接验证结果：this.listObjURL",prop,res);//表单项 prop 值，校验是否通过
-        debugger
-        if(res){
-          // 如果是新增验证通过
-          // if(prop=="link"){
-          //   this.listObjURL.push(this.objToAdd);
-          //   this.objToAdd=Object.assign({},objURLDefault);
-          // }
-          this.$emit('list-changed',this.listObjURL);
-        }else {
-            // console.error('新增链接表单验证失败',this.listObjURL[prop],prop,res);
-            this.$message.error(
-              this.$t("validate.inputCorrect", { label: this.label })
-            );
-            this.$emit('list-changed',false);
-            return false;
-        }
-      }
     }
   }
 </script>
