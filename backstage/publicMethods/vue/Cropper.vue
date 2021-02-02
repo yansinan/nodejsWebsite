@@ -146,7 +146,7 @@ export default {
         type:String,
         default:"主图"
       },
-      srcPreview: {
+      value: {
           type:String,
           default:"",
       },
@@ -207,6 +207,10 @@ export default {
             imgName: '',
             dialogVisible:false,
         }
+    },
+    computed: {
+      // 主要列表
+      srcPreview: function () {  return this.value; }
     },
     mounted () {
         // this.initCropper()
@@ -298,7 +302,8 @@ export default {
                 console.log("resUpload::",objData);
                 _this.src=objData.data.path;
                 // if(objData.data.path)this.$emit('on-success',objData);
-                if(typeof _this["onSuccess"] === "function")_this["onSuccess"](objData)
+                // if(typeof _this["onSuccess"] === "function")_this["onSuccess"](objData)
+                if(_this.src)_this.$emit("input",_this.src);
                 _this.handleClose();
               }
           }).catch(e=>{

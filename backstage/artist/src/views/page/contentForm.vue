@@ -55,11 +55,9 @@
         </div>
         <Cropper 
           :nameMod="nameMod"
-          :srcPreview="formState.formData.sImg" 
+          v-model="formState.formData.sImg" 
           :label="$t('contents.sImg')" 
-          prop="sImg"
-          :on-success="handleAvatarSuccess"
-          ></Cropper>
+          prop="sImg"></Cropper>
         <el-form-item :label="$t('contents.discription')" prop="discription">
           <el-input size="small" type="textarea" v-model="formState.formData.discription" maxlength="300" show-word-limit :autosize="{minRows: 4, maxRows: 10 }"></el-input>
         </el-form-item>
@@ -344,15 +342,15 @@ export default {
       this.ueditorObj = instance;
     },
 
-    handleAvatarSuccess(res, file) {
-      let imageUrl = res.data.path;
-      this.showContentForm({
-        edit: this.formState.edit,
-        formData: Object.assign({}, this.formState.formData, {
-          sImg: imageUrl
-        })
-      });
-    },
+    // handleAvatarSuccess(res, file) {
+    //   let imageUrl = res.data.path;
+    //   this.showContentForm({
+    //     edit: this.formState.edit,
+    //     formData: Object.assign({}, this.formState.formData, {
+    //       sImg: imageUrl
+    //     })
+    //   });
+    // },
 
     backToList() {
       // this.$router.push("/"+nameMod);
