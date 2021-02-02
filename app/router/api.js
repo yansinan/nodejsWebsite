@@ -27,6 +27,12 @@ module.exports = app => {
             method: 'get',
             controllerName: 'getOne',
             details: '获取单个文档信息',
+        },
+        {
+            url: API + "/listAlbums",
+            method:"get",
+            controllerName:"listAlbums",
+            details:"抓取乐队的所有专辑"
         }, 
         {
             url: API + "/fetchNCMMV",
@@ -39,7 +45,13 @@ module.exports = app => {
             method:"get",
             controllerName:"ncmGetAtist",
             details:"抓取网易云音乐中乐队，并转格式返回"
-        },
+        }, 
+        {
+            url: API + "/fetchNCMArtistAlbums",
+            method:"get",
+            controllerName:"ncmGetAtistAlbums",
+            details:"抓取网易云音乐中乐队的专辑"
+        }
     ]
     // router.get('/api/artist/getList', controller.api.artist.list);
     // router.get('/api/artist/get', controller.api.artist.getOne);

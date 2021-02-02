@@ -590,6 +590,54 @@ class APIController extends Controller {
             ctx.helper.renderFail(ctx, { message: err });
         }
     }
+    // 抓网易乐队的专辑信息
+    async ncmGetAtistAlbums(){
+        const {
+            ctx,
+            app
+        } = this;
+        let service=ctx.service[SERVICE_NAME];
+        let name = ctx.query.name;
+        let idNCM=ctx.query.idNCM;
+        let idArtist=ctx.query._id;
+
+        try{
+            if (!idNCM) throw new Error(ctx.__('validate_error_params')+"name and idNCM all miss");
+
+            let resNCM=await service.ncmArtistAlbum({idNCM,_id:idArtist});
+
+            ctx.helper.renderSuccess(ctx,{
+                data: resNCM
+            });
+        } catch (err) {
+            debugger
+            ctx.helper.renderFail(ctx, { message: err });
+        }
+    }
+    
+    // 抓乐队所有专辑信息
+    async listAlbums(){
+        const {
+            ctx,
+            app
+        } = this;
+        let service=ctx.service[SERVICE_NAME];
+        let name = ctx.query.name;
+        let idArtist=ctx.query._id;
+
+        try{
+            if (!idNCM) throw new Error(ctx.__('validate_error_params')+"name and idNCM all miss");
+
+            let res=await ctx.service.record.list({listArtists:[idArtist]});
+
+            ctx.helper.renderSuccess(ctx,{
+                data: res
+            });
+        } catch (err) {
+            debugger
+            ctx.helper.renderFail(ctx, { message: err });
+        }
+    }       
 }
 
 

@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-24 13:20:49 
  * @Last Modified by: dr
- * @Last Modified time: 2021-01-29 10:42:02
+ * @Last Modified time: 2021-02-02 08:36:03
  */
 
 'use strict';
@@ -346,6 +346,129 @@ class ServicePlugin extends BaseService {
             }
         }else{
             return false;
+        }
+    }
+    // 搜索网易云音乐的乐手专辑
+    // {
+    //     status: 200,
+    //     data: {
+    //         artist: {
+    //         img1v1Id: 18686200114669624,
+    //         topicPerson: 0,
+    //         alias: [
+    //         ],
+    //         picId: 109951164565744540,
+    //         musicSize: 64,
+    //         albumSize: 5,
+    //         briefDesc: "",
+    //         followed: false,
+    //         img1v1Url: "https://p1.music.126.net/VnZiScyynLG7atLIZ2YPkw==/18686200114669622.jpg",
+    //         trans: "",
+    //         picUrl: "https://p1.music.126.net/yYudcBFmVRCDdDnGjK5HFQ==/109951164565744552.jpg",
+    //         name: "不优雅（biuya）",
+    //         id: 12371,
+    //         picId_str: "109951164565744552",
+    //         img1v1Id_str: "18686200114669622",
+    //         },
+    //         hotAlbums: [
+    //         {
+    //             songs: [
+    //             ],
+    //             paid: false,
+    //             onSale: false,
+    //             mark: 0,
+    //             alias: [
+    //             ],
+    //             artists: [
+    //             {
+    //                 img1v1Id: 18686200114669624,
+    //                 topicPerson: 0,
+    //                 alias: [
+    //                 ],
+    //                 picId: 0,
+    //                 musicSize: 0,
+    //                 albumSize: 0,
+    //                 briefDesc: "",
+    //                 followed: false,
+    //                 img1v1Url: "https://p1.music.126.net/VnZiScyynLG7atLIZ2YPkw==/18686200114669622.jpg",
+    //                 trans: "",
+    //                 picUrl: "https://p1.music.126.net/6y-UleORITEDbvrOLV0Q8A==/5639395138885805.jpg",
+    //                 name: "不优雅（biuya）",
+    //                 id: 12371,
+    //                 img1v1Id_str: "18686200114669622",
+    //             },
+    //             ],
+    //             copyrightId: 22036,
+    //             picId: 109951164564057280,
+    //             artist: {
+    //             img1v1Id: 18686200114669624,
+    //             topicPerson: 0,
+    //             alias: [
+    //             ],
+    //             picId: 109951164565744540,
+    //             musicSize: 64,
+    //             albumSize: 5,
+    //             briefDesc: "",
+    //             followed: false,
+    //             img1v1Url: "https://p1.music.126.net/VnZiScyynLG7atLIZ2YPkw==/18686200114669622.jpg",
+    //             trans: "",
+    //             picUrl: "https://p1.music.126.net/yYudcBFmVRCDdDnGjK5HFQ==/109951164565744552.jpg",
+    //             name: "不优雅（biuya）",
+    //             id: 12371,
+    //             picId_str: "109951164565744552",
+    //             img1v1Id_str: "18686200114669622",
+    //             },
+    //             briefDesc: "",
+    //             publishTime: 1576598400000,
+    //             company: "赤瞳音乐/Indie Works",
+    //             commentThreadId: "R_AL_3_84154933",
+    //             picUrl: "https://p1.music.126.net/Bl-Vag3wpoQE2Ku4PqU-nA==/109951164564057280.jpg",
+    //             pic: 109951164564057280,
+    //             blurPicUrl: "https://p1.music.126.net/Bl-Vag3wpoQE2Ku4PqU-nA==/109951164564057280.jpg",
+    //             companyId: 0,
+    //             tags: "",
+    //             description: "",
+    //             status: 1,
+    //             subType: "录音室版",
+    //             name: "人情公园",
+    //             id: 84154933,
+    //             type: "EP/Single",
+    //             size: 3,
+    //             picId_str: "109951164564057280",
+    //         },...
+    //         ],
+    //         more: false,
+    //         code: 200,
+    //     },
+    //     message: "OK",
+    //     }
+    async ncmArtistAlbum(payload={}){
+        let console=this.logger;
+        let idNCM=await this.checkIdNCM(payload);
+        if(this.isNCM(idNCM)){
+            try{
+                let resNCM=await this.ctx.service.webCrawler.api("/artist/album",{id:idNCM});
+                // 万一失去链接，直接返回，不影响
+                if(resNCM.error || !resNCM.data || !resNCM.data.hotAlbums) throw new Error("webCrawler连接服务器错误,status:"+resNCM.status);
+                let resList=resNCM.data.hotAlbums.map(ncm=>({
+                    idAlbumNCM: ncm.id,
+                    name:ncm.name,
+                    alias:ncm.alias[0] || "",
+                    dateRelease:ncm.publishTime,
+                    sImg:ncm.picUrl,
+                    discription:ncm.briefDesc,
+                    comments:ncm.description,
+                    // type:ncm.type,//"EP/Single",
+                    link:"https://music.163.com/#/artist?id="+resNCM.data.artist.id,
+                }))
+                return resList;
+            }catch(e){
+                debugger
+                console.warn("网易云音乐ncmArtist:",e);
+                return [];
+            }
+        }else{
+            return [];
         }
     }
 

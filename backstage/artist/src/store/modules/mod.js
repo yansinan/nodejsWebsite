@@ -83,6 +83,9 @@ const actions = {
     commit
   }, params = {mod:"content"}) {
     list(params,params.mod).then((result) => {
+      result.data.docs.forEach(v=>{
+        if(!v.listRecords)v.listRecords=[]
+      })
       commit("GET_LIST", result.data)
     }).catch(error=>{
       console.log("xxxx.store.xxxx.actions.getList获取失败:fail",error);

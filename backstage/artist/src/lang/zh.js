@@ -50,6 +50,7 @@ export default {
     listMembers:"乐队成员",
     listImages:"图集",
     listVideos:"视频",
+    listRecords:"发行",
   },
   //LangEnd
 }

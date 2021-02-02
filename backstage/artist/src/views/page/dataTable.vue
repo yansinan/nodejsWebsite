@@ -39,6 +39,14 @@
           </el-badge>
         </template>
       </el-table-column>
+      <!-- 专辑 -->
+      <el-table-column prop="listRecords" :label="$t('artist.listRecords')" width="80" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <el-badge :value="scope.row.listRecords.length" :hidden="scope.row.listRecords.length==0?true:false" :max="99" type="info">
+            <el-button @click="eRecordEdit(scope.$index,dataList)" size="large" plain icon="el-icon-files" :type="scope.row.listRecords.length==0?'':'primary'" circle></el-button>  
+          </el-badge>
+        </template>
+      </el-table-column>
       <!-- 视频 -->
       <el-table-column prop="listVideos" :label="$t('artist.listVideos')" width="80" show-overflow-tooltip>
         <template slot-scope="scope">
@@ -79,11 +87,14 @@
       :nameMod="nameMod"
       :label="$t('artist.listImages')"
       :dialogState="dialogStateAlbum"
-      :on-complete="getList"></Album>
+      :on-complete="getList" />
     <DialogURL :on-complete="getList" :nameMod="nameMod" :label="$t('artist.listHotMusics')" :dialogState="dialogStateMusic" />
     <DialogURL :on-complete="getList" :nameMod="nameMod" :label="$t('artist.listLinks')" :dialogState="dialogStateLink" />
     <ListVideos :on-complete="getList" :nameMod="nameMod" :label="$t('artist.listVideos')" :dialogState="dialogStateVideos" />
-
+    <Record 
+      :label="$t('artist.listRecords')"
+      :dialogState="dialogStateRecord"
+      :on-complete="getList" />
   </div>
 </template>
 <style lang="scss">
@@ -126,6 +137,8 @@
 import { remove, roof, updateToTop } from "@root/publicMethods/apiGeneral";
 // 相册上传
 import Album from "../common/Album.vue";
+// 相册上传
+import Record from "../common/Record.vue";
 
 import _ from "lodash";
 // import { mapGetters, mapActions,createNamespacedHelpers} from "vuex";
@@ -155,6 +168,12 @@ export default {
         isEdited:false,
         formData:{},
       },
+      // 编辑专辑弹窗
+      dialogStateRecord:{
+        isShow:false,
+        isEdited:false,
+        formData:{},
+      },
       // 编辑热门歌曲弹窗
       dialogStateMusic:{
         isShow:false,
@@ -179,7 +198,7 @@ export default {
     };
   },
   components: {
-    Album,
+    Album,Record,
     DialogURL:() => import("@root/publicMethods/vue/DialogURL.vue"),
     ListVideos:()=> import("../common/ListVideos.vue"),
 
@@ -280,6 +299,14 @@ export default {
         // _id: contentData._id,
         // name:contentData.name,
         // listImages: contentData.listImages,
+        isShow:true,
+        isEdited:false,
+        formData:rows[index],
+      };
+    },
+    // 编辑专辑列表
+    eRecordEdit(index,rows){
+      this.dialogStateRecord = {
         isShow:true,
         isEdited:false,
         formData:rows[index],
