@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-form :model="listObjURL" ref="formUpdate" status-icon inline-message="true" label-width="0px" @validate="eValidate">
+    <el-form :model="listObjURL" ref="formUpdate" status-icon inline-message="true" label-width="0px">
         <el-form-item
             v-for="(domain, index) in listObjURL"
             :key="domain._id"
@@ -19,13 +19,13 @@
           </el-input>
         </el-form-item>  
     </el-form>
-    <el-form :model="objToAdd" ref="formAdd" status-icon label-width="0px" @validate="eValidate">
+    <el-form :model="objToAdd" ref="formAdd" status-icon label-width="0px">
         <el-form-item
             inline-message="true"
             :key="'add'"
             :prop="'url'"
             :rules="{
-            required: true, type: 'url', message: '请输入有效链接', trigger: ['change','input']
+              required: false, type: 'url', message: '请输入有效链接', trigger: ['change','input']
             }"
             :error="strErrorAdd"
         >
@@ -50,7 +50,7 @@
             type:String,
             default:"链接",
         },
-        listObjURL: {
+        value: {
             type:Array,
             default:()=>([Object.assign({},objURLDefault)]),
         },
@@ -62,14 +62,17 @@
         strErrorUpdate:"",
       };
     },
+    computed: {
+      // 主要列表
+      listObjURL: function () {  return this.value; }
+    },
     methods: {
       removeDomain(item) {
         var index = this.listObjURL.findIndex((v,idx)=>(v.url==item.url))
         if (index !== -1) {
           this.listObjURL.splice(index, 1)
         }
-        if(this.listObjURL)this.$emit('list-changed',this.listObjURL);
-
+        if(this.listObjURL) this.$emit('input',this.listObjURL);
       },
       getURLData(objLink,formName){
         let that=this;
@@ -103,8 +106,7 @@
                     type: "success"
                   });
                   // 触发事件;
-                  if(that.listObjURL)that.$emit('list-changed',that.listObjURL);
-
+                  if(that.listObjURL) that.$emit('input',that.listObjURL); 
                 }else{
                   objLink.name="歌曲无效";
                   that.$message.error(
@@ -149,9 +151,11 @@
             this.listObjURL.push(this.objToAdd);
             this.objToAdd=Object.assign({},objURLDefault);
             // console.log("增加链接：",this.objToAdd);
-            if(this.listObjURL)this.$emit('list-changed',this.listObjURL);
+            if(this.listObjURL) this.$emit('input',this.listObjURL);
             
           } else {
+            // this.$refs["formAdd"].clearValidate("url");
+
             // console.log('新增链接表单验证失败');
             this.$message.error(
               this.$t("validate.inputCorrect", { label: this.label })
@@ -159,26 +163,7 @@
             return false;
           }
         });
-
       },
-      eValidate(prop,res){
-        // console.debug("链接验证结果：this.listObjURL",prop,res);//表单项 prop 值，校验是否通过
-        if(res){
-          // 如果是新增验证通过
-          // if(prop=="url"){
-          //   this.listObjURL.push(this.objToAdd);
-          //   this.objToAdd=Object.assign({},objURLDefault);
-          // }
-          // this.$emit('list-changed',this.listObjURL);
-        }else {
-            // console.error('新增链接表单验证失败',this.listObjURL[prop],prop,res);
-            // this.$message.error(
-            //   this.$t("validate.inputCorrect", { label: this.label })
-            // );
-            // this.$emit('list-changed',false);
-            return false;
-        }
-      }
     }
   }
 </script>

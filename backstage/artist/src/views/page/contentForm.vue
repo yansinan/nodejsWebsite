@@ -23,34 +23,35 @@
           <el-input size="small" v-model="formState.formData.dismissReason"></el-input>
         </el-form-item>
         <el-form-item :label="$t(nameMod + '.name')" prop="name">
-          <el-input size="small" v-model="formState.formData.name" @change="eChangeName"></el-input>
+          <el-input size="small" v-model="formState.formData.name" @change="eChangeName" maxlength="50" show-word-limit></el-input>
         </el-form-item>
         <el-form-item :label="$t(nameMod + '.nameAlias')" prop="alias">
-          <el-input size="small" v-model="formState.formData.alias"></el-input>
+          <el-input size="small" v-model="formState.formData.alias" :placeholder="'别名或英文名'" maxlength="50" show-word-limit></el-input>
         </el-form-item>
         <el-form-item :label="$t(nameMod + '.from')" prop="from">
-          <el-input size="small" v-model="formState.formData.from" placeholder="中国/China"></el-input>
+          <el-input size="small" v-model="formState.formData.from" placeholder="中国/China" maxlength="20" show-word-limit></el-input>
         </el-form-item>
         <el-form-item :label="$t(nameMod + '.date')" prop="listDateDur">
           <el-date-picker
             v-model="formState.formData.listDateDur[0]"
             type="date"
-            placeholder="加入日期" @change="eChangeDate">
+            placeholder="加入日期">
           </el-date-picker>
+          <icon class="el-icon-minus"/>
           <el-date-picker
             v-model="formState.formData.listDateDur[1]"
             type="date"
-            placeholder="退出日期" @change="eChangeDate">
+            placeholder="退出日期">
           </el-date-picker>
         </el-form-item>
         <!-- 乐队成员 -->
         <SelectIds :label="this.$t(nameMod+'.listMembers')" @change="eChangeMember" :listIds="formState.formData.listMembers" :nameMode="nameMod" apiAdd="/manage/regUser/addOneName" apiFind="/manage/regUser/findByName" :initTag="createMember"/>
 
         <div v-if="formState.formData.type == '1'">
+          <SelectIds :label="this.$t(nameMod+'.tags')" @change="eChangeTag" :listIds="formState.formData.tags" :nameMode="nameMod" :initTag="createTag" />
           <el-form-item label="乐队关键字" prop="keywords">
             <el-input size="small" v-model="formState.formData.keywords"></el-input>
           </el-form-item>
-          <SelectIds :label="this.$t(nameMod+'.tags')" @change="eChangeTag" :listIds="formState.formData.tags" :nameMode="nameMod" :initTag="createTag" />
         </div>
         <Cropper 
           :nameMod="nameMod"
@@ -60,7 +61,7 @@
           :on-success="handleAvatarSuccess"
           ></Cropper>
         <el-form-item :label="$t('contents.discription')" prop="discription">
-          <el-input size="small" type="textarea" v-model="formState.formData.discription"></el-input>
+          <el-input size="small" type="textarea" v-model="formState.formData.discription" maxlength="300" show-word-limit :autosize="{minRows: 4, maxRows: 10 }"></el-input>
         </el-form-item>
         <el-form-item :label="$t('contents.comments')" prop="comments">
           <!-- <Ueditor @ready="editorReady" ref="ueditor"></Ueditor> -->
@@ -73,10 +74,10 @@
         </el-form-item>
         <!-- 热门歌曲：相关链接 -->
         <el-form-item :label="$t(nameMod + '.listHotMusics')" prop="listHotMusics">
-          <ListURL @list-changed="eListHotMusicChanged" label="热门歌曲" :listObjURL="formState.formData.listHotMusics"></ListURL>
+          <ListURL v-model="formState.formData.listHotMusics" label="热门歌曲"></ListURL>
         </el-form-item>
         <el-form-item :label="$t(nameMod + '.listLinks')" prop="listLinks">
-          <ListURL @list-changed="eListLinks" label="其他链接" :listObjURL="formState.formData.listLinks" ref="listLinks"></ListURL>
+          <ListURL v-model="formState.formData.listLinks" label="其他链接" ref="listLinks"></ListURL>
         </el-form-item>
         <el-form-item class="dr-submitContent">
           <el-button
@@ -175,19 +176,12 @@ export default {
     return {
       nameMod:nameMod,
       contentState: [
-        { value: "0", label: "退回" },
-        { value: "1", label: "待审核" },
-        { value: "2", label: "审核通过" },
-        { value: "3", label: "审核不通过" }
+        { value: "0", label: "隐藏" },
+        { value: "1", label: "待发布" },
+        { value: "2", label: "发布" },
+        // { value: "3", label: "审核不通过" }
       ],
-      loading: false,
-      content: "",
-      simpleComments: "",
-      isflash: false,
-      config: {
-        initialFrameWidth: null,
-        initialFrameHeight: 320
-      },
+
       editorConfig: {
         // 编辑器不自动被内容撑高
         autoHeightEnabled: false,
@@ -200,8 +194,6 @@ export default {
         // UEditor 资源文件的存放路径，如果你使用的是 vue-cli 生成的项目，通常不需要设置该选项，vue-ueditor-wrap 会自动处理常见的情况，如果需要特殊配置，参考下方的常见问题2
         UEDITOR_HOME_URL: this.$root.staticRootPath + "/plugins/ueditor/"
       },
-      imageUrl: "",
-      currentType: "1",
       rules: {
         sImg: [
           {
@@ -340,26 +332,6 @@ export default {
       return this.formState.formData.keywords;
     },    
 
-    checkFlashPost(currentType) {
-      this.showContentForm({
-        edit: this.formState.edit,
-        formData: Object.assign({}, this.formState.formData, {
-          type: currentType ? "2" : "1"
-        })
-      });
-    },
-    inputEditor(value) {
-      this.showContentForm({
-        edit: this.formState.edit,
-        formData: Object.assign({}, this.formState.formData, {
-          markDownComments: value
-        })
-      });
-      
-    },
-    changeEditor(value) {
-      console.log(value);
-    },
     getLocalContents() {
       let localContent = localStorage.getItem("addContent") || "";
       if (localContent) {
@@ -387,36 +359,6 @@ export default {
       // this.$store.dispatch(nameMod+"/showContentForm",{edit:false,formData:{test:"debug:backToList"},isInit:true});
       this.$router.push(this.$root.adminBasePath + "/"+this.nameMod);
 
-    },
-    // 热门歌曲列表变化
-    eListHotMusicChanged(e){
-      console.info("热门歌曲列表变化",e);
-      // 链接验证失败
-      if(!e){
-        // TODO:优化表单验证的方式，目前这个错误数据仍然能够提交
-        this.isValidate=false;
-        this.$message.error( this.$t("validate.inputCorrect", { label: "热门歌曲链接" }));
-        return;
-      }
-      this.formState.formData.listHotMusics=e;
-    },
-    eListLinks(e){      
-      console.info("其他链接列表变化",e);
-      // 链接验证失败
-      if(!e){
-        // TODO:优化表单验证的方式，目前这个错误数据仍然能够提交
-        this.isValidate=false;
-        this.$message.error(
-          this.$t("validate.inputCorrect", { label: "其他链接" })
-        );
-        return;
-      }
-
-      this.formState.formData.listLinks=e;
-    },
-    // 选择日期
-    eChangeDate(e){
-      console.info("选取日期变化",e,this.formState.formData.listDateDur);
     },
 
     submitForm(formName, type = "") {
@@ -505,9 +447,6 @@ export default {
   },
   computed: {
     ...mapGetters(["contentCategoryList"]),//"regUserList",
-    // formState() {
-    //   return this.$store.getters.contentFormState;
-    // },
     ...mod.mapState({
       formState: state => state.formState,
     }),//模块的state
