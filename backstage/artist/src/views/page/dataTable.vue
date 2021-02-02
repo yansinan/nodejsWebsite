@@ -80,9 +80,9 @@
       :label="$t('artist.listImages')"
       :dialogState="dialogStateAlbum"
       :on-complete="getList"></Album>
-    <ListURL :on-complete="getList" :nameMod="nameMod" :label="$t('artist.listHotMusics')" :dialogState="dialogStateMusic"></ListURL>
-    <ListURL :on-complete="getList" :nameMod="nameMod" :label="$t('artist.listLinks')" :dialogState="dialogStateLink"></ListURL>
-    <ListVideos :on-complete="getList" :nameMod="nameMod" :label="$t('artist.listVideos')" :dialogState="dialogStateVideos"></ListVideos>
+    <DialogURL :on-complete="getList" :nameMod="nameMod" :label="$t('artist.listHotMusics')" :dialogState="dialogStateMusic" />
+    <DialogURL :on-complete="getList" :nameMod="nameMod" :label="$t('artist.listLinks')" :dialogState="dialogStateLink" />
+    <ListVideos :on-complete="getList" :nameMod="nameMod" :label="$t('artist.listVideos')" :dialogState="dialogStateVideos" />
 
   </div>
 </template>
@@ -180,7 +180,7 @@ export default {
   },
   components: {
     Album,
-    ListURL:() => import("@root/publicMethods/vue/ListURL.vue"),
+    DialogURL:() => import("@root/publicMethods/vue/DialogURL.vue"),
     ListVideos:()=> import("../common/ListVideos.vue"),
 
   },

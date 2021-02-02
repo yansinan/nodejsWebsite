@@ -160,8 +160,6 @@ import {
   updateOne,
 } from "@root/publicMethods/apiGeneral";
 
-import ListURL from "../common/ListURL.vue";
-
 import _ from "lodash";
 import { mapGetters, mapActions,createNamespacedHelpers} from "vuex";
 const mod = createNamespacedHelpers(nameMod)////模块,含mapGetters, mapActions等
@@ -269,7 +267,7 @@ export default {
   },
   components: {
     VueUeditorWrap,
-    ListURL,
+    ListURL: () => import('@root/publicMethods/vue/ListURL.vue'),
     Cropper: () => import('@root/publicMethods/vue/Cropper.vue'),
     SelectIds: () => import('@root/publicMethods/vue/SelectIds.vue'),
   },
