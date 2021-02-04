@@ -214,7 +214,7 @@
               })
             }else if(objLink.url.indexOf("music.163.com/#/artist?id=")){
               // 非歌曲链接，是乐队链接
-
+              resolve(objLink);
             }else{
               reject({
                 msg:"网易云音乐链接参数错误"+objLink.link,

@@ -408,15 +408,20 @@ class APIController extends Controller {
             if(objUpdate.listLinks){
                 // 是否listLinks有更新，优先取listLinks
                 let idNCM=ctx.service.artist.findIdInLink(objUpdate.listLinks);
-
+                
                 if (!shortid.isValid(_id)) throw new Error(ctx.__('validate_error_params')+_id);
-                // 跟数据库比较是否一致
-                let payload=await service.item(ctx,{query:{_id:_id},files:"_id name listLinks idNCM"})
-                if(ctx.service.artist.isNCM(payload.idNCM) && payload.idNCM!=idNCM)payload.idNCM="";//重置idNCM,后面同步的更新其他网易数据
+                if(idNCM)objUpdate.idNCM=idNCM;
 
-                // 网易云音乐id
-                payload.idNCM=await ctx.service.artist.checkIdNCM(payload) || "";
-                objUpdate.idNCM=payload.idNCM;
+                // // 跟数据库比较是否一致
+                // let payload=await service.item(ctx,{query:{_id:_id},files:"_id name listLinks idNCM"})
+                // if(ctx.service.artist.isNCM(payload.idNCM) && payload.idNCM!=idNCM){
+                //     payload.listLinks=objUpdate.listLinks;
+                //     payload.idNCM=idNCM;//重置idNCM,后面同步的更新其他网易数据
+                // }
+
+                // // 网易云音乐id
+                // payload.idNCM=await ctx.service.artist.checkIdNCM(payload) || "";
+                // objUpdate.idNCM=idNCM;
             }
 
             if (!shortid.isValid(_id)) throw new Error(ctx.__('validate_error_params')+_id);

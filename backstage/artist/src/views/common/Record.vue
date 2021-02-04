@@ -105,7 +105,6 @@
                 // that.listRecordsNCM.splice(0,that.listRecordsNCM.length,...list);
                 let msg="";
                 let listNew=res.data.filter(vNew=>{
-              debugger
                   let isOld= (that.listRecordsNCM.find(vOld=>(vNew.idURL==vOld.idURL)));
                   if(isOld)msg+=vNew.name+","
                   return !isOld;
@@ -174,6 +173,8 @@
           // 清空数据
           this.dialogState.formData={};
           this.dialogState.isEdited=false;
+          this.listRecordsNCM=[];
+          this.listRecords=[];
       },
 
     }

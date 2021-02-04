@@ -97,7 +97,9 @@
       },
       // 弹窗关闭
       handleClose(e){
-          if(typeof this["onComplete"] === "function")this["onComplete"]();
+
+          this.$emit('complete',this.listObjURL);
+
           this.dialogState.isShow=false;
           // 清空数据
           this.dialogState.formData={};

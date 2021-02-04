@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-24 13:20:49 
  * @Last Modified by: dr
- * @Last Modified time: 2021-02-02 08:36:03
+ * @Last Modified time: 2021-02-03 23:41:20
  */
 
 'use strict';
@@ -39,7 +39,7 @@ class ServicePlugin extends BaseService {
     findIdInLink(listLinks){
         let idNCM=""
         // 是否有现成的163链接在listLinks;
-        if(!(typeof listLinks === Array))return idNCM;
+        if(!(listLinks instanceof Array))return idNCM;
         try{
             let objLink=listLinks.find(v=>(v.url.indexOf("music.163.com")!=-1));            
             if(objLink){
@@ -81,13 +81,14 @@ class ServicePlugin extends BaseService {
     async checkIdNCM(payload={}){
         let console=this.logger;
         try{
-            let idNCM=payload.idNCM;
+            //优先使用listLinks内的网易链接id
+            let _id=payload._id || payload.id;
+            let name=payload.name;
+            let alias=payload.alias;
+            let listLinks=(payload.listLinks && payload.listLinks.constructor.name === "CoreDocumentArray")?payload.listLinks.toObject():payload.listLinks;
+            let idNCM=this.findIdInLink(listLinks) || payload.idNCM;
             //读取数据库信息 
             if((!idNCM || idNCM=="") && idNCM!="ignore"){
-                let listLinks=(payload.listLinks && payload.listLinks.constructor.name === "CoreDocumentArray")?payload.listLinks.toObject():payload.listLinks;
-                let _id=payload._id || payload.id;
-                let name=payload.name;
-                let alias=payload.alias;
                 // 如果更新过listLinks,尝试检查;
                 if(!listLinks){
                     // 没有listLinks，搜索数据库开始用artist.name手动搜索
@@ -110,7 +111,7 @@ class ServicePlugin extends BaseService {
                 if(idNCM && idNCM!="")return idNCM;
                 // 到这里，应该有数据库完整信息了；
                 if(listLinks){
-                    this.findIdInLink(listLinks);
+                    idNCM=this.findIdInLink(listLinks);
                     // 分析成功，返回结果；是否要自动保存到数据库？
                     if(idNCM && idNCM!="" && _id){
                         let resUpdate=await this.update(this.ctx,_id,{idNCM});

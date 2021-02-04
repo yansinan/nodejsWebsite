@@ -88,8 +88,8 @@
       :label="$t('artist.listImages')"
       :dialogState="dialogStateAlbum"
       :on-complete="getList" />
-    <DialogURL :on-complete="getList" :nameMod="nameMod" :label="$t('artist.listHotMusics')" :dialogState="dialogStateMusic" />
-    <DialogURL :on-complete="getList" :nameMod="nameMod" :label="$t('artist.listLinks')" :dialogState="dialogStateLink" />
+    <DialogURL @complete="getList" :nameMod="nameMod" :label="$t('artist.listHotMusics')" :dialogState="dialogStateMusic" />
+    <DialogURL @complete="getList" :nameMod="nameMod" :label="$t('artist.listLinks')" :dialogState="dialogStateLink" />
     <ListVideos :on-complete="getList" :nameMod="nameMod" :label="$t('artist.listVideos')" :dialogState="dialogStateVideos" />
     <Record 
       :label="$t('artist.listRecords')"
