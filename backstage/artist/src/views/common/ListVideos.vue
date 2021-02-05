@@ -14,7 +14,7 @@
       <el-divider content-position="left">已保存的视频</el-divider>
       <el-row :gutter="40">
         <!-- <el-form :model="listObjURL" ref="formUpdate" status-icon inline-message="true" label-width="0px" @validate="eValidate"> -->
-          <el-col v-for="(domain, index) in listObjURL" :key="domain.idURL" :md="11" style="margin-bottom:40px;">
+          <el-col v-for="(domain, index) in listObjURL" :key="domain.idURL" :md="8" style="margin-bottom:40px;">
             <el-card :body-style="{ padding: '0px' }" shadow="hover" v-loading="domain.isLoading">
               <!-- <el-form-item style=""
                 :prop="'['+index+'].link'"
@@ -41,15 +41,8 @@
       <!-- 网易云抓取 -->
       <el-divider content-position="left">网易云音乐获取</el-divider>
       <el-row :gutter="40">
-        <!-- <el-form :model="listNCM" ref="formUpdate" status-icon inline-message="true" label-width="0px" @validate="eValidate"> -->
-          <el-col v-for="(domain, index) in listNCM" :key="domain.idURL" :md="11" style="margin-bottom:40px;">
+          <el-col v-for="(domain, index) in listNCM" :key="domain.idURL" :md="8" style="margin-bottom:40px;">
             <el-card :body-style="{ padding: '0px' }" shadow="hover" v-loading="domain.isLoading">
-              <!-- <el-form-item style=""
-                :prop="'['+index+'].link'"
-                :rules="{
-                  required: true, type: 'url', message: '请输入有效链接', trigger: 'blur'
-                }"
-                :error="strErrorUpdate"> -->
                 <el-input v-model="domain.link" disabled>
                   <img slot="prepend" v-if="domain.icon" :src="domain.icon" class="img-circle" style="width:32px">
                   <span slot="prepend" v-else style="text-align:center;font-size: 18px;" ><i class="el-icon-link"/>视频 {{index+1}}</span>
@@ -61,12 +54,11 @@
                 <!-- <el-button type="danger" plain icon="el-icon-delete" @click.prevent="removeDomain(domain)"/> -->
                 <el-button type="prime" plain icon="el-icon-plus" @click.prevent="addDomain(domain)"/>
               </div>
-              <!-- </el-form-item> -->
             </el-card>
           </el-col>
         <!-- </el-form> -->
         <!-- 新增 -->
-        <el-col :md="11" style="height:100%">
+        <el-col :md="8" style="height:100%">
           <el-card :body-style="{ padding: '0px' }" shadow="hover">
             <div>
               <!-- <span style="font-size: 18px;">添加视频链接</span> -->
@@ -87,7 +79,7 @@
                 </el-form-item>
               </el-form>
             </div>
-            <div style="font-size: 18px;padding: 18px 20px;">可使用网易云音乐MV链接</div>
+            <div style="font-size: 18px;padding: 18px 20px;">{{strNoticeListNCM?strNoticeListNCM:'可使用网易云音乐MV链接'}}</div>
           </el-card>
         </el-col>
         <!--  -->
@@ -151,7 +143,14 @@
         strErrorAdd:"",
         strErrorUpdate:"",
         listNCM:[],
+        strNoticeListNCM:"",//全部同步的提示
       };
+    },
+    watch:{
+      listNCM(newV,oldV){
+        if(newV.length==0)this.strNoticeListNCM="网易云音乐MV已全部同步完成"
+        else this.strNoticeListNCM=""
+      }
     },
     computed: {
       // 主要列表
@@ -227,33 +226,33 @@
       eDialogOpen(e){
         this.eBnSyncNCM(e);
       },
-      // 手动更新到服务器
-      submitUpload(){
-        let that=this;
-        let payload={
-          _id:this.dialogState.formData._id,
-          funUpdate:"updateList",
-          [this.dialogState.strListObjURL]:this.listDataToUpdate,
-        }
-        updateOne(payload,this.nameMod).then(result => {
-          if (result.status === 200) {
-            that.$message({
-              message: that.$t("main.updateSuccess"),
-              type: "success"
-            });
-          } else {
-            that.$message.error(result.message);
-          }
-          setTimeout(() => {
-            that.handleClose();
-          }, 500);
+      // // 手动更新到服务器
+      // submitUpload(){
+      //   let that=this;
+      //   let payload={
+      //     _id:this.dialogState.formData._id,
+      //     funUpdate:"updateList",
+      //     [this.dialogState.strListObjURL]:this.listDataToUpdate,
+      //   }
+      //   updateOne(payload,this.nameMod).then(result => {
+      //     if (result.status === 200) {
+      //       that.$message({
+      //         message: that.$t("main.updateSuccess"),
+      //         type: "success"
+      //       });
+      //     } else {
+      //       that.$message.error(result.message);
+      //     }
+      //     setTimeout(() => {
+      //       that.handleClose();
+      //     }, 500);
           
-        }).catch(error=>{
-          debugger
-          console.error(that.nameMod,"更新:fail,",error,params);
-          that.$message.error(JSON.stringify(error));
-        });
-      },
+      //   }).catch(error=>{
+      //     debugger
+      //     console.error(that.nameMod,"更新:fail,",error,params);
+      //     that.$message.error(JSON.stringify(error));
+      //   });
+      // },
       // 弹窗关闭
       handleClose(e){
           if(typeof this["onComplete"] === "function")this["onComplete"]();
@@ -261,6 +260,7 @@
           // 清空数据
           this.dialogState.formData={};
           this.dialogState.isEdited=false;
+          this.listNCM=[];
       },
       // 上传blob到后台
       uploadBlob(blob){
@@ -291,7 +291,6 @@
             debugger
           })          
         })
-
       },      
       // 生成要新增的数组数据
       getPushDataToUpdate(item){
