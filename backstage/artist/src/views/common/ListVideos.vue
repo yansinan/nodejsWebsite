@@ -27,7 +27,7 @@
                   <span slot="prepend" v-else style="text-align:center;font-size: 18px;" ><i class="el-icon-link"/>视频 {{index+1}}</span>
                   <!-- <el-button slot="append" icon="el-icon-delete" @click.prevent="removeDomain(domain)"/> -->
                 </el-input>
-              <img width="100%" :src="domain.urlImg" fit="contain" @load="eImgLoaded" crossOrigin="Anonymous"/>
+              <el-image :md="24" :src="domain.urlImg" fit="contain" @load="eImgLoaded" v-loading="!domain.isFitted" crossOrigin="Anonymous"/>
               <div class="titleVideo" style="">
                 <span v-if="domain.name">{{domain.name}}</span>
                 <el-button type="danger" plain icon="el-icon-delete" @click.prevent="removeDomain(domain)"/>
@@ -48,7 +48,7 @@
                   <span slot="prepend" v-else style="text-align:center;font-size: 18px;" ><i class="el-icon-link"/>视频 {{index+1}}</span>
                   <!-- <el-button slot="append" icon="el-icon-delete" @click.prevent="removeDomain(domain)"/> -->
                 </el-input>
-              <img width="100%" :src="domain.urlImg" fit="contain" @load="eImgLoaded" crossOrigin="Anonymous"/>
+              <el-image :md="24" :src="domain.urlImg" fit="contain" @load="eImgLoaded" v-loading="!domain.isFitted" crossOrigin="Anonymous"/>
               <div class="titleVideo" style="">
                 <span v-if="domain.name">{{domain.name}}</span>
                 <!-- <el-button type="danger" plain icon="el-icon-delete" @click.prevent="removeDomain(domain)"/> -->
@@ -465,20 +465,27 @@
         let img=e.target;
         let typeSrc=img.src.substring(0,7);
         let time=new Date();
+        let srcOrg=img.src;
+        let objToChange=this.listNCM.find(v=>(v.urlImg==srcOrg));
         // if(typeSrc.indexOf("data:")==-1 && typeSrc.indexOf("blob:")==-1)
         if(img.naturalWidth!=targetWidth || img.naturalHeight!=targetHeight){
-          let srcOrg=img.src;
-          let objToChange=this.listNCM.find(v=>(v.urlImg==srcOrg));
           if(objToChange){
             img.type='image/jpeg';
             imgFit(img,targetWidth,targetHeight).then(resSrc=>{
               objToChange.urlImg=resSrc.src;
               objToChange.blob=resSrc.blob;
+              objToChange.isFitted=true;
               // img.src= resSrc;
               console.log("图片裁切完成",(new Date()-time),typeSrc)
             });//网易云MV图尺寸628,353
           }
 
+        }else{
+          if(objToChange)objToChange.isFitted=true;
+          else{
+            objToChange=this.listObjURL.find(v=>(v.urlImg==srcOrg));
+            if(objToChange)objToChange.isFitted=true;
+          }
         }
       },
 
