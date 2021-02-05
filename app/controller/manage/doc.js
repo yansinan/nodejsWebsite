@@ -390,6 +390,7 @@ class APIController extends Controller {
         let objUpdate = {} 
         let console=this.logger;
 
+        let files="";
         for(let k in fields){
             let list=fields[k];
             if(list instanceof Array && (k=="listLinks" || k=="listHotMusics" || k=="listVideos" || k=="listImages" || k=="listMembers" || k=="listRefs")){
@@ -399,6 +400,10 @@ class APIController extends Controller {
                 // 去空数据
                 list=list.filter(v=>(v));
                 objUpdate[k]=list;
+            }
+            // $命令都添加
+            if(k.indexOf("$")==0){
+                objUpdate[k]=fields[k]
             }
         }
         objUpdate.updateDate=Date.now();
@@ -426,8 +431,29 @@ class APIController extends Controller {
 
             if (!shortid.isValid(_id)) throw new Error(ctx.__('validate_error_params')+_id);
             let resUpdate=await service.update(ctx, _id, objUpdate)
+            for(let k in objUpdate){
+                let list=objUpdate[k];
+                if(list instanceof Array && (k=="listLinks" || k=="listHotMusics" || k=="listVideos" || k=="listImages" || k=="listMembers" || k=="listRefs")){
+                    files+=k+" ";
+                }
+                // $命令都添加
+                if(k.indexOf("$")==0){
+                    for(let l in objUpdate[k])files+=l+" ";
+                }
+            }
+            let resQuery=await service.item(ctx, {
+                query: {
+                    _id: _id
+                },
+                files,
+            })
+            resQuery=resQuery.toObject();
+            let resDataUpdate={};
+            for(let k in resQuery){
+                if(files.indexOf(k)!=-1)resDataUpdate[k]=resQuery[k];
+            }
             ctx.helper.renderSuccess(ctx,{
-                data: objUpdate
+                data: resDataUpdate
             });
 
         } catch (err) {

@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-24 13:20:49 
  * @Last Modified by: dr
- * @Last Modified time: 2021-1-14
+ * @Last Modified time: 2021-02-04 21:04:30
  */
 
 'use strict';
@@ -84,9 +84,26 @@ class ServicePlugin extends Service {
     }
 
     async update(res, _id, payload) {
-        return _update(res, this.model, _id, payload);
+        let isAtomic=false;
+        // 检查是否有原子操作;
+        for(let k in payload){
+            // $命令都添加
+            if(k.indexOf("$")==0) isAtomic=true;
+        }
+        return isAtomic?this.updateAllowAtomic(res, _id, payload):_update(res, this.model, _id, payload);
     }
-
+    async updateAllowAtomic(ctx, _id, payload, query = {}) {
+        if (_id) {
+            query = _.assign({}, query, {
+                _id: _id
+            });
+        } else {
+            if (_.isEmpty(query)) {
+                throw new Error(ctx.__('validate_error_params'));
+            }
+        }    
+        return await this.model.findOneAndUpdate(query, payload);
+    }
     async inc(res, _id, payload) {
         return _inc(res, this.model, _id, payload);
     }
