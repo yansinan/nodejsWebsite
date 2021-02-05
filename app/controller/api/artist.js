@@ -602,10 +602,10 @@ class APIController extends Controller {
         let idArtist=ctx.query._id;
 
         try{
-            if (!idNCM) throw new Error(ctx.__('validate_error_params')+"name and idNCM all miss");
+            if (!idNCM || !idArtist) throw new Error(ctx.__('validate_error_params')+"id or idNCM miss");
 
             let resNCM=await service.ncmArtistAlbum({idNCM,_id:idArtist});
-
+            resNCM.forEach(v=>(v.listRefs=[idArtist]));
             ctx.helper.renderSuccess(ctx,{
                 data: resNCM
             });

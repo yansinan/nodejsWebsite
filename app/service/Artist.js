@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-24 13:20:49 
  * @Last Modified by: dr
- * @Last Modified time: 2021-02-03 23:41:20
+ * @Last Modified time: 2021-02-05 10:55:46
  */
 
 'use strict';
@@ -460,7 +460,8 @@ class ServicePlugin extends BaseService {
                     discription:ncm.briefDesc,
                     comments:ncm.description,
                     // type:ncm.type,//"EP/Single",
-                    link:"https://music.163.com/#/artist?id="+resNCM.data.artist.id,
+                    link:"https://music.163.com/#/album?id="+ncm.id,
+                    
                 }))
                 return resList;
             }catch(e){
