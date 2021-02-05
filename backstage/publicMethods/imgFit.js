@@ -23,8 +23,8 @@ module.exports = {
           // resSrc = canvas.toDataURL('image/jpeg', 0.95);
           canvas.toBlob(blob=>{
               resSrc=URL.createObjectURL(blob);
-              resolve(resSrc);
-          });          
+              resolve({src:resSrc,blob:blob});
+          },img.type || 'image/jpeg');          
         })
     }
 }

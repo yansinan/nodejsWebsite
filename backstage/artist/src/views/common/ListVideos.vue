@@ -11,11 +11,11 @@
     <div slot="title" class="el-dialog__title">
         <el-avatar :src="dialogState.formData.sImg" fit="cover"/>{{dialogState.formData.name}}的{{label}}
     </div>
-
+      <el-divider content-position="left">已保存的视频</el-divider>
       <el-row :gutter="40">
         <!-- <el-form :model="listObjURL" ref="formUpdate" status-icon inline-message="true" label-width="0px" @validate="eValidate"> -->
           <el-col v-for="(domain, index) in listObjURL" :key="domain.idURL" :md="11" style="margin-bottom:40px;">
-            <el-card :body-style="{ padding: '0px' }" shadow="hover">
+            <el-card :body-style="{ padding: '0px' }" shadow="hover" v-loading="domain.isLoading">
               <!-- <el-form-item style=""
                 :prop="'['+index+'].link'"
                 :rules="{
@@ -30,7 +30,36 @@
               <img width="100%" :src="domain.urlImg" fit="contain" @load="eImgLoaded" crossOrigin="Anonymous"/>
               <div class="titleVideo" style="">
                 <span v-if="domain.name">{{domain.name}}</span>
-                <el-button type="danger" plain slot="append" icon="el-icon-delete" @click.prevent="removeDomain(domain)"/>
+                <el-button type="danger" plain icon="el-icon-delete" @click.prevent="removeDomain(domain)"/>
+              </div>
+              <!-- </el-form-item> -->
+            </el-card>
+          </el-col>
+        <!-- </el-form> -->
+
+      </el-row>
+      <!-- 网易云抓取 -->
+      <el-divider content-position="left">网易云音乐获取</el-divider>
+      <el-row :gutter="40">
+        <!-- <el-form :model="listNCM" ref="formUpdate" status-icon inline-message="true" label-width="0px" @validate="eValidate"> -->
+          <el-col v-for="(domain, index) in listNCM" :key="domain.idURL" :md="11" style="margin-bottom:40px;">
+            <el-card :body-style="{ padding: '0px' }" shadow="hover" v-loading="domain.isLoading">
+              <!-- <el-form-item style=""
+                :prop="'['+index+'].link'"
+                :rules="{
+                  required: true, type: 'url', message: '请输入有效链接', trigger: 'blur'
+                }"
+                :error="strErrorUpdate"> -->
+                <el-input v-model="domain.link" disabled>
+                  <img slot="prepend" v-if="domain.icon" :src="domain.icon" class="img-circle" style="width:32px">
+                  <span slot="prepend" v-else style="text-align:center;font-size: 18px;" ><i class="el-icon-link"/>视频 {{index+1}}</span>
+                  <!-- <el-button slot="append" icon="el-icon-delete" @click.prevent="removeDomain(domain)"/> -->
+                </el-input>
+              <img width="100%" :src="domain.urlImg" fit="contain" @load="eImgLoaded" crossOrigin="Anonymous"/>
+              <div class="titleVideo" style="">
+                <span v-if="domain.name">{{domain.name}}</span>
+                <!-- <el-button type="danger" plain icon="el-icon-delete" @click.prevent="removeDomain(domain)"/> -->
+                <el-button type="prime" plain icon="el-icon-plus" @click.prevent="addDomain(domain)"/>
               </div>
               <!-- </el-form-item> -->
             </el-card>
@@ -65,9 +94,9 @@
       </el-row>
       
       <span slot="footer" class="dialog-footer">
-          <el-button v-if="dialogState.formData.idNCM" type="warning" @click="eBnSyncNCM">同步网易云音乐</el-button>
-          <el-button type="success" @click="submitUpload">保 存</el-button>
-          <el-button @click="handleClose">取 消</el-button>
+          <el-button v-if="dialogState.formData.idNCM" type="warning" @click="eBnSyncNCM">读取网易云音乐</el-button>
+          <!-- <el-button type="success" @click="submitUpload">保 存</el-button> -->
+          <el-button @click="handleClose">关 闭</el-button>
       </span>
     </el-dialog>
   </div>
@@ -121,6 +150,7 @@
         objToAdd:Object.assign({},objURLDefault),
         strErrorAdd:"",
         strErrorUpdate:"",
+        listNCM:[],
       };
     },
     computed: {
@@ -128,6 +158,20 @@
       listObjURL: function () {
         //   let list=this.dialogState.formData[this.dialogState.strListObjURL]?this.dialogState.formData[this.dialogState.strListObjURL].filter(v=>(v)):[];
           return this.dialogState.formData[this.dialogState.strListObjURL] || [];
+      },
+      listDataToUpdate:function(){
+        return this.listObjURL.map(v=>{
+          return{
+            name:v.name,
+            type:v.type,
+            date:v.date,
+            idURL:v.idURL,
+            status:v.status,
+            urlImg:v.urlImg,
+            urlVideo:v.urlVideo,
+            link:v.link,
+          }
+        })
       }
     },
     methods: {
@@ -141,18 +185,19 @@
             let res=JSON.parse(data);
             if(res.status==200 && res.data.length>0){
               
-              //去重 & 合并
-              // let list=res.data.concat(that.listObjURL);
-              // list=[...new Set(list)];
+              // let list=res.data.concat(that.listObjURL);              
               // that.listObjURL.splice(0,that.listObjURL.length,...list);
               let msg="";
+              //去重 & 合并
               let listNew=res.data.filter(vNew=>{
-                let isOld= (that.listObjURL.find(vOld=>(vNew.idURL==vOld.idURL)));
+                let isOld= (that.listObjURL.find(vOld=>(vNew.idURL==vOld.idURL))) || (that.listNCM.find(vOld=>(vNew.idURL==vOld.idURL)));
                 if(isOld)msg+=vNew.name+","
                 return !isOld;
               })
               msg="剔除重复"+listNew.length+"条V,新增:"+msg;
-              that.listObjURL.unshift(...listNew);
+              that.listNCM.unshift(...listNew);
+              //去重 & 合并
+              // that.listNCM=[...new Set(that.listNCM)];
               // if(listNew.length<res.data.length)that.$message({
               //   message: msg,
               //   type: "success"
@@ -163,8 +208,6 @@
               });
               // 去空数据
               // that.listObjURL=that.listObjURL.filter(v=>(v));
-              // 触发事件;
-              if(that.listObjURL)that.$emit('list-changed',that.listObjURL);
 
             }else{
               that.$message.error(
@@ -182,7 +225,7 @@
       },
       // 弹窗打开时
       eDialogOpen(e){
-  
+        this.eBnSyncNCM(e);
       },
       // 手动更新到服务器
       submitUpload(){
@@ -190,7 +233,7 @@
         let payload={
           _id:this.dialogState.formData._id,
           funUpdate:"updateList",
-          [this.dialogState.strListObjURL]:this.listObjURL,
+          [this.dialogState.strListObjURL]:this.listDataToUpdate,
         }
         updateOne(payload,this.nameMod).then(result => {
           if (result.status === 200) {
@@ -219,13 +262,120 @@
           this.dialogState.formData={};
           this.dialogState.isEdited=false;
       },
+      // 上传blob到后台
+      uploadBlob(blob){
+        let _this=this;
+        return new Promise((resolve,reject)=>{
+          const params = new FormData()
+          // 路径相关:
+          params.append("nameMod",_this.nameMod);
+          params.append("subPath","videos");
+          params.append('upload_file', blob, "imgVideo.jpg")
+          let uploadFileRequest = new Request("/manage/dr/uploadFiles", {
+              method: 'post',
+              //指定header会eggjs接收不到multipart
+              // headers: {'Content-Type': 'multipart/form-data'},
+              body:params,
+          })
+          fetch(uploadFileRequest).then(response => {
+              return response.text();
+          }).then(res => {
+              // 在这个then里面我们能拿到最终的数据
+              let objData=JSON.parse(res);
+              if(objData.status==200){
+                console.log("resUpload::",objData);
+                resolve(objData.data.path)
+              }else reject({err:objData,msg:"上传错误"})
+          }).catch(e=>{
+            reject({err:e,msg:"上传错误"})
+            debugger
+          })          
+        })
+
+      },      
+      // 生成要新增的数组数据
+      getPushDataToUpdate(item){
+        let data={
+            name:item.name,
+            type:item.type,
+            date:item.date,
+            idURL:item.idURL,
+            status:item.status,
+            urlImg:item.urlImg,
+            urlVideo:item.urlVideo,
+            link:item.link,
+          }
+        return {
+          _id:this.dialogState.formData._id,
+          funUpdate:"updateList",
+          $push:{
+            [this.dialogState.strListObjURL]:data
+          },
+          // [this.dialogState.strListObjURL]:data,
+        }
+      },
+      // 添加到本地,检查图片是否已修正，上传图片+数据
+      addDomain(item){
+        let that=this;
+        item.isLoading=true;
+        that.uploadBlob(item.blob).then(resSrc=>{
+          item.urlImg=resSrc;
+          let payload=that.getPushDataToUpdate(item);
+          return updateOne(payload,this.nameMod);
+        }).then(result => {
+          if (result.status === 200) {
+            that.$message({
+              message: that.$t("main.updateSuccess"),
+              type: "success"
+            });
+            item.isLoading=false;
+            // 从网易云列表中移除，添加到listVideos
+            let idxNCM=that.listNCM.findIndex(v=>(v.link==item.link));
+            that.listObjURL.push(...that.listNCM.splice(idxNCM,1));
+          } else {
+            that.$message.error(result.message);
+          }         
+        }).catch(error=>{
+          debugger
+          console.error(that.nameMod,"更新:fail,",error);
+          that.$message.error(JSON.stringify(error));
+        });    
+            
+      },
       // 删除链接
       removeDomain(item) {
+        let that=this;
         var index = this.listObjURL.findIndex((v,idx)=>(v.link==item.link))
         if (index !== -1) {
-          this.listObjURL.splice(index, 1)
+          item.isLoading=true;
+          // 从listVideos中移除，添加到网易云列表
+          this.listNCM.push(...this.listObjURL.splice(index, 1));
+          // let itemNCM=this.listNCM.find((v,idx)=>(v.link==item.link))
+
+          // 更新整个列表
+          let payload={
+            _id:this.dialogState.formData._id,
+            funUpdate:"updateList",
+            [this.dialogState.strListObjURL]:this.listDataToUpdate,
+          }
+          updateOne(payload,that.nameMod).then(result => {
+            if (result.status === 200) {
+              let itemNCM=that.listNCM.find((v,idx)=>(v.link==item.link))
+              if(itemNCM)itemNCM.isLoading=false;
+              that.listNCM=that.listNCM.map(v=>(v));
+              that.$message({
+                message: that.$t("main.updateSuccess"),
+                type: "success"
+              });
+            } else {
+              that.$message.error(result.message);
+            }         
+          }).catch(error=>{
+            debugger
+            console.error(that.nameMod,"删除:fail,",error,params);
+            that.$message.error(JSON.stringify(error));
+          }); 
         }
-        if(this.listObjURL)this.$emit('list-changed',this.listObjURL);
 
       },
       // 获取图标和fetch信息
@@ -288,7 +438,6 @@
                 // 新增恢复初始值
                 that.objToAdd=Object.assign({},objURLDefault);
                 // console.log("增加链接：",this.objToAdd);
-                if(that.listObjURL)that.$emit('list-changed',this.listObjURL);
               }else{
                 that.$message.error(
                   that.$t("validate.error_params", { label: "网易云返回数据异常" })
@@ -318,11 +467,20 @@
         let typeSrc=img.src.substring(0,7);
         let time=new Date();
         // if(typeSrc.indexOf("data:")==-1 && typeSrc.indexOf("blob:")==-1)
-        if(img.naturalWidth!=targetWidth || img.naturalHeight!=targetHeight)
-        imgFit(img,targetWidth,targetHeight).then(resSrc=>{
-          img.src= resSrc;
-          console.log("图片裁切完成",(new Date()-time),typeSrc)
-        });//网易云MV图尺寸628,353
+        if(img.naturalWidth!=targetWidth || img.naturalHeight!=targetHeight){
+          let srcOrg=img.src;
+          let objToChange=this.listNCM.find(v=>(v.urlImg==srcOrg));
+          if(objToChange){
+            img.type='image/jpeg';
+            imgFit(img,targetWidth,targetHeight).then(resSrc=>{
+              objToChange.urlImg=resSrc.src;
+              objToChange.blob=resSrc.blob;
+              // img.src= resSrc;
+              console.log("图片裁切完成",(new Date()-time),typeSrc)
+            });//网易云MV图尺寸628,353
+          }
+
+        }
       },
 
     }
