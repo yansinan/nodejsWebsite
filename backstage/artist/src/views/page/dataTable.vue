@@ -42,8 +42,8 @@
       <!-- 专辑 -->
       <el-table-column prop="listRecords" :label="$t('artist.listRecords')" width="80" show-overflow-tooltip>
         <template slot-scope="scope">
-          <el-badge :value="scope.row.listRecords.length" :hidden="scope.row.listRecords.length==0?true:false" :max="99" type="info">
-            <el-button @click="eRecordEdit(scope.$index,dataList)" size="large" plain icon="el-icon-files" :type="scope.row.listRecords.length==0?'':'primary'" circle></el-button>  
+          <el-badge :value="scope.row.cntRecords" :hidden="scope.row.cntRecords==0?true:false" :max="99" type="info">
+            <el-button @click="eRecordEdit(scope.$index,dataList)" size="large" plain icon="el-icon-files" :type="scope.row.cntRecords==0?'':'primary'" circle></el-button>  
           </el-badge>
         </template>
       </el-table-column>
