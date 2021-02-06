@@ -30,7 +30,9 @@
               <el-image :md="24" :src="domain.urlImg" fit="contain" @load="eImgLoaded" v-loading="!domain.isFitted" crossOrigin="Anonymous"/>
               <div class="titleVideo" style="">
                 <span v-if="domain.name">{{domain.name}}</span>
-                <el-button type="danger" plain icon="el-icon-delete" @click.prevent="removeDomain(domain)"/>
+                <el-tooltip :content="'从'+dialogState.formData.name+'的'+label+'移除'" placement="top" effect="light">
+                  <el-button type="danger" plain icon="el-icon-delete" @click.prevent="removeDomain(domain)"/>
+                </el-tooltip>
               </div>
               <!-- </el-form-item> -->
             </el-card>
@@ -39,7 +41,7 @@
 
       </el-row>
       <!-- 网易云抓取 -->
-      <el-divider content-position="left">网易云音乐获取</el-divider>
+      <el-divider content-position="left">网易云音乐数据</el-divider>
       <el-row :gutter="40">
           <el-col v-for="(domain, index) in listNCM" :key="domain.idURL" :md="8" style="margin-bottom:40px;">
             <el-card :body-style="{ padding: '0px' }" shadow="hover" v-loading="domain.isLoading">
@@ -51,8 +53,9 @@
               <el-image :md="24" :src="domain.urlImg" fit="contain" @load="eImgLoaded" v-loading="!domain.isFitted" crossOrigin="Anonymous"/>
               <div class="titleVideo" style="">
                 <span v-if="domain.name">{{domain.name}}</span>
-                <!-- <el-button type="danger" plain icon="el-icon-delete" @click.prevent="removeDomain(domain)"/> -->
-                <el-button type="prime" plain icon="el-icon-plus" @click.prevent="addDomain(domain)"/>
+                <el-tooltip :content="'添加到'+dialogState.formData.name+'的'+label" placement="top" effect="light">
+                  <el-button type="prime" plain icon="el-icon-plus" :disabled="!domain.isFitted" @click.prevent="addDomain(domain)"/>
+                </el-tooltip>
               </div>
             </el-card>
           </el-col>
@@ -73,8 +76,8 @@
                       }]"
                       :error="strErrorAdd">
                   <el-input v-model="objToAdd.link" @change="eAddURL">
-                    <template slot="prepend" style=""><span style="text-align:center;font-size: 18px;" >新链接</span></template>
-                    <el-button slot="append" icon="el-icon-plus" @click="eAddURL"/>
+                    <template slot="prepend" style=""><span style="text-align:center;font-size: 18px;" >视频链接</span></template>
+                    <el-button slot="append" icon="el-icon-connection" @click="eAddURL"/>
                   </el-input>
                 </el-form-item>
               </el-form>
