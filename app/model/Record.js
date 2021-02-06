@@ -49,6 +49,10 @@ module.exports =app=>{
                 icon:{type:String},
                 type:{type:String,default:"购买"},
             }],//购买链接
+            idAlbumNCM:{
+                type: String,
+                default:"",
+            },//网易云专辑id
         });        
         // schema.path('dateRelease').get(function (v) {
         //     return moment(v || new Date()).format("YYYY-MM-DD");

@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-24 13:20:49 
  * @Last Modified by: dr
- * @Last Modified time: 2021-02-05 10:55:46
+ * @Last Modified time: 2021-02-06 10:24:44
  */
 
 'use strict';
@@ -10,7 +10,7 @@ const { debug } = require('console');
 const path = require('path')
 const BaseService = require('./Doc');//require(path.join(process.cwd(), 'lib/plugin/egg-dora-artist/app/service/Artist'));
 const shortid = require('shortid');
-
+const _ = require('lodash')
 // const Model_NAME=__filename.slice(__dirname.length + 1, -3);
 
 
@@ -30,6 +30,33 @@ class ServicePlugin extends BaseService {
     get model(){
         if(!this._model)this._model=this.ctx.model[__filename.slice(__dirname.length + 1, -3)];
         return this._model;
+    }
+    async find(payload, {
+        sort = {
+            date: -1
+        },
+        query = {},
+        searchKeys = [],
+        populate = [],
+        files = null
+    } = {}) {
+        let that=this;
+        let res = await super.find(payload, {
+            files: files,
+            query: query,
+            searchKeys: searchKeys,
+            populate: !_.isEmpty(populate) ? populate : this.constListPopulate,
+            sort: sort
+        });
+        let listData=res.docs.map(v=>v.toObject());
+
+        for(let idx in listData){
+            listData[idx].cntRecords=await that.ctx.service.record.count({
+                listRefs:listData[idx]._id
+            })
+        }
+        res.docs=listData;
+        return res;
     }
     // 是否使用网易云
     isNCM(idNCM){
@@ -457,8 +484,8 @@ class ServicePlugin extends BaseService {
                     alias:ncm.alias[0] || "",
                     dateRelease:ncm.publishTime,
                     sImg:ncm.picUrl,
-                    discription:ncm.briefDesc,
-                    comments:ncm.description,
+                    discription:ncm.briefDesc || "网易云音乐无简介",
+                    comments:ncm.description || "网易云音乐无描述",
                     // type:ncm.type,//"EP/Single",
                     link:"https://music.163.com/#/album?id="+ncm.id,
                     

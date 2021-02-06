@@ -605,6 +605,7 @@ class APIController extends Controller {
             if (!idNCM || !idArtist) throw new Error(ctx.__('validate_error_params')+"id or idNCM miss");
 
             let resNCM=await service.ncmArtistAlbum({idNCM,_id:idArtist});
+            // 手动添加listRefs为本乐队
             resNCM.forEach(v=>(v.listRefs=[idArtist]));
             ctx.helper.renderSuccess(ctx,{
                 data: resNCM
@@ -616,7 +617,7 @@ class APIController extends Controller {
     }
     
     // 抓乐队所有专辑信息
-    async listAlbums(){
+    async listRecords(){
         const {
             ctx,
             app
@@ -626,9 +627,13 @@ class APIController extends Controller {
         let idArtist=ctx.query._id;
 
         try{
-            if (!idNCM) throw new Error(ctx.__('validate_error_params')+"name and idNCM all miss");
+            if (!idArtist) throw new Error(ctx.__('validate_error_params')+"id");
 
-            let res=await ctx.service.record.list({listArtists:[idArtist]});
+            let res=await ctx.service.record.find({isPaging:false,pageSize:0,},{
+                query:{
+                    listRefs:idArtist
+                }
+            });
 
             ctx.helper.renderSuccess(ctx,{
                 data: res
@@ -637,7 +642,7 @@ class APIController extends Controller {
             debugger
             ctx.helper.renderFail(ctx, { message: err });
         }
-    }       
+    }
 }
 
 

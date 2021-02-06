@@ -29,9 +29,9 @@ module.exports = app => {
             details: '获取单个文档信息',
         },
         {
-            url: API + "/listAlbums",
+            url: API + "/listRecords",
             method:"get",
-            controllerName:"listAlbums",
+            controllerName:"listRecords",
             details:"抓取乐队的所有专辑"
         }, 
         {
