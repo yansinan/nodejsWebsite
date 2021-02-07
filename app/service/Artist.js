@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-24 13:20:49 
  * @Last Modified by: dr
- * @Last Modified time: 2021-02-06 21:39:39
+ * @Last Modified time: 2021-02-07 08:35:54
  */
 
 'use strict';
@@ -48,14 +48,17 @@ class ServicePlugin extends BaseService {
             populate: !_.isEmpty(populate) ? populate : this.constListPopulate,
             sort: sort
         });
-        let listData=res.docs.map(v=>v.toObject());
+        let listRes=res.docs || res ||[];
+        let listData=listRes.map(v=>v.toObject());
 
         for(let idx in listData){
             listData[idx].cntRecords=await that.ctx.service.record.count({
                 listRefs:listData[idx]._id
             })
         }
-        res.docs=listData;
+        // 如果不是分页浏览，就没docs结构不一样
+        if(!res.docs)res=listData;
+        else res.docs=listData;
         return res;
     }
     // 是否使用网易云
