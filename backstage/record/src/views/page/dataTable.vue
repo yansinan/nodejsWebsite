@@ -7,104 +7,111 @@
       :data="dataList"
       tooltip-effect="dark"
       style="width: 100%"
+      class="tableBox"
       @selection-change="handleContentSelectionChange"
     >
       <el-table-column type="selection" width="30"></el-table-column>
       <el-table-column prop="isTop" :label="$t('contents.rec')" width="30" show-overflow-tooltip>
         <template slot-scope="scope">
-          <svg-icon
-            :style="yellow"
-            v-show="scope.row.isTop === 1"
-            @click="topContent(scope.$index, dataList)"
-            icon-class="icon_star_fill"
-          />
-          <svg-icon
-            :style="gray"
-            v-show="scope.row.isTop != 1"
-            @click="topContent(scope.$index, dataList)"
-            icon-class="icon_star"
-          />
+          <svg-icon :style="yellow" v-show="scope.row.isTop === 1" @click="topContent(scope.$index, dataList)" icon-class="icon_star_fill" />
+          <svg-icon :style="gray" v-show="scope.row.isTop != 1" @click="topContent(scope.$index, dataList)" icon-class="icon_star" />
         </template>
       </el-table-column>
-      <el-table-column
-        prop="roofPlacement"
-        :label="$t('contents.roofPlacement')"
-        width="30"
-        show-overflow-tooltip
-      >
+      <el-table-column prop="roofPlacement" :label="$t('contents.roofPlacement')" width="30" show-overflow-tooltip>
         <template slot-scope="scope">
-          <svg-icon
-            :style="green"
-            v-show="scope.row.isTop === 1 && scope.row.roofPlacement == 1"
-            @click="roofContent(scope.$index, dataList)"
-            icon-class="icon_ping"
-          />
-          <svg-icon
-            :style="gray"
-            v-show="scope.row.isTop === 1 && scope.row.roofPlacement != 1"
-            @click="roofContent(scope.$index, dataList)"
-            icon-class="icon_ding"
-          />
-        </template>
-      </el-table-column>  
-      <el-table-column prop="sImg" :label="$t(nameMod+'.sImg')" width="50px" show-overflow-tooltip>
-        <template slot-scope="scope">
-          <img :src="scope.row.sImg" class="avatar" width="50px"/>
+          <svg-icon :style="green" v-show="scope.row.isTop === 1 && scope.row.roofPlacement == 1" @click="roofContent(scope.$index, dataList)" icon-class="icon_ping" />
+          <svg-icon :style="gray" v-show="scope.row.isTop === 1 && scope.row.roofPlacement != 1" @click="roofContent(scope.$index, dataList)" icon-class="icon_ding" />
         </template>
       </el-table-column>
-      <el-table-column prop="name" :label="$t('docs.name')" width="150" show-overflow-tooltip>
-        <template slot-scope="scope">
-          <a :href="'/'+nameMod+'/'+scope.row._id+'.html'" target="_blank">{{scope.row.name}}</a>
-        </template>
+      <!-- 名称 -->
+      <el-table-column prop="name" :label="$t('docs.name')" min-width="350" show-overflow-tooltip>
+        <el-row :gutter="20" slot-scope="scope">
+          <el-col :span="12">
+            <el-avatar :src="scope.row.sImg" fit="cover" :size="128"  shape="square" @click="eLink('/'+nameMod+'/'+scope.row._id+'.html')" />
+          </el-col>
+          <el-col :span="12" style="text-align:left">
+            <el-button type="text" size="large" @click="editContentInfo(scope.$index, dataList)">{{scope.row.name}}  <i class="el-icon-edit" /></el-button>
+            <div class="containerTag">
+              <el-tag size="mini" type="success" v-for="artist in scope.row.listRefs" :key="artist._id">{{artist.name}}</el-tag>
+            </div>
+            <!-- <div><span v-for="artist in scope.row.listRefs" :key="artist._id">{{artist.name+','}}</span></div> -->
+            <div >{{scope.row.date}}</div>              
+          </el-col>
+         <!-- <div v-else class="col-name hide" ><el-avatar :src="scope.row.sImg" :fit="cover"/>{{scope.row.name}}</div> -->
+        </el-row>
       </el-table-column>
+      <!-- 
       <el-table-column prop="date" :label="$t(nameMod+'.dateRelease')" width="180">
         <template slot-scope="scope">{{scope.row.date}}</template>
       </el-table-column>
-      <el-table-column prop="listRefs" :label="$t('contents.author')" show-overflow-tooltip>
-        <template slot-scope="scope">
-          <span v-for="artist in scope.row.listRefs" :key="artist._id">{{artist.name+','}}</span>
-        </template>
+      -->
+      <el-table-column prop="tags" :label="$t('contents.tags')" min-width="200" show-overflow-tooltip>
+        <div class="containerTag" slot-scope="scope">
+          <el-tag size="mini" type="info" v-for="tag in scope.row.tags" :key="tag._id">{{tag.name}}</el-tag>
+        </div>
       </el-table-column>
-      <el-table-column prop="tags" :label="$t('contents.tags')" width="250" show-overflow-tooltip>
+      <!-- 其他链接 -->
+      <el-table-column prop="listLinks" :label="$t('record.listLinks')" width="80" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span v-for="tag in scope.row.tags" :key="tag._id">{{tag.name+','}}</span>
+          <el-badge :value="scope.row.listLinks.length" :hidden="scope.row.listLinks.length==0?true:false" :max="99" type="info">
+            <el-button @click="eListLinksEdit(scope.$index,dataList)" size="large" plain icon="el-icon-link" :type="scope.row.listLinks.length==0?'':'primary'" circle></el-button>  
+          </el-badge>          
         </template>
-      </el-table-column>
-      <el-table-column prop="state" :label="$t('contents.enable')" show-overflow-tooltip>
-        <template slot-scope="scope">
-          <svg-icon v-show="scope.row.state=='2'" :style="green" icon-class="check-circle-fill" />
-          <svg-icon v-show="scope.row.state!='2'" :style="red" icon-class="minus-circle-fill" />
-        </template>
-      </el-table-column>
-      <el-table-column prop="clickNum" :label="$t('contents.clickNum')" show-overflow-tooltip></el-table-column>
+      </el-table-column>      
 
-      
-      <el-table-column :label="$t('main.dataTableOptions')" width="150" fixed="right">
+      <!-- 右侧固定栏 -->
+      <el-table-column :label="$t('main.dataTableOptions')" width="200" fixed="right">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="primary"
-            plain
-            round
-            @click="editContentInfo(scope.$index, dataList)"
-          >
-            <svg-icon icon-class="edit" />
-          </el-button>
-          <el-button
-            size="mini"
-            type="danger"
-            plain
-            round
-            @click="deleteContent(scope.$index, dataList)"
-          >
-            <svg-icon icon-class="icon_delete" />
-          </el-button>
+          <el-button-group>
+            <el-button icon="el-icon-view" :type="scope.row.state?'':'info'" :disabled="!scope.row.state" size="large" @click="eLink('/'+nameMod+'/'+scope.row._id+'.html')" />
+            <el-button icon="el-icon-edit" size="large" type="success" @click="editContentInfo(scope.$index, dataList)" plain/>
+            <el-button icon="el-icon-delete" size="large" type="danger" plain @click="deleteContent(scope.$index, dataList)" />
+          </el-button-group>
         </template>
       </el-table-column>
     </el-table>
+    <DialogURL @complete="getList" :nameMod="nameMod" :label="$t('record.listLinks')" :dialogState="dialogStateLink" />
   </div>
 </template>
 <style lang="scss">
+.tableBox{
+  th{
+    height:100%;
+  }
+  td{
+    height:80px;
+  }
+  .cell{
+    height:100%;
+    display:flex;
+    align-items: center;
+    text-align: center;
+
+    .el-button--text{
+      color:#303133;
+      font-size:18px;
+      line-height:2.5em;
+    }
+    .el-avatar{
+      margin-right:5px;
+      margin-left:5px;
+      min-width: 40px;
+    }
+    .containerTag{
+      display:flex;
+      flex-wrap: wrap;
+      justify-content: start;
+      align-items: start;
+      // height:100%;
+      .el-tag {
+        margin-top:20px;
+        margin-right: 10px;
+      }
+    }
+
+
+  }
+}
 .fa-star,
 .fa-thumbs-up {
   cursor: pointer;
@@ -139,10 +146,19 @@ export default {
         color: "#CCC"
       },
       green: { color: "#13CE66" },
-      red: { color: "#FF4949" }
+      red: { color: "#FF4949" },
+      // 编辑相关链接弹窗
+      dialogStateLink:{
+        isShow:false,
+        isEdited:false,
+        formData:{},
+        strListObjURL:"listLinks"
+      },
     };
   },
-
+  components: {
+    DialogURL:() => import("@root/publicMethods/vue/DialogURL.vue"),
+  },
   methods: {
     // 从mod获取列表更新
     getList(){
@@ -231,7 +247,19 @@ export default {
             message: this.$t("main.scr_modal_del_error_info")
           });
         });
-    }
+    },
+    // 编辑相关链接;
+    eListLinksEdit(index,rows){
+      this.dialogStateLink = {
+        isShow:true,
+        isEdited:false,
+        formData:rows[index],
+        strListObjURL:"listLinks",
+      };
+    },
+    // 新开页面（预览）
+    eLink(url,target){window.open(url,target);},
+
   },
   computed: {}
 };

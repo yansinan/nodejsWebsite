@@ -41,13 +41,16 @@ export default {
   record:{
     sImg:"封面",
     listArtists:"作者",
+    listRefs:"创作者",
     name:"唱片名称",
     nameAlias:"唱片别名",
     format:"发行介质",
+    listFormatTags:"发行介质",
     dateRelease:"发行时间",
     catalog:"发行编号",
-    listShopLink:"购买链接",
+    listLinks:"购买链接",
     dateRelease:"发行日期",
+    tags:"专辑标签",
   },
   //LangEnd
 }

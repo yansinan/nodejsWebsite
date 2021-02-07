@@ -28,7 +28,7 @@ let that={
         } else if (type == 'normal') {
             files = '_id url name alias sImg date discription clickNum roofPlacement type videoImg state isTop dateRelease'
         } else {
-            files = '_id url name alias sImg date discription clickNum roofPlacement type appShowType imageArr videoArr duration simpleComments comments videoImg state dismissReason categories isTop listArtists listFormatTags dateRelease catalog listShopLink'
+            files = '_id url name alias sImg date discription clickNum roofPlacement type appShowType imageArr videoArr duration simpleComments comments videoImg state dismissReason categories isTop listArtists listFormatTags dateRelease catalog listLinks'
         }
         // console.log('--files----', files)
         return files;
@@ -435,6 +435,21 @@ let ControllerPlugin = {
             });
         }
     },
+
+    async listAllFormats(ctx, app){
+        try{
+            let listRes=await ctx.service.contentTag.find({isPaging:0,pageSize:0},{query:{comments:"发行介质"}})
+            ctx.helper.renderSuccess(ctx, {
+                data: listRes
+            });
+
+        }catch (err) {
+            ctx.helper.renderFail(ctx, {
+                message: err
+            });
+            debugger
+        }
+    }
 }
 
 module.exports = ControllerPlugin;

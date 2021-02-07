@@ -23,96 +23,41 @@
           <el-input size="small" v-model="formState.formData.dismissReason"></el-input>
         </el-form-item>
         <el-form-item :label="$t(nameMod + '.name')" prop="name">
-          <el-input size="small" v-model="formState.formData.name"></el-input>
+          <el-input size="small" v-model="formState.formData.name" maxlength="50" show-word-limit></el-input>
         </el-form-item>
         <el-form-item :label="$t(nameMod + '.nameAlias')" prop="alias">
-          <el-input size="small" v-model="formState.formData.alias"></el-input>
+          <el-input size="small" v-model="formState.formData.alias" maxlength="50" show-word-limit></el-input>
         </el-form-item>
-        <el-form-item :label="$t(nameMod + '.format')" prop="listFormatTags">
-          <!-- <el-input size="small" v-model="formState.formData.format" placeholder=""></el-input> -->
-          <el-select
-            size="medium"
-            v-model="formState.formData.listFormatTags"
-            multiple
-            filterable
-            allow-create
-            :loading="userLoading"
-            :placeholder="$t('validate.selectNull', {label: this.$t('contents.tags')})"
-            @change="eChangeFormats"
-          >
-            <el-option
-              v-for="item in formatTagList.docs"
-              :key="item._id"
-              :label="item.name"
-              :value="item._id"
-            ></el-option>
-          </el-select>
-        </el-form-item>
+        <!-- 作者 -->
+        <SelectIds :label="this.$t(nameMod+'.listArtists')" :allow-create="false" @change="eChangeArtist" :listIds="formState.formData.listRefs" :nameMode="nameMod" :apiAdd="false" apiFind="/manage/artist/getList" :initTag="false"/>
+
+        <!-- 发行日期 -->
         <el-form-item :label="$t(nameMod + '.dateRelease')" prop="dateRelease">
-          <el-date-picker
-            v-model="formState.formData.dateRelease"
-            type="date"
-            placeholder="发行日期" @change="eChangeDate">
-          </el-date-picker>
+          <el-date-picker v-model="formState.formData.dateRelease" type="date" placeholder="发行日期" @change="eChangeDate"/>
         </el-form-item>
+
+        <!-- 发行介质 -->
+        <SelectIds :label="this.$t(nameMod+'.listFormatTags')" @change="eChangeFormats" :listIds="formState.formData.listFormatTags" :nameMode="nameMod" apiFind="/api/record/listAllFormats" :initTag="createFormatTag"/>
+        <!-- 标签 -->
+        <div v-if="formState.formData.type == '1'">
+          <SelectIds :label="this.$t(nameMod+'.tags')" @change="eChangeTag" :listIds="formState.formData.tags" :nameMode="nameMod" :initTag="createTag" />
+          <el-form-item label="乐队关键字" prop="keywords">
+            <el-input size="small" v-model="formState.formData.keywords"></el-input>
+          </el-form-item>
+        </div>
+
+        <Cropper 
+          :nameMod="nameMod"
+          v-model="formState.formData.sImg" 
+          :label="$t('contents.sImg')" 
+          prop="sImg"></Cropper>
+        <!-- 发行编号 -->
         <el-form-item :label="$t(nameMod + '.catalog')" prop="catalog">
           <el-input size="small" v-model="formState.formData.catalog" placeholder=""></el-input>
         </el-form-item>
-        <el-form-item :label="$t(nameMod + '.listArtists')" prop="listRefs">
-          <el-select
-            size="medium"
-            v-model="formState.formData.listRefs"
-            filterable
-            multiple
-            placeholder="作者"
-            :remote-method="remoteUserMethod"
-            remote
-            :loading="userLoading"
-            @change="eChangeArtist"
-          >
-            <el-option
-              v-for="item in dataArtists.docs"
-              :key="item._id"
-              :label="item.name"
-              :value="item._id"
-            ></el-option>
-          </el-select>
-        </el-form-item>
 
-        <div v-if="formState.formData.type == '1'">
-          <el-form-item label="标签" prop="tags">
-            <el-select
-              size="medium"
-              v-model="formState.formData.tags"
-              multiple
-              filterable
-              allow-create
-              :loading="userLoading"
-              :placeholder="$t('validate.selectNull', {label: this.$t('contents.tags')})"
-              @change="eChangeTags"
-            >
-              <el-option
-                v-for="item in contentTagList.docs"
-                :key="item._id"
-                :label="item.name"
-                :value="item._id"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="关键字" prop="keywords">
-            <el-input size="small" v-model="formState.formData.keywords"></el-input>
-          </el-form-item>
-
-        </div>
-        <Cropper v-if="formState.formData.sImg" 
-          :nameMod="nameMod"
-          :srcPreview="formState.formData.sImg" 
-          :label="$t('contents.sImg')" 
-          prop="sImg"
-          :on-success="handleAvatarSuccess"
-          ></Cropper>
         <el-form-item :label="$t('contents.discription')" prop="discription">
-          <el-input size="small" type="textarea" v-model="formState.formData.discription"></el-input>
+          <el-input size="small" type="textarea" v-model="formState.formData.discription" maxlength="300" show-word-limit :autosize="{minRows: 4, maxRows: 10 }"></el-input>
         </el-form-item>
         <el-form-item :label="$t('contents.comments')" prop="comments">
           <!-- <Ueditor @ready="editorReady" ref="ueditor"></Ueditor> -->
@@ -124,15 +69,12 @@
           ></vue-ueditor-wrap>
         </el-form-item>
         <!-- 热门歌曲：相关链接 -->
-        <el-form-item :label="$t(nameMod + '.listShopLink')" prop="listShopLink">
-          <ListURL @list-changed="eListHotMusicChanged" label="购买链接" :listObjURL="formState.formData.listShopLink"></ListURL>
+        <el-form-item :label="$t(nameMod + '.listLinks')" prop="listLinks">
+          <ListURL v-model="formState.formData.listLinks" label="购买链接" ref="listLinks"></ListURL>
         </el-form-item>
-        <el-form-item class="dr-submitContent">
-          <el-button
-            size="medium"
-            type="primary"
-            @click="submitForm('ruleForm')"
-          >{{formState.edit ? $t('main.form_btnText_update') : $t('main.form_btnText_save')}}</el-button>
+
+        <el-form-item class="" style="text-align:right;"><!-- dr-submitContent -->
+          <el-button size="medium" type="primary" @click="submitForm('ruleForm')">{{formState.edit ? $t('main.form_btnText_update') : $t('main.form_btnText_save')}}</el-button>
           <el-button size="medium" @click="backToList">{{$t('main.back')}}</el-button>
         </el-form-item>
       </el-form>
@@ -210,11 +152,6 @@ import {
   updateOne,
   // regUserList,
 } from "@root/publicMethods/apiGeneral";
-import {
-  addContentTag,
-} from "@/api/contentTag"
-import ListURL from "../common/ListURL.vue";
-// import Cropper from "../common/Cropper.vue";
 
 import _ from "lodash";
 import { mapGetters, mapActions,createNamespacedHelpers} from "vuex";
@@ -228,23 +165,12 @@ export default {
     return {
       nameMod:nameMod,
       contentState: [
-        { value: "0", label: "退回" },
-        { value: "1", label: "待审核" },
-        { value: "2", label: "审核通过" },
-        { value: "3", label: "审核不通过" }
+        { value: "0", label: "隐藏" },
+        { value: "1", label: "待发布" },
+        { value: "2", label: "发布" },
+        // { value: "3", label: "审核不通过" }
       ],
-      // selectUserList: [],//author用
-      loading: false,
-      userLoading: false,//是否loading用户
-      loadingTag:false,//是否loading标签
-      selectSpecialList: [],
-      content: "",
-      simpleComments: "",
-      isflash: false,
-      config: {
-        initialFrameWidth: null,
-        initialFrameHeight: 320
-      },
+
       editorConfig: {
         // 编辑器不自动被内容撑高
         autoHeightEnabled: false,
@@ -257,8 +183,6 @@ export default {
         // UEditor 资源文件的存放路径，如果你使用的是 vue-cli 生成的项目，通常不需要设置该选项，vue-ueditor-wrap 会自动处理常见的情况，如果需要特殊配置，参考下方的常见问题2
         UEDITOR_HOME_URL: this.$root.staticRootPath + "/plugins/ueditor/"
       },
-      imageUrl: "",
-      currentType: "1",
       rules: {
         sImg: [
           {
@@ -336,177 +260,75 @@ export default {
   },
   components: {
     VueUeditorWrap,
-    ListURL,
+    ListURL: () => import('@root/publicMethods/vue/ListURL.vue'),
     Cropper: () => import('@root/publicMethods/vue/Cropper.vue'),
+    SelectIds: () => import('@root/publicMethods/vue/SelectIds.vue'),
   },
   methods: {
     //获取表单信息
     ...mod.mapActions(["showContentForm"]),// 将 `this.showContentForm(params)` 映射为 `this.$store.dispatch(nameMod+'/incrementBy', params)`
+    
+    // SelectIds变化::listFormatTags;
     eChangeFormats(e){
       let that=this;
-      console.log("添加发行方式：",e,this.formState.formData.listFormatTags);
-      //检查 是否有没在列表里的值e=[idTag1,idTag2...text]
-      this.formState.formData.listFormatTags.forEach((v,idx,arr) => {
-        if(!v){
-          that.$message.error("标签undefined：",v);
-          return;
-        }
-        let tagFound=that.formatTagList.docs.find(tag=>(tag._id==v));
-        let isTagFound = tagFound?true:false;
-        if(!isTagFound){
-          //loading停止操作
-          that.loadingTag=true;
-          //创建标签 // 新增
-          let formDataTag={
-            name:v,
-            comments:"发行介质",
-            alias:v,
-          }
-          //添加contentTag标签
-          addContentTag(formDataTag).then(result => {
-            console.log("添加标签返回的result:",result);
-            if (result.status === 200) {
-              that.$store.dispatch("contentTag/getContentTagList");
-              that.$store.dispatch("contentTag/getFormatTagList");
-              that.$message({
-                message: that.$t("main.addSuccess"),
-                type: "success"
-              });
-              //替换文字为idTag//可以在返回结果中获得result.data._id{}
-              that.formState.formData.listFormatTags[idx]=result.data._id;
-              that.formState.formData.tags.push(result.data._id);
-              //关键词里同步
-              that.updateKeywords(v);
-            } else {
-              that.$message.error("添加标签错误："+result.message,formDataTag);
-            }
-            //恢复操作
-            that.loadingTag=false;
-          }).catch(error=>{
-            that.$message.error("添加标签错误："+error,formDataTag);
-            let t=formDataTag;
-            debugger
-          });
-          
-        }else{
-          // 同步到标签;
-          if(v && v!="")that.formState.formData.tags.push(v);
-          that.formState.formData.tags = [...(new Set(that.formState.formData.tags))];
-
-          //关键词里同步
-          that.updateKeywords(tagFound.name);
-        }
-      });
+      that.formState.formData.listFormatTags=e.listIds;
+      if(e.strAction=="delete"){
+        that.formState.formData.tags=that.formState.formData.tags.filter(v=>{
+          //看tags里是否有  新删除的
+          return !e.listObjDiff.find(objDiff=>(objDiff._id==v));
+        })
+      }else{
+        // tags去重添加
+        that.formState.formData.tags=[...new Set(that.formState.formData.tags.concat(e.listIds))];
+      }
+      that.updateKeywords(e.listObjDiff,e.strAction=="delete");
     },
-    eChangeArtist(value) {
-      let that=this;
-      console.log("添加乐队：",value,this.formState.formData.listRefs);
-
-      //检查 是否有没在列表里的值v=[idUser1,idUser2...text]
-      this.formState.formData.listRefs.forEach((v,idx,arr) => {
-        let tagFound=this.dataArtists.docs.find(user=>(user._id==v));
-        let isFound = tagFound?true:false;
-        //关键词里同步
-        if(isFound)this.updateKeywords(tagFound.name);
-        console.log("添加乐队：",v,"找到乐队,添加到关键词:",isFound,tagFound.name);
-      });
-    },
-    //标签变化
-    eChangeTags(e){
-      //检查 是否有没在列表里的值e=[idTag1,idTag2...text]
-      this.formState.formData.tags.forEach((v,idx,arr) => {
-        // console.log("添加标签e,v:",e,this.formState.formData.tags,v);
-        if(!v){
-          this.$message.error("标签undefined：",v);
-          return;
-        }
-        let tagFound=this.contentTagList.docs.find(tag=>(tag._id==v));
-        let isTagFound = tagFound?true:false;
-        if(!isTagFound){
-          //loading停止操作
-          this.loadingTag=true;
-          //创建标签 // 新增
-          let formDataTag={
-            name:v,
-            comments:"即时创建",
-            alias:v,
-          }
-          //添加contentTag标签
-          addContentTag(formDataTag).then(result => {
-            console.log("添加标签返回的result:",result);
-            if (result.status === 200) {
-              // this.$store.dispatch("hideContentTagForm");
-              this.$store.dispatch("contentTag/getContentTagList");
-              this.$message({
-                message: this.$t("main.addSuccess"),
-                type: "success"
-              });
-              //替换文字为idTag//可以在返回结果中获得result.data._id{}
-              this.formState.formData.tags[idx]=result.data._id;
-              //关键词里同步
-              this.updateKeywords(v);
-            } else {
-              this.$message.error("添加标签错误："+result.message,formDataTag);
-            }
-            //恢复操作
-            this.loadingTag=false;
-          }).catch(error=>{
-            this.$message.error("添加标签错误："+error,formDataTag);
-            let t=formDataTag;
-            debugger
-          });
-          
-        }else{
-          //关键词里同步
-          this.updateKeywords(tagFound.name);
-        }
-      });
-      //console.log(v,this.formState.formData.tags,this.contentTagList.docs);
-    },
-    // 查找艺术家列表
-    remoteUserMethod(query="") {
-      if (query !== "") {
-        this.userLoading = true;
-        let _this = this;
-        
-        this.queryUserListByParams({ searchkey: query, pageSize : 200,});
-      } else {
-        this.queryUserListByParams({ pageSize : 200,});
+    // 创建新发行方式标签时上传的基本数据
+    createFormatTag(v){
+      return {
+          name:v,
+          comments:"发行介质",
+          alias:v,
       }
     },
-    // 查找艺术家列表
-    queryUserListByParams(params = {}) {
-      let _this = this;
-      Object.assign(params,{ pageSize : 200, files:"name _id sImg"});
-      // this.$store.dispatch("getRegUserList",params);
-      this.$store.dispatch(this.nameMod + "/getArtistsList",params);
+    // SelectIds变化::listRefs;
+    eChangeArtist(e){
+      this.formState.formData.listRefs=e.listIds;
+      this.updateKeywords(e.listObjDiff,e.strAction=="delete");
+    },
+    // SelectIds变化::Tags;
+    // {
+    //     listObjDiff:listObjDiff,
+    //     listIds:listIds,
+    //     strAction:(isAdd?"add":"delete")
+    // }
+    eChangeTag(e){
+      this.formState.formData.tags=e.listIds;
+      this.updateKeywords(e.listObjDiff,e.strAction=="delete");
+    },
+    // 20191206 自动添加关键词 
+    // 20210131 输入改为单个字符串，或name字符串数组
+    updateKeywords(newVal,isDelete=false){
+      //两处自动复制：乐队成员，标签
+      let listTmp=this.formState.formData.keywords.split(",");
+      let listName=[];
+      if(newVal && newVal!="" && newVal instanceof String)listName=[newVal];
+      if(newVal && newVal.length>0 && newVal instanceof Array){
+        // 筛选，数组元素要么是有name的对象，要么直接是string;
+        listName=newVal.filter(v=>((v && v.name) || v instanceof String));
+        listName=listName.map(v=>(v.name || v));
+      }
+      if(!isDelete){
+        listTmp.push(...listName);
+      }else{
+        listTmp=listTmp.filter(v=>(listName.indexOf(v)===-1))
+      }
+      listTmp = [...(new Set(listTmp))];
+      this.formState.formData.keywords=listTmp.join();
+      return this.formState.formData.keywords;
+    }, 
 
-      this.userLoading = false;
-    },
 
-    // TOCheck：没用上？
-    checkFlashPost(currentType) {
-      this.showContentForm({
-        edit: this.formState.edit,
-        formData: Object.assign({}, this.formState.formData, {
-          type: currentType ? "2" : "1"
-        })
-      });
-    },
-    // TOCheck：没用上？
-    inputEditor(value) {
-      this.showContentForm({
-        edit: this.formState.edit,
-        formData: Object.assign({}, this.formState.formData, {
-          markDownComments: value
-        })
-      });
-      
-    },
-    // TOCheck：没用上？
-    changeEditor(value) {
-      console.log(value);
-    },
     //TOCheck： 本地缓存，在哪里保存？
     getLocalContents() {
       let localContent = localStorage.getItem("addContent") || "";
@@ -520,73 +342,55 @@ export default {
       this.ueditorObj = instance;
     },
 
-    handleAvatarSuccess(res, file) {
-      let imageUrl = res.data.path;
-      this.showContentForm({
-        edit: this.formState.edit,
-        formData: Object.assign({}, this.formState.formData, {
-          sImg: imageUrl
-        })
-      });
-    },
-
     backToList() {
       // this.$router.push("/"+nameMod);
       // this.$store.dispatch(nameMod+"/showContentForm",{edit:false,formData:{test:"debug:backToList"},isInit:true});
       this.$router.push(this.$root.adminBasePath + "/"+this.nameMod);
 
     },
-    // 热门歌曲列表变化
-    eListHotMusicChanged(e){
-      console.log("热门歌曲列表变化",e);
-      // 链接验证失败
-      if(!e){
-          // TODO:优化表单验证的方式，目前这个错误数据仍然能够提交
-          this.isValidate=false;
+    // // 热门歌曲列表变化
+    // eListHotMusicChanged(e){
+    //   console.log("热门歌曲列表变化",e);
+    //   // 链接验证失败
+    //   if(!e){
+    //       // TODO:优化表单验证的方式，目前这个错误数据仍然能够提交
+    //       this.isValidate=false;
 
-          this.$message.error(
-            this.$t("validate.inputCorrect", { label: "热门歌曲链接" })
-          );
-        return;
-      }
-      this.formState.formData.listHotMusics=e;
-    },
-    eListLinks(e){      
+    //       this.$message.error(
+    //         this.$t("validate.inputCorrect", { label: "热门歌曲链接" })
+    //       );
+    //     return;
+    //   }
+    //   this.formState.formData.listHotMusics=e;
+    // },
+    // eListLinks(e){      
       
       
-      // if(e && e.length > 0 ){
-      //     e.forEach(objLink => {
-      //         if(objLink.url.indexOf("weibo.com")!=-1)objLink.icon="/static/themes/dorawhite/images/link/logo_sina_32x32.png";
-      //         if(objLink.url.indexOf("douban.com")!=-1)objLink.icon="/static/themes/dorawhite/images/link/logo_douban_32x32.png"
-      //         if(objLink.url.indexOf("music.163.com")!=-1)objLink.icon="/static/themes/dorawhite/images/link/logo_163_32x32.png"
-      //     });
-      // }
-      console.log("其他链接列表变化",e);
-      // 链接验证失败
-      if(!e){
-        // TODO:优化表单验证的方式，目前这个错误数据仍然能够提交
-        this.isValidate=false;
-        this.$message.error(
-          this.$t("validate.inputCorrect", { label: "其他链接" })
-        );
-        return;
-      }
+    //   // if(e && e.length > 0 ){
+    //   //     e.forEach(objLink => {
+    //   //         if(objLink.url.indexOf("weibo.com")!=-1)objLink.icon="/static/themes/dorawhite/images/link/logo_sina_32x32.png";
+    //   //         if(objLink.url.indexOf("douban.com")!=-1)objLink.icon="/static/themes/dorawhite/images/link/logo_douban_32x32.png"
+    //   //         if(objLink.url.indexOf("music.163.com")!=-1)objLink.icon="/static/themes/dorawhite/images/link/logo_163_32x32.png"
+    //   //     });
+    //   // }
+    //   console.log("其他链接列表变化",e);
+    //   // 链接验证失败
+    //   if(!e){
+    //     // TODO:优化表单验证的方式，目前这个错误数据仍然能够提交
+    //     this.isValidate=false;
+    //     this.$message.error(
+    //       this.$t("validate.inputCorrect", { label: "其他链接" })
+    //     );
+    //     return;
+    //   }
 
-      this.formState.formData.listLinks=e;
-    },
-    // 选择日期
-    eChangeDate(e){
-      console.log("选取日期变化",e,this.formState.formData.dateRelease);
-    },
+    //   this.formState.formData.listLinks=e;
+    // },
+    // // 选择日期
+    // eChangeDate(e){
+    //   console.log("选取日期变化",e,this.formState.formData.dateRelease);
+    // },
     // 20191206 自动添加关键词
-    updateKeywords(inStr){
-      //两处自动复制：乐队成员，标签
-      let listTmp=this.formState.formData.keywords.split(",");
-      if(inStr && inStr!="")listTmp.push(inStr);
-      listTmp = [...(new Set(listTmp))];
-      this.formState.formData.keywords=listTmp.join();
-      return this.formState.formData.keywords;
-    },
     submitForm(formName, type = "") {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -637,13 +441,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["contentTagList", "contentCategoryList","formatTagList"]),//"regUserList",
+    ...mapGetters(["contentCategoryList","formatTagList"]),//"regUserList",
     // formState() {
     //   return this.$store.getters.contentFormState;
     // },
     ...mod.mapState({
       formState: state => state.formState,
-      dataArtists:state => state.dataArtists,
     }),//模块的state
   },
   mounted() {
@@ -740,11 +543,6 @@ export default {
       }
     }
     this.$store.dispatch("contentCategory/getContentCategoryList");
-    this.$store.dispatch("contentTag/getContentTagList", {pageSize: 200});
-    this.$store.dispatch("contentTag/getFormatTagList",{pageSize:200});
-    // 获取用户/乐队列表
-    this.queryUserListByParams();
-    // this.$store.dispatch(this.nameMod + "/getArtistsList",{pageSize:200});
   }
 };
 </script>

@@ -77,6 +77,7 @@ module.exports = app => {
     // 专辑
     router.get('/api/record/getList', controller.api.record.list);
     router.get('/api/record/get', controller.api.record.getOne);
+    router.get('/api/record/listAllFormats', controller.api.record.listAllFormats);
 
     // 时间线列表
     router.get("/api/timeline/getList", controller.api.timeline.list);

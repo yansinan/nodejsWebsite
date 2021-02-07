@@ -43,7 +43,7 @@ module.exports =app=>{
                 type: String,
                 default:"CD",
             },//发行编号
-            listShopLink:[{
+            listLinks:[{
                 url:{type:String},
                 name:{type:String},
                 icon:{type:String},

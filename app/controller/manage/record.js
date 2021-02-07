@@ -86,8 +86,8 @@ const funGetData = async (ctx,fields) => {
     //检查标签的有效性
     let newTagArr = await renderContentTags(ctx, fields.tags);
     // 友情链接图标
-    if(fields.listShopLink && fields.listShopLink.length > 0 ){
-        fields.listShopLink.forEach(objLink => {
+    if(fields.listLinks && fields.listLinks.length > 0 ){
+        fields.listLinks.forEach(objLink => {
             if(objLink.icon=="" && objLink.url.indexOf("weibo.com")!=-1)objLink.icon="/static/themes/images/link/logo_sina_32x32.png";
             if(objLink.icon=="" && objLink.url.indexOf("douban.com")!=-1)objLink.icon="/static/themes/images/link/logo_douban_32x32.png"
             if(objLink.icon=="" && objLink.url.indexOf("music.163.com")!=-1)objLink.icon="/static/themes/images/link/logo_163_32x32.png"
@@ -131,7 +131,7 @@ const funGetData = async (ctx,fields) => {
         listFormatTags:fields.listFormatTags,
         dateRelease:fields.dateRelease,
         catalog:fields.catalog,
-        listShopLink:fields.listShopLink,
+        listLinks:fields.listLinks,
     };
     // 网易云音乐的专辑id
     if(fields.idAlbumNCM)formObj.idAlbumNCM=fields.idAlbumNCM
