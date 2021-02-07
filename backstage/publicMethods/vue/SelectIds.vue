@@ -46,6 +46,9 @@
             type:String,
             default:'/manage/contentTag/getList',
         },//默认用Tags
+        allowCreate:{
+            type:Boolean,default:true,
+        },
         apiAdd:{
             type:String,
             default:'/manage/contentTag/addOne',
@@ -127,7 +130,8 @@
                 let isTagFound = tagFound?true:false;
                 if(!isTagFound){
                     //添加contentTag标签
-                    that.addTag(that.initTag(v));
+                    if(!that.apiAdd || !that.allowCreate || !that.initTag)return false;
+                    else that.addTag(that.initTag(v));
                 }else{
                     // 添加到标签;
                     if(v && v!="")that.listIds.push(tagFound._id);
@@ -138,6 +142,7 @@
         // 添加新tag
         addTag(objTag){
             let that=this;
+            if(!that.apiAdd || !that.allowCreate || !that.initTag)return false;
             //loading停止操作
             that.loadingTag=true;
             request({
