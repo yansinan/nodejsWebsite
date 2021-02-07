@@ -23,7 +23,11 @@
           <el-input size="small" v-model="formState.formData.dismissReason"></el-input>
         </el-form-item>
         <el-form-item :label="$t(nameMod + '.name')" prop="name">
-          <el-input size="small" v-model="formState.formData.name" @change="eChangeName" maxlength="50" show-word-limit></el-input>
+          <el-input size="small" v-model="formState.formData.name" ref="inputName" maxlength="50" show-word-limit>
+            <el-tooltip slot="append" content="尝试搜索网易云音乐" placement="top" effect="light">
+              <el-button type="success" plain :disabled="!(formState.formData.name)" icon="el-icon-cloudy" @click.prevent="eBnFetchNCM">搜索网易云音乐</el-button>
+            </el-tooltip>            
+          </el-input>
         </el-form-item>
         <el-form-item :label="$t(nameMod + '.nameAlias')" prop="alias">
           <el-input size="small" v-model="formState.formData.alias" :placeholder="'别名或英文名'" maxlength="50" show-word-limit></el-input>
@@ -77,16 +81,37 @@
         <el-form-item :label="$t(nameMod + '.listLinks')" prop="listLinks">
           <ListURL v-model="formState.formData.listLinks" label="其他链接" ref="listLinks"></ListURL>
         </el-form-item>
-        <el-form-item class="dr-submitContent">
-          <el-button
-            size="medium"
-            type="primary"
-            @click="submitForm('ruleForm')"
-          >{{formState.edit ? $t('main.form_btnText_update') : $t('main.form_btnText_save')}}</el-button>
+        <el-form-item class="" style="text-align:right;"><!-- dr-submitContent -->
+          <el-button size="medium" type="primary" @click="submitForm('ruleForm')">{{formState.edit ? $t('main.form_btnText_update') : $t('main.form_btnText_save')}}</el-button>
           <el-button size="medium" @click="backToList">{{$t('main.back')}}</el-button>
         </el-form-item>
       </el-form>
     </div>
+
+    <!-- 网易云结果 -->
+    <el-dialog
+      title="网易云音乐搜索结果"
+      width="80%"
+      :visible.sync="objDataNCM.isPop">
+      <!-- <el-card v-if="objDataNCM.nameNCM" :body-style="{ padding: '0px' }"> -->
+        <el-image :src="objDataNCM.sImg" :fit="contain" :span="24"/>
+        <div style="overflow:hidden;text-overflow: ellipsis;">{{objDataNCM.nameNCM}}({{objDataNCM.alias || "无别名"}})：<a :href="objDataNCM.link" target="_blank">{{ objDataNCM.link }}</a></div>
+        <div style="padding: 14px;">
+          <el-divider content-position="left">简介</el-divider>
+          <div style="max-height:100px;overflow:overlay;text-overflow:ellipsis;">{{objDataNCM.discription}}</div>
+          <el-divider content-position="left">详细介绍</el-divider>
+          <div style="max-height:100px;overflow:overlay;text-overflow:ellipsis;">{{objDataNCM.comments}}</div>
+          <!-- <div class="bottom clearfix">
+            <el-button type="primary" size="mini" @click="eBnSetNcm">使 用</el-button>
+          </div> -->
+        </div>
+      <!-- </el-card> -->
+      <div style="text-align: right; margin: 0">
+        <el-button size="mini" type="text" @click="objDataNCM.isPop = false">忽 略</el-button>
+        <el-button type="primary" size="mini" @click="eBnSetNcm">使 用</el-button>
+      </div>
+      <!-- <el-button slot="reference" type="success" plain :disabled="!(formState.formData.name)" icon="el-icon-cloudy" @click.prevent="eBnFetchNCM">搜索网易云音乐</el-button> -->
+    </el-dialog>
   </div>
 </template>
 
@@ -262,7 +287,8 @@ export default {
             trigger: "blur"
           }
         ],
-      }
+      },
+      objDataNCM:{isPop:false,isFetched:false},//用于存储网易云抓取结果
     };
   },
   components: {
@@ -406,9 +432,11 @@ export default {
       });
     },
     // 名字改变，搜索网易云
-    eChangeName(e){
+    eBnFetchNCM(e){
       let that=this;
-      fetch("/api/artist/fetchNCMArtist?name="+e)
+      let strName=that.$refs.inputName.value;
+      that.objDataNCM.isFetched=false;
+      fetch("/api/artist/fetchNCMArtist?name="+strName)
       .then((data)=>data.text())
       .then((data)=> {
           // 在这个then里面我们能拿到最终的数据
@@ -424,22 +452,28 @@ export default {
             // discription:resNCM.data.artist.briefDesc,
             // alias:resNCM.data.artist.transNames[0] || "",
             // comments:"",
+            that.objDataNCM=Object.assign(that.objDataNCM,res.data,{isPop:true,isFetched:true});           
 
-            that.formState.formData.idNCM=that.formState.formData.idNCM?that.formState.formData.idNCM:res.data.idNCM;
-            that.formState.formData.sImg=(that.formState.formData.sImg && that.formState.formData.sImg!="/static/upload/images/defaultImg.jpg")?that.formState.formData.sImg:(res.data.sImg || "");
-            that.formState.formData.discription=that.formState.formData.discription?that.formState.formData.discription:(res.data.discription || "");
-            that.formState.formData.alias=that.formState.formData.alias?that.formState.formData.alias:(res.data.alias || "");
-            that.formState.formData.comments=that.formState.formData.comments?that.formState.formData.comments:(res.data.comments.txt || "");
-            let isLinked=that.formState.formData.listLinks.find(v=>(v.url==res.data.link));
-            if(!isLinked)that.$refs.listLinks.eAddURL(res.data.link);
-            console.warn("网易云音乐数据自动填充",res.data);
           }else{
             that.$message.error(
               that.$t("validate.inputCorrect", { label: "网易云音乐未找到数据" })
             );
           }
       })
-    }
+    },
+    // 使用网易云数据
+    eBnSetNcm(e){
+      let that=this;
+      that.formState.formData.idNCM=that.formState.formData.idNCM?that.formState.formData.idNCM:that.objDataNCM.idNCM;
+      that.formState.formData.sImg=(that.formState.formData.sImg && that.formState.formData.sImg!="/static/upload/images/defaultImg.jpg")?that.formState.formData.sImg:(that.objDataNCM.sImg || "");
+      that.formState.formData.discription=that.formState.formData.discription?that.formState.formData.discription:(that.objDataNCM.discription || "");
+      that.formState.formData.alias=that.formState.formData.alias?that.formState.formData.alias:(that.objDataNCM.alias || "");
+      that.formState.formData.comments=that.formState.formData.comments?that.formState.formData.comments:(that.objDataNCM.comments.txt || "");
+      let isLinked=that.formState.formData.listLinks.find(v=>(v.url==that.objDataNCM.link));
+      if(!isLinked)that.$refs.listLinks.eAddURL(that.objDataNCM.link);
+      console.warn("网易云音乐数据自动填充",that.objDataNCM);
+      that.objDataNCM.isPop=false;
+    },
   },
   computed: {
     ...mapGetters(["contentCategoryList"]),//"regUserList",

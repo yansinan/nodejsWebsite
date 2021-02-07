@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-24 13:20:49 
  * @Last Modified by: dr
- * @Last Modified time: 2021-02-06 10:24:44
+ * @Last Modified time: 2021-02-06 21:39:39
  */
 
 'use strict';
@@ -350,6 +350,7 @@ class ServicePlugin extends BaseService {
                 // 万一失去链接，直接返回，不影响
                 if(resNCM.error || !resNCM.data || !resNCM.data.artist) throw new Error("webCrawler连接服务器错误,status:"+resNCM.status);
                 let artistNCM={
+                    nameNCM:resNCM.data.artist.name,
                     idNCM: resNCM.data.artist.id,
                     sImg:resNCM.data.artist.cover,// "https://p1.music.126.net/yYudcBFmVRCDdDnGjK5HFQ==/109951164565744552.jpg",
                     discription:resNCM.data.artist.briefDesc,
