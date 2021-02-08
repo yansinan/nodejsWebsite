@@ -1,0 +1,58 @@
+.dr-contentForm {
+    margin: 15px 0;
+    width: 80%;
+    padding-bottom: 50px;
+    .post-rate {
+      .el-rate {
+        margin-top: 10px;
+      }
+    }
+    .dr-submitContent {
+      position: fixed;
+      z-index: 9999999;
+      padding: 10px 30px;
+      text-align: right;
+      right: 0;
+      bottom: 0;
+      background: none;
+      margin-bottom: 0;
+    }
+  
+    .avatar-uploader .el-upload {
+      border: 1px dashed #d9d9d9;
+      border-radius: 6px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .avatar-uploader .el-upload:hover {
+      border-color: #409eff;
+    }
+    .avatar-uploader-icon {
+      font-size: 28px;
+      color: #8c939d;
+      width: 200px;
+      height: 150px;
+      line-height: 150px;
+      text-align: center;
+    }
+    .avatar {
+      width: 200px;
+      height: 158px;
+      display: block;
+    }
+  
+    .upSimg {
+      position: relative;
+      .refresh-btn {
+        position: absolute;
+        left: 220px;
+        top: 0;
+        i {
+          // color: #dcdfe6;
+          font-weight: 400;
+        }
+      }
+    }
+  }
+  

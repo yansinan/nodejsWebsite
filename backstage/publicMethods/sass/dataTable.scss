@@ -1,0 +1,46 @@
+.tableBox{
+    th{
+      height:100%;
+    }
+    td{
+      height:80px;
+    }
+    .cell{
+      height:100%;
+      display:flex;
+      align-items: center;
+      text-align: center;
+  
+      .el-button--text{
+        color:#303133;
+        font-size:18px;
+        line-height:2.5em;
+      }
+      .el-avatar{
+        margin-right:5px;
+        margin-left:5px;
+        min-width: 40px;
+      }
+      .containerTag{
+        display:flex;
+        flex-wrap: wrap;
+        justify-content: start;
+        align-items: start;
+        // height:100%;
+        .el-tag {
+          margin-top:20px;
+          margin-right: 10px;
+        }
+      }
+    }
+  }
+  .fa-star,
+  .fa-thumbs-up {
+    cursor: pointer;
+  }
+  
+  .fa-star-o,
+  .fa-thumbs-o-up {
+    cursor: pointer;
+  }
+  
