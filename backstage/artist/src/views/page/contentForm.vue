@@ -116,74 +116,14 @@
 </template>
 
 <style lang="scss"> 
-.dr-contentForm {
-  margin: 15px 0;
-  width: 80%;
-  padding-bottom: 50px;
-  .post-rate {
-    .el-rate {
-      margin-top: 10px;
-    }
-  }
-  .dr-submitContent {
-    position: fixed;
-    z-index: 9999999;
-    padding: 10px 30px;
-    text-align: right;
-    right: 0;
-    bottom: 0;
-    background: none;
-    margin-bottom: 0;
-  }
-
-  .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409eff;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 200px;
-    height: 150px;
-    line-height: 150px;
-    text-align: center;
-  }
-  .avatar {
-    width: 200px;
-    height: 158px;
-    display: block;
-  }
-
-  .upSimg {
-    position: relative;
-    .refresh-btn {
-      position: absolute;
-      left: 220px;
-      top: 0;
-      i {
-        // color: #dcdfe6;
-        font-weight: 400;
-      }
-    }
-  }
-}
+@import "@root/publicMethods/sass/contentForm.scss";
 </style>
 
 <script>
 import '@/set-public-path'
 import VueUeditorWrap from "vue-ueditor-wrap";
 import { initEvent } from "@root/publicMethods/events";
-import {
-  getOne,
-  addOne,
-  updateOne,
-} from "@root/publicMethods/apiGeneral";
+import {methods,initData,data,props} from "@root/publicMethods/vue/contentForm";
 
 import _ from "lodash";
 import { mapGetters, mapActions,createNamespacedHelpers} from "vuex";
@@ -191,18 +131,11 @@ const mod = createNamespacedHelpers(nameMod)////模块,含mapGetters, mapActions
 
 export default {
   props: {
-    groups: Array
+    ...props,
   },
   data() {
     return {
-      nameMod:nameMod,
-      contentState: [
-        { value: "0", label: "隐藏" },
-        { value: "1", label: "待发布" },
-        { value: "2", label: "发布" },
-        // { value: "3", label: "审核不通过" }
-      ],
-
+      ...data,
       editorConfig: {
         // 编辑器不自动被内容撑高
         autoHeightEnabled: false,
@@ -287,7 +220,7 @@ export default {
             trigger: "blur"
           }
         ],
-      },
+      }, 
       objDataNCM:{isPop:false,isFetched:false},//用于存储网易云抓取结果
     };
   },
@@ -298,6 +231,8 @@ export default {
     SelectIds: () => import('@root/publicMethods/vue/SelectIds.vue'),
   },
   methods: {
+    ...methods,
+
     //获取表单信息
     ...mod.mapActions(["showContentForm"]),// 将 `this.showContentForm(params)` 映射为 `this.$store.dispatch(nameMod+'/incrementBy', params)`
 
@@ -331,105 +266,6 @@ export default {
           comments:"即时创建",
           alias:v,
       }
-    },
-    // 20191206 自动添加关键词 
-    // 20210131 输入改为单个字符串，或name字符串数组
-    updateKeywords(newVal,isDelete=false){
-      //两处自动复制：乐队成员，标签
-      let listTmp=this.formState.formData.keywords.split(",");
-      let listName=[];
-      if(newVal && newVal!="" && newVal instanceof String)listName=[newVal];
-      if(newVal && newVal.length>0 && newVal instanceof Array){
-        // 筛选，数组元素要么是有name的对象，要么直接是string;
-        listName=newVal.filter(v=>((v && v.name) || v instanceof String));
-        listName=listName.map(v=>(v.name || v));
-      }
-      if(!isDelete){
-        listTmp.push(...listName);
-      }else{
-        listTmp=listTmp.filter(v=>(listName.indexOf(v)===-1))
-      }
-      listTmp = [...(new Set(listTmp))];
-      this.formState.formData.keywords=listTmp.join();
-      return this.formState.formData.keywords;
-    },    
-
-    getLocalContents() {
-      let localContent = localStorage.getItem("addContent") || "";
-      if (localContent) {
-        return JSON.parse(localContent);
-      } else {
-        return {};
-      }
-    },
-    editorReady(instance) {
-      this.ueditorObj = instance;
-    },
-
-    // handleAvatarSuccess(res, file) {
-    //   let imageUrl = res.data.path;
-    //   this.showContentForm({
-    //     edit: this.formState.edit,
-    //     formData: Object.assign({}, this.formState.formData, {
-    //       sImg: imageUrl
-    //     })
-    //   });
-    // },
-
-    backToList() {
-      // this.$router.push("/"+nameMod);
-      // this.$store.dispatch(nameMod+"/showContentForm",{edit:false,formData:{test:"debug:backToList"},isInit:true});
-      this.$router.push(this.$root.adminBasePath + "/"+this.nameMod);
-
-    },
-
-    submitForm(formName, type = "") {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          let params = Object.assign({}, this.formState.formData, {
-            comments: this.ueditorObj.getContent(),
-            simpleComments: this.ueditorObj.getPlainTxt()
-          });
-          // 更新
-          if (this.formState.edit) {
-            updateOne(params,this.nameMod).then(result => {
-              if (result.status === 200) {
-                this.backToList();
-                this.$message({
-                  message: this.$t("main.updateSuccess"),
-                  type: "success"
-                });
-              } else {
-                this.$message.error(result.message);
-              }
-            }).catch(error=>{
-              debugger
-              console.error("乐队更新:fail,",error,params);
-              this.$message.error(JSON.stringify(error));
-            });
-          } else {
-            // 新增
-            addOne(params,this.nameMod).then(result => {
-              console.log("新增:",params,result);
-              if (result.status === 200) {
-                this.backToList();
-                this.$message({
-                  message: this.$t("main.addSuccess"),
-                  type: "success"
-                });
-              } else {
-                this.$message.error(result.message);
-              }
-            }).catch(error=>{
-              console.error("乐队添加：fail:",error,params);
-              this.$message.error(error.message);
-            });
-          }
-        } else {
-          console.log("提交格式审核不通过!valid",valid);
-          return false;
-        }
-      });
     },
     // 名字改变，搜索网易云
     eBnFetchNCM(e){
@@ -483,92 +319,7 @@ export default {
   },
   mounted() {
     initEvent(this);
-
-    // 针对手动页面刷新
-    let _this = this;
-    if (this.$route.params.id) {
-      getOne({ id: this.$route.params.id },this.nameMod).then(result => {
-        if (result.status === 200) {
-          if (result.data) {
-            let contentObj = result.data,
-              categoryIdArr = [],
-              tagsArr = [];
-            console.info("获取乐队信息：",contentObj);
-            if (contentObj.categories) {
-              contentObj.categories.map((item, index) => {
-                item && categoryIdArr.push(item._id);
-              });
-              contentObj.categories = categoryIdArr;
-            }
-            if (contentObj.tags) {
-              contentObj.tags.map((item, index) => {
-                item && tagsArr.push(item._id);
-              });
-              contentObj.tags = tagsArr;
-            }
-            if (contentObj.keywords) {
-              contentObj.keywords = contentObj.keywords.join();
-            }
-            if (contentObj.listMembers) {
-              let listMembersId=contentObj.listMembers.map(v=>{return v._id});
-              contentObj.listMembers = listMembersId;
-            }
-
-            this.showContentForm({
-              edit: true,
-              formData: contentObj
-            });
-          } else {
-            this.$message({
-              message: this.$t("validate.error_params"),
-              type: "warning",
-              onClose: () => {
-                this.backToList();
-              }
-            });
-          }
-        } else {
-          this.$message.error(result.message);
-        }
-      }).catch(e=>{
-        console.error("getOne error:",e)
-        debugger;
-      });
-    } else {//新创建
-      let localContent = this.getLocalContents();
-      if (!_.isEmpty(localContent)) {
-        this.$confirm(
-          this.$t("main.askForReInputContent"),
-          this.$t("main.scr_modal_title"),
-          {
-            confirmButtonText: this.$t("main.confirmBtnText"),
-            cancelButtonText: this.$t("main.cancelBtnText"),
-            type: "warning"
-          }
-        )
-          .then(() => {
-            let currentComments = localContent.comments || "";
-            _this.$refs.ueditor.setContent(currentComments);
-            // 清除缓存
-            localStorage.removeItem(this.$route.path.split("/")[1]);
-            this.showContentForm({
-              edit: false,
-              formData: localContent
-            });
-          })
-          .catch(() => {
-            localStorage.removeItem(this.$route.path.split("/")[1]);
-            this.$message({
-              type: "info",
-              message: this.$t("main.scr_modal_del_error_info")
-            });
-          });
-      } else {
-        //初始化表單
-
-      }
-    }
-    this.$store.dispatch("contentCategory/getContentCategoryList");
+    initData(this);
   }
 };
 </script>
