@@ -13,7 +13,6 @@ const store = new Vuex.Store({
     contentCategory,
   },
   getters:{
-    formatTagList:state=>state.contentTag.formatTagList,
     getterListData: state => state[nameMod].dataList,
   }
 })
