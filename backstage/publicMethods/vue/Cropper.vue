@@ -193,7 +193,7 @@ export default {
         // 如果srcPreview是网络地址（网易地址），下载并上传;
         srcPreview(newV,oldV){
           // TODO分析非本域名下
-          if(newV.indexOf("music.126.net")!=-1){
+          if(newV.indexOf("music.126.net")!=-1 || newV.indexOf("mp.weixin.qq.com")!=-1 || newV.indexOf("mmbiz.qpic.cn")!=-1){
             // 网易获取的图片
             this.fetchImgURL(newV,"");
           }
