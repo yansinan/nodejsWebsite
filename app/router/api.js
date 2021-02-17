@@ -81,6 +81,9 @@ module.exports = app => {
 
     // 时间线列表
     router.get("/api/timeline/getList", controller.api.timeline.list);
+
+    // 抓微信公众号文章
+    router.get("/api/content/fetchWX",controller.api.webCrawler.fetchWXArticle)
     /**
      * 上传文件blocb 多文件管理
      * 
