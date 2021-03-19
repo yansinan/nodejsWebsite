@@ -1,0 +1,25 @@
+{% extends "../public/footer.html" %} 
+{% block footerUp %}
+    <div class="container-fluid  main-container position-relative d-inline-block">
+        <div class="row" id="scrollbarTimeLine" style="overflow:visible;height:0px;width:100vw;">
+            <div class="" style="width:10px;height:60px;background-color:gray;opacity: 0.4;"></div>
+        </div>
+
+        <div class="row">            
+            <svg width="100%" height="100px">
+                <rect width="100%" height="5%" fill="gray" />
+                {% for idxDays in objTimeline.listIdxDays %}
+                    <rect x="{{idxDays}}%" width="{{objTimeline.widthPercent}}%" height="5%" fill="ghostwhite" />
+                {% endfor %}
+                {% for season in objTimeline.listIdxSeasons %}
+                    <rect x="{{season.x}}%" y="10%" width="0.2%" height="15%" fill="black" />
+                {% endfor %}
+                {% for year in objTimeline.listIdxYears %}
+                    <text x="{{year.x}}%" y="80%" class="display-4" style="text-anchor: middle;">{{year.strTitle}}</text>
+                {% endfor %}
+           </svg>  
+        </div>
+        <div class="row"></div>
+
+    </div>
+{% endblock%}
