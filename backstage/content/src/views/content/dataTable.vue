@@ -60,8 +60,8 @@
           slot-scope="scope"
         >{{scope.row.uAuthor?scope.row.uAuthor.userName:(scope.row.author?scope.row.author.userName:'')}}</template>
       </el-table-column>
-      <el-table-column prop="updateDate" :label="$t('contents.updateDate')" width="180">
-        <template slot-scope="scope">{{scope.row.updateDate}}</template>
+      <el-table-column prop="updateDate" :label="$t('contents.date')" width="180">
+        <template slot-scope="scope">{{scope.row.date}}</template>
       </el-table-column>
       <el-table-column
         prop="categories"

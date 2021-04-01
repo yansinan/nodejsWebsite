@@ -200,7 +200,7 @@ export default {
                 // objToChange.blob=resSrc.blob;
                 // objToChange.isFitted=true;
                 // img.src= resSrc;
-                debugger;
+                // debugger;
                 console.log("图片裁切完成",img.src,(new Date()-time),typeSrc)
             });//网易云MV图尺寸628,353
             

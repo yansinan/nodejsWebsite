@@ -19,8 +19,7 @@
         <el-form-item v-if="!formState.edit" :label="'公众号文章链接'">
           <LinkWX v-model="formState.formData" />
         </el-form-item>
-
-        <el-form-item :label="$t('contents.enable')" prop="state">
+        <el-form-item v-else :label="$t('contents.enable')" prop="state">
           <el-select size="small" v-model="formState.formData.state" placeholder="审核文章">
             <el-option
               v-for="item in contentState"
@@ -33,49 +32,12 @@
         <el-form-item v-if="formState.formData.state == '3'" label="驳回原因" prop="dismissReason">
           <el-input size="small" v-model="formState.formData.dismissReason"></el-input>
         </el-form-item>
-
-        <el-form-item :label="$t('contents.title')" prop="title">
-          <el-input size="small" v-model="formState.formData.title"></el-input>
-        </el-form-item>
-
-        <el-form-item :label="$t('contents.categories')" prop="categories">
-          <el-cascader
-            size="small"
-            expandTrigger="hover"
-            :options="contentCategoryList.docs"
-            v-model="formState.formData.categories"
-            @change="handleChangeCategory"
-            :props="categoryProps"
-          ></el-cascader>
-        </el-form-item>
-
-        <el-form-item :label="$t('contents.stitle')" prop="stitle">
-          <el-input size="small" v-model="formState.formData.stitle"></el-input>
-        </el-form-item>
-
-        <el-form-item label="关键字" prop="keywords">
-          <el-input size="small" v-model="formState.formData.keywords"></el-input>
-        </el-form-item>
-
-        <el-form-item label="标签" prop="tags">
-          <el-select
-            size="small"
-            v-model="formState.formData.tags"
-            multiple
-            filterable
-            allow-create
-            default-first-option
-            :placeholder="$t('validate.selectNull', {label: this.$t('contents.tags')})"
-          >
-            <el-option
-              v-for="item in contentTagList.docs"
-              :key="item._id"
-              :label="item.name"
-              :value="item._id"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-
+        <Cropper 
+          :nameMod="nameMod"
+          v-model="formState.formData.sImg" 
+          :label="$t('contents.sImg')" 
+          prop="sImg"></Cropper>
+<!-- 
         <el-form-item :label="$t('contents.sImg')" prop="sImgType">
           <el-radio v-model="formState.formData.sImgType" label="2">上传</el-radio>
           <el-radio v-model="formState.formData.sImgType" label="1">自动生成</el-radio>
@@ -136,9 +98,68 @@
             </div>
           </el-form-item>
         </div>
+ -->
+        <el-form-item :label="$t('contents.title')" prop="title">
+          <el-input size="small" v-model="formState.formData.title" maxlength="50" show-word-limit></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('contents.stitle')" prop="stitle">
+          <el-input size="small" v-model="formState.formData.stitle" maxlength="50" show-word-limit></el-input>
+        </el-form-item>
+
+        <el-form-item :label="$t('contents.categories')" prop="categories">
+          <el-cascader
+            size="small"
+            expandTrigger="hover"
+            :options="contentCategoryList.docs"
+            v-model="formState.formData.categories"
+            @change="handleChangeCategory"
+            :props="categoryProps"
+          ></el-cascader>
+        </el-form-item>
+
+
+        <el-form-item label="关键字" prop="keywords">
+          <el-input size="small" v-model="formState.formData.keywords"></el-input>
+        </el-form-item>
+
+        <el-form-item label="标签" prop="tags">
+          <el-select
+            size="small"
+            v-model="formState.formData.tags"
+            multiple
+            filterable
+            allow-create
+            default-first-option
+            :placeholder="$t('validate.selectNull', {label: this.$t('contents.tags')})"
+          >
+            <el-option
+              v-for="item in contentTagList.docs"
+              :key="item._id"
+              :label="item.name"
+              :value="item._id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+
 
         <el-form-item :label="$t('contents.discription')" prop="discription">
-          <el-input size="small" type="textarea" v-model="formState.formData.discription"></el-input>
+          <el-input size="small" type="textarea" v-model="formState.formData.discription" maxlength="300" show-word-limit :autosize="{minRows: 4, maxRows: 10 }"></el-input>
+        </el-form-item>
+
+        <el-form-item :label="$t('contents.comments')" prop="comments">
+          <vue-ueditor-wrap
+            class="editorForm"
+            @ready="editorReady"
+            v-model="formState.formData.comments"
+            :config="editorConfig"
+          ></vue-ueditor-wrap>
+        </el-form-item>
+        <el-form-item :label="$t('contents.date')" prop="date">
+          <el-date-picker
+            v-model="formState.formData.date"
+            type="date"
+            :placeholder="$t('contents.date')" >
+          </el-date-picker>
         </el-form-item>
 
         <el-form-item :label="$t('contents.uploadWord')" prop="uploadWord">
@@ -158,22 +179,6 @@
             <el-button size="small" type="primary">点击上传</el-button>
             <div slot="tip" class="el-upload__tip">只能上传doc/docx文件，且不超过5mb</div>
           </el-upload>
-        </el-form-item>
-
-        <el-form-item :label="$t('contents.comments')" prop="comments">
-          <vue-ueditor-wrap
-            class="editorForm"
-            @ready="editorReady"
-            v-model="formState.formData.comments"
-            :config="editorConfig"
-          ></vue-ueditor-wrap>
-        </el-form-item>
-        <el-form-item :label="$t('content.date')" prop="date">
-          <el-date-picker
-            v-model="formState.formData.date"
-            type="date"
-            placeholder="创建日期" >
-          </el-date-picker>
         </el-form-item>
 
         <el-form-item class="dr-submitContent">
@@ -383,6 +388,8 @@ export default {
     VueUeditorWrap,
     CoverTable,
     LinkWX: () => import('@root/publicMethods/vue/LinkWX.vue'),//抓公众号文章
+    Cropper: () => import('@root/publicMethods/vue/Cropper.vue'),
+
   },
   methods: {
     updateTargetCover(item) {
@@ -924,6 +931,7 @@ export default {
     width: 200px;
     height: 158px;
     display: block;
+    object-fit:contain;
   }
 
   .upSimg {

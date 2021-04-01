@@ -32,8 +32,8 @@ export default {
     commentNum: "评论数",
     clickNum: "点击",
     enable: "显示",
-    author: "作者"
-
+    author: "作者",
+    date:"发表日期",
 
   },
   //LangEnd
