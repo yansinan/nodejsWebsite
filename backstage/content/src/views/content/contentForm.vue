@@ -16,6 +16,10 @@
         class="demo-ruleForm"
         :label-position="device == 'mobile' ? 'top' : 'right'"
       >
+        <el-form-item v-if="!formState.edit" :label="'公众号文章链接'">
+          <LinkWX v-model="formState.formData" />
+        </el-form-item>
+
         <el-form-item :label="$t('contents.enable')" prop="state">
           <el-select size="small" v-model="formState.formData.state" placeholder="审核文章">
             <el-option
@@ -377,7 +381,8 @@ export default {
   },
   components: {
     VueUeditorWrap,
-    CoverTable
+    CoverTable,
+    LinkWX: () => import('@root/publicMethods/vue/LinkWX.vue'),//抓公众号文章
   },
   methods: {
     updateTargetCover(item) {

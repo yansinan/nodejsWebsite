@@ -12,7 +12,7 @@ const {
 } = require('./utils');
 
 // 指定打包模块
-let designatedModule = ["artist","record"];
+let designatedModule = ["artist","record","show"];
 
 let copyType = "dev",
     targetModules = '',
