@@ -25,7 +25,7 @@
         <div class="groupSelectorImg" style="">
             <div v-for="(src,idx) in objRes.listSrcImg" :key="idx" class="selectorImg" :class="objRes.sImg==src?'selected':''" @click="eClickSImg" :data-src="src">
                 <el-tooltip effect="dark" :content="objRes.sImg==src?'作为主图':''" :value="objRes.sImg==src" placement="top" manual>
-                    <img :src="src" class="imgSelectSImg" fit="cover" @load="eImgLoaded" crossOrigin="Anonymous"/>
+                    <img :src="src" class="imgSelectSImg" fit="cover" @load="eImgLoaded" @error="eImgErr"/>
                 </el-tooltip>
             </div>
         </div>
@@ -204,7 +204,14 @@ export default {
                 console.log("图片裁切完成",img.src,(new Date()-time),typeSrc)
             });//网易云MV图尺寸628,353
             
-        },        
+        },
+        // eImgErr(e){
+        //     let that=this;
+        //     let img=e.target;
+        //     let src=img.src;
+        //     // img.crossorigin=undefine;
+        //     // img.src=img.src+"&nocrossorigin";
+        // },    
     }
 }
 </script>
