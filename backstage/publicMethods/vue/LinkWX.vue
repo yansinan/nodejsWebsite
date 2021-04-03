@@ -23,9 +23,9 @@
         <el-divider content-position="left">请选择主形象图</el-divider>
 
         <div class="groupSelectorImg" style="">
-            <div v-for="(src,idx) in listSrcImg" :key="idx" class="selectorImg" :class="objRes.sImg==src?'selected':''" @click="eClickSImg" :data-src="src">
+            <div v-for="(src,idx) in listSrcImgWX" :key="idx" class="selectorImg" :class="objRes.sImg==src?'selected':''" @click="eClickSImg" :data-src="src">
                 <el-tooltip effect="dark" :content="objRes.sImg==src?'作为主图':''" :value="objRes.sImg==src" placement="top" manual>
-                    <img :src="src" class="imgSelectSImg" fit="cover" @load="eImgLoaded" @error="eImgErr"/>
+                    <img :src="objRes.listSrcImg[idx]" class="imgSelectSImg" fit="cover" @load="eImgLoaded"/>
                 </el-tooltip>
             </div>
         </div>
@@ -94,9 +94,10 @@ export default {
         return {
             strURLWX:"",
             objRes:{sImg:"",title:"",date:"",comments:""},
+            objResDefault:{sImg:"",title:"",date:"",comments:""},
             isDialog:false,
             isLoading:false,
-            listSrcImg:[],
+            listSrcImgWX:[],//用于存放图片的微信原始链接
         };
     },
     computed: {
@@ -152,7 +153,8 @@ export default {
                         that.objRes.stitle=res.data.title;
                         // 先缓存下面要canvas的图
                         // that.$set(that.objRes,"comments","");
-                        that.listSrcImg=that.objRes.listSrcImg.map(src=>{
+                        that.listSrcImgWX=res.data.listSrcImg;
+                        that.objRes.listSrcImg=res.data.listSrcImg.map(src=>{
                             return src.replace("https://mmbiz.qpic.cn","/getWXImg");//http://wx.z-core.cn:8791/
                         })
 
@@ -172,30 +174,6 @@ export default {
                 })
             }
         },
-        getURLBase64(url) {
-            return new Promise((resolve, reject) => {
-                var xhr = new XMLHttpRequest()
-                
-                xhr.open('get', url, true)
-                xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
-                xhr.responseType = 'blob'
-                xhr.onload = function() {
-                    if (this.status === 200) {
-                        var blob = this.response
-                        var fileReader = new FileReader()
-                        fileReader.onloadend = function(e) {
-                            var result = e.target.result
-                            resolve(result)
-                        }
-                        fileReader.readAsDataURL(blob)
-                    }
-                }
-                xhr.onerror = function() {
-                    reject()
-                }
-                xhr.send()
-            })
-        },
         // 更新到服务器
         submitUpload(){
             let that=this;
@@ -207,17 +185,19 @@ export default {
         },
         // 弹窗关闭
         handleClose(e){
-            this.isDialog=false;
             this.isLoading=false;
             this.strErrMsg="";
             // 清空数据
-            this.objRes={};
+            // this.objRes={};
+            Object.assign(this.objRes,this.objResDefault);
+            this.isDialog=false;
         },
         // 图片读取完成，开始裁切、缩小
         eImgLoaded(e){
             let that=this;
 
             let img=e.target;
+            img.removeEventListener("load",that.eImgLoaded);
             let targetWidth=img.naturalWidth;
             let targetHeight=img.naturalHeight;
             let typeSrc=img.src.substring(0,7);
@@ -228,7 +208,6 @@ export default {
             // return;
             // img.crossOrigin = "Anonymous";
             imgFit(img,targetWidth,targetHeight).then(resSrc=>{
-                img.removeEventListener("load",that.eImgLoaded);
                 img.srcOrg=img.src;
                 img.crossOrigin=undefined;
                 img.src=resSrc.src;
