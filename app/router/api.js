@@ -84,6 +84,9 @@ module.exports = app => {
 
     // 抓微信公众号文章
     router.get("/api/content/fetchWX",controller.api.webCrawler.fetchWXArticle)
+    // router.redirect('/getImg/', app.config.server_puppeteerApi);
+    router.get('/getWXImg/:typeId/:id/:size',controller.api.webCrawler.fetchWXImg)
+
     /**
      * 上传文件blocb 多文件管理
      * 

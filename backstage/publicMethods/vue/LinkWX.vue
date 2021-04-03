@@ -23,7 +23,7 @@
         <el-divider content-position="left">请选择主形象图</el-divider>
 
         <div class="groupSelectorImg" style="">
-            <div v-for="(src,idx) in objRes.listSrcImg" :key="idx" class="selectorImg" :class="objRes.sImg==src?'selected':''" @click="eClickSImg" :data-src="src">
+            <div v-for="(src,idx) in listSrcImg" :key="idx" class="selectorImg" :class="objRes.sImg==src?'selected':''" @click="eClickSImg" :data-src="src">
                 <el-tooltip effect="dark" :content="objRes.sImg==src?'作为主图':''" :value="objRes.sImg==src" placement="top" manual>
                     <img :src="src" class="imgSelectSImg" fit="cover" @load="eImgLoaded" @error="eImgErr"/>
                 </el-tooltip>
@@ -96,6 +96,7 @@ export default {
             objRes:{sImg:"",title:"",date:"",comments:""},
             isDialog:false,
             isLoading:false,
+            listSrcImg:[],
         };
     },
     computed: {
@@ -147,6 +148,14 @@ export default {
                             type: "success"
                         });
                         Object.assign(that.objRes,res.data);
+                        // 副标题默认用主标题，便于编辑
+                        that.objRes.stitle=res.data.title;
+                        // 先缓存下面要canvas的图
+                        // that.$set(that.objRes,"comments","");
+                        that.listSrcImg=that.objRes.listSrcImg.map(src=>{
+                            return src.replace("https://mmbiz.qpic.cn","/getWXImg");//http://wx.z-core.cn:8791/
+                        })
+
                         that.isDialog=true;
                     }else{
                         // 返回无效的处理：红色input提示
@@ -162,6 +171,30 @@ export default {
                     
                 })
             }
+        },
+        getURLBase64(url) {
+            return new Promise((resolve, reject) => {
+                var xhr = new XMLHttpRequest()
+                
+                xhr.open('get', url, true)
+                xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
+                xhr.responseType = 'blob'
+                xhr.onload = function() {
+                    if (this.status === 200) {
+                        var blob = this.response
+                        var fileReader = new FileReader()
+                        fileReader.onloadend = function(e) {
+                            var result = e.target.result
+                            resolve(result)
+                        }
+                        fileReader.readAsDataURL(blob)
+                    }
+                }
+                xhr.onerror = function() {
+                    reject()
+                }
+                xhr.send()
+            })
         },
         // 更新到服务器
         submitUpload(){
@@ -192,9 +225,12 @@ export default {
             let time=new Date();
             let srcOrg=img.src;
             img.type='image/jpeg';
+            // return;
+            // img.crossOrigin = "Anonymous";
             imgFit(img,targetWidth,targetHeight).then(resSrc=>{
                 img.removeEventListener("load",that.eImgLoaded);
                 img.srcOrg=img.src;
+                img.crossOrigin=undefined;
                 img.src=resSrc.src;
                 img.blob=resSrc.blob;
                 // objToChange.blob=resSrc.blob;
