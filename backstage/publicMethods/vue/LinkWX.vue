@@ -23,9 +23,9 @@
         <el-divider content-position="left">请选择主形象图</el-divider>
 
         <div class="groupSelectorImg" style="">
-            <div v-for="(src,idx) in objRes.listSrcImg" :key="idx" class="selectorImg" :class="objRes.sImg==src?'selected':''" @click="eClickSImg" :data-src="src">
+            <div v-for="(src,idx) in listSrcImgWX" :key="idx" class="selectorImg" :class="objRes.sImg==src?'selected':''" @click="eClickSImg" :data-src="src">
                 <el-tooltip effect="dark" :content="objRes.sImg==src?'作为主图':''" :value="objRes.sImg==src" placement="top" manual>
-                    <img :src="src" class="imgSelectSImg" fit="cover" @load="eImgLoaded" crossOrigin="Anonymous"/>
+                    <img :src="objRes.listSrcImg[idx]" class="imgSelectSImg" fit="cover" @load="eImgLoaded"/>
                 </el-tooltip>
             </div>
         </div>
@@ -94,8 +94,10 @@ export default {
         return {
             strURLWX:"",
             objRes:{sImg:"",title:"",date:"",comments:""},
+            objResDefault:{sImg:"",title:"",date:"",comments:""},
             isDialog:false,
             isLoading:false,
+            listSrcImgWX:[],//用于存放图片的微信原始链接
         };
     },
     computed: {
@@ -147,6 +149,15 @@ export default {
                             type: "success"
                         });
                         Object.assign(that.objRes,res.data);
+                        // 副标题默认用主标题，便于编辑
+                        that.objRes.stitle=res.data.title;
+                        // 先缓存下面要canvas的图
+                        // that.$set(that.objRes,"comments","");
+                        that.listSrcImgWX=res.data.listSrcImg;
+                        that.objRes.listSrcImg=res.data.listSrcImg.map(src=>{
+                            return src.replace("https://mmbiz.qpic.cn","/getWXImg");//http://wx.z-core.cn:8791/
+                        })
+
                         that.isDialog=true;
                     }else{
                         // 返回无效的处理：红色input提示
@@ -174,17 +185,19 @@ export default {
         },
         // 弹窗关闭
         handleClose(e){
-            this.isDialog=false;
             this.isLoading=false;
             this.strErrMsg="";
             // 清空数据
-            this.objRes={};
+            // this.objRes={};
+            Object.assign(this.objRes,this.objResDefault);
+            this.isDialog=false;
         },
         // 图片读取完成，开始裁切、缩小
         eImgLoaded(e){
             let that=this;
 
             let img=e.target;
+            img.removeEventListener("load",that.eImgLoaded);
             let targetWidth=img.naturalWidth;
             let targetHeight=img.naturalHeight;
             let typeSrc=img.src.substring(0,7);
@@ -193,7 +206,6 @@ export default {
             let srcOrg=img.src;
             img.type='image/jpeg';
             imgFit(img,targetWidth,targetHeight).then(resSrc=>{
-                img.removeEventListener("load",that.eImgLoaded);
                 img.srcOrg=img.src;
                 img.src=resSrc.src;
                 img.blob=resSrc.blob;
