@@ -229,12 +229,18 @@ const actions = {
       show: false,
     });
   },
-  getContentList({ commit }, params = {}) {
+  getContentList({ commit }, params = {pageSize: 30,isPaging:"1",}) {
     contentList(params).then((result) => {
       commit(types.CONTENT_LIST, result.data);
     });
   },
-
+  getList({ commit }, params = {mod:"content",pageSize: 30,isPaging:"1",}) {//{ pageSize: 0,isPaging:"0",searchkey: strToSearch?strToSearch:null, },
+    contentList(params,params.mod).then((result) => {
+      commit(types.CONTENT_LIST, result.data);
+    }).catch(error=>{
+      console.log("xxxx.store.xxxx.actions.getList获取失败:fail",error);
+    })
+  },
   getOneContent({ commit }, params = {}) {
     getOneContent(params).then((result) => {
       commit(types.CONTENT_ONE, result.data);
@@ -247,7 +253,7 @@ const actions = {
     });
   },
 
-  getDraftContentList({ commit }, params = {}) {
+  getDraftContentList({ commit }, params = {mod:"content",pageSize: 30,isPaging:"1",}) {
     contentList(Object.assign(params, { draft: "1" })).then((result) => {
       commit(types.CONTENT_DRAFTLIST, result.data);
     });

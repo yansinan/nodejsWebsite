@@ -93,7 +93,8 @@ export let methods={
         )
           .then(() => {
             return remove({
-              ids: rows[index]._id
+              ids: rows[index]._id,
+              draft: "1"
             },this.nameMod);
           })
           .then(result => {

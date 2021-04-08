@@ -3,7 +3,8 @@
   "version": "1.0.25",
   "description": "content",
   "eggPlugin": {
-    "name": "doraContent"
+    "name": "doraContent",
+    "alias":"content"
   },
   "keywords": [
     "egg",
