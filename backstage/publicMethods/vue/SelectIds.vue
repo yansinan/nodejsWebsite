@@ -1,6 +1,7 @@
 <template>
 <el-form-item :label="label" prop="listIds">
     <el-select
+        span="24"
         size="medium"
         v-model="listIds"
         multiple
@@ -22,7 +23,11 @@
     </el-select>
 </el-form-item> 
 </template>
-
+<style lang="scss">
+    .el-select{
+      width:100%;
+    }
+</style>
 <script>
     import request from '@root/publicMethods/request';
     // listAllTasg必须至少有_id和name两个属性
