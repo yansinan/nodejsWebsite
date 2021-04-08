@@ -472,7 +472,7 @@ export default {
       );
     },
     beforeWordRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${file.name}？`);
+      // return this.$confirm(`确定移除 ${file.name}？`);
     },
     uploadWordSuccess(res, file) {
       tryHideFullScreenLoading();
@@ -484,7 +484,8 @@ export default {
       });
     },
     beforeWordUpload(file) {
-      const isDocx = file.type.indexOf("officedocument") > 0 ? true : false;
+      // 20210408增加粗略判断，避免不能识别
+      const isDocx = file.type.indexOf("officedocument") || file.name.indexOf(".doc") || file.name.indexOf(".docx") > 0 ? true : false;
       const isLt5M = file.size / 1024 / 1024 < 5;
       if (!isDocx) {
         this.$message.error("只能上传docx,doc格式！");
