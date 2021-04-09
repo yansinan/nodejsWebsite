@@ -12,7 +12,9 @@ export default {
     twiterAuthor: "推特作者",
     translate: "翻译",
     title: "标题",
+    name:"标题",
     stitle: "简短标题",
+    
     from: "来源",
     from_1: "原创",
     from_2: "转载",
@@ -41,13 +43,14 @@ export default {
   show:{
     sImg:"海报",
     listArtists:"演出乐队",
-    name:"活动大标题",
+    name:"标题",
     date:"演出日期",
-    nameAlias:"活动小标题",
-    listDateDur:"活动时间",
+    nameAlias:"副标题",
+    listDateDur:"活动日期",
     location:"地点",
     listTicketLink:"购票链接",
     listLinks:"相关链接",
+    tags:"演出标签",
   },
   //LangEnd
 }

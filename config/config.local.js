@@ -25,10 +25,10 @@ module.exports = appInfo => {
             // 'contentTemp',
             // 'templateConfig',
             // 'versionManage',
-            // 'content',
-            'artist',
-            'record',
-            'show',
+            // 'content',8900
+            // 'artist',//8888
+            // 'record',//8899
+            'show',//8899
             // 'contentTags',
             // 'contentCategory',
             // 'contentMessage',
