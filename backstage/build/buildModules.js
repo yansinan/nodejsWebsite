@@ -12,7 +12,9 @@ const {
 } = require('./utils');
 
 // 指定打包模块
-let designatedModule = ["artist","record"];
+let designatedModule = [];//"show","artist","record","content"
+// 参数指定命令
+// cnpm run buildDevModules --modules show,content
 
 let copyType = "dev",
     targetModules = '',
