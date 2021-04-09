@@ -33,9 +33,11 @@
 
           <template v-slot:footer>
             <!-- 热门歌曲：相关链接 -->
-            <el-form-item :label="$t(nameMod + '.listTicketLink')" prop="listTicketLink">
-              <ListURL @list-changed="eListHotMusicChanged" label="购买链接" :listObjURL="formState.formData.listTicketLink"></ListURL>
-            </el-form-item>
+            <!-- <el-form-item prop="listTicketLink"> -->
+              <!-- <ListURL @list-changed="eListHotMusicChanged" label="购买链接" :listObjURL="formState.formData.listTicketLink"></ListURL> -->
+              <ListURL v-model="formState.formData.listTicketLink" label="购买链接" ref="listTicketLink"></ListURL>
+              <!-- <div class="el-select-suffix el-input--small el-input__suffix"><span class=" el-input__suffix-inner" style="bottom:0px;right: 30px;max-height: 38px;">{{$t(nameMod + '.listTicketLink')}}</span></div> -->
+            <!-- </el-form-item> -->
           </template>
         </ContentForm>
 
@@ -47,9 +49,8 @@
 </style>
 <script>
 import '@/set-public-path'
-// import VueUeditorWrap from "vue-ueditor-wrap";
 import { initEvent } from "@root/publicMethods/events";
-import {methods,initData,components,data,props} from "@root/publicMethods/vue/contentForm";
+import {methods,initData,initVuex,components,computed,data,props} from "@root/publicMethods/vue/contentForm";
 
 import _ from "lodash";
 import { mapGetters, mapActions,createNamespacedHelpers} from "vuex";
@@ -58,14 +59,11 @@ const mod = createNamespacedHelpers(nameMod)////模块,含mapGetters, mapActions
 export default {
   props: {
     ...props,
-    groups: Array,
   },
-
   data() {
     return {
-      ...data,
-
-
+      // ...data,
+      nameMod:nameMod,
     };
   },
   components: {
@@ -73,16 +71,18 @@ export default {
     ContentForm: () => import('@root/publicMethods/vue/ContentForm.vue'),//表格头部
   },
   methods: {
-    ...methods,
     //获取表单信息
     ...mod.mapActions(["showContentForm"]),// 将 `this.showContentForm(params)` 映射为 `this.$store.dispatch(nameMod+'/incrementBy', params)`
 
+    // ...methods,
+    backToList:methods.backToList,
+    updateKeywords:methods.updateKeywords,
+    getLocalContents:methods.getLocalContents,
     // SelectIds变化::listRefs;
     eChangeArtist(e){
       this.formState.formData.listRefs=e.listIds;
       this.updateKeywords(e.listObjDiff,e.strAction=="delete");
     },
-
 
     // 热门歌曲列表变化
     eListHotMusicChanged(e){
@@ -105,10 +105,8 @@ export default {
     // },
   },
   computed: {
-    ...mapGetters(["contentTagList", "contentCategoryList",]),//"regUserList",
-    // formState() {
-    //   return this.$store.getters.contentFormState;
-    // },
+    // ...computed,
+    ...mapGetters(["contentCategoryList",]),//"regUserList","contentTagList", 
     ...mod.mapState({
       formState: state => state.formState,
       dataArtists:state => state.dataArtists,
@@ -117,6 +115,7 @@ export default {
   mounted() {
     initEvent(this);
     initData(this);
+    // initVuex(this);
   }
 };
 </script>
