@@ -60,6 +60,7 @@ export default {
     ...mapGetters({dataList:"getterListData"}),//模块
   },
   mounted() {
+    initEvent(this);
     // 触发action,异步
     this.$store.dispatch(nameMod+"/getList",{mod:nameMod});
   }
