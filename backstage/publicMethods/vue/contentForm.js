@@ -12,14 +12,23 @@ export let props={
 export let data={
     nameMod:nameMod,
     contentState: [
-      { value: "0", label: "隐藏" },
-      { value: "1", label: "待发布" },
-      { value: "2", label: "发布" },
+      { value: "0", label: "撤回" },//{ value: "0", label: "退回" },
+      { value: "1", label: "草稿" },//{ value: "1", label: "待审核" },
+      { value: "2", label: "发布" },//{ value: "2", label: "审核通过" },
       // { value: "3", label: "审核不通过" }
     ],
 
 }
 
+import VueUeditorWrap from "vue-ueditor-wrap";
+export let components={
+    VueUeditorWrap,
+    ListURL: () => import('@root/publicMethods/vue/ListURL.vue'),
+    LinkWX: () => import('@root/publicMethods/vue/LinkWX.vue'),//抓公众号文章
+    Cropper: () => import('@root/publicMethods/vue/Cropper.vue'),
+    SelectIds: () => import('@root/publicMethods/vue/SelectIds.vue'),
+
+}
 // 初始化时判断读取或新建
 export function initData(that){
     // 针对手动页面刷新
@@ -192,5 +201,43 @@ export let methods={
             return false;
         }
         });
-    }
+    },
+    // eFormSubmit(params, type = "") {
+    //     let that=this;
+    //     // 更新
+    //     if (type=="update") {
+    //         updateOne(params,that.nameMod).then(result => {
+    //             if (result.status === 200) {
+    //             that.backToList();
+    //             that.$message({
+    //                 message: that.$t("main.updateSuccess"),
+    //                 type: "success"
+    //             });
+    //             } else {
+    //                 that.$message.error(result.message);
+    //             }
+    //         }).catch(error=>{
+    //             debugger
+    //             console.error("乐队更新:fail,",error,params);
+    //             that.$message.error(JSON.stringify(error));
+    //         });
+    //     } else if(type=="addOne"){
+    //         // 新增
+    //         addOne(params,that.nameMod).then(result => {
+    //             console.log("新增:",params,result);
+    //             if (result.status === 200) {
+    //                 that.backToList();
+    //                 that.$message({
+    //                     message: that.$t("main.addSuccess"),
+    //                     type: "success"
+    //                 });
+    //             } else {
+    //                 that.$message.error(result.message);
+    //             }
+    //         }).catch(error=>{
+    //             console.error("乐队添加：fail:",error,params);
+    //             that.$message.error(error.message);
+    //         });
+    //     }
+    // },
 }

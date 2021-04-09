@@ -1,4 +1,4 @@
-.dr-contentForm {
+.demo-ruleForm {
     margin: 15px 0;
     width: 80%;
     padding-bottom: 50px;
@@ -53,6 +53,16 @@
           font-weight: 400;
         }
       }
+    }
+
+    // 文本框label
+    .el-input-group__prepend{
+      background-color: transparent;
+      border:none;
+    }
+    // 日期范围框
+    .el-range-editor.el-input__inner{
+      width:100%;
     }
   }
   

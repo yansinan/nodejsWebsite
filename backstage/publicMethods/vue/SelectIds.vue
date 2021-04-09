@@ -1,8 +1,7 @@
 <template>
-<el-form-item :label="label" prop="listIds">
+<el-form-item  prop="listIds">
     <el-select
         span="24"
-        size="medium"
         v-model="listIds"
         multiple
         filterable
@@ -19,13 +18,23 @@
         :key="item._id"
         :label="item.name"
         :value="item._id"
-        ></el-option>
+        ></el-option>        
     </el-select>
+    <div class="el-select-suffix el-input--small el-input__suffix"><span class=" el-input__suffix-inner">{{label}}</span></div>
 </el-form-item> 
 </template>
 <style lang="scss">
     .el-select{
       width:100%;
+    }
+    .el-select-suffix{
+        width:0px;
+        overflow: visible;
+        .el-input__suffix-inner{
+            position: absolute;
+            right: 100%;
+            white-space: nowrap;
+        }
     }
 </style>
 <script>

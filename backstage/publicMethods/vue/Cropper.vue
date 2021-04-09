@@ -1,11 +1,16 @@
 <template>
-  <el-form-item class="" :label="label" :prop="prop">
-      <input v-show="false" type="file" multiple="" accept="image/png,image/gif,image/jpeg" @change="uploadImg" ref="inputFile"/>
-      <el-button @click="eClickOpenImg" type="primary" plain icon="el-icon-upload2" style="width:200px;">图 片</el-button>
-      <!-- <div @click="eClickOpenImg" type="text" plain icon="el-icon-upload2" class="imgResult bnUpload "> <i class="el-icon-upload2" />文件</div> -->
-      <img v-if="srcPreview" :src="srcPreview" class="imgResult avatar avatar-128" style=""/>
-      <div class="el-upload__tip">只能上传jpg/png文件，上传前自动裁切</div>
+  <el-form-item class="" label="" :prop="prop">
+      <el-card :body-style="{ padding: '0px' }" shadow="always">
+        <div slot="header" class="clearfix">
+          <!-- <span class="el-upload__tip">只能上传jpg/png文件，上传前自动裁切</span> -->
+          <el-button @click="eClickOpenImg" type="primary" plain style="width:100%;">上传<i class="el-icon-upload el-icon--right"></i></el-button>
+        </div>
+        <el-tooltip content="只能上传jpg/png文件，上传前自动裁切" placement="top" effect="light">
+          <input v-show="false" type="file" multiple="" accept="image/png,image/gif,image/jpeg" @change="uploadImg" ref="inputFile"/>
+          <img v-if="srcPreview" :src="srcPreview" class="imgResult" style="" ref="imgPreview"/>
+        </el-tooltip>
 
+      </el-card>
     <el-dialog
       :xs="20"
       title="上传图片"
@@ -99,14 +104,16 @@ img{
 }
 .imgResult{
   position:relative;
-  z-index:-1;
-  max-height:none;
+  /* z-index:-1; */
+  /* max-height:none; */
   height:auto;
-  border-radius:4px; 
-  border: dashed #cacaca 1px;
-  padding:4px;
-  margin-top: 7px;
-  width:200px;
+  /* border-radius:4px;  */
+  /* border: dashed #cacaca 1px; */
+  /* padding:4px; */
+  /* margin-top: 7px; */
+  /* width:200px; */
+  width:100%;
+  max-height:100%;
 }
 .bnUpload{
   font-size:20px;
