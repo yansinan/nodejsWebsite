@@ -56,13 +56,27 @@
     }
 
     // 文本框label
-    .el-input-group__prepend{
-      background-color: transparent;
-      border:none;
-    }
+    // .el-input-group__prepend{
+    //   background-color: transparent;
+    //   border:none;
+    // }
     // 日期范围框
     .el-range-editor.el-input__inner{
       width:100%;
+    }
+    // 备注说明
+    .el-select-suffix{
+      width:0px;
+      overflow: visible;
+      .el-input__suffix-inner{
+          position: absolute;
+          right: 100%;
+          white-space: nowrap;
+          background-color: white;
+          background-clip: content-box;
+          border: 2px solid transparent;
+          max-height: -webkit-fill-available;
+      }
     }
   }
   

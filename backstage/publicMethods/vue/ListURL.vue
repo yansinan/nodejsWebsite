@@ -1,19 +1,20 @@
 <template>
   <div>
-    <el-form :model="listObjURL" ref="formUpdate" status-icon inline-message="true" label-width="0px">
+    <el-form :model="listObjURL" ref="formUpdate" status-icon inline-message="true"  label-width="0px">
         <el-form-item
             v-for="(domain, index) in listObjURL"
             :key="domain._id"
             :prop="'['+index+'].url'"
             :rules="{
-            required: true, type: 'url', message: '请输入有效链接', trigger: 'blur'
+              required: true, type: 'url', message: '请输入有效链接', trigger: 'blur'
             }"
             :error="strErrorUpdate"
         >
           <el-input v-model="domain.url" disabled @input="eChangeURL({index,objLink:domain})">
               <template slot="prepend" >
                 <span v-if="domain.type==='音乐' && domain.name" style="width:120px;">{{domain.name}}</span>
-                <img v-else :src="domain.icon" class="img-circle" style="width:32px">
+                <img v-else-if="domain.icon" :src="domain.icon" class="img-circle" style="width:32px">
+                <span v-else  style="width:120px;text-align: center; font-size: 18px;"><i class="el-icon-link" /></span>                
               </template>
               <el-button slot="append" icon="el-icon-delete" @click.prevent="removeDomain(domain)"/>
           </el-input>
@@ -30,7 +31,8 @@
             :error="strErrorAdd"
         >
           <el-input v-model="objToAdd.url" @change="eAddURL">
-              <template slot="prepend" style=""><span style="width:32px;text-align:center;" >其他</span></template>
+              <!-- <template slot="prepend" style=""><span style="width:32px;text-align:center;" >其他</span></template> -->
+              <template slot="suffix" style="color:red;">{{label}}</template>
           </el-input>
         </el-form-item>     
     </el-form>

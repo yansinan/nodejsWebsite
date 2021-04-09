@@ -11,22 +11,10 @@
         <el-form-item v-if="!formState.edit" :label="'公众号文章链接'">
           <LinkWX v-model="formState.formData" />
         </el-form-item>
-        <el-form-item :label="$t('contents.enable')" prop="state">
-          <el-select v-model="formState.formData.state" placeholder="审核文章">
-            <el-option
-              v-for="item in contentState"
-              :key="'kw_'+item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item v-if="formState.formData.state == '3'" label="驳回原因" prop="dismissReason">
-          <el-input v-model="formState.formData.dismissReason"></el-input>
-        </el-form-item>
+
         <!-- 标题&缩略图 -->
-        <el-row :gutter="40" type="flex" justify="space-between">
-          <el-col :lg="12">
+        <el-row :gutter="40" type="flex" justify="space-between" style="flex-wrap: wrap;">
+          <el-col :lg="12" :xl="14">
             <!-- 大标题 -->
             <el-form-item prop="name">
               <el-input v-model="formState.formData.name" maxlength="50" show-word-limit><template slot="suffix" style="color:red;">{{$t(nameMod + '.name')}}</template><!-- <label slot="suffix" class="el-form-item__label">{{$t(nameMod + '.name')}}</label> --></el-input>
@@ -40,13 +28,14 @@
             <!-- 标签 -->
             <SelectIds :label="this.$t(nameMod+'.tags')" @change="eChangeTag" :listIds="formState.formData.tags" :nameMode="nameMod" :initTag="createTag" />
 
-            <el-form-item :label="$t('contents.discription')" prop="discription">
+            <el-form-item prop="discription">
               <el-input type="textarea" v-model="formState.formData.discription" maxlength="300" show-word-limit :autosize="{minRows: 4, maxRows: 10 }"></el-input>
+              <div class="el-select-suffix el-input--small el-input__suffix"><span class=" el-input__suffix-inner">{{$t('contents.discription')}}</span></div>
             </el-form-item>
 
             <slot name="leftBottom"></slot>
           </el-col> 
-          <el-col :lg="12">
+          <el-col :lg="12" :xl="10">
             <Cropper 
             :nameMod="nameMod"
             v-model="formState.formData.sImg" 
@@ -54,7 +43,7 @@
             prop="sImg"></Cropper>
           </el-col> 
         </el-row>
-    <!-- 详情 -->
+        <!-- 详情 -->
         <el-form-item :label="$t('contents.comments')" prop="comments">
           <!-- <Ueditor @ready="editorReady" ref="ueditor"></Ueditor> -->
           <vue-ueditor-wrap
@@ -82,23 +71,51 @@
                 value-format="yyyy-MM-dd"
                 :placeholder="$t('contents.date')" >
               </el-date-picker>
+              <div class="el-select-suffix el-input--small el-input__suffix"><span class=" el-input__suffix-inner">{{$t('contents.date')}}</span></div>
+
             </el-form-item>
           </el-col> 
         </el-row>
 
         <slot name="footer"></slot>
 
-        <el-form-item class="" style="text-align:right;"><!-- dr-submitContent -->
-          <el-date-picker
-            v-model="formState.formData.date"
-            type="date"
-            format="yyyy 年 MM 月 dd 日"
-            value-format="yyyy-MM-dd"
-            :placeholder="$t('contents.date')" >
-          </el-date-picker>
-          <el-button size="medium" type="primary" @click="submitForm('ruleForm')">{{formState.edit ? $t('main.form_btnText_update') : $t('main.form_btnText_save')}}</el-button>
-          <el-button size="medium" @click="backToList">{{$t('main.back')}}</el-button>
-        </el-form-item>
+        <el-row :gutter="40" type="flex" justify="space-between" style="flex-wrap: wrap;">
+          <el-col :lg="18" style="min-width: min-content;">
+            <!-- <el-radio-group v-model="formState.formData.state">
+              <el-radio border
+                v-for="item in contentState"
+                :key="'kw2_'+item.value"
+                :label="item.value"
+                :value="item.value">{{item.label}}</el-radio>
+            </el-radio-group> -->
+            <!-- 
+            <el-form-item :label="$t('contents.enable')" prop="state">
+              <el-select v-model="formState.formData.state" placeholder="审核文章">
+                <el-option
+                  v-for="item in contentState"
+                  :key="'kw_'+item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item v-if="formState.formData.state == '3'" label="驳回原因" prop="dismissReason">
+              <el-input v-model="formState.formData.dismissReason"></el-input>
+            </el-form-item>
+             -->
+          </el-col> 
+          <el-col style="min-width: min-content;max-width:max-content;text-align: right;">
+
+          </el-col> 
+        </el-row>
+            <!-- 保存返回 -->
+            <el-form-item class="" style="text-align:right;"><!-- dr-submitContent -->
+              <el-button size="medium" @click="backToList">{{$t('main.back')}}</el-button>
+              <el-button size="medium" type="info" plain @click="submitForm('ruleForm','0')">撤回</el-button>
+              <!-- <el-button size="medium" type="primary" @click="submitForm('ruleForm','1')">{{formState.edit ? $t('main.form_btnText_update') : $t('main.form_btnText_save')}}</el-button> -->
+              <el-button size="medium" type="primary" @click="submitForm('ruleForm','1')">存草稿</el-button>
+              <el-button size="medium" type="success" @click="submitForm('ruleForm','2')">发布</el-button>
+            </el-form-item>
       </el-form>
 
 </template>
@@ -106,15 +123,7 @@
     .el-select{
       width:100%;
     }
-    .el-select-suffix{
-        width:0px;
-        overflow: visible;
-        .el-input__suffix-inner{
-            position: absolute;
-            right: 100%;
-            white-space: nowrap;
-        }
-    }
+
 </style>
 <style lang="scss">
 @import "@root/publicMethods/sass/contentForm.scss";
@@ -250,10 +259,9 @@
     },
     methods: {
         // ...methods,
-        updateKeywords:methods.updateKeywords,
-        getLocalContents:methods.getLocalContents,
-        editorReady:methods.editorReady,
         backToList:methods.backToList,
+        updateKeywords:methods.updateKeywords,
+        editorReady:methods.editorReady,
         submitForm:methods.submitForm,
         // submitForm(formName, type = "") {
         //     let that=this;
