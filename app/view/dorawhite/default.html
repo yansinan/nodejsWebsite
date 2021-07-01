@@ -27,18 +27,24 @@
     {% include "./public/header.html" %}
     {# <div class="mainbody" id="{{pageType}}" style="width:100%;max-width:1199px;"> #}
     <div class="container-fluid position-absolute" id="{{pageType}}" style="width:100%;top:0px;">
-        <input type="hidden" value="{{site.lang}}" id="siteLang">       
+        <input type="hidden" value="{{site.lang}}" id="siteLang">
+        {# 主框架  #}
+        {# 上下slide #}
+        
+        {# 主框架 --end #}
         {# 内容区 #}
         <div class="row position-relative bs-wrapper-main" style="top:12vh;height:88vh;overflow:hidden;white-space:nowrap;">
             <div class="col bs-content px-0 d-inline-block" style="max-width:none;max-height:100%;">
                 {# 单页模式 #}
-                {% block content %}{% endblock %}
+                {# {% block content %}{% endblock %} #}
             </div>
+            {# 
             {% block navAvatar %}
             <div class="col-auto">
                 {{navAvatar(listAvatars,128)}}
             </div>
             {% endblock %}
+             #}
         </div>
         {# {% block navAvatar %}{% endblock %} #}
     </div>
@@ -51,40 +57,40 @@
         {# BScroll.use(Slide) #}
 
         {# BScroll.use(NestedScroll) #}
-        let slideMain = new BetterScroll.createBScroll('.bs-wrapper-main', {
-            disableMouse: false,
-            disableTouch: false,
-            scrollX: true,
-            scrollY: false,
-            slide: {
-                threshold: 100,
-                loop: false,//TODO：可以优化为循环slide；注意：复制出来的slide需要querySelector and 设置translateY同步
-                autoplay:false,
-                listenFlick:false,
-            },
-            useTransition: true,
-            momentum: false,
-            bounce: false,
-            stopPropagation: true,
-            probeType: 3,
-        })
-        slideMain.on('slidePageChanged', (page) => {
-            // currentPageIndex = page.pageX
-        })
-        slideMain.on('slideWillChange', (page) => {
-            currentPageIndex = page.pageX;
-            console.log("slideMain.on(slideWillChange)",page,this.header.listNav[currentPageIndex]);
-            {# history路由 #}
-            window.history.pushState({}, "{{site.title}}|"+ this.header.listNav[currentPageIndex].name, this.header.listNav[currentPageIndex].url);//设置状态
-            //listBnNav.addClass("bg-light text-dark").removeClass("bg-dark text-light");
-            //bnNav.addClass("bg-dark text-light").removeClass("bg-light text-dark");             
-        })
-        {# 页面重新加载时，路由到指定的slide页 #}
-        window.addEventListener('DOMContentLoaded', (event) => {
-            if(this.header.idxNav>=0){
-                slideMain.goToPage(this.header.idxNav,0);
-            }
-        });
+        //let slideMain = new BetterScroll.createBScroll('.bs-wrapper-main', {
+        //    disableMouse: false,
+        //    disableTouch: false,
+        //    scrollX: true,
+        //    scrollY: false,
+        //    slide: {
+        //        threshold: 100,
+        //        loop: false,//TODO：可以优化为循环slide；注意：复制出来的slide需要querySelector and 设置translateY同步
+        //        autoplay:false,
+        //        listenFlick:false,
+        //    },
+        //    useTransition: true,
+        //    momentum: false,
+        //    bounce: false,
+        //    stopPropagation: true,
+        //    probeType: 3,
+        //})
+        //slideMain.on('slidePageChanged', (page) => {
+        //    // currentPageIndex = page.pageX
+        //})
+        //slideMain.on('slideWillChange', (page) => {
+        //    currentPageIndex = page.pageX;
+        //    console.log("slideMain.on(slideWillChange)",page,this.header.listNav[currentPageIndex]);
+        //    {# history路由 #}
+        //    window.history.pushState({}, "{{site.title}}|"+ this.header.listNav[currentPageIndex].name, this.header.listNav[currentPageIndex].url);//设置状态
+        //    //listBnNav.addClass("bg-light text-dark").removeClass("bg-dark text-light");
+        //    //bnNav.addClass("bg-dark text-light").removeClass("bg-light text-dark");             
+        //})
+        //{# 页面重新加载时，路由到指定的slide页 #}
+        //window.addEventListener('DOMContentLoaded', (event) => {
+        //    if(this.header.idxNav>=0){
+        //        slideMain.goToPage(this.header.idxNav,0);
+        //    }
+        //});
     </script>
      
 

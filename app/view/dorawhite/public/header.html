@@ -3,14 +3,14 @@
     if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
         document.write("<script src='{{staticThemePath}}/js/iscroll/iscroll.js'><" + '/' +
             "script>");
-        $(function () {
-            new IScroll('#navWrapper', {
-                scrollX: true,
-                scrollY: false,
-                mouseWheel: true,
-                click: true
-            });
-        })
+        //$(function () {
+        //    new IScroll('#navWrapper', {
+        //        scrollX: true,
+        //        scrollY: false,
+        //        mouseWheel: true,
+        //        click: true
+        //    });
+        //})
     }
     
     {# 更新导航状态 #}
@@ -115,33 +115,48 @@
 {% block cover %}
     <div class="container-fluid overflow-visible position-relative" style="height:0px;z-index:100;">
         {# scroll #}
-        <div class="row bs-wrapper-cover overflow-hidden" style="height:100vh;">
-            <div class="col bs-content px-0">
-                <div class="container-fluid bg-danger text-dark" style="min-height:100vh;">
-                    <div class="row w-100" style="height:40vh;"></div>
-                    <h1 class="display-1">RUBY</h1>
-                    <h1 class="display-1">EYES</h1>
-                    <h1 class="display-1">RECORDS</h1>
-                    <h1 class="display-1">COMMIUNITY</h1>
+        <div class="bs-wrapper-cover row position-relative overflow-hidden ms-3" style="top:12vh;height:88vh;">
+            <div class="col bs-content px-0  bg-white text-dark" style="min-height:100vh;">
+                {# <div class="row w-100" style="height:15vh;"></div> #}
+                <div class="bs-wrapper-listArtist overflow-hidden" style="height:88vh;">
+                    <div class="bs-content px-0 d-flex flex-row flex-wrap m-0" style="writing-mode: vertical-lr;max-width:none;max-height:100%;">
+                        {% for artist in listArtists %}
+                        {# 乐队名列表 #}
+                        {# <h1 class="display-1">RUBY</h1> #}
+                        <div class="d-flex align-items-center me-5 my-1" style="max-width:68vw;writing-mode: horizontal-tb;">
+                            <h1 class="display-4" alt="{{site.altkey}}{{artist.name}}" style="">
+                                <a href="{{artist.url}} " target="_blank ">
+                                    <u>{{artist.name}}</u>
+                                </a>
+                            </h1>
+                            <span class="d-flex flex-shrink-0 justify-content-center border border-1 border-dark rounded-circle ms-3" style="font-size:1rem;width:2rem;height:2rem;">+2</span>
+                        </div >
+                        {% endfor %}
+                        {# 最后一列占宽用 #}
+                        <div class="d-flex align-items-center me-5 my-1" style="width:80vw;writing-mode: horizontal-tb;"></div>
+                    </div>
                 </div>
+                    
                 {# 空容器 #}
                 <div class="container-fluid bg-transparent  position-relative" style="min-height:100vh;z-index:-100;"></div>
             </div>
         </div>
     </div>
+    
     <script>
-        
         this.slideCover=new BetterScroll.createBScroll('.bs-wrapper-cover', {
             disableMouse: false,
             disableTouch: false,
+            scrollX: false,
+            scrollY: true,
             mouseWheel: {
                 speed: 20,
                 invert: false,
                 easeTime: 300
             },
-            nestedScroll: {
-                groupId: 'cover-scroll'
-            },
+            //nestedScroll: {
+            //    groupId: 'cover-scroll'
+            //},
             slide: {
                 threshold: 100,
                 loop: false,
@@ -153,17 +168,41 @@
             bounce: false,
             stopPropagation: true,
             probeType: 3,
-
+        
         })
         {# //初始化slideCover后隐藏Cover，后面再判断是否显示 #}
-        $('.bs-wrapper-cover').hide();
+        {# $('.bs-wrapper-cover').hide(); #}
+        
         this.slideCover.on('slideWillChange', (page) => {
             {# 导航更新 #}
             this.header.funSetNav(this.header.strAliasNav || "timeline");
-            $('.bs-wrapper-cover').hide();
+            {# $('.bs-wrapper-cover').hide(); #}
             {# // currentPageIndex = page.pageX #}
         })
-    </script>    
+    </script>
+    <script>
+        let slideListArtist = new BetterScroll.createBScroll('.bs-wrapper-listArtist', {
+            disableMouse: false,
+            disableTouch: false,
+            mouseWheel: true,
+            scrollX: true,
+            scrollY: false,
+            //nestedScroll: {
+            //    groupId: 'cover-scroll'
+            //},
+            //slide: {
+            //    threshold: 100,
+            //    loop: false,//TODO：可以优化为循环slide；注意：复制出来的slide需要querySelector and 设置translateY同步
+            //    autoplay:false,
+            //    listenFlick:false,
+            //},
+            useTransition: true,
+            momentum: false,
+            bounce: false,
+            //stopPropagation: true,
+            probeType: 3,
+        })
+    </script>  
 {% endblock %}
 {# <header class="clearfix" id="header" ms-controller="headerCtr"> #}
 <div class="container-fluid position-absolute" style="height:10vh;z-index:1000;" >
@@ -186,10 +225,6 @@
     {# <div class="collapse navbar-collapse collapseNav-sm"></div>     #}
     <nav class="navbar navbar-expand-md navbar-light bg-transparent sticky-top" ms-controller="headerCtr" style="">
         <div class="container-fluid">
-            {# 手机缩略菜单 #}
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".collapseNav-sm" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
             {# logo&name #}
             <a class="navbar-brand  d-flex d-md-none " href="#"><img class="img-fluid" style="min-width:140px" width="200" src="{{site.logo}}" alt="{{site.title}}"/></a>
             {# collapse  nav&search #}
@@ -209,6 +244,10 @@
                     <span class="input-group-text"><i ms-click='@searchMe' class="fa fa-search"></i></span>
                 </div>
             </div>
+            {# 手机缩略菜单 #}
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".collapseNav-sm" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
         </div>
     </nav>
 </div>
