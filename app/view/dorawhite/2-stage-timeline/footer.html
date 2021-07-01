@@ -6,18 +6,7 @@
         </div>
 
         <div class="row">            
-            <svg width="100%" height="100px">
-                <rect width="100%" height="5%" fill="gray" />
-                {% for idxDays in objTimeline.listIdxDays %}
-                    <rect x="{{idxDays}}%" width="{{objTimeline.widthPercent}}%" height="5%" fill="ghostwhite" />
-                {% endfor %}
-                {% for season in objTimeline.listIdxSeasons %}
-                    <rect x="{{season.x}}%" y="10%" width="0.2%" height="15%" fill="black" />
-                {% endfor %}
-                {% for year in objTimeline.listIdxYears %}
-                    <text x="{{year.x}}%" y="80%" class="display-4" style="text-anchor: middle;">{{year.strTitle}}</text>
-                {% endfor %}
-           </svg>  
+            {{timelineBar(objTimeline)}}
         </div>
         <div class="row"></div>
 
