@@ -302,7 +302,7 @@ class APIController extends Controller {
             let service=ctx.service[SERVICE_NAME];
 
             let queryObj = {
-                    state: '2'
+                    // state: '2'
                 },
                 sortObj = {
                     date: -1
@@ -367,7 +367,10 @@ class APIController extends Controller {
                 files: this.getListFields(filesType)
             });
 
-            listRes.docs = await this.renderList(userInfo._id, listRes.docs);
+            let listTmpRes = await this.renderList(userInfo._id, listRes.docs || listRes);
+            // 为了适配isPaging=0 && pageSize=0全部列表的结果是数组的情况；
+            if(listRes.docs)listRes.docs=listTmpRes;
+            else listRes={docs:listTmpRes};
             //这里直接渲染模板?
             let path="../view/dorawhite/2-stage-artist/listTempArtist.html";//app/view/dorawhite/2-stage-timeline/listTempTimeline.html
             if(type=="dom")listRes.docs=await ctx.renderView(path,{posts:listRes.docs});

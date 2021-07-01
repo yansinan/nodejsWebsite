@@ -13,7 +13,7 @@ module.exports = app => {
 
     router.get("/sitemap.html", controller.page.home.getDataForSiteMap);
 
-    router.get(["/", "/zh-CN", "/zh-TW", "/en"], controller.page.home.getDataForIndexPage);
+    router.get(["/", "/zh-CN", "/zh-TW", "/en"], controller.page.index.getDataForIndexPage);
 
     router.get("/page/:current.html", controller.page.home.getDataForIndexPage);
 
