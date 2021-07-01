@@ -1,0 +1,92 @@
+
+.heightNav{
+  height:13.22vh;
+}
+.heightMain{
+  height:76.5vh;
+}
+/* 导航样式 */
+/* #navHeader .logo{
+  
+  min-width:98px;
+  max-width:131px;
+  min-height:30px;
+  max-height:40px;
+  flex:1 1 9.1vw;
+} */
+/* logo */
+#navHeader .navbar-brand{
+  flex:1 1 9.1vw;
+}
+/* 菜单及搜索关闭 */
+#navHeader .navbar-expand-md .navbar-collapse{
+  width:auto;
+}
+/* 菜单及搜索按钮打开 */
+#navHeader .navbar-expand-md .navbar-collapse.collapsing{
+  width:100%;
+}
+#navHeader .navbar-expand-md .navbar-collapse.show{
+  width:100%;
+}
+#navHeader .logo .img-fluid{
+  min-width:98px;
+  max-width:131px;
+  min-height:30px;
+  max-height:40px;
+  object-fit: contain;
+}
+
+#navHeader .collapse.navbar-collapse
+{
+
+}
+#navHeader .collapse.navbar-collapse .navbar-nav
+{
+  max-width: 68.9vw;
+  overflow: hidden;
+  flex:1 1 auto;
+}
+
+
+/* 手机自适应高度 */
+#timelineContent {
+  max-height: none;
+  height: auto;
+  overflow: visible;
+}
+#timelineContent .container-mm{
+  margin-right: 5rem;
+}
+/* 手机每条内容宽整宽 */
+#timelineContent .wapper-mm{
+  width:100%;
+  min-width:40vw;
+}
+
+#timelineContent .wapper-mm img.img-fluid{
+  object-fit:cover;
+}
+
+@media (min-width: 768px) {
+  .heightMain-md{
+    height: 76.5vh!important;;
+  }
+  /* PC指定最大高度 */
+  /* #timelineContent.heightMain-md { */
+    /* max-height: 78vh; */
+    /* height: 78vh; */
+    /* overflow: hidden; */
+  /* } */
+
+
+  /* PC内容一屏2个半 */
+  #timelineContent .wapper-mm-md{
+    width:40vw;
+  }
+  #timelineContent .wapper-mm-md img.img-fluid{
+    object-fit:cover;
+  }
+}
+
+/*# sourceMappingURL=avatar.css.map */
