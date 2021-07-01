@@ -16,7 +16,7 @@ module.exports = {
     ueditor: ['ueditor.config.js', 'ueditor.all.js'],
     ['twitter-bootstrap']: ['5.0.0/css/bootstrap.min.css', '5.0.0/js/bootstrap.min.js'],
     ['popper']:['2.6.0/umd/popper.min.js'],//['https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js'],
-    betterScroll:['better-scroll.min.js',],//'betterScroll/core.min.js',
+    betterScroll:['better-scroll.min.js',],//'better-scroll.js','betterScroll/core.min.js',
     ['avalon.js']: ['2.2.7/avalon.min.js'],
     layer: ['layer.js', 'theme/default/layer.css'],
     ['font-awesome']: ['4.7.0/css/font-awesome.min.css']
