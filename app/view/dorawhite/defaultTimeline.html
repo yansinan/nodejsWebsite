@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html class="{{pageType}}">
+
+<head>
+    {% header adaptor="ie" %}
+
+    <!-- 引入组件库 -->
+    <!-- Production version -->
+    {# <script src="https://unpkg.com/@popperjs/core@2"></script> #}
+    {# <script src="https://cdn.bootcdn.net/ajax/libs/popper.js/2.6.0/umd/popper.min.js"></script> #}
+    {% plugin name="popper twitter-bootstrap font-awesome betterScroll" %}
+    {% endplugin %}
+    {# 模块 #}
+    {% from "./public/compNavAvatar.html" import navAvatar %}
+    {% from "./public/compContainerList.html" import containerOfList %}
+    {% from "./public/compListTags.html" import listTags %}
+    <!-- 二次开发静态资源 -->
+    {% assets 'dora.front.js white.css avatar.css artist.css' %}
+    {% endassets %}
+    <script src="https://unpkg.com/better-scroll@latest/dist/better-scroll.js"></script>
+    {% endheader %}
+
+    <input type="hidden" value="{{lsk}}" id="sysKeys">
+</head>
+
+<body>
+    {# 整屏容器 #}
+    {% include "./public/header.html" %}
+    {# <div class="mainbody" id="{{pageType}}" style="width:100%;max-width:1199px;"> #}
+    <div class="container-fluid position-absolute" id="{{pageType}}" style="width:100%;top:0px;">
+        <input type="hidden" value="{{site.lang}}" id="siteLang">       
+        {# 内容区 #}
+        <div class="row position-relative bs-wrapper-main" style="width:100vw;top:12vh;height:88vh;overflow:hidden;white-space:nowrap;">
+            <div class="col bs-content px-0 d-inline-block" style="max-width:none;width:auto;max-height:88vh;">
+                {# 横向月份块 #}
+                {% block content %}{% endblock %}
+            </div>
+            {% block navAvatar %}
+            <div class="col-auto">
+                {{navAvatar(listAvatars,128)}}
+            </div>
+            {% endblock %}
+
+        </div>
+        {# {% block navAvatar %}{% endblock %} #}
+    </div>
+    {% block footer %}{% endblock %}
+    {# {% include "./public/footer.html" %} #}
+
+    {# #}
+
+    <script>
+        {# BScroll.use(MouseWheel) #}
+        {# BScroll.use(Slide) #}
+        {# BScroll.use(ScrollBar); #}
+        {# BScroll.use(NestedScroll) #}
+        let domScrollbar=document.getElementById("scrollbarTimeLine");
+        let slideMain = new BetterScroll.createBScroll('.bs-wrapper-main', {
+            disableMouse: false,
+            disableTouch: false,
+            scrollX: true,
+            scrollY: false,
+            //slide: {
+            //    threshold: 100,
+            //    loop: false,//TODO：可以优化为循环slide；注意：复制出来的slide需要querySelector and 设置translateY同步
+            //    autoplay:false,
+            //    listenFlick:false,
+            //},
+            useTransition: true,//是否使用 CSS3 transition 动画
+            momentum: true,//滚动动画
+            bounce: true,//回弹动画
+            stopPropagation: true,//阻止事件冒泡。多用在嵌套 scroll 的场景
+            probeType: 3,
+            scrollbar: {
+                customElements: [domScrollbar],
+                fade: true,
+                interactive: true,
+                scrollbarTrackClickable: true
+            }
+        })
+        //slideMain.on('slidePageChanged', (page) => {
+        //    // currentPageIndex = page.pageX
+        //})
+        //slideMain.on('slideWillChange', (page) => {
+        //    currentPageIndex = page.pageX;
+        //    {# console.log("slideMain.on(slideWillChange)",page,this.header.listNav[currentPageIndex]); #}
+        //    {# history路由 #}
+        //    {# window.history.pushState({}, "{{site.title}}|"+ this.header.listNav[currentPageIndex].name, this.header.listNav[currentPageIndex].url);//设置状态 #}
+        //})
+        {# 页面重新加载时，路由到指定的slide页 #}
+        //window.addEventListener('DOMContentLoaded', (event) => {
+        //    if(this.header.idxNav>=0){
+        //        slideMain.goToPage(this.header.idxNav,0);
+        //    }
+        //});
+    </script>
+     
+
+</body>
+
+</html>

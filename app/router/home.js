@@ -5,7 +5,8 @@ module.exports = app => {
     } = app;
 
     const authPage = app.middleware.authPage({});
-    
+    // 测试新的复杂滚动首页
+    router.get(["/test", ], controller.page.home.getTestPage);
     //配置站点地图和robots抓取
     router.get("/sitemap.xml", controller.page.home.getSiteMapPage);
 

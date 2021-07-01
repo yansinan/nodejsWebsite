@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-01-26 
  * @Last Modified by: dr
- * @Last Modified time: 2021-1-26
+ * @Last Modified time: 2021-03-18 01:24:56
  */
 
 'use strict';
@@ -314,6 +314,36 @@ class ServicePlugin extends Service {
         res.message="no-url:"+ JSON.stringify(payload)
         return res;
     }
+
+    // 遍历文件
+    listUrlImg(){
+        const {
+            ctx,
+            app
+        } = this;            
+        //存放路径
+        let options = !_.isEmpty(app.config.doraUploadFile.uploadFileFormat) ? app.config.doraUploadFile.uploadFileFormat : {};
+        const root = options.upload_path || (process.cwd() + '/app/public/upload/images');
+
+        let listFilePathTree=[];
+        listFilePathTree=getListFile(root,listFilePathTree);
+        function getListFile(dir,list){
+            var arr = fs.readdirSync(dir);
+            arr.forEach(function(item){
+                var fullpath = path.join(dir,item);
+                var stats = fs.statSync(fullpath);
+                if(stats.isDirectory()){
+                    getListFile(fullpath,list);
+                }else{
+                    let urlRoot=`${app.config.server_path}${app.config.static.prefix}/upload/images`;
+                    list.push(fullpath.replace(root,urlRoot));
+                }
+            });
+            return list;
+        }
+        return listFilePathTree;
+    }
+    
     get model(){
         if(!this._model)this._model=this.ctx.model[__filename.slice(__dirname.length + 1, -3)];
         return this._model;

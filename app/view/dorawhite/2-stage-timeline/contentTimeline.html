@@ -1,0 +1,109 @@
+{% extends "../defaultTimeline.html" %} 
+{% block content %}
+    {% set infoPagination={page:"timeline",idDOM:"list-timeline",api:"/api/timeline/getList",pageInfo:pageInfo,cateInfo:cateInfo} %}
+    {# 临时设置，确保不输出默认数据，且有posts #}
+    {# {% set posts=[] %} #}
+        <script>
+      
+            function eHoverTitle(idDoc){
+                //$('.collapsing'+idDoc).collapse("hide");
+                //$('.collapse.show'+idDoc).collapse("hide");
+                $('#timelineTitleImg'+idDoc).collapse("show");
+                $("[dr-id-doc="+idDoc+"] .date").removeClass("text-muted");
+                $("[dr-id-doc="+idDoc+"] .date").addClass("text-dark text-decoration-underline");
+                $("[dr-id-doc="+idDoc+"] h1").removeClass("text-muted");
+                $("[dr-id-doc="+idDoc+"] h1").addClass("text-dark text-decoration-underline");
+            }
+            function eOutTitle(idDoc){
+                $('#timelineTitleImg'+idDoc).collapse("hide");
+                $("[dr-id-doc="+idDoc+"] .date").addClass("text-muted");
+                $("[dr-id-doc="+idDoc+"] .date").removeClass("text-dark text-decoration-underline");
+                $("[dr-id-doc="+idDoc+"] h1").addClass("text-muted");
+                $("[dr-id-doc="+idDoc+"] h1").removeClass("text-dark text-decoration-underline");
+
+            }  
+        </script>
+
+    {% for month, monthItems in posts|groupby("dateYYMM") %}
+    <div class="container-fluid  main-container position-relative d-inline-block" style="height:78vh;overflow:hidden;white-space:normal;width:28.57vw;" dr-bs-wrapper="mm-{{month|trim}}" ms-controller="{{month|trim}}">
+        {# 月份行 #}
+        <div class="row my-5">
+            <h1>{{monthItems[0].dateYYMM}}</h1>
+        </div>
+        {# 纵向滚动组件 #}
+        <div class="row collapseParent{{month|trim}}" >
+            {# 日期纵向滚动容器 #}
+            {# 日期内容区 #}
+            {% for item in monthItems %}
+            <div class="row" dr-id-doc="{{item._id}}" onmouseover="eHoverTitle('{{item._id}}')" onmousemove="eHoverTitle('{{item._id}}')" onmouseout="eOutTitle('{{item._id}}')">
+                {# 日期 #}
+                <div class="col-auto text-muted date">{{item.dateTimeline}}</div>
+                {# 内容&标题预览 #}
+                <div class="col">
+                    {# 大标题 #}
+                    <h1 class="display-6 mb-4 text-muted">{{item.name}}</h1>
+                    {# 图 #}
+                    <div class="collapse" id="timelineTitleImg{{item._id}}" data-bs-parent=".collapseParent{{month|trim}}">
+                        <img src="{{item.sImg}}" alt="{{item.name}}"  class="img-fluid mb-8" alt="{{item.title}} " style="max-width:300px;max-height:300px;object-fit:cover;" dr-id-doc="img{{item._id}}"/>
+                    </div>
+                    {# 标签 #}
+                    <div class="row py-2" style="">
+                        {{listTags(item.tags)}}
+                    </div>
+                </div>
+            </div>
+            <script>
+                {# let myCollapse =  #}
+                {# this["bs-MM-"+"{{month}}"].arrCollapse = this["bs-MM-"+"{{month}}"].arrCollapse?this["bs-MM-"+"{{month}}"].arrCollapse:[]; #}
+                //new bootstrap.Collapse(document.getElementById('timelineTitleImg{{item._id}}'), {
+                //    toggle: false,
+                //})
+                
+            </script>
+            {% endfor %}
+        </div>
+
+        <script>
+            //initBSMM("bs-MM-"+"{{month|trim}}");
+            //function initBSMM(inId){
+                {# BScroll.use(MouseWheel) #}
+                {# BScroll.use(Slide) #}
+                this["bs-MM-"+"{{month|trim}}"] = this["bs-MM-"+"{{month|trim}}"] ||  new BetterScroll.createBScroll("[dr-bs-wrapper=mm-"+"{{month|trim}}"+"]", {
+                    specifiedIndexAsContent:1,
+                    disableMouse: false,
+                    disableTouch: false,
+                    scrollY: true,
+                    scrollX: false,
+                    useTransition: true,//是否使用 CSS3 transition 动画
+                    momentum: true,//滚动动画
+                    bounce: true,//回弹动画
+                    stopPropagation: false,//阻止事件冒泡。多用在嵌套 scroll 的场景
+                    probeType: 3,
+                    mouseWheel: {
+                        speed: 20,
+                        invert: false,
+                        easeTime: 300
+                    },
+                    scrollbar: true,
+                    observeDOM: true // 开启 observe-dom 插件
+                })
+                this["bs-MM-"+"{{month|trim}}"].on('scroll', (pos) => {
+                    // currentPageIndex = page.pageX
+                    console.log(pos.y);
+                })                
+            //}  
+        </script>
+    </div>
+    {% endfor %}
+  
+
+{% endblock %}
+
+{# 
+{% block cover %}
+{% endblock %} 
+#}
+
+{% block footer %}
+    {% include "./footer.html" %}
+{% endblock %} 

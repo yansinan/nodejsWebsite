@@ -167,10 +167,10 @@
         let that=this;
         this.getListRecords().then(resListRecord=>{
           console.log(resListRecord);
-          if(resListRecord.status==200 && resListRecord.data && resListRecord.data.length>0){
+          if(resListRecord.status==200 && resListRecord.data){
             that.listRecords=resListRecord.data;
             // 读取NCM并去重
-            return this.eBnSyncNCM(e)
+            return that.eBnSyncNCM(e)
           }
         }).then(res=>{
             
