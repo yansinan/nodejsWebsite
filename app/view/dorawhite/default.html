@@ -17,6 +17,7 @@
     {% from "./public/compContainerList.html" import containerOfList %}
     {% from "./public/compListTags.html" import listTags %}
     {% from "./public/compTimelineBar.html" import timelineBar %}
+    {% from "./public/compTimelineBar.html" import timelineBarDocs %}
     <!-- 二次开发静态资源 -->
     {% assets 'dora.front.js white.css avatar.css timeline.css artist.css' %}
     {% endassets %}
@@ -50,7 +51,7 @@
                             {# 乐队名列表 #}
                             {# <h1 class="display-1">RUBY</h1> #}
                             <div class="d-flex align-items-center me-5 my-1" style="max-width:68vw;writing-mode: horizontal-tb;">
-                                <h1 class="display-4" alt="{{site.altkey}}{{artist.name}}" style="">
+                                <h1 class="display-5" alt="{{site.altkey}}{{artist.name}}" style="">
                                     <a href="{{artist.url}} " target="_blank ">
                                         <u>{{artist.name}}</u>
                                     </a>
@@ -84,6 +85,7 @@
                                 bounce: true,
                                 //stopPropagation: true,
                                 probeType: 3,
+                                observeDOM: true ,// 开启 observe-dom 插件
                             })
                         </script>  
                     </div>
@@ -133,6 +135,7 @@
                                 invert: false,
                                 easeTime: 100
                             },
+                            observeDOM: true ,// 开启 observe-dom 插件
                             stopPropagation: false,
                             probeType: 0,
                         })

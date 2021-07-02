@@ -15,3 +15,21 @@
            </svg>
     {# {% endif %} #}
 {% endmacro %}
+
+{% macro timelineBarDocs(objTimeline,isExpend=false) %}
+    {# {% if objTimeline.length>0%} #}
+            <svg width="82.3%" height="40px" style="width:82.3%">
+                {% for idxDays in objTimeline.listIdxDays %}
+                    <rect x="{{idxDays}}%" width="{{objTimeline.widthPercent*0.5}}%" height="16px" fill="#231F20" />
+                {% endfor %}
+                {% if isExpend %}
+                    {% for season in objTimeline.listIdxSeasons %}
+                        <rect x="{{season.x}}%" y="22px" width="0.2%" height="18px" fill="black" />
+                    {% endfor %}
+                    {# {% for year in objTimeline.listIdxYears %} #}
+                        {# <text x="{{year.x}}%" y="80%" class="display-4" style="text-anchor: middle;">{{year.strTitle}}</text> #}
+                    {# {% endfor %} #}
+                {% endif %}
+           </svg>
+    {# {% endif %} #}
+{% endmacro %}

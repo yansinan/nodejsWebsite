@@ -1,12 +1,19 @@
 {% extends "../public/footer.html" %} 
 {% block footerUp %}
-    <div class="container-fluid  main-container position-relative d-inline-block">
-        <div class="row" id="scrollbarTimeLine" style="overflow:visible;height:0px;width:100vw;">
-            <div class="" style="width:10px;height:60px;background-color:gray;opacity: 0.4;"></div>
+    <div class="d-flex flex-column justify-content-end position-relative p-0 border border-dark border-1">
+        <div class="d-none" id="scrollbarTimeLine" style="overflow:visible;height:0px;width:100vw;">
+            <div class="border-4 border-start border-dark" style="width:10px;height:105px;background-color:#52FF00;opacity: 1;"></div>
         </div>
 
-        <div class="row">            
-            {{timelineBar(objTimeline)}}
+        <div class="d-flex">            
+            {# {{timelineBar(objTimeline)}} #}
+            {{timelineBarDocs(objTimeline,true)}}
+        </div>
+        {# 年份 #}
+        <div class="d-flex overflow-visible" style="width:82.3%">            
+            <div class="d-flex justify-content-center display-4 position-relative overflow-visible" style="width:0px;text-anchor: middle;left:99.5%">
+                2021
+            </div>
         </div>
         <div class="row"></div>
 
