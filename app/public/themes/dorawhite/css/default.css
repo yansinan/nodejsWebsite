@@ -1,0 +1,26 @@
+/* :root{
+    font-size: 37.5px;
+} */
+
+html {
+    font-size: 37.5px;
+    font-family: PingFangSC-Regular, Roboto, Helvetica Neue, Helvetica, Tahoma,Arial, PingFang SC-Light, Microsoft YaHei;
+}
+
+body * {
+    box-sizing: border-box;
+    
+}
+
+
+
+
+.bs-wrapper-cover{
+    margin-left: 1.04rem;
+}
+/* 
+@media (min-width: 768px) {
+    :root {
+        font-size: 37.5px;
+    }
+}

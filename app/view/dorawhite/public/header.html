@@ -138,18 +138,48 @@
         </div>
     </div>
     -->
+    {# 侧边导航菜单 #}
+    <div id="offcanvasRightMenu" class="offcanvas offcanvas-end offcanvasRightMenu-md" tabindex="-1" aria-labelledby="offcanvasRightMenuLabel">
+        <div class="offcanvas-header">
+            {# <h5 id="offcanvasRightLabel">Offcanvas right</h5> #}
+            <div class="d-flex flex-column" data-bs-dismiss="offcanvas"><i ms-click='@searchMe' class="fa fa-search"></i></div>
+            {# <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button> #}
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body offcanvas-body-md d-flex flex-column  justify-content-end">
+            {# 导航菜单 #}
+            <ul class=" flex-fill d-flex flex-column justify-content-start flex-wrap">
+                {% for cate in navigation %} {% if cate.parentId == '0' %}
+                <li class="menuItem menuItem-md text-nowrap">
+                    <a class="" style="color: inherit" tabindex="-1" alt="{{site.altkey}}{{cate.name}}" href="javascript:void(0)" onclick="eBnNav('{{cate.defaultUrl}}')" name="{{cate.defaultUrl}}">{{cate.name}}NEWS</a>
+                </li>
+                {% endif %} {% endfor %}
+            </ul>
+            {# 链接和其他 #}
+            <ul class="menuFoot">
+                <li>网易云音乐</li>
+                <li>豆瓣</li>
+                <li>Facebook</li>
+                <li>订阅</li>
+                <li>联系我们</li>
+
+            </ul>
+            <div class="menuFootCopyright">赤瞳音乐&nbsp;&nbsp;RUBY&nbsp;EYES&nbsp;RECORDS&nbsp;&nbsp;&nbsp;&nbsp;Copyright©2021</div>
+        </div>
+    </div>
+
     {# toggle内容上部分 #}
     <nav class="navbar navbar-expand-md d-flex justify-content-between navbar-light bg-transparent sticky-top" ms-controller="headerCtr" style="">
         {# <div class="row"> #}
             {# logo&name #}
-            <div class="navbar-brand ms-4">
-                <a class="d-flex" href="#"><img class="img-fluid" src="{{site.logo}}" alt="{{site.title}}"/></a>
+            <div class="navbar-brand">
+                <a class="d-flex" data-bs-toggle="offcanvas" href="#offcanvasRight"><img class="img-fluid" src="{{site.logo}}" alt="{{site.title}}"/></a>
             </div>
             {# collapse  nav&search #}
             <div class="collapse navbar-collapse collapseNav-md">
-                <ul class="navbar-nav navbar-nav-scroll d-flex justify-content-start flex-wrap mb-2 mb-lg-0">
+                <ul class="navbar-nav navbar-nav-scroll d-flex justify-content-start flex-wrap">
                     {% for cate in navigation %} {% if cate.parentId == '0' %}
-                    <li class="nav-item text-nowrap px-3 bg-light rounded-pill border mx-1" role="presentation" dr-dom-nav-bn="{{cate.defaultUrl}}">
+                    <li class="nav-item text-nowrap rounded-pill border" role="presentation" dr-dom-nav-bn="{{cate.defaultUrl}}">
                         <a class="nav-link" style="color: inherit" role="menuitem" tabindex="-1" alt="{{site.altkey}}{{cate.name}}"
                             href="javascript:void(0)" onclick="eBnNav('{{cate.defaultUrl}}')" name="{{cate.defaultUrl}}">{{cate.name}}</a>
                     </li>
@@ -162,9 +192,60 @@
                 </div>
             </div>
             {# 手机缩略菜单 #}
+            {# 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".collapseNav-md" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+             #}
+            <button class="navbar-toggler" type="button"  data-bs-toggle="offcanvas" href="#offcanvasRightMenu" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
         {# </div> #}
     </nav>
+</div>
+
+
+
+{# 详细内容页框架 #}
+<div id="offcanvasRight"  class="offcanvas offcanvas-end" tabindex="-1"aria-labelledby="offcanvasRightLabel">
+  <div class="offcanvas-header">
+    {# <h5 id="offcanvasRightLabel">Offcanvas right</h5> #}
+    <div class="icon-arrow left flex-column" data-bs-dismiss="offcanvas"></div>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <link href="/static/themes/dorawhite/css/intro.css" rel="stylesheet">
+    <div class="section">
+        <span>赤瞳音乐&nbsp;RUBY&nbsp;EYES&nbsp;RECORDS
+            <br />
+            <br />
+        </span>
+        <span>
+        赤曈音乐（Ruby&nbsp;Eyes&nbsp;Records），为原创唱片公司太合麦田所创立之分支厂牌，隶属太合音乐集团。旨在面向新一代阅听人，出品体系完整、制作精良的音乐作品，并通过有效合理的推广方式呈现给更为广泛的受众群体。自2015年成立以来，赤瞳音乐以专业、用心的服务态度，与年轻态、浪漫化的美学品味，迅速崛起并驰名于华语独立音乐市场。
+        </span>
+        <span>
+            <br />
+            <br />
+        </span>
+        <span>
+        厂牌签约中国大陆与台湾、香港地区乐队与音乐人，达40余组，其中包括刺猬、昏鸦等两岸三地知名乐队；每年发行专辑数量保持在15张以上，并持续增加；投资、运作乐队巡回演出年均两百余站；联合太合音乐集团旗下的演出服务平台——秀动（ShowStart），于广州、深圳、成都、西安等主要音乐市场，举办赤瞳厂牌Showcase。
+        <span>
+            <br />
+            <br />
+        </span>
+        <span>
+        除了持续提供与优化上述服务内容，我们还将积极推动赤瞳厂牌主题活动在两岸三地各大中城市落地，打造全新的音乐节品牌，系统地推出版权经营管理与乐队周边商品开发服务，投资与服务跨领域艺术项目，并针对欧美独立音乐市场进行音乐内容的推广。
+        </span>
+        <span>
+            <br />
+            <br />
+        </span>
+        <span>
+        我们将戮力以敏锐之眼探索优秀的音乐作品，以赤诚之心服务有创造力的音乐人。
+        </span>
+        <span class="foot">
+        赤瞳音乐&nbsp;RUBY&nbsp;EYES&nbsp;MUSIC&nbsp;©
+        </span>
+    </div>
+  </div>
 </div>

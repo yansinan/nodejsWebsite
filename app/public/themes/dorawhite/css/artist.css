@@ -1,0 +1,23 @@
+#coverArtistsWrapper .artist{
+    max-width:78.26vw;
+    margin-bottom: 0.2rem;
+    writing-mode: horizontal-tb;
+}
+#coverArtistsWrapper .artist a{
+    font-size: 0.693rem;
+    color: rgba(0, 0, 0, 1);
+    line-height: 0.8rem;
+    text-decoration: underline;
+}
+#coverArtistsWrapper .artist a:not(:hover) {
+    text-decoration: none;
+}
+#coverArtistsWrapper .noticeCnt{
+    font-size:0.373rem;
+    width:0.694rem;
+    height:0.694rem;
+    margin-left: 0.374rem;
+    line-height: 0.48rem;
+
+    align-items: center;
+}

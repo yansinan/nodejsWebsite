@@ -1,0 +1,27 @@
+/* base factor 16/37.5px=0.427   2.34 */  
+.section {
+    /* width: 10.054rem; */
+    /* height: 34.214rem; */
+    overflow-wrap: break-word;
+    margin-top: 1.307rem;
+    font-size: 0;
+  }
+.section span{
+    font-size: 0.64rem;
+    font-family: PingFangSC-Regular;
+    color: rgba(0, 0, 0, 1);
+    line-height: 0.88rem;
+}
+.section .foot {
+    z-index: 9;
+    /* width: 6.267rem; */
+    display: block;
+    overflow-wrap: break-word;
+    color: rgba(155, 155, 155, 0.8);
+    font-size: 0.426rem;
+    letter-spacing: 0.02181817963719368px;
+    font-family: PingFangSC-Regular;
+    line-height: 0.587rem;
+    text-align: center;
+    margin-top: 0.854rem;
+}

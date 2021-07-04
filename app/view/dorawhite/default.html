@@ -19,7 +19,7 @@
     {% from "./public/compTimelineBar.html" import timelineBar %}
     {% from "./public/compTimelineBar.html" import timelineBarDocs %}
     <!-- 二次开发静态资源 -->
-    {% assets 'dora.front.js white.css avatar.css timeline.css artist.css' %}
+    {% assets 'default.css header.css footer.css artist.css dora.front.js white.css avatar.css timeline.css utils.css' %}
     {% endassets %}
 
     {% endheader %}
@@ -42,7 +42,7 @@
         <div class="container-fluid overflow-visible position-relative" style="height:0px;z-index:100;">
             <div class="row w-100 heightNav"></div>
             {# scroll #}
-            <div class="bs-wrapper-cover heightMain row overflow-hidden ms-3" style="">
+            <div class="bs-wrapper-cover heightMain row overflow-hidden" style="">
                 <div class="bs-content d-flex flex-column px-0  bg-transparent text-dark">
                     {# 横滚乐队名 #}
                     <div id="coverArtistsWrapper" class="bs-wrapper-listArtist d-flex overflow-hidden bg-white">                        
@@ -50,17 +50,15 @@
                             {% for artist in listArtists %}
                             {# 乐队名列表 #}
                             {# <h1 class="display-1">RUBY</h1> #}
-                            <div class="d-flex align-items-center me-5 my-1" style="max-width:68vw;writing-mode: horizontal-tb;">
-                                <h1 class="display-5" alt="{{site.altkey}}{{artist.name}}" style="">
-                                    <a href="{{artist.url}} " target="_blank ">
-                                        <u>{{artist.name}}</u>
-                                    </a>
-                                </h1>
-                                <span class="d-flex flex-shrink-0 justify-content-center border border-1 border-dark rounded-circle ms-3" style="font-size:1rem;width:2rem;height:2rem;">+2</span>
+                            <div class="artist d-flex align-items-center " style="">
+                                <a href="{{artist.url}} " target="_blank ">
+                                    {{artist.name}}
+                                </a>
+                                <span class="noticeCnt d-flex flex-shrink-0 justify-content-center border border-1 border-dark rounded-circle" style="">+2</span>
                             </div >
                             {% endfor %}
                             {# 最后一列占宽用 #}
-                            <div class="d-flex align-items-center me-5 my-1" style="width:80vw;writing-mode: horizontal-tb;"></div>
+                            <div class="artist d-flex align-items-center"></div>
                         </div>
                         {# 乐手列表 #}
                         <script>

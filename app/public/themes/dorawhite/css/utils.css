@@ -1,0 +1,26 @@
+.flex-col {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.icon-arrow {
+    z-index: 3;
+    width: 0.587rem;
+    height: 0.587rem;
+    background: url(/static/upload/images/icons/arrow-down.svg) -0.027rem -0.027rem no-repeat;
+    background-size: 0.614rem 0.64rem;
+    align-self: flex-start;
+    margin-left: 0.054rem;
+  }
+
+.icon-arrow.left{
+    transform:rotate(90deg);
+}
+
+.btn-close{
+    width:0.427rem;
+    height:0.427rem;
+    border-radius: 0.11rem;/*0.25rem*/
+}
+

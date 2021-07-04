@@ -1,0 +1,29 @@
+.foot-float.back-to-top{
+    z-index: 1001;
+    width: min-content;
+    height: min-content;
+    right:0.534rem;
+    top:50vh;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+
+    box-shadow: none;
+    border: none;
+    overflow: visible;
+}
+.foot-float .btnRubyEyes{
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    background: url(/static/upload/images/defaultlogo.png) center/1rem auto no-repeat ;
+    box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);
+}
+
+@media (min-width: 768px) {
+    .foot-float .btnRubyEyes-md{
+        width: 2rem;
+        height: 2rem;
+        background: url(/static/upload/images/defaultlogo.png) center/1.5rem auto no-repeat ;
+    }
+}
