@@ -39,7 +39,11 @@
     {% include "./public/overlay.html" %}
     {# 整屏容器 #}
     {% include "./public/header.html" %}
+    {% block footer %}
+        {% include "./public/footer.html" %}
+    {% endblock %}
     {# mainpage大红标题 scroll#}
+
     {% block cover %}
         <div id="mainCover" class="">
             <div class="w-100 heightNav"></div>
@@ -113,16 +117,7 @@
         {% endblock %} 
         #}
     </div>
-    {% block footer %}
-        {% include "./public/footer.html" %}
-    {% endblock %}
     
-
-    {# #}
-
-
-     
-
 </body>
 
 </html>

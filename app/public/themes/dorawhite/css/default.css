@@ -57,7 +57,7 @@ body.flex{
     flex-direction: column;
 
     height: 100vh; /* Fallback for browsers that do not support Custom Properties */
-    /* height: calc(var(--vh, 1vh) * 100); */
+    height: calc(var(--vh, 1vh) * 100);
 
     justify-content: stretch;
     align-items: flex-start;
@@ -65,13 +65,14 @@ body.flex{
     
 } 
 body.flex #navHeader{
-
+    order:1;
 }
 
 body.flex #mainCover{
     /* position: relative; */
     background-color: lightcoral;
-    flex:1 1 auto;
+    order:2;
+    flex:1 1 100%;
 }
 /* 隐藏占位 */
 body.flex #mainCover div.w-100.heightNav{
@@ -84,5 +85,6 @@ body.flex #dr-footer{
     /*  */
     position:inherit!important;
     bottom:inherit!important;
+    order:3;
     flex:0 0 15px;
 }

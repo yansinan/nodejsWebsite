@@ -14,12 +14,41 @@
     // We listen to the resize event
     // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
     let vh = window.innerHeight * 0.01;
+    function getBrowserInterfaceSize() {
+        var pageWidth = window.innerWidth;
+        var pageHeight = window.innerHeight;
+
+        if (typeof pageWidth != "number") {
+            //在标准模式下面
+            if (document.compatMode == "CSS1Compat" ) {
+                pageWidth = document.documentElement.clientWidth;
+                pageHeight = document.documentElement.clientHeight;
+            } else {
+                pageWidth = document.body.clientWidth;
+                pageHeight = window.body.clientHeight;
+            }
+        }
+
+        return {
+            pageWidth: pageWidth,
+            pageHeight: pageHeight
+        }
+    }
+    //document.querySelector("#coverArtistsWrapper").on
+    /*
+    if (document.readyState === 'loading') {  // 此时加载尚未完成
+        document.addEventListener('DOMContentLoaded', doSomething);
+    } else {  // 此时`DOMContentLoaded` 已经被触发
+        //doSomething();
+    }
+    */
     // Then we set the value in the --vh custom property to the root of the document
     function refreshVH(){
-        document.documentElement.style.setProperty('--vh', `${vh}px`);
-        vh = window.innerHeight * 0.01;
+        {# vh = window.innerHeight * 0.01; #}
         {# if(slideListArtist)slideListArtist.refresh(); #}
-        console.log(vh);
+        vh = getBrowserInterfaceSize().pageHeight*0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+        if(this.slideCover)this.slideCover.refresh();
     }
     refreshVH();
     window.addEventListener('load', refreshVH);
