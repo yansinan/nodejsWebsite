@@ -3,7 +3,7 @@
 } */
 
 html {
-    font-size: 37.5px;
+    font-size: 162.5%;/*292.5%;*/
     font-family: PingFangSC-Regular, Roboto, Helvetica Neue, Helvetica, Tahoma,Arial, PingFang SC-Light, Microsoft YaHei;
 }
 
@@ -12,15 +12,77 @@ body * {
     
 }
 
-
+ 
 
 
 .bs-wrapper-cover{
     margin-left: 1.04rem;
+    overflow:hidden;
 }
-/* 
-@media (min-width: 768px) {
-    :root {
-        font-size: 37.5px;
+
+@media only screen and (min-width: 768px) {
+    html {
+        font-size: 225%!important;
     }
+}
+
+#navHeader{
+    width: 100vw;
+}
+
+#mainCover{
+    height:0px;
+    z-index:100;
+    position: relative;
+    overflow: visible;
+
+    width: 100%;
+    /* padding-right: var(--bs-gutter-x,.75rem); */
+    /* padding-left: var(--bs-gutter-x,.75rem); */
+    margin-right: auto;
+    margin-left: auto;
+}
+
+
+
+
+/* body 用Flex方式全屏使用 */
+body.flex{
+    /* 
+    font-size:16px;
+    font-size:1.2rem ;
+    */
+/*  */
+    display:flex;
+    flex-direction: column;
+
+    height: 100vh; /* Fallback for browsers that do not support Custom Properties */
+    /* height: calc(var(--vh, 1vh) * 100); */
+
+    justify-content: stretch;
+    align-items: flex-start;
+    overflow: hidden;
+    
+} 
+body.flex #navHeader{
+
+}
+
+body.flex #mainCover{
+    /* position: relative; */
+    background-color: lightcoral;
+    flex:1 1 auto;
+}
+/* 隐藏占位 */
+body.flex #mainCover div.w-100.heightNav{
+    display:none;
+}
+body.flex #mainCover div.bs-wrapper-cover.heightMain{
+    height:100%;
+}
+body.flex #dr-footer{
+    /*  */
+    position:inherit!important;
+    bottom:inherit!important;
+    flex:0 0 15px;
 }

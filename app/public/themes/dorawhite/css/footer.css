@@ -1,3 +1,12 @@
+#dr-footer{
+    z-index:1000;
+    background-color: transparent!important;
+    width: 100vw!important;
+    /*  */
+    position: absolute;
+    bottom: 0;
+}
+
 .foot-float.back-to-top{
     z-index: 1001;
     width: min-content;

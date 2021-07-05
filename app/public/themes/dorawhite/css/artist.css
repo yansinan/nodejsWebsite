@@ -1,23 +1,38 @@
 #coverArtistsWrapper .artist{
     max-width:78.26vw;
-    margin-bottom: 0.2rem;
     writing-mode: horizontal-tb;
+    height:calc(100%/12);
+
 }
 #coverArtistsWrapper .artist a{
-    font-size: 0.693rem;
+    
+    /* font-size: 0.693rem; */
+    font-size: 1rem;
+    /* line-height: 0.8rem; */
+    /* line-height: 1.15rem; */
     color: rgba(0, 0, 0, 1);
-    line-height: 0.8rem;
     text-decoration: underline;
 }
 #coverArtistsWrapper .artist a:not(:hover) {
     text-decoration: none;
 }
 #coverArtistsWrapper .noticeCnt{
-    font-size:0.373rem;
-    width:0.694rem;
-    height:0.694rem;
-    margin-left: 0.374rem;
-    line-height: 0.48rem;
+    /* font-size:0.373rem; */
+    /* font-size: 0.426rem; */
+    font-size: 0.48rem;
+    /* width:0.694rem; */
+    width: 1rem;
+    /* height:0.694rem; */
+    height: 1rem;
+    margin-left: 1rem;
+    /* line-height: 0.48rem; */
+    line-height: 1rem;
 
     align-items: center;
+}
+
+@media (min-width: 768px) {
+    #coverArtistsWrapper .artist-md{
+        height:calc(100%/15);    
+    }
 }

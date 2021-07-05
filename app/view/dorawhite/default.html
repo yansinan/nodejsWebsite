@@ -34,15 +34,17 @@
     </script>
 </head>
 
-<body>
+<body class="flex">
+    {# 各种浮动层 #}
+    {% include "./public/overlay.html" %}
     {# 整屏容器 #}
     {% include "./public/header.html" %}
     {# mainpage大红标题 scroll#}
     {% block cover %}
-        <div class="container-fluid overflow-visible position-relative" style="height:0px;z-index:100;">
-            <div class="row w-100 heightNav"></div>
+        <div id="mainCover" class="">
+            <div class="w-100 heightNav"></div>
             {# scroll #}
-            <div class="bs-wrapper-cover heightMain row overflow-hidden" style="">
+            <div class="bs-wrapper-cover heightMain">
                 <div class="bs-content d-flex flex-column px-0  bg-transparent text-dark">
                     {# 横滚乐队名 #}
                     <div id="coverArtistsWrapper" class="bs-wrapper-listArtist d-flex overflow-hidden bg-white">                        
@@ -50,7 +52,17 @@
                             {% for artist in listArtists %}
                             {# 乐队名列表 #}
                             {# <h1 class="display-1">RUBY</h1> #}
-                            <div class="artist d-flex align-items-center " style="">
+                            <div class="artist artist-md d-flex align-items-center " style="">
+                                <a href="{{artist.url}} " target="_blank ">
+                                    {{artist.name}}
+                                </a>
+                                <span class="noticeCnt d-flex flex-shrink-0 justify-content-center border border-1 border-dark rounded-circle" style="">+2</span>
+                            </div >
+                            {% endfor %}
+                            {% for artist in listArtists %}
+                            {# 乐队名列表 #}
+                            {# <h1 class="display-1">RUBY</h1> #}
+                            <div class="artist artist-md d-flex align-items-center " style="">
                                 <a href="{{artist.url}} " target="_blank ">
                                     {{artist.name}}
                                 </a>
@@ -58,7 +70,7 @@
                             </div >
                             {% endfor %}
                             {# 最后一列占宽用 #}
-                            <div class="artist d-flex align-items-center"></div>
+                            <div class="artist artist-md d-flex align-items-center"></div>
                         </div>
                         {# 乐手列表 #}
                         <script>
@@ -159,46 +171,47 @@
                     </div>
                 </div>
             </div>
+            <script>
+                this.slideCover=new BetterScroll.createBScroll('.bs-wrapper-cover', {
+                    //specifiedIndexAsContent:1,
+                    disableMouse: false,
+                    disableTouch: false,
+                    scrollX: false,
+                    scrollY: true,
+                    mouseWheel: {
+                        speed: 20,
+                        invert: false,
+                        easeTime: 300
+                    },
+                    nestedScroll: {
+                        groupId: 'cover-scrollY'
+                    },
+                    slide: {
+                        threshold: 0.3,
+                        loop: false,
+                        autoplay:false,
+                        listenFlick:false,
+                    },
+                    useTransition: true,
+                    momentum: false,
+                    bounce: false,
+                    stopPropagation: false,
+                    probeType: 3,
+                
+                })
+                {# //初始化slideCover后隐藏Cover，后面再判断是否显示 #}
+                {# $('.bs-wrapper-cover').hide(); #}
+                
+                this.slideCover.on('slideWillChange', (page) => {
+                    {# 导航更新 #}
+                    this.header.funSetNav(this.header.strAliasNav || "timeline");
+                    //$('.bs-wrapper-cover').hide();
+                    {# // currentPageIndex = page.pageX #}
+                })
+            </script>
         </div>
         
-        <script>
-            this.slideCover=new BetterScroll.createBScroll('.bs-wrapper-cover', {
-                //specifiedIndexAsContent:1,
-                disableMouse: false,
-                disableTouch: false,
-                scrollX: false,
-                scrollY: true,
-                mouseWheel: {
-                    speed: 20,
-                    invert: false,
-                    easeTime: 300
-                },
-                nestedScroll: {
-                    groupId: 'cover-scrollY'
-                },
-                slide: {
-                    threshold: 0.3,
-                    loop: false,
-                    autoplay:false,
-                    listenFlick:false,
-                },
-                useTransition: true,
-                momentum: false,
-                bounce: false,
-                //stopPropagation: false,
-                probeType: 3,
-            
-            })
-            {# //初始化slideCover后隐藏Cover，后面再判断是否显示 #}
-            {# $('.bs-wrapper-cover').hide(); #}
-            
-            this.slideCover.on('slideWillChange', (page) => {
-                {# 导航更新 #}
-                this.header.funSetNav(this.header.strAliasNav || "timeline");
-                //$('.bs-wrapper-cover').hide();
-                {# // currentPageIndex = page.pageX #}
-            })
-        </script>
+
     {% endblock %}
     {# <div class="mainbody" id="{{pageType}}" style="width:100%;max-width:1199px;"> #}
     <div class="container-fluid position-absolute w-100 top-0" id="{{pageType}}">

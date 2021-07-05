@@ -1,9 +1,9 @@
 
 .heightNav{
-  height:13.22vh;
+  height:7vh;
 }
 .heightMain{
-  height:76.5vh;
+  height:73vh;
 }
 
 
@@ -27,8 +27,11 @@
 }
 
 @media (min-width: 768px) {
+  .heightNav{
+    height:7vh;
+  }
   .heightMain-md{
-    height: 76.5vh!important;;
+    height: 73vh!important;
   }
   /* PC指定最大高度 */
   /* #timelineContent.heightMain-md { */
