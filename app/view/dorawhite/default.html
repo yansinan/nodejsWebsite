@@ -45,16 +45,15 @@
     {# mainpage大红标题 scroll#}
 
     {% block cover %}
-        <div id="mainCover" class="">
-            <div class="w-100 heightNav"></div>
+        <div id="mainCover" class="paddingCoverTop paddingCoverTop-md">
+            {# <div class="w-100 heightNav"></div> #}
             {# scroll #}
-            <div class="bs-wrapper-cover heightMain">
-                <div class="bs-content d-flex flex-column px-0  bg-transparent text-dark">
+            <div id="coverWrapper" class="bs-wrapper-cover heightMain">
+                <div class="bs-content-cover bg-transparent text-dark">
+                    {# 空容器 #}
+                    {# <div class="d-none bg-transparent"></div> #}
                     {# 横滚乐队名 #}
                     {% include './public/compBSArtists.html' %}
-                    {# 空容器 #}
-                    {# <div class="container-fluid bg-transparent  position-relative " style="min-height:100vh;z-index:-100;"> #}
-                    {# </div> #}
 
                     {# 时间轴内容区 #}
                     {% include './public/compBSTimeline.html' %}
@@ -95,7 +94,28 @@
                         this.header.funSetNav(this.header.strAliasNav || "timeline");
                         //$('.bs-wrapper-cover').hide();
                         {# // currentPageIndex = page.pageX #}
+                        {# 时间轴上拉动画 #}
+                        let $svgTimelineBar=document.getElementById("svgTimelineBar");
+                        if(page.pageY==1){
+                            $svgTimelineBar.classList.add("timelineBarOpen");
+                            $svgTimelineBar.classList.remove("timelineBarClose");
+                        }else{
+                            $svgTimelineBar.classList.add("timelineBarClose");
+                            $svgTimelineBar.classList.remove("timelineBarOpen");
+                        }
+                        console.log(page)
+                        {# this.slideCover.refresh(); #}
                     })
+                    //this.slideCover.on('scroll', (position) => {
+                    //    this.slideCover.refresh();
+                    //})
+                    this.slideCover.on('slidePageChanged', (page) => {
+                        {# window.alert('slidePageChanged'); #}
+                        {# setTimeout(window.slideCover.refresh,1000); #}
+                        this.slideCover.refresh();
+                    })
+                    
+
                 </script>
             </div>
         </div>

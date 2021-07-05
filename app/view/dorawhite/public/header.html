@@ -11,6 +11,10 @@
         //    });
         //})
     }
+    {# 监听Element变化 #}
+    var MutationObserver = window.MutationObserver || window.webkitMutationObserver || window.MozMutationObserver;
+    let that=this;
+
     // We listen to the resize event
     // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
     let vh = window.innerHeight * 0.01;
@@ -47,12 +51,21 @@
         {# vh = window.innerHeight * 0.01; #}
         {# if(slideListArtist)slideListArtist.refresh(); #}
         vh = getBrowserInterfaceSize().pageHeight*0.01;
+        {# window.alert(getBrowserInterfaceSize().pageHeight) #}
         document.documentElement.style.setProperty('--vh', `${vh}px`);
-        if(this.slideCover)this.slideCover.refresh();
+        {# if(this.slideCover)this.slideCover.refresh(); #}
+    }
+    function loadTimeline(){
+        document.getElementById("coverArtistsWrapper").classList.remove("d-none");
+        document.getElementById("timelineWrapper").classList.remove("d-none");
+
+        refreshVH();
     }
     refreshVH();
-    window.addEventListener('load', refreshVH);
+    document.addEventListener('DOMContentLoaded', loadTimeline);
+    {# window.addEventListener('load', loadTimeline); #}
     window.addEventListener('resize', refreshVH);
+
 
     {# 更新导航状态 #}
     this.header={

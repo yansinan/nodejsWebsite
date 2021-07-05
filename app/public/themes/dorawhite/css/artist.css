@@ -1,14 +1,52 @@
 #coverArtistsWrapper{
+    /* display:flex; */
+    /* flex-direction: column; */
+    
+    overflow: hidden;
+    max-height:100%;
+    /* height:100%; */
+    flex:1 1 100%;
+    background-color: lawngreen;
+}
+#coverArtistsWrapper.paddingTop{
     /* flex:1 1 75vh; */
     /* min-height:75vh; */
     /* width:100vw; */
+    padding-top: 21px;
+    padding-bottom:7vh;
+    padding-bottom: calc(var(--vh, 1vh) * 7);
 }
-
+/* 横滚，满高 */
+#coverArtistsWrapper .bs-content-listArtist{
+    display:flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 0px;
+    padding:0px;
+    writing-mode: vertical-lr;
+    max-width:none;
+    width:auto;
+    overflow: visible;
+    /* flex:1 1 100%; */
+    height:calc(max(100%,1.5rem*12));
+    max-height:100%;
+    min-height:calc(1.5rem*12);
+    background-color:rgb(205, 255, 182);
+}
 #coverArtistsWrapper .artist{
+    display: flex;
+    align-items: flex-start;
     max-width:78.26vw;
+    width:78.26vw;
     writing-mode: horizontal-tb;
-    height:calc(100%/12);
-
+    /* flex:1 0 32.4vw; */
+    /* padding-bottom: 8px; */
+    /* height:calc(100%/12); */
+    /* height:calc(min(1.8rem,(100%/12))); */
+    /* height:1.8rem; */
+    flex:0 0 1.5rem;
+    min-height:1.2rem;
+    max-height:1.8rem;
 }
 #coverArtistsWrapper .artist a{
     
@@ -38,7 +76,17 @@
 }
 
 @media (min-width: 768px) {
+    /* 与导航的间距 */
+    #coverArtistsWrapper.paddingTop-md{
+        padding-top: 15px;
+    }
     #coverArtistsWrapper .artist-md{
-        height:calc(100%/15);    
+        /* height:calc(100%/15); */
+        /* PC宽415+52 */
+        min-width:32.4vw;
+        max-width:32.4vw;
+        /* width:32.4vw; */
+        /* padding-bottom: 6px; */
+        height:1.2rem;
     }
 }

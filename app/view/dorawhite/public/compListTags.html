@@ -7,7 +7,7 @@
     {% if listTags.length>0%}
         <ul class="list-inline">
             {% for tag in listTags %}
-                <li class="list-inline-item  px-3 rounded-pill border text-truncate"><a href="{{tag.url}}" class="{{class}}">{{tag.name}}</a></li>
+                <li class="list-inline-item rounded-pill border text-truncate"><a href="{{tag.url}}" class="{{class}}">{{tag.name}}</a></li>
             {% endfor %}
         </ul>
     {% endif %}

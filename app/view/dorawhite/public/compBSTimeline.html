@@ -1,85 +1,88 @@
 {# 时间轴内容区 #}
-<div id="timelineWrapper" class="bs-wrapper-main position-relative overflow-hidden" style="white-space:nowrap;">
+
+<div id="timelineWrapper" class="d-none bs-wrapper-main">
     {# 不指定高：手机纵向自适应高，PC在定义高度 #}
     <div id="timelineContent" class="heightMain-md px-0 d-block d-md-inline-flex w-auto" style="max-width:none;">
         {# 单页模式 #}
         {% set infoPagination={page:"timeline",idDOM:"list-timeline",api:"/api/timeline/getList",pageInfo:pageInfo,cateInfo:cateInfo} %}
         {# 临时设置，确保不输出默认数据，且有posts #}
         {# {% set posts=[] %} #}
+        <script>
+            let objInitBSMM={
+                //specifiedIndexAsContent:1,
+                disableMouse: false,
+                disableTouch: false,
+                scrollY: true,
+                scrollX: false,
+                nestedScroll: {
+                    groupId: 'cover-scrollY'
+                },
+                useTransition: true,//是否使用 CSS3 transition 动画
+                momentum: true,//滚动动画
+                bounce: {
+                    top: true,
+                    bottom: true,
+                    left: true,
+                    right: true
+                },//回弹动画
+                //outOfBoundaryDampingFactor:0.1,
+                //stopPropagation: false,//阻止事件冒泡。多用在嵌套 scroll 的场景
+                probeType: 3,
+                mouseWheel: {
+                    speed: 20,
+                    invert: false,
+                    easeTime: 300
+                },
+                scrollbar: true,
+                //observeDOM: true // 开启 observe-dom 插件
+            }
+        </script>
 
         {# 每月纵向 #}
         {% for month, monthItems in posts|groupby("dateYYMM") %}
         <div class="container-mm d-flex flex-column">
             {# 月份行 手机隐藏#}
-            <div class="my-3 d-md-flex d-none">
-                <h1>{{monthItems[0].dateYYMM}}</h1>
+            <div class="month d-md-flex d-none">
+                {{monthItems[0].dateYYMM}}
             </div>
-            <div class="wapper-mm wapper-mm-md h-100" style="white-space:normal;" dr-bs-wrapper="mm-{{month|trim}}" ms-controller="{{month|trim}}">
+            <div class="wapper-mm wapper-mm-md" style="white-space:normal;" dr-bs-wrapper="mm-{{month|trim}}" ms-controller="{{month|trim}}">
                 {# 纵向滚动组件 #}
                 <div class="d-flex flex-column" >
                     {# 日期纵向滚动容器 #}
                     {# 日期内容区 #}
 
                     {% for item in monthItems %}
-                    <div class="row mb-5">
+                    <div class="item row">
                         {# 图 手机图 #}
-                        <div id="timelineTitleImg{{item._id}}" class="col-6 mb-6 d-flex d-md-none">                        
+                        <div id="timelineTitleImg{{item._id}}" class="col-6 ps-0 d-flex d-md-none">                        
                             <img src="{{item.sImg}}" alt="{{item.name}}"  class="img-fluid" alt="{{item.title}} " dr-id-doc="img{{item._id}}"/>
                         </div>
 
                         {# 内容&标题预览 #}
-                        <div class="col-6 col-md-12">
+                        <div class="titleContainer col-6 col-md-12">
                             {# 日期 #}
-                            <div class="col-auto date">{{item.dateTimeline}}</div>
+                            {# <div class="col-auto date">{{item.dateTimeline}}</div> #}
                             {# 大标题 #}
-                            <p class="display-6 lead mb-4"><strong>{{item.name}}</strong></p>
+                            <p class="title">{{item.dateTimeline}}<br>{{item.name}}</p>
+                            {# 标签 #}
+                            <div class="tags">
+                                {{listTags(item.tags)}}
+                            </div>
                             {# 图 手机隐藏纵向图 #}
                             <div id="timelineTitleImg{{item._id}}" class=" mb-8 d-md-flex d-none">                        
                                 <img src="{{item.sImg}}" alt="{{item.name}}"  class="img-fluid d-md-flex d-none" alt="{{item.title}} " dr-id-doc="img{{item._id}}"/>
-                            </div>
-                            {# 标签 #}
-                            <div class="row py-2" style="">
-                                {{listTags(item.tags)}}
                             </div>
                         </div>
                     </div>
 
                     {% endfor %}
                 </div>
-
                 <script>
                     //initBSMM("bs-MM-"+"{{month|trim}}");
                     //function initBSMM(inId){
                         {# BScroll.use(MouseWheel) #}
                         {# BScroll.use(Slide) #}
-                        this["bs-MM-"+"{{month|trim}}"] = this["bs-MM-"+"{{month|trim}}"] ||  new BetterScroll.createBScroll("[dr-bs-wrapper=mm-"+"{{month|trim}}"+"]", {
-                            //specifiedIndexAsContent:1,
-                            disableMouse: false,
-                            disableTouch: false,
-                            scrollY: true,
-                            scrollX: false,
-                            nestedScroll: {
-                                groupId: 'cover-scrollY'
-                            },
-                            useTransition: true,//是否使用 CSS3 transition 动画
-                            momentum: true,//滚动动画
-                            bounce: {
-                                top: true,
-                                bottom: true,
-                                left: true,
-                                right: true
-                            },//回弹动画
-                            //outOfBoundaryDampingFactor:0.1,
-                            //stopPropagation: false,//阻止事件冒泡。多用在嵌套 scroll 的场景
-                            probeType: 3,
-                            mouseWheel: {
-                                speed: 20,
-                                invert: false,
-                                easeTime: 300
-                            },
-                            scrollbar: true,
-                            //observeDOM: true // 开启 observe-dom 插件
-                        })
+                        {# this["bs-MM-"+"{{month|trim}}"] = this["bs-MM-"+"{{month|trim}}"] ||  new BetterScroll.createBScroll("[dr-bs-wrapper=mm-"+"{{month|trim}}"+"]", objInitBSMM) #}
                         //this["bs-MM-"+"{{month|trim}}"].on('scroll', (pos) => {
                         //    // currentPageIndex = page.pageX
                         //    console.log(pos.y);
@@ -116,7 +119,7 @@
         swipeTime:300,//{# momentum 动画时长 #}
         bounce: {
             top: true,
-            bottom: true,
+            bottom: false,
             left: true,
             right: true
         },
@@ -146,6 +149,36 @@
     //        slideMain.goToPage(this.header.idxNav,0);
     //    }
     //});
+
+
+
+    var $timelineWrapper = document.getElementById('timelineWrapper');
+    var mutationObserver = new MutationObserver(function (mutations) {
+        
+        let status=window.getComputedStyle($timelineWrapper).getPropertyValue('display');
+        {# //显示时初始化内容 #}
+        if(status!="none"){
+            let domListBSMM=document.querySelectorAll("[dr-bs-wrapper]");
+            domListBSMM.forEach((bsMM)=>{
+                let idxMM=bsMM.getAttribute("ms-controller");
+                let objName="bs-"+idxMM;
+                that[objName]=that[objName] ||  new BetterScroll.createBScroll("[dr-bs-wrapper=mm-"+idxMM+"]", objInitBSMM)
+                that[objName].on('beforeScrollStart', that[objName].refresh)
+
+                that[objName].refresh();
+            })
+            console.log("监听到#timelineWrapper显示，初始化纵向月份");
+        }
+        return;
+    })
+
+    mutationObserver.observe($timelineWrapper, {
+        childList: true, // 子节点的变动（新增、删除或者更改）
+        attributes: true, // 属性的变动
+        attributeFilter: ['class', 'style'], // 观察特定属性
+        //characterData: true, // 节点内容或节点文本的变动
+        //subtree: true // 是否将观察器应用于该节点的所有后代节点
+    })
     </script>
 
 </div>

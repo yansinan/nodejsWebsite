@@ -67,13 +67,17 @@
     /* width: 3.04rem; */
     /* margin-left: 0.134rem; */
     margin: 0.22rem 0 0 0.22rem;
+    margin-right:0.278rem;
+    
     background-color: transparent;
   }
   #navHeader .collapse.navbar-collapse .navbar-nav li a
   {
     font-size: 0.5rem;
-    margin:0px;
-    padding: 0.278rem 0.86rem ;
+
+    margin: 0px;
+    padding: 0.2rem 0.4rem;
+    line-height: 0.6rem;
   }
   #navHeader .collapse.navbar-collapse .input-group .input-group-text
   {

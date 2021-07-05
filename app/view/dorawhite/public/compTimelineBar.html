@@ -18,7 +18,7 @@
 
 {% macro timelineBarDocs(objTimeline,isExpend=false) %}
     {# {% if objTimeline.length>0%} #}
-            <svg width="82.3%" height="40px" style="width:82.3%">
+            <svg id="svgTimelineBar" width="82.3%" class="timelineBarClose">
                 {% for idxDays in objTimeline.listIdxDays %}
                     <rect x="{{idxDays}}%" width="{{objTimeline.widthPercent*0.5}}%" height="16px" fill="#231F20" />
                 {% endfor %}

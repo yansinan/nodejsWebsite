@@ -1,10 +1,10 @@
 {# 横滚乐队名 #}
-<div id="coverArtistsWrapper" class="bs-wrapper-listArtist d-flex overflow-hidden bg-white">                        
-    <div class="bs-content px-0 d-flex flex-row flex-wrap m-0" style="writing-mode: vertical-lr;max-width:none;max-height:100%;">
+<div id="coverArtistsWrapper" class="d-none bs-wrapper-listArtist paddingTop paddingTop-md">                        
+    <div class="bs-content-listArtist">
         {% for artist in listArtists %}
         {# 乐队名列表 #}
         {# <h1 class="display-1">RUBY</h1> #}
-        <div class="artist artist-md d-flex align-items-center " style="">
+        <div class="artist artist-md d-flex align-items-center ">
             <a href="{{artist.url}} " target="_blank ">
                 {{artist.name}}
             </a>

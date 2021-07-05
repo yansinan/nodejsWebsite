@@ -27,7 +27,7 @@ body * {
 }
 
 #navHeader{
-    width: 100vw;
+    width: 100%;
 }
 
 #mainCover{
@@ -42,7 +42,17 @@ body * {
     margin-right: auto;
     margin-left: auto;
 }
-
+#mainCover .bs-wrapper-cover{
+    /* display:flex; */
+    /* flex-direction: column; */
+}
+#mainCover .bs-wrapper-cover .bs-content-cover{
+    /* display:flex; */
+    /* flex-direction: column; */
+    min-height: 100%;
+    flex:1 1 100%;
+    
+}
 
 
 
@@ -53,6 +63,7 @@ body.flex{
     font-size:1.2rem ;
     */
 /*  */
+    background-color: bisque;
     display:flex;
     flex-direction: column;
 
@@ -61,17 +72,30 @@ body.flex{
 
     justify-content: stretch;
     align-items: flex-start;
-    overflow: hidden;
+    /* overflow: hidden; */
     
 } 
 body.flex #navHeader{
     order:1;
 }
-
+body.flex #mainCover.paddingCoverTop{
+    /* order:2; */
+    /* width:100%; */
+    /* height:46px; */
+    /* flex:0 0 46px; */
+    padding-top:46px;
+}
+@media only screen and (min-width: 768px) {
+    body.flex #mainCover.paddingCoverTop-md{
+        /* height:74px; */
+        /* flex:0 0 74px; */
+        padding-top:74px;
+    }
+}
 body.flex #mainCover{
     /* position: relative; */
-    background-color: lightcoral;
-    order:2;
+    background-color:rgb(204, 164, 89);
+    order:20;
     flex:1 1 100%;
 }
 /* 隐藏占位 */
@@ -85,6 +109,7 @@ body.flex #dr-footer{
     /*  */
     position:inherit!important;
     bottom:inherit!important;
-    order:3;
+    order:30;
     flex:0 0 15px;
+    /* flex:0 0 193.2px; */
 }

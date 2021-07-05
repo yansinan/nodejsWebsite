@@ -3,27 +3,62 @@
   height:7vh;
 }
 .heightMain{
-  height:73vh;
+  /* height:73vh; */
+  height:100%
 }
 
-
+#timelineWrapper{
+  white-space:nowrap;
+  overflow: hidden;
+  height:100%;
+}
 /* main 手机自适应高度 */
 #timelineContent {
   max-height: none;
-  height: auto;
   overflow: visible;
 }
 #timelineContent .container-mm{
-  margin-right: 5rem;
+  /* margin-right: 5rem; */
+}
+#timelineContent .container-mm .month{
+  font-size: 0.5rem;
+  margin-bottom: 1.22rem;
 }
 /* 手机每条内容宽整宽 */
 #timelineContent .wapper-mm{
   width:100%;
-  min-width:40vw;
+  min-width:34.7vw;
+  height:100%;
+  overflow: hidden;
 }
-
-#timelineContent .wapper-mm img.img-fluid{
+#timelineContent .wapper-mm .item{
+  margin-right: 0rem;
+  margin-bottom: 0.77rem;
+  font-size: 0.69rem;
+  line-height: 1.16rem;
+  font-family: NHaasGroteskTXPro-Rg, NHaasGroteskTXPro;
+}
+#timelineContent .wapper-mm .item .titleContainer{
+  padding-left: 0px;
+}
+#timelineContent .wapper-mm .item .title{
+  margin-bottom: 0.61rem;
+  padding-left: 0px;
+}
+#timelineContent .wapper-mm .item .tags{
+  margin-bottom: 0.86rem;
+}
+#timelineContent .wapper-mm .item .list-inline-item{
+  font-size: 0.444rem;
+  margin: 0px;
+  margin-right:0.278rem;
+  padding: 0.05rem 0.5rem;
+  line-height: 0.6rem;
+}
+#timelineContent .wapper-mm .item img.img-fluid{
   object-fit:cover;
+  margin: 0px;
+  /* padding: 0.278rem 0.86rem; */
 }
 
 @media (min-width: 768px) {
@@ -31,7 +66,8 @@
     height:7vh;
   }
   .heightMain-md{
-    height: 73vh!important;
+    /* height: 73vh!important; */
+    height:100%;
   }
   /* PC指定最大高度 */
   /* #timelineContent.heightMain-md { */
@@ -43,10 +79,18 @@
 
   /* PC内容一屏2个半 */
   #timelineContent .wapper-mm-md{
-    width:40vw;
+    width:34.7vw;
+    margin-right:6vw;
   }
-  #timelineContent .wapper-mm-md img.img-fluid{
-    object-fit:cover;
+  #timelineContent .wapper-mm-md .item{
+    margin-bottom: 1.42rem;
+    margin-right: calc(var(--bs-gutter-x) * -.5);
+    font-size: 0.89rem;
+    line-height: 1.16rem;
+  
+  }
+  #timelineContent .wapper-mm .item .titleContainer{
+    padding-left: calc(var(--bs-gutter-x) * .5);
   }
 }
 
