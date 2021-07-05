@@ -1,3 +1,9 @@
+#coverArtistsWrapper{
+    /* flex:1 1 75vh; */
+    /* min-height:75vh; */
+    /* width:100vw; */
+}
+
 #coverArtistsWrapper .artist{
     max-width:78.26vw;
     writing-mode: horizontal-tb;

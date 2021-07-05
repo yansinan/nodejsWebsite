@@ -1,0 +1,50 @@
+{# 横滚乐队名 #}
+<div id="coverArtistsWrapper" class="bs-wrapper-listArtist d-flex overflow-hidden bg-white">                        
+    <div class="bs-content px-0 d-flex flex-row flex-wrap m-0" style="writing-mode: vertical-lr;max-width:none;max-height:100%;">
+        {% for artist in listArtists %}
+        {# 乐队名列表 #}
+        {# <h1 class="display-1">RUBY</h1> #}
+        <div class="artist artist-md d-flex align-items-center " style="">
+            <a href="{{artist.url}} " target="_blank ">
+                {{artist.name}}
+            </a>
+            <span class="noticeCnt d-flex flex-shrink-0 justify-content-center border border-1 border-dark rounded-circle" style="">+2</span>
+        </div >
+        {% endfor %}
+        {# 最后一列占宽用 #}
+        <div class="artist artist-md d-flex align-items-center"></div>
+    </div>
+    {# 乐手列表 #}
+    <script>
+        let slideListArtist = new BetterScroll.createBScroll('.bs-wrapper-listArtist', {
+            //specifiedIndexAsContent:1,
+            disableMouse: false,
+            disableTouch: false,
+            mouseWheel: true,
+            scrollX: true,
+            scrollY: false,
+            //nestedScroll: {
+            //    groupId: 'cover-scrollY'
+            //},
+            //slide: {
+            //    threshold: 100,
+            //    loop: false,//TODO：可以优化为循环slide；注意：复制出来的slide需要querySelector and 设置translateY同步
+            //    autoplay:false,
+            //    listenFlick:false,
+            //},
+            useTransition: true,
+            momentum: true,
+            bounce: true,
+            //stopPropagation: true,
+            probeType: 3,
+            observeDOM: true ,// 开启 observe-dom 插件
+        })
+        {# slideListArtist.refresh(); #}
+        slideListArtist.on('contentChanged', (newContent) => {
+            slideListArtist.refresh();
+            window.alert("beforeScrollStart");
+        })
+        slideListArtist.on('beforeScrollStart', slideListArtist.refresh)
+
+    </script>  
+</div>

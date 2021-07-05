@@ -1,0 +1,151 @@
+{# 时间轴内容区 #}
+<div id="timelineWrapper" class="bs-wrapper-main position-relative overflow-hidden" style="white-space:nowrap;">
+    {# 不指定高：手机纵向自适应高，PC在定义高度 #}
+    <div id="timelineContent" class="heightMain-md px-0 d-block d-md-inline-flex w-auto" style="max-width:none;">
+        {# 单页模式 #}
+        {% set infoPagination={page:"timeline",idDOM:"list-timeline",api:"/api/timeline/getList",pageInfo:pageInfo,cateInfo:cateInfo} %}
+        {# 临时设置，确保不输出默认数据，且有posts #}
+        {# {% set posts=[] %} #}
+
+        {# 每月纵向 #}
+        {% for month, monthItems in posts|groupby("dateYYMM") %}
+        <div class="container-mm d-flex flex-column">
+            {# 月份行 手机隐藏#}
+            <div class="my-3 d-md-flex d-none">
+                <h1>{{monthItems[0].dateYYMM}}</h1>
+            </div>
+            <div class="wapper-mm wapper-mm-md h-100" style="white-space:normal;" dr-bs-wrapper="mm-{{month|trim}}" ms-controller="{{month|trim}}">
+                {# 纵向滚动组件 #}
+                <div class="d-flex flex-column" >
+                    {# 日期纵向滚动容器 #}
+                    {# 日期内容区 #}
+
+                    {% for item in monthItems %}
+                    <div class="row mb-5">
+                        {# 图 手机图 #}
+                        <div id="timelineTitleImg{{item._id}}" class="col-6 mb-6 d-flex d-md-none">                        
+                            <img src="{{item.sImg}}" alt="{{item.name}}"  class="img-fluid" alt="{{item.title}} " dr-id-doc="img{{item._id}}"/>
+                        </div>
+
+                        {# 内容&标题预览 #}
+                        <div class="col-6 col-md-12">
+                            {# 日期 #}
+                            <div class="col-auto date">{{item.dateTimeline}}</div>
+                            {# 大标题 #}
+                            <p class="display-6 lead mb-4"><strong>{{item.name}}</strong></p>
+                            {# 图 手机隐藏纵向图 #}
+                            <div id="timelineTitleImg{{item._id}}" class=" mb-8 d-md-flex d-none">                        
+                                <img src="{{item.sImg}}" alt="{{item.name}}"  class="img-fluid d-md-flex d-none" alt="{{item.title}} " dr-id-doc="img{{item._id}}"/>
+                            </div>
+                            {# 标签 #}
+                            <div class="row py-2" style="">
+                                {{listTags(item.tags)}}
+                            </div>
+                        </div>
+                    </div>
+
+                    {% endfor %}
+                </div>
+
+                <script>
+                    //initBSMM("bs-MM-"+"{{month|trim}}");
+                    //function initBSMM(inId){
+                        {# BScroll.use(MouseWheel) #}
+                        {# BScroll.use(Slide) #}
+                        this["bs-MM-"+"{{month|trim}}"] = this["bs-MM-"+"{{month|trim}}"] ||  new BetterScroll.createBScroll("[dr-bs-wrapper=mm-"+"{{month|trim}}"+"]", {
+                            //specifiedIndexAsContent:1,
+                            disableMouse: false,
+                            disableTouch: false,
+                            scrollY: true,
+                            scrollX: false,
+                            nestedScroll: {
+                                groupId: 'cover-scrollY'
+                            },
+                            useTransition: true,//是否使用 CSS3 transition 动画
+                            momentum: true,//滚动动画
+                            bounce: {
+                                top: true,
+                                bottom: true,
+                                left: true,
+                                right: true
+                            },//回弹动画
+                            //outOfBoundaryDampingFactor:0.1,
+                            //stopPropagation: false,//阻止事件冒泡。多用在嵌套 scroll 的场景
+                            probeType: 3,
+                            mouseWheel: {
+                                speed: 20,
+                                invert: false,
+                                easeTime: 300
+                            },
+                            scrollbar: true,
+                            //observeDOM: true // 开启 observe-dom 插件
+                        })
+                        //this["bs-MM-"+"{{month|trim}}"].on('scroll', (pos) => {
+                        //    // currentPageIndex = page.pageX
+                        //    console.log(pos.y);
+                        //})                
+                    //}  
+                </script>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+    {# 时间轴控制 #}
+    <script>
+    let slideMain = new BetterScroll.createBScroll('.bs-wrapper-main', {
+        //specifiedIndexAsContent:1,
+        disableMouse: false,
+        disableTouch: false,
+        scrollX: true,
+        scrollY: true,
+        //nestedScroll: {
+        //    groupId: 'cover-scrollY'
+        //},
+        //slide: {
+        //    threshold: 100,
+        //    loop: false,//TODO：可以优化为循环slide；注意：复制出来的slide需要querySelector and 设置translateY同步
+        //    autoplay:false,
+        //    listenFlick:false,
+        //},
+        useTransition: true,
+        momentum: true,
+        //momentumLimitTime:100,//{# 快速滑动的时间小于xx开启#}
+        //momentumLimitDistance:50,//{# 快速滑动的距离大于xx开启#}
+        deceleration:0.005,//{# momentum 动画的减速度 #}
+        swipeTime:300,//{# momentum 动画时长 #}
+        bounce: {
+            top: true,
+            bottom: true,
+            left: true,
+            right: true
+        },
+        mouseWheel: {
+            speed: 50,
+            invert: false,
+            easeTime: 100
+        },
+        observeDOM: true ,// 开启 observe-dom 插件
+        stopPropagation: false,
+        probeType: 0,
+    })
+    //slideMain.on('slidePageChanged', (page) => {
+    //    // currentPageIndex = page.pageX
+    //})
+    //slideMain.on('slideWillChange', (page) => {
+    //    currentPageIndex = page.pageX;
+    //    console.log("slideMain.on(slideWillChange)",page,this.header.listNav[currentPageIndex]);
+    //    {# history路由 #}
+    //    window.history.pushState({}, "{{site.title}}|"+ this.header.listNav[currentPageIndex].name, this.header.listNav[currentPageIndex].url);//设置状态
+    //    //listBnNav.addClass("bg-light text-dark").removeClass("bg-dark text-light");
+    //    //bnNav.addClass("bg-dark text-light").removeClass("bg-light text-dark");             
+    //})
+    {# 页面重新加载时，路由到指定的slide页 #}
+    //window.addEventListener('DOMContentLoaded', (event) => {
+    //    if(this.header.idxNav>=0){
+    //        slideMain.goToPage(this.header.idxNav,0);
+    //    }
+    //});
+    </script>
+
+</div>

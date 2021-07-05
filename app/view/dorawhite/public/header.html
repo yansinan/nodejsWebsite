@@ -18,6 +18,7 @@
     function refreshVH(){
         document.documentElement.style.setProperty('--vh', `${vh}px`);
         vh = window.innerHeight * 0.01;
+        {# if(slideListArtist)slideListArtist.refresh(); #}
         console.log(vh);
     }
     refreshVH();

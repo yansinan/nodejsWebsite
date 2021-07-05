@@ -47,168 +47,53 @@
             <div class="bs-wrapper-cover heightMain">
                 <div class="bs-content d-flex flex-column px-0  bg-transparent text-dark">
                     {# 横滚乐队名 #}
-                    <div id="coverArtistsWrapper" class="bs-wrapper-listArtist d-flex overflow-hidden bg-white">                        
-                        <div class="bs-content px-0 d-flex flex-row flex-wrap m-0" style="writing-mode: vertical-lr;max-width:none;max-height:100%;">
-                            {% for artist in listArtists %}
-                            {# 乐队名列表 #}
-                            {# <h1 class="display-1">RUBY</h1> #}
-                            <div class="artist artist-md d-flex align-items-center " style="">
-                                <a href="{{artist.url}} " target="_blank ">
-                                    {{artist.name}}
-                                </a>
-                                <span class="noticeCnt d-flex flex-shrink-0 justify-content-center border border-1 border-dark rounded-circle" style="">+2</span>
-                            </div >
-                            {% endfor %}
-                            {% for artist in listArtists %}
-                            {# 乐队名列表 #}
-                            {# <h1 class="display-1">RUBY</h1> #}
-                            <div class="artist artist-md d-flex align-items-center " style="">
-                                <a href="{{artist.url}} " target="_blank ">
-                                    {{artist.name}}
-                                </a>
-                                <span class="noticeCnt d-flex flex-shrink-0 justify-content-center border border-1 border-dark rounded-circle" style="">+2</span>
-                            </div >
-                            {% endfor %}
-                            {# 最后一列占宽用 #}
-                            <div class="artist artist-md d-flex align-items-center"></div>
-                        </div>
-                        {# 乐手列表 #}
-                        <script>
-                            let slideListArtist = new BetterScroll.createBScroll('.bs-wrapper-listArtist', {
-                                //specifiedIndexAsContent:1,
-                                disableMouse: false,
-                                disableTouch: false,
-                                mouseWheel: true,
-                                scrollX: true,
-                                scrollY: false,
-                                //nestedScroll: {
-                                //    groupId: 'cover-scrollY'
-                                //},
-                                //slide: {
-                                //    threshold: 100,
-                                //    loop: false,//TODO：可以优化为循环slide；注意：复制出来的slide需要querySelector and 设置translateY同步
-                                //    autoplay:false,
-                                //    listenFlick:false,
-                                //},
-                                useTransition: true,
-                                momentum: true,
-                                bounce: true,
-                                //stopPropagation: true,
-                                probeType: 3,
-                                observeDOM: true ,// 开启 observe-dom 插件
-                            })
-                        </script>  
-                    </div>
-
+                    {% include './public/compBSArtists.html' %}
                     {# 空容器 #}
                     {# <div class="container-fluid bg-transparent  position-relative " style="min-height:100vh;z-index:-100;"> #}
                     {# </div> #}
 
                     {# 时间轴内容区 #}
-                    <div id="timelineWrapper" class="bs-wrapper-main position-relative overflow-hidden" style="white-space:nowrap;">
-                        {# 不指定高：手机纵向自适应高，PC在定义高度 #}
-                        <div id="timelineContent" class="heightMain-md px-0 d-block d-md-inline-flex w-auto" style="max-width:none;">
-                            {# 单页模式 #}
-                            {% block content %}{% endblock %}
-                        </div>
-                        {# 时间轴控制 #}
-                        <script>
-                        let slideMain = new BetterScroll.createBScroll('.bs-wrapper-main', {
-                            //specifiedIndexAsContent:1,
-                            disableMouse: false,
-                            disableTouch: false,
-                            scrollX: true,
-                            scrollY: true,
-                            //nestedScroll: {
-                            //    groupId: 'cover-scrollY'
-                            //},
-                            //slide: {
-                            //    threshold: 100,
-                            //    loop: false,//TODO：可以优化为循环slide；注意：复制出来的slide需要querySelector and 设置translateY同步
-                            //    autoplay:false,
-                            //    listenFlick:false,
-                            //},
-                            useTransition: true,
-                            momentum: true,
-                            //momentumLimitTime:100,//{# 快速滑动的时间小于xx开启#}
-                            //momentumLimitDistance:50,//{# 快速滑动的距离大于xx开启#}
-                            deceleration:0.005,//{# momentum 动画的减速度 #}
-                            swipeTime:300,//{# momentum 动画时长 #}
-                            bounce: {
-                                top: true,
-                                bottom: true,
-                                left: true,
-                                right: true
-                            },
-                            mouseWheel: {
-                                speed: 50,
-                                invert: false,
-                                easeTime: 100
-                            },
-                            observeDOM: true ,// 开启 observe-dom 插件
-                            stopPropagation: false,
-                            probeType: 0,
-                        })
-                        //slideMain.on('slidePageChanged', (page) => {
-                        //    // currentPageIndex = page.pageX
-                        //})
-                        //slideMain.on('slideWillChange', (page) => {
-                        //    currentPageIndex = page.pageX;
-                        //    console.log("slideMain.on(slideWillChange)",page,this.header.listNav[currentPageIndex]);
-                        //    {# history路由 #}
-                        //    window.history.pushState({}, "{{site.title}}|"+ this.header.listNav[currentPageIndex].name, this.header.listNav[currentPageIndex].url);//设置状态
-                        //    //listBnNav.addClass("bg-light text-dark").removeClass("bg-dark text-light");
-                        //    //bnNav.addClass("bg-dark text-light").removeClass("bg-light text-dark");             
-                        //})
-                        {# 页面重新加载时，路由到指定的slide页 #}
-                        //window.addEventListener('DOMContentLoaded', (event) => {
-                        //    if(this.header.idxNav>=0){
-                        //        slideMain.goToPage(this.header.idxNav,0);
-                        //    }
-                        //});
-                        </script>
-
-                    </div>
+                    {% include './public/compBSTimeline.html' %}
                 </div>
+                <script>
+                    this.slideCover=new BetterScroll.createBScroll('.bs-wrapper-cover', {
+                        //specifiedIndexAsContent:1,
+                        disableMouse: false,
+                        disableTouch: false,
+                        scrollX: false,
+                        scrollY: true,
+                        mouseWheel: {
+                            speed: 20,
+                            invert: false,
+                            easeTime: 300
+                        },
+                        nestedScroll: {
+                            groupId: 'cover-scrollY'
+                        },
+                        slide: {
+                            threshold: 0.3,
+                            loop: false,
+                            autoplay:false,
+                            listenFlick:false,
+                        },
+                        useTransition: true,
+                        momentum: false,
+                        bounce: false,
+                        stopPropagation: false,
+                        probeType: 3,
+                    
+                    })
+                    {# //初始化slideCover后隐藏Cover，后面再判断是否显示 #}
+                    {# $('.bs-wrapper-cover').hide(); #}
+                    
+                    this.slideCover.on('slideWillChange', (page) => {
+                        {# 导航更新 #}
+                        this.header.funSetNav(this.header.strAliasNav || "timeline");
+                        //$('.bs-wrapper-cover').hide();
+                        {# // currentPageIndex = page.pageX #}
+                    })
+                </script>
             </div>
-            <script>
-                this.slideCover=new BetterScroll.createBScroll('.bs-wrapper-cover', {
-                    //specifiedIndexAsContent:1,
-                    disableMouse: false,
-                    disableTouch: false,
-                    scrollX: false,
-                    scrollY: true,
-                    mouseWheel: {
-                        speed: 20,
-                        invert: false,
-                        easeTime: 300
-                    },
-                    nestedScroll: {
-                        groupId: 'cover-scrollY'
-                    },
-                    slide: {
-                        threshold: 0.3,
-                        loop: false,
-                        autoplay:false,
-                        listenFlick:false,
-                    },
-                    useTransition: true,
-                    momentum: false,
-                    bounce: false,
-                    stopPropagation: false,
-                    probeType: 3,
-                
-                })
-                {# //初始化slideCover后隐藏Cover，后面再判断是否显示 #}
-                {# $('.bs-wrapper-cover').hide(); #}
-                
-                this.slideCover.on('slideWillChange', (page) => {
-                    {# 导航更新 #}
-                    this.header.funSetNav(this.header.strAliasNav || "timeline");
-                    //$('.bs-wrapper-cover').hide();
-                    {# // currentPageIndex = page.pageX #}
-                })
-            </script>
         </div>
         
 
