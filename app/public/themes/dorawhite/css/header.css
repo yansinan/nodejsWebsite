@@ -44,6 +44,7 @@
     width:auto;
     flex:1 1 100%;
     justify-content: flex-end;
+
   }
   /* 菜单及搜索按钮打开 */
   #navHeader .navbar-expand-md .navbar-collapse.collapsing{
@@ -75,13 +76,14 @@
     max-height: 1.2rem;/* 1.154rem */
   }  
   #navHeader #collapseNavbarMobile.navbar-collapse ul{
+    display: flex;
     justify-content: center;
   }
   #navHeader .navbar-collapse ul
   {
     /* max-width: 68.9vw; */
     /* overflow: hidden; */
-    display: flex;
+    display: none;
     flex:1 1 auto;
     justify-content: flex-end;
     flex-wrap: wrap;
