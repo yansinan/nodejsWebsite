@@ -6,7 +6,27 @@
     position: absolute;
     bottom: 0;
 }
+/* 测试用：悬浮按钮 */
+.foot-float.bnTest{
+    background-color: #fff;
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    cursor: pointer;
+    -webkit-transition: .3s;
+    transition: .3s;
+    z-index: 1001;
+    right:0.534rem;
+    top:60vh;
+    display:flex;
+    justify-content: center;
+    align-items: center;
 
+    box-shadow: none;
+    border: none;
+    overflow: visible;
+}
 .foot-float.back-to-top{
     z-index: 1001;
     width: min-content;
