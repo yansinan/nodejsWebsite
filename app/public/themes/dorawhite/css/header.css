@@ -15,6 +15,9 @@
 #navHeader{
   padding: 0px;
   z-index:1000;
+  display:flex;
+  flex-direction: column;
+  align-items: stretch;
 }
 #navHeader .navbar{
     padding-top:0.08rem;
@@ -36,11 +39,11 @@
     height: auto;
     object-fit: contain;
 }
-
   /* 菜单及搜索关闭 */
   #navHeader .navbar-expand-md .navbar-collapse{
     width:auto;
     flex:1 1 100%;
+    justify-content: flex-end;
   }
   /* 菜单及搜索按钮打开 */
   #navHeader .navbar-expand-md .navbar-collapse.collapsing{
@@ -49,13 +52,46 @@
   #navHeader .navbar-expand-md .navbar-collapse.show{
     width:100%;
   }  
-  #navHeader .collapse.navbar-collapse .navbar-nav
-  {
-    max-width: 68.9vw;
+  /* 移动端，timeline导航菜单 */
+  #navHeader #collapseNavbarMobile.navbar-collapse{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+
+    transition-property: all;
+    transition-duration: .3s;
+    flex:0 0 0px;
     overflow: hidden;
-    flex:1 1 auto;
   }
-  #navHeader .collapse.navbar-collapse .navbar-nav li 
+  #navHeader #collapseNavbarMobile.navbar-collapse:not(.show){
+    /* animation: openOut 1s ease .2s 1 normal both; */
+    flex:0 0 0px;
+    max-height: 0px;
+  }
+  #navHeader #collapseNavbarMobile.navbar-collapse.show{
+    /* display: flex !important;; */
+    /* animation: openIn 5s ease 0s 1 normal both; */    
+    flex:1;
+    max-height: 1.2rem;/* 1.154rem */
+  }  
+  #navHeader #collapseNavbarMobile.navbar-collapse ul{
+    justify-content: center;
+  }
+  #navHeader .navbar-collapse ul
+  {
+    /* max-width: 68.9vw; */
+    /* overflow: hidden; */
+    display: flex;
+    flex:1 1 auto;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    /* instead of navbar-nav */
+    padding-left: 0;
+    margin-bottom: 0;
+    list-style: none;
+  }
+
+  #navHeader .navbar-collapse ul li 
   {
     justify-content: center;
     display: flex;
@@ -65,18 +101,26 @@
     /* margin-left: 0.134rem; */
     margin: 0.22rem 0 0 0.22rem;
     margin-right:0.278rem;
+
     
     background-color: transparent;
+    color: black;
+    border:1px solid black;
   }
-  #navHeader .collapse.navbar-collapse .navbar-nav li a
+  #navHeader .navbar-collapse ul li.now
+  {
+    background: black;
+    color: white;
+  }
+  #navHeader .navbar-collapse ul li a
   {
     font-size: 0.5rem;
 
     margin: 0px;
-    padding: 0.2rem 0.4rem;
+    padding: 0.131rem 0.616rem;
     line-height: 0.6rem;
   }
-  #navHeader .collapse.navbar-collapse .input-group .input-group-text
+  #navHeader .navbar-collapse .input-group .input-group-text
   {
     font-size: 0.5rem;
     padding: 0.7rem;
@@ -87,6 +131,7 @@
   /* 手机菜单按钮 */
   #navHeader .navbar-toggler{
     display: flex;
+    align-items: center;
     border-color: transparent;
     height:100%;
   }
@@ -96,13 +141,13 @@
   }
   #navHeader .navbar .navOffsetLeft{
     transition-property: all;
-    transition-duration: 1s;
+    transition-duration: .3s;
     flex:0 1 46px;
     min-width: 22px;
   }
   #navHeader .navbar .navOffsetRight{
     transition-property: all;
-    transition-duration: 1s;
+    transition-duration: .3s;
     /* overflow: hidden; */
     /* margin-right:  auto!important; */
     flex: 1 1 auto!important;
@@ -110,23 +155,17 @@
   }
 
   #navHeader .navbar .navOffsetRight .btn-close{
-    /*
-    transition-property: all;
-    transition-duration: 1s;
-    transition-delay: 1s;
-    top:0px;
-    opacity: .5;
-    */
+
   }
   #navHeader .navbar .navOffsetRight .btn-close.show{
     /* @keyframes name | duration | easing-function | delay |
     iteration-count | direction | fill-mode | play-state |  */
-    animation:rollIn .3s ease-in-out 0s 1 normal both; 
+    animation:rollIn .3s ease 0s 1 normal both; 
   }
-  #navHeader .navbar .navOffsetRight .btn-close.hide{
+  #navHeader .navbar .navOffsetRight .btn-close:not(.show){
     /* @keyframes name | duration | easing-function | delay |
     iteration-count | direction | fill-mode | play-state |  */
-    animation:rollOut .3s ease-in-out 0s 1 normal both; 
+    animation:rollOut .3s ease 0s 1 normal both; 
   }
 
   #navHeader .navbar .navTimelineaAround{
@@ -134,14 +173,23 @@
     flex: 0 0 48px!important;
   }
 @media (min-width: 768px) {
-  #navHeader .navbar .navOffsetRight-md{
+  #navHeader .navOffsetRight-md{
+  }
+  /* PC端，隐藏移动端的居中timeline导航菜单 */
+  #navHeader #collapseNavbarMobile.navbar-collapse-md{
+    display:none;
+  }
+  #navHeader .navbar .navbar-collapse.navbar-collapse-md ul li a
+  {
+    padding: 0.2rem 0.9rem;
+    line-height: 0.6rem;
   }
 }
 
 @keyframes rollIn {
   0%{
     opacity:0;
-    transform:translateX(-50%) rotate(-120deg) scale(.8);
+    transform:translateX(0%) rotate(-120deg) scale(.5);
   }
   100%{
     opacity:.5;
@@ -155,7 +203,52 @@
   }
   100%{
     opacity:0;
-    transform:translateX(-50%) rotate(120deg) scale(0.8);
+    transform:translateX(0%) rotate(120deg) scale(0.5);
+  }
+}
+@keyframes flipOut{
+  0%{
+    transform:perspective(400px) rotateX(0deg);
+    opacity:1;
+  }
+  100%{
+    transform:perspective(400px) rotateX(90deg);
+    opacity:0;
+  }
+}
+@keyframes flipIn{
+  0%{
+    transform:perspective(400px) rotateX(90deg);
+    opacity:0;
+  }
+  40%{transform:perspective(400px) rotateX(-10deg)}
+  70%{transform:perspective(400px) rotateX(10deg)}
+  100%{
+    transform:perspective(400px) rotateX(0deg);
+    opacity:1
+  }
+}
+@keyframes openOut{
+  0%{
+    overflow: hidden;
+    height:auto;
+    background-color: black;
+  }
+  100%{
+    height:0px;
+  }
+}
+@keyframes openIn{
+  0%{
+    overflow: hidden;
+    /* height:0px; */
+    flex:0 1 0px;
+    max-height: 0;
+  }
+  100%{
+    /* height:auto; */
+    flex:1;
+    max-height: 100%;
   }
 }
 /* 菜单打开 */

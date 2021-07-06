@@ -73,16 +73,14 @@
             let listBnNav=document.querySelectorAll("[dr-dom-nav-bn]");
             listBnNav.forEach(bn=>{
                 bn.setAttribute("aria-selected", "false");
-                bn.classList.add("bg-light","text-dark");
-                bn.classList.remove("bg-dark","text-light");
+                bn.classList.remove("now");
             })
             if(strAliasNav!="index"){
                 {# 设置当前导航按钮 #}                
                 let bnNav=document.querySelectorAll("[dr-dom-nav-bn="+strAliasNav+"]");
                 bnNav.forEach(bn=>{
                     bn.setAttribute("aria-selected", "true");
-                    bn.classList.remove("bg-light","text-dark");
-                    bn.classList.add("bg-dark","text-light");
+                    bn.classList.add("now");
 
                 })
             }else{
@@ -206,10 +204,10 @@
                 <a class="d-flex" data-bs-toggle="offcanvas" href="#offcanvasRight"><img class="img-fluid" src="{{site.logo}}" alt="{{site.title}}"/></a>
             </div>
             {# collapse  nav&search #}
-            <div class="collapse navbar-collapse collapseNav-md justify-content-end">
-                <ul class="navbar-nav navbar-nav-scroll d-flex justify-content-end flex-wrap">
+            <div class="collapse navbar-collapse navbar-collapse-md">
+                <ul>
                     {% for cate in navigation %} {% if cate.parentId == '0' %}
-                    <li class="nav-item text-nowrap rounded-pill border" role="presentation" dr-dom-nav-bn="{{cate.defaultUrl}}">
+                    <li class="nav-item text-nowrap rounded-pill" role="presentation" dr-dom-nav-bn="{{cate.defaultUrl}}">
                         <a class="nav-link" style="color: inherit" role="menuitem" tabindex="-1" alt="{{site.altkey}}{{cate.name}}"
                             href="javascript:void(0)" onclick="eBnNav('{{cate.defaultUrl}}')" name="{{cate.defaultUrl}}">{{cate.name}}</a>
                     </li>
@@ -236,6 +234,16 @@
             </button>
         {# </div> #}
     </nav>
+    <div id="collapseNavbarMobile" class="d-none navbar-collapse navbar-collapse-md">
+        <ul>
+            {% for cate in navigation %} {% if cate.parentId == '0' %}
+            <li class="nav-item text-nowrap rounded-pill" role="presentation" dr-dom-nav-bn="{{cate.defaultUrl}}">
+                <a class="nav-link" style="color: inherit" role="menuitem" tabindex="-1" alt="{{site.altkey}}{{cate.name}}"
+                    href="javascript:void(0)" onclick="eBnNav('{{cate.defaultUrl}}')" name="{{cate.defaultUrl}}">{{cate.name}}</a>
+            </li>
+            {% endif %} {% endfor %}
+        </ul>
+    </div>
 </div>
 <script>
     let $headerNav=document.getElementById("headerNav")
@@ -244,6 +252,20 @@
     let $navOffsetLeft=$headerNav.querySelector(".navOffsetLeft");
     let $navTogglerMenu=$headerNav.querySelector(".navbar-toggler");
 
+    {# 居中菜单 #}
+    let $collapseNavbarMobile = document.getElementById('collapseNavbarMobile')
+    //let bsCollapseNavbarMobile = new bootstrap.Collapse($collapseNavbarMobile, {
+    //    toggle: false,
+    //})
+    {# 如果用animation动画的监听 #}
+    //$collapseNavbarMobile.addEventListener("webkitAnimationEnd", function(e){ //动画结束时事件 
+    //    {# this.className = this.className.replace('change', ' ');  #}
+    //    console.log("动画结束监听","$collapseNavbarMobile",e);
+    //    if(e.animationName == "openOut"){
+    //        {# 动画结束则隐藏 #}
+    //        $collapseNavbarMobile.classList.add("d-none");
+    //    }
+    //})
     $navBnClose.addEventListener("webkitAnimationEnd", function(e){ //动画结束时事件 
         {# this.className = this.className.replace('change', ' ');  #}
         console.log("动画结束监听","$navBnClose",e);
@@ -267,18 +289,27 @@
     {# 切换到乐队列表页 #}{# Mobile：隐藏菜单，隐藏中英文， PC：显示中英文，隐藏菜单#}
     this.addEventListener("BS_COVER_WILL_LISTARTISTS", (page)=>{
         //$navBnClose.className=$navBnClose.className.replace("show","hide");//classList.add("hide");
-        $navBnClose.classList.add("hide");
+        {# $navBnClose.classList.add("hide"); #}
         $navBnClose.classList.remove("show");
+        {# 显示居中菜单 #}
+        $collapseNavbarMobile.classList.remove("show");
+        setTimeout(function () {
+            $collapseNavbarMobile.classList.add("d-none");
+        }, 400);
     })
     {# 切换到时间轴页 #}{# Mobile：logo居中，显示叉，隐藏菜单按钮，显示居中菜单，隐藏中英文， PC：显示顶部才惨，隐藏中英文#}
     this.addEventListener("BS_COVER_WILL_TIMELINE", (page)=>{
+        {# Mobile：logo居中，显示叉，隐藏菜单按钮 #}
         setTimeout(function () {
-            $navBnClose.classList.remove("d-none","hide");
+            $navBnClose.classList.remove("d-none");
             $navBnClose.classList.add("show");
-        }, 500);
+            $collapseNavbarMobile.classList.add("show");
+        }, 400);
         $navOffsetRight.classList.add("navTimelineaAround");
         $navOffsetLeft.classList.add("navTimelineaAround");
         $navTogglerMenu.classList.add("d-none");
+        {# 显示居中菜单 #}
+        $collapseNavbarMobile.classList.remove("d-none");
     })
 </script>
 
