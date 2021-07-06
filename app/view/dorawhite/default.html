@@ -86,30 +86,38 @@
                         probeType: 3,
                     
                     })
+                    {# 创建自定义事件 #}
+
+
                     {# //初始化slideCover后隐藏Cover，后面再判断是否显示 #}
                     {# $('.bs-wrapper-cover').hide(); #}
                     
                     this.slideCover.on('slideWillChange', (page) => {
                         {# 导航更新 #}
                         this.header.funSetNav(this.header.strAliasNav || "timeline");
-                        //$('.bs-wrapper-cover').hide();
-                        {# // currentPageIndex = page.pageX #}
-                        {# 时间轴上拉动画 #}
-                        let $svgTimelineBar=document.getElementById("svgTimelineBar");
+                        //$('.bs-wrapper-cover').hide();                        
+                        
                         if(page.pageY==1){
-                            $svgTimelineBar.classList.add("timelineBarOpen");
-                            $svgTimelineBar.classList.remove("timelineBarClose");
+                            // 创建并分发事件
+                            this.dispatchEvent(new CustomEvent("BS_COVER_WILL_TIMELINE", {detail:{page}}))
                         }else{
-                            $svgTimelineBar.classList.add("timelineBarClose");
-                            $svgTimelineBar.classList.remove("timelineBarOpen");
+                            // 创建并分发事件
+                            this.dispatchEvent(new CustomEvent("BS_COVER_WILL_LISTARTISTS", {detail:{page}}))
                         }
-                        console.log(page)
+                        console.log("e:slideWillChange",page)
                         {# this.slideCover.refresh(); #}
                     })
                     //this.slideCover.on('scroll', (position) => {
                     //    this.slideCover.refresh();
                     //})
                     this.slideCover.on('slidePageChanged', (page) => {
+                        if(page.pageY==1){
+                            // 创建并分发事件
+                            this.dispatchEvent(new CustomEvent("BS_COVER_TIMELINE", {detail:{page}}))
+                        }else{
+                            // 创建并分发事件
+                            this.dispatchEvent(new CustomEvent("BS_COVER_LISTARTISTS", {detail:{page}}))
+                        }
                         {# window.alert('slidePageChanged'); #}
                         {# setTimeout(window.slideCover.refresh,1000); #}
                         this.slideCover.refresh();

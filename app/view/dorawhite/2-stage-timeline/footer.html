@@ -18,4 +18,17 @@
         <div class="row"></div>
 
     </div>
+    <script>
+        {# 时间轴上拉动画 #}
+        this.$svgTimelineBar=document.getElementById("svgTimelineBar");
+        // 添加一个适当的事件监听器
+        this.addEventListener("BS_COVER_WILL_LISTARTISTS", (page)=>{
+            this.$svgTimelineBar.classList.add("timelineBarClose");
+            this.$svgTimelineBar.classList.remove("timelineBarOpen");
+        })
+        this.addEventListener("BS_COVER_WILL_TIMELINE", (page)=>{
+            this.$svgTimelineBar.classList.add("timelineBarOpen");
+            this.$svgTimelineBar.classList.remove("timelineBarClose");
+        })
+    </script>
 {% endblock%}
