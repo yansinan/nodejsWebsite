@@ -24,6 +24,7 @@
   display: flex;
   height: 100%;
   flex:0 1 3.7rem;
+  margin-right:0px;
   /* flex:1 0 9.1vw; */
 }
 #navHeader .navbar-brand img{
@@ -48,10 +49,6 @@
   #navHeader .navbar-expand-md .navbar-collapse.show{
     width:100%;
   }  
-  #navHeader .collapse.navbar-collapse
-  {
-  
-  }
   #navHeader .collapse.navbar-collapse .navbar-nav
   {
     max-width: 68.9vw;
@@ -97,6 +94,70 @@
     width: 0.827rem;
     height: 0.56rem;
   }
+  #navHeader .navbar .navOffsetLeft{
+    transition-property: all;
+    transition-duration: 1s;
+    flex:0 1 46px;
+    min-width: 22px;
+  }
+  #navHeader .navbar .navOffsetRight{
+    transition-property: all;
+    transition-duration: 1s;
+    /* overflow: hidden; */
+    /* margin-right:  auto!important; */
+    flex: 1 1 auto!important;
+    justify-content: center;
+  }
+
+  #navHeader .navbar .navOffsetRight .btn-close{
+    /*
+    transition-property: all;
+    transition-duration: 1s;
+    transition-delay: 1s;
+    top:0px;
+    opacity: .5;
+    */
+  }
+  #navHeader .navbar .navOffsetRight .btn-close.show{
+    /* @keyframes name | duration | easing-function | delay |
+    iteration-count | direction | fill-mode | play-state |  */
+    animation:rollIn .3s ease-in-out 0s 1 normal both; 
+  }
+  #navHeader .navbar .navOffsetRight .btn-close.hide{
+    /* @keyframes name | duration | easing-function | delay |
+    iteration-count | direction | fill-mode | play-state |  */
+    animation:rollOut .3s ease-in-out 0s 1 normal both; 
+  }
+
+  #navHeader .navbar .navTimelineaAround{
+    margin-right: 0px!important;
+    flex: 0 0 48px!important;
+  }
+@media (min-width: 768px) {
+  #navHeader .navbar .navOffsetRight-md{
+  }
+}
+
+@keyframes rollIn {
+  0%{
+    opacity:0;
+    transform:translateX(-50%) rotate(-120deg) scale(.8);
+  }
+  100%{
+    opacity:.5;
+    transform:translateX(0px) rotate(0deg) scale(1);
+  }
+}
+@keyframes rollOut {
+  0%{
+    opacity:.5;
+    transform:translateX(0px) rotate(0deg) scale(1);
+  }
+  100%{
+    opacity:0;
+    transform:translateX(-50%) rotate(120deg) scale(0.8);
+  }
+}
 /* 菜单打开 */
 #offcanvasRightMenu{
   background-color: #000000;

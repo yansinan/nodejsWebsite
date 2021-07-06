@@ -198,16 +198,16 @@
 
 
     {# toggle内容上部分 #}
-    <nav class="navbar navbar-expand-md d-flex flex-nowrap justify-content-between navbar-light bg-transparent sticky-top" ms-controller="headerCtr" style="">
+    <nav id="headerNav" class="navbar navbar-expand-md d-flex flex-nowrap justify-content-between navbar-light bg-transparent sticky-top" ms-controller="headerCtr" style="">
         {# <div class="row"> #}
-            <div class="d-flex" style="flex:0 1 46px;min-width: 22px;"></div>
+            <div class="navOffsetLeft d-flex"></div>
             {# logo&name #}
             <div class="navbar-brand">
                 <a class="d-flex" data-bs-toggle="offcanvas" href="#offcanvasRight"><img class="img-fluid" src="{{site.logo}}" alt="{{site.title}}"/></a>
             </div>
             {# collapse  nav&search #}
-            <div class="collapse navbar-collapse collapseNav-md">
-                <ul class="navbar-nav navbar-nav-scroll d-flex justify-content-start flex-wrap">
+            <div class="collapse navbar-collapse collapseNav-md justify-content-end">
+                <ul class="navbar-nav navbar-nav-scroll d-flex justify-content-end flex-wrap">
                     {% for cate in navigation %} {% if cate.parentId == '0' %}
                     <li class="nav-item text-nowrap rounded-pill border" role="presentation" dr-dom-nav-bn="{{cate.defaultUrl}}">
                         <a class="nav-link" style="color: inherit" role="menuitem" tabindex="-1" alt="{{site.altkey}}{{cate.name}}"
@@ -228,12 +228,58 @@
             </button>
              #}
              {# 占位挤占logo #}
-            <div class="me-auto d-flex flex-fill"></div>
+            <div class="navOffsetRight navOffsetRight-md d-flex d-md-flex">
+                <button type="button" class="d-none d-md-none btn-close text-reset" aria-label="Close"></button>
+            </div>
             <button class="navbar-toggler" type="button"  data-bs-toggle="offcanvas" href="#offcanvasRightMenu" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
         {# </div> #}
     </nav>
 </div>
+<script>
+    let $headerNav=document.getElementById("headerNav")
+    let $navOffsetRight=$headerNav.querySelector(".navOffsetRight");
+    let $navBnClose=$navOffsetRight.querySelector(".btn-close");
+    let $navOffsetLeft=$headerNav.querySelector(".navOffsetLeft");
+    let $navTogglerMenu=$headerNav.querySelector(".navbar-toggler");
+
+    $navBnClose.addEventListener("webkitAnimationEnd", function(e){ //动画结束时事件 
+        {# this.className = this.className.replace('change', ' ');  #}
+        console.log("动画结束监听","$navBnClose",e);
+        if(e.animationName == "rollOut"){
+            {# 动画结束则隐藏 #}
+            $navOffsetRight.classList.remove("navTimelineaAround");
+            $navOffsetLeft.classList.remove("navTimelineaAround");
+            $navTogglerMenu.classList.remove("d-none");
+            $navBnClose.classList.add("d-none");
+        }
+    })
+    //$navOffsetRight.addEventListener("webkitAnimationEnd", function(e){ //动画结束时事件 
+    //    {# this.className = this.className.replace('change', ' ');  #}
+    //    console.log("动画结束监听","$navOffsetRight",e);
+    //    if(e.animationName == "rollOut"){
+    //        {# 动画结束则显示叉子 #}
+    //        {# $navBnClose.classList.remove("d-none","hide"); #}
+    //        {# $navBnClose.classList.add("show"); #}
+    //    }
+    //})
+    {# 切换到乐队列表页 #}{# Mobile：隐藏菜单，隐藏中英文， PC：显示中英文，隐藏菜单#}
+    this.addEventListener("BS_COVER_WILL_LISTARTISTS", (page)=>{
+        //$navBnClose.className=$navBnClose.className.replace("show","hide");//classList.add("hide");
+        $navBnClose.classList.add("hide");
+        $navBnClose.classList.remove("show");
+    })
+    {# 切换到时间轴页 #}{# Mobile：logo居中，显示叉，隐藏菜单按钮，显示居中菜单，隐藏中英文， PC：显示顶部才惨，隐藏中英文#}
+    this.addEventListener("BS_COVER_WILL_TIMELINE", (page)=>{
+        setTimeout(function () {
+            $navBnClose.classList.remove("d-none","hide");
+            $navBnClose.classList.add("show");
+        }, 500);
+        $navOffsetRight.classList.add("navTimelineaAround");
+        $navOffsetLeft.classList.add("navTimelineaAround");
+        $navTogglerMenu.classList.add("d-none");
+    })
+</script>
 
 
