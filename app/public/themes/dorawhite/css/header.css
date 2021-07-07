@@ -64,34 +64,47 @@
     flex-direction: column;
     justify-content: flex-end;
 
+    /* transition-property: transform; */
+    transition-duration: .4s;
     transition-property: all;
-    transition-duration: .3s;
-    flex:0 0 0px;
+    flex:0 0 0%;
+    max-height: 0rem;
     overflow: hidden;
   }
-  #navHeader #collapseNavbarMobile.navbar-collapse:not(.show){
-    /* animation: openOut 1s ease .2s 1 normal both; */
-    flex:0 0 0px;
-    max-height: 0px;
+  #navHeader.listArtist #collapseNavbarMobile.navbar-collapse{
+    /* 缩回用all,展开用max-height（ios） */
+    transition-property: all;
+    flex:0 0 0%;
+    max-height: 0rem;
   }
-  #navHeader #collapseNavbarMobile.navbar-collapse.show{
-    /* display: flex !important;; */
-    /* animation: openIn 5s ease 0s 1 normal both; */    
-    flex:1;
-    max-height: 1.2rem;/* 1.154rem */
+  #navHeader.timeline.done #collapseNavbarMobile.navbar-collapse{
+    /* 缩回用all,展开用max-height（ios） */
+    transition-property: max-height;    
+    flex:1 1 0%;
+    max-height: 1.2rem; /*1.154rem */
   }  
   #navHeader #collapseNavbarMobile.navbar-collapse ul{
     display: flex;
     justify-content: center;
+    transition-property: all;
+    transition-duration: .4s;
+  }
+  #navHeader.listArtist #collapseNavbarMobile.navbar-collapse ul{
+    transform: translateY(-1.15rem);
+    /* animation:slideUpOut .4s ease 0s 1 normal both;  */
+  }
+  #navHeader.timeline #collapseNavbarMobile.navbar-collapse ul{
+    transform: translateY(0%);
+    /* animation:slideDownIn .4s ease 0s 1 normal both;  */
   }
   #navHeader .navbar-collapse ul
   {
     /* max-width: 68.9vw; */
-    /* overflow: hidden; */
+    overflow: hidden;
     display: none;
     flex:1 1 auto;
     justify-content: flex-end;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     /* instead of navbar-nav */
     padding-left: 0;
     margin-bottom: 0;
@@ -103,13 +116,14 @@
     justify-content: center;
     display: flex;
     align-items: center;
+    height:fit-content;
     /* height: 1.094rem; */
     /* width: 3.04rem; */
     /* margin-left: 0.134rem; */
     margin: 0.22rem 0 0 0.22rem;
     margin-right:0.278rem;
 
-    
+    overflow: hidden;
     background-color: transparent;
     color: black;
     border:1px solid black;
@@ -127,14 +141,14 @@
     padding: 0.131rem 0.616rem;
     line-height: 0.6rem;
   }
-  #navHeader .navbar-collapse .input-group.search{
+  #navHeader .input-group.search{
     justify-content: center;
     aspect-ratio: 1 / 1;
     width: auto;
     height:100%;
     /* max-height: 68px; */
   }
-  #navHeader .navbar-collapse .input-group.search .input-group-text
+  #navHeader .input-group.search .input-group-text
   {
     /* font-size: 0.5rem; */
     padding: 0;/*0.7rem;*/
@@ -146,6 +160,7 @@
   /* 手机菜单按钮 */
   #navHeader bn-menu-toggler{
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
 
@@ -154,7 +169,8 @@
     height:100%;
     /* max-height: 68px; */
     padding: 0px;
-
+    /* IOS下有默认的按钮渲染方式 */
+    /* -webkit-appearance:unset; */
     /* font-size: 1.25rem; */
     /* line-height: 1; */
     /* background-color: transparent; */
@@ -162,23 +178,81 @@
     /* border: 1px solid transparent; */
     /* border-radius: .25rem; */
     /* transition: box-shadow .15s ease-in-out; */
-  }
-  #navHeader bn-menu-toggler.show{
-    animation:flipIn .3s ease 0s 1 normal both; 
-  }
-  #navHeader bn-menu-toggler:not(.show){
-    animation:flipOut .3s ease 0s 1 normal both; 
-  }
-  #navHeader bn-menu-toggler .icon{
-    width: 0.827rem;
-    height: 0.56rem;
+    cursor: pointer;
+
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 0, 0, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-    display: inline-block;
     vertical-align: middle;
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 100%;
+    /* background-size: 100%; */
+    background-size: 0.827rem 0.56rem;
+
+    position: relative;
+    top: -100%;
+    left: 0;
+    bottom:0;
+    right:0;
   }
+  #navHeader bn-menu-toggler.show{
+    animation:slideDownIn .3s ease 0s 1 normal both; 
+  }
+  #navHeader bn-menu-toggler:not(.show){
+    animation:slideUpOut .3s ease 0s 1 normal both; 
+  }
+
+
+  #navHeader .navbar .btnWrapper{
+
+    flex:0 1 auto;
+
+    aspect-ratio: 1 / 1;
+    width: auto;
+    height:100%;
+    min-width: 46px;
+    min-height: 46px;
+    max-height: 100%;
+    overflow: hidden;
+    background-color: lawngreen;
+  }
+  #navHeader .navbar .btn-close{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    aspect-ratio: 1 / 1;
+    width: auto;
+    height:100%;
+    /* max-height: 68px; */
+    padding: 0px;
+    /* IOS下有默认的按钮渲染方式 */
+    /* -webkit-appearance:unset; */
+    /* font-size: 1.25rem; */
+    /* line-height: 1; */
+    /* background-color: transparent; */
+    /* border-color: transparent; */
+    /* border: 1px solid transparent; */
+    /* border-radius: .25rem; */
+    /* transition: box-shadow .15s ease-in-out; */
+    cursor: pointer;
+
+    background-image: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
+    vertical-align: middle;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 0.74rem 0.74rem;
+  }
+  #navHeader .navbar .btn-close.show{
+    /* @keyframes name | duration | easing-function | delay |
+    iteration-count | direction | fill-mode | play-state |  */
+    animation:slideUpIn .3s ease 0s 1 normal both; 
+  }
+  #navHeader .navbar .btn-close:not(.show){
+    /* @keyframes name | duration | easing-function | delay |
+    iteration-count | direction | fill-mode | play-state |  */
+    animation:slideOut .3s ease 0s 1 normal both; 
+  }
+
   #navHeader .navbar .navOffsetLeft{
     transition-property: all;
     transition-duration: .3s;
@@ -190,27 +264,36 @@
     transition-duration: .3s;
     /* overflow: hidden; */
     /* margin-right:  auto!important; */
-    flex: 1 1 auto!important;
-    justify-content: center;
+    display: flex;
+    flex: 1 1 100%!important;
+    justify-content: flex-end;
+    align-items: center;
+    height:100%;
+    /* min-width: fit-content; */
+    /* width:fit-content; */
   }
+  /*
+  #navHeader .navbar .navOffsetRight::before{
+    content:"";
+    aspect-ratio: 1 / 1;
+    width: auto;
+    height:100%;
+    position: relative;
+    left:-100%;
+  }
+  #navHeader .navbar .navOffsetRight::after{
+    content:"";
+    width: 0%;
+    height:100%;
+    position: relative;
+    left:-100%;
+  }
+  */
 
-  #navHeader .navbar .navOffsetRight .btn-close{
-
-  }
-  #navHeader .navbar .navOffsetRight .btn-close.show{
-    /* @keyframes name | duration | easing-function | delay |
-    iteration-count | direction | fill-mode | play-state |  */
-    animation:rollIn .3s ease 0s 1 normal both; 
-  }
-  #navHeader .navbar .navOffsetRight .btn-close:not(.show){
-    /* @keyframes name | duration | easing-function | delay |
-    iteration-count | direction | fill-mode | play-state |  */
-    animation:rollOut .3s ease 0s 1 normal both; 
-  }
 
   #navHeader .navbar .navTimelineaAround{
     margin-right: 0px!important;
-    flex: 0 0 48px!important;
+    flex: 1 0 48px!important;
   }
 @media (min-width: 768px) {
   #navHeader .navOffsetRight-md{
@@ -219,8 +302,11 @@
   #navHeader #collapseNavbarMobile.navbar-collapse-md{
     display:none!important;
   }
+  #navHeader .navbar .navOffsetRight-md.navTimelineaAround{
+    flex: 1 1 100%!important;
+  }
   #navHeader.timeline #collapseNavbarPC.navbar-collapse-md ul{
-    animation:slideIn .3s ease 0s 1 normal both;
+    animation:slideUpIn .3s ease 0s 1 normal both;
   }
   #navHeader #collapseNavbarPC.navbar-collapse-md ul{
     animation:slideOut .3s ease 0s 1 normal both;
@@ -231,24 +317,42 @@
     line-height: 0.6rem;
   }
 }
-@keyframes slideIn {
+@keyframes slideDownIn {
   0%{
-    opacity:0;
-    transform:translateY(100%);
+    opacity:1;
+    transform:translateY(-100%);
   }
   100%{
-    opacity:.5;
+    opacity:1;
+    transform:translateY(0px);
+  }
+}
+@keyframes slideUpIn {
+  0%{
+    opacity:1;
+    transform:translateY(100%);
+  }
+
+  100%{
+    opacity:1;
     transform:translateY(0px);
   }
 }
 @keyframes slideOut {
+
+  100%{
+    opacity:1;
+    transform:translateY(100%);
+  }
+}
+@keyframes slideUpOut {
   0%{
-    opacity:.5;
+    opacity:1;
     transform:translateY(0px);
   }
   100%{
-    opacity:0;
-    transform:translateY(100px);
+    opacity:1;
+    transform:translateY(-100%);
   }
 }
 @keyframes rollIn {

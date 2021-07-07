@@ -203,22 +203,6 @@
             <div class="navbar-brand">
                 <a class="d-flex" data-bs-toggle="offcanvas" href="#offcanvasRight"><img class="img-fluid" src="{{site.logo}}" alt="{{site.title}}"/></a>
             </div>
-            {# collapse  nav&search #}
-            <div id="collapseNavbarPC" class="d-none d-md-flex navbar-collapse navbar-collapse-md">
-                <ul>
-                    {% for cate in navigation %} {% if cate.parentId == '0' %}
-                    <li class="nav-item text-nowrap rounded-pill" role="presentation" dr-dom-nav-bn="{{cate.defaultUrl}}">
-                        <a class="nav-link" style="color: inherit" role="menuitem" tabindex="-1" alt="{{site.altkey}}{{cate.name}}"
-                            href="javascript:void(0)" onclick="eBnNav('{{cate.defaultUrl}}')" name="{{cate.defaultUrl}}">{{cate.name}}</a>
-                    </li>
-                    {% endif %} {% endfor %}
-                </ul>
-                {# search #}
-                <div class="input-group input-group-lg search" type="button" :class="['input-area',(@activeSearch? 'active':'')]">
-                    {# <input ms-on-keyup="@onKeyUp" type="text" class="form-control" ms-duplex="@searchkey" placeholder="Search">                             #}
-                    <span class="input-group-text"><i ms-click='@searchMe' class="fa fa-search"></i></span>
-                </div> 
-            </div>
             {# 手机缩略菜单 #}
             {# 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".collapseNav-md" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -227,14 +211,31 @@
              #}
              {# 占位挤占logo #}
             <div class="navOffsetRight navOffsetRight-md d-flex d-md-flex">
-                <button type="button" class="d-none d-md-none btn-close text-reset" aria-label="Close" onclick="eClickTimelineClose()"></button>
+                {# collapse  nav&search #}
+                <div id="collapseNavbarPC" class="d-none d-md-flex navbar-collapse navbar-collapse-md">
+                    <ul>
+                        {% for cate in navigation %} {% if cate.parentId == '0' %}
+                        <li class="nav-item text-nowrap rounded-pill" role="presentation" dr-dom-nav-bn="{{cate.defaultUrl}}">
+                            <a class="nav-link" style="color: inherit" role="menuitem" tabindex="-1" alt="{{site.altkey}}{{cate.name}}"
+                                href="javascript:void(0)" onclick="eBnNav('{{cate.defaultUrl}}')" name="{{cate.defaultUrl}}">{{cate.name}}</a>
+                        </li>
+                        {% endif %} {% endfor %}
+                    </ul>
+                    {# search #}
+                    <div class="input-group input-group-lg search" type="button" :class="['input-area',(@activeSearch? 'active':'')]">
+                        {# <input ms-on-keyup="@onKeyUp" type="text" class="form-control" ms-duplex="@searchkey" placeholder="Search">                             #}
+                        <span class="input-group-text"><i ms-click='@searchMe' class="fa fa-search"></i></span>
+                    </div> 
+                </div>
+                <div class="btnWrapper">
+                {# <button type="button" class="btn-close text-reset" aria-label="Close" onclick="eClickTimelineClose()"></button> #}
+                <bn-close class="btn-close"  aria-label="Close" onclick="eClickTimelineClose()"></bn-close>
+                <bn-menu-toggler class="show"  data-bs-toggle="offcanvas" href="#offcanvasRightMenu" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation"></bn-menu-toggler>
+                </div>
             </div>
-            <bn-menu-toggler class="show" type="button"  data-bs-toggle="offcanvas" href="#offcanvasRightMenu" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="icon"></span>
-            </bn-menu-toggler>
         {# </div> #}
     </nav>
-    <div id="collapseNavbarMobile" class="d-none navbar-collapse navbar-collapse-md">
+    <div id="collapseNavbarMobile" class="navbar-collapse navbar-collapse-md">
         <ul>
             {% for cate in navigation %} {% if cate.parentId == '0' %}
             <li class="nav-item text-nowrap rounded-pill" role="presentation" dr-dom-nav-bn="{{cate.defaultUrl}}">
@@ -249,7 +250,7 @@
     let $headerContainer=document.getElementById("navHeader");
     let $headerNav=document.getElementById("headerNav");
     let $navOffsetRight=$headerNav.querySelector(".navOffsetRight");
-    let $navBnClose=$navOffsetRight.querySelector(".btn-close");
+    let $navBnClose=$headerNav.querySelector(".btn-close");
     let $navOffsetLeft=$headerNav.querySelector(".navOffsetLeft");
     let $navTogglerMenu=$headerNav.querySelector("bn-menu-toggler");
 
@@ -273,12 +274,10 @@
     $navBnClose.addEventListener("webkitAnimationEnd", function(e){ //动画结束时事件 
         {# this.className = this.className.replace('change', ' ');  #}
         console.log("动画结束监听","$navBnClose",e);
-        if(e.animationName == "rollOut"){
+        if(e.animationName == "rollOut" || e.animationName == "slideOut"){
             {# 动画结束则隐藏 #}
             $navOffsetRight.classList.remove("navTimelineaAround");
             $navOffsetLeft.classList.remove("navTimelineaAround");
-            $navTogglerMenu.classList.remove("d-none");
-            $navBnClose.classList.add("d-none");
         }
     })
     //$navOffsetRight.addEventListener("webkitAnimationEnd", function(e){ //动画结束时事件 
@@ -296,10 +295,9 @@
         $headerContainer.classList.remove("done","timeline");
         //$navBnClose.className=$navBnClose.className.replace("show","hide");//classList.add("hide");
         $navBnClose.classList.remove("show");
-        {# 显示居中菜单 #}
-        $collapseNavbarMobile.classList.remove("show");
+        $navTogglerMenu.classList.add("show");
+        {# 隐藏居中菜单 #}
         setTimeout(function () {
-            $collapseNavbarMobile.classList.add("d-none");
             {# PC #}
             $collapseNavBnGroupPC.classList.add("d-none","d-md-none");
         }, 400);
@@ -314,16 +312,14 @@
         $headerContainer.classList.remove("done","listArtist");
         {# Mobile：logo居中，显示叉，隐藏菜单按钮 #}
         setTimeout(function () {
-            $navBnClose.classList.remove("d-none","d-md-none");
-            $navBnClose.classList.add("show");
-            $collapseNavbarMobile.classList.add("show");
         }, 400);
         $navOffsetRight.classList.add("navTimelineaAround");
         $navOffsetLeft.classList.add("navTimelineaAround");
         {# 右上导航按钮，艺人列表都有，时间轴都没有 #}
-        $navTogglerMenu.classList.add("d-none");
+        $navBnClose.classList.add("show");
+        $navTogglerMenu.classList.remove("show");
+        {# $navTogglerMenu.classList.add("d-none"); #}
         {# 显示居中菜单 #}
-        $collapseNavbarMobile.classList.remove("d-none");
 
         {# PC #}
         $collapseNavBnGroupPC.classList.remove("d-md-none");
