@@ -229,7 +229,7 @@
             <div class="navOffsetRight navOffsetRight-md d-flex d-md-flex">
                 <button type="button" class="d-none d-md-none btn-close text-reset" aria-label="Close" onclick="eClickTimelineClose()"></button>
             </div>
-            <bn-menu-toggler class="" type="button"  data-bs-toggle="offcanvas" href="#offcanvasRightMenu" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+            <bn-menu-toggler class="show" type="button"  data-bs-toggle="offcanvas" href="#offcanvasRightMenu" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="icon"></span>
             </bn-menu-toggler>
         {# </div> #}
@@ -292,9 +292,9 @@
     //})
     {# 切换到乐队列表页 #}{# Mobile：隐藏菜单，隐藏中英文， PC：显示中英文，隐藏菜单#}
     this.addEventListener("BS_COVER_WILL_LISTARTISTS", (page)=>{
-        $headerContainer.classList.remove("timeline");
+        $headerContainer.classList.add("listArtist");
+        $headerContainer.classList.remove("done","timeline");
         //$navBnClose.className=$navBnClose.className.replace("show","hide");//classList.add("hide");
-        {# $navBnClose.classList.add("hide"); #}
         $navBnClose.classList.remove("show");
         {# 显示居中菜单 #}
         $collapseNavbarMobile.classList.remove("show");
@@ -311,6 +311,7 @@
     {# 切换到时间轴页 #}{# Mobile：logo居中，显示叉，隐藏菜单按钮，显示居中菜单，隐藏中英文， PC：显示顶部才惨，隐藏中英文#}
     this.addEventListener("BS_COVER_WILL_TIMELINE", (page)=>{
         $headerContainer.classList.add("timeline");
+        $headerContainer.classList.remove("done","listArtist");
         {# Mobile：logo居中，显示叉，隐藏菜单按钮 #}
         setTimeout(function () {
             $navBnClose.classList.remove("d-none","d-md-none");
@@ -319,6 +320,7 @@
         }, 400);
         $navOffsetRight.classList.add("navTimelineaAround");
         $navOffsetLeft.classList.add("navTimelineaAround");
+        {# 右上导航按钮，艺人列表都有，时间轴都没有 #}
         $navTogglerMenu.classList.add("d-none");
         {# 显示居中菜单 #}
         $collapseNavbarMobile.classList.remove("d-none");
@@ -326,6 +328,14 @@
         {# PC #}
         $collapseNavBnGroupPC.classList.remove("d-md-none");
         $collapseNavBnGroupPC.classList.add("d-md-flex");
+    })
+    this.addEventListener("BS_COVER_TIMELINE", (page)=>{
+        $headerContainer.classList.add("timeline","done");
+        $headerContainer.classList.remove("listArtist");
+    })
+    this.addEventListener("BS_COVER_LISTARTISTS", (page)=>{
+        $headerContainer.classList.add("listArtist","done");
+        $headerContainer.classList.remove("timeline");
     })
     {# 时间轴右上角叉 #}
     function eClickTimelineClose(){

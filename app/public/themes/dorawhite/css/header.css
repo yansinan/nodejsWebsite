@@ -163,6 +163,12 @@
     /* border-radius: .25rem; */
     /* transition: box-shadow .15s ease-in-out; */
   }
+  #navHeader bn-menu-toggler.show{
+    animation:flipIn .3s ease 0s 1 normal both; 
+  }
+  #navHeader bn-menu-toggler:not(.show){
+    animation:flipOut .3s ease 0s 1 normal both; 
+  }
   #navHeader bn-menu-toggler .icon{
     width: 0.827rem;
     height: 0.56rem;
@@ -211,7 +217,7 @@
   }
   /* PC端，乐队列表页隐藏移动端的居中timeline导航菜单 */
   #navHeader #collapseNavbarMobile.navbar-collapse-md{
-    display:none;
+    display:none!important;
   }
   #navHeader.timeline #collapseNavbarPC.navbar-collapse-md ul{
     animation:slideIn .3s ease 0s 1 normal both;
@@ -267,23 +273,23 @@
 }
 @keyframes flipOut{
   0%{
-    transform:perspective(400px) rotateX(0deg);
+    transform:perspective(400px) rotateY(0deg);
     opacity:1;
   }
   100%{
-    transform:perspective(400px) rotateX(90deg);
+    transform:perspective(400px) rotateY(90deg);
     opacity:0;
   }
 }
 @keyframes flipIn{
   0%{
-    transform:perspective(400px) rotateX(90deg);
+    transform:perspective(400px) rotateY(90deg);
     opacity:0;
   }
-  40%{transform:perspective(400px) rotateX(-10deg)}
-  70%{transform:perspective(400px) rotateX(10deg)}
+  40%{transform:perspective(400px) rotateY(-10deg)}
+  70%{transform:perspective(400px) rotateY(10deg)}
   100%{
-    transform:perspective(400px) rotateX(0deg);
+    transform:perspective(400px) rotateY(0deg);
     opacity:1
   }
 }
