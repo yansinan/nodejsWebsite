@@ -168,7 +168,7 @@
 
 {# <header class="clearfix" id="header" ms-controller="headerCtr"> #}
 {# <div id="navHeader" class="container-fluid position-absolute heightNav" style="" > #}
-<div id="navHeader" class="" >
+<div id="navHeader" class="listArtist" >
 
     {# PC版显示 #}
     <!--
@@ -198,7 +198,7 @@
     {# toggle内容上部分 #}
     <nav id="headerNav" class="navbar d-flex flex-nowrap justify-content-between navbar-light bg-transparent sticky-top" ms-controller="headerCtr" style="">
         {# <div class="row"> #}
-            <div class="navOffsetLeft d-flex"></div>
+            <div class="navOffset navOffsetLeft d-flex"></div>
             {# logo&name #}
             <div class="navbar-brand">
                 <a class="d-flex" data-bs-toggle="offcanvas" href="#offcanvasRight"><img class="img-fluid" src="{{site.logo}}" alt="{{site.title}}"/></a>
@@ -210,7 +210,7 @@
             </button>
              #}
              {# 占位挤占logo #}
-            <div class="navOffsetRight navOffsetRight-md d-flex d-md-flex">
+            <div class="navOffset navOffsetRight navOffsetRight-md d-flex d-md-flex">
                 {# collapse  nav&search #}
                 <div id="collapseNavbarPC" class="d-none d-md-flex navbar-collapse navbar-collapse-md">
                     <ul>
@@ -271,15 +271,13 @@
     //        $collapseNavbarMobile.classList.add("d-none");
     //    }
     //})
-    $navBnClose.addEventListener("webkitAnimationEnd", function(e){ //动画结束时事件 
-        {# this.className = this.className.replace('change', ' ');  #}
-        console.log("动画结束监听","$navBnClose",e);
-        if(e.animationName == "rollOut" || e.animationName == "slideOut"){
-            {# 动画结束则隐藏 #}
-            $navOffsetRight.classList.remove("navTimelineaAround");
-            $navOffsetLeft.classList.remove("navTimelineaAround");
-        }
-    })
+    //$navBnClose.addEventListener("webkitAnimationEnd", function(e){ //动画结束时事件 
+    //    {# this.className = this.className.replace('change', ' ');  #}
+    //    console.log("动画结束监听","$navBnClose",e);
+    //    if(e.animationName == "rollOut" || e.animationName == "slideOut"){
+    //        
+    //    }
+    //})
     //$navOffsetRight.addEventListener("webkitAnimationEnd", function(e){ //动画结束时事件 
     //    {# this.className = this.className.replace('change', ' ');  #}
     //    console.log("动画结束监听","$navOffsetRight",e);
@@ -291,11 +289,9 @@
     //})
     {# 切换到乐队列表页 #}{# Mobile：隐藏菜单，隐藏中英文， PC：显示中英文，隐藏菜单#}
     this.addEventListener("BS_COVER_WILL_LISTARTISTS", (page)=>{
-        $headerContainer.classList.add("listArtist");
-        $headerContainer.classList.remove("done","timeline");
+        {# $headerContainer.classList.add("listArtist"); #}
+        {# $headerContainer.classList.remove("done","timeline"); #}
         //$navBnClose.className=$navBnClose.className.replace("show","hide");//classList.add("hide");
-        $navBnClose.classList.remove("show");
-        $navTogglerMenu.classList.add("show");
         {# 隐藏居中菜单 #}
         setTimeout(function () {
             {# PC #}
@@ -311,14 +307,8 @@
         $headerContainer.classList.add("timeline");
         $headerContainer.classList.remove("done","listArtist");
         {# Mobile：logo居中，显示叉，隐藏菜单按钮 #}
-        setTimeout(function () {
-        }, 400);
-        $navOffsetRight.classList.add("navTimelineaAround");
-        $navOffsetLeft.classList.add("navTimelineaAround");
+
         {# 右上导航按钮，艺人列表都有，时间轴都没有 #}
-        $navBnClose.classList.add("show");
-        $navTogglerMenu.classList.remove("show");
-        {# $navTogglerMenu.classList.add("d-none"); #}
         {# 显示居中菜单 #}
 
         {# PC #}
