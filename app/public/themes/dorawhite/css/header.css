@@ -42,6 +42,7 @@
   /* 菜单及搜索关闭 */
   #navHeader #collapseNavbarPC{
     width:auto;
+    height:100%;
     flex:1 1 100%;
     justify-content: flex-end;
     align-items: center;
@@ -126,24 +127,51 @@
     padding: 0.131rem 0.616rem;
     line-height: 0.6rem;
   }
-  #navHeader .navbar-collapse .input-group .input-group-text
+  #navHeader .navbar-collapse .input-group.search{
+    justify-content: center;
+    aspect-ratio: 1 / 1;
+    width: auto;
+    height:100%;
+    /* max-height: 68px; */
+  }
+  #navHeader .navbar-collapse .input-group.search .input-group-text
   {
-    font-size: 0.5rem;
-    padding: 0.7rem;
+    /* font-size: 0.5rem; */
+    padding: 0;/*0.7rem;*/
+    font-size: 25px;
     border: none;
     background-color: transparent;
   }
  
   /* 手机菜单按钮 */
-  #navHeader .navbar-toggler{
+  #navHeader bn-menu-toggler{
     display: flex;
     align-items: center;
-    border-color: transparent;
+    justify-content: center;
+
+    aspect-ratio: 1 / 1;
+    width: auto;
     height:100%;
+    /* max-height: 68px; */
+    padding: 0px;
+
+    /* font-size: 1.25rem; */
+    /* line-height: 1; */
+    /* background-color: transparent; */
+    /* border-color: transparent; */
+    /* border: 1px solid transparent; */
+    /* border-radius: .25rem; */
+    /* transition: box-shadow .15s ease-in-out; */
   }
-  #navHeader .navbar-toggler .navbar-toggler-icon{
+  #navHeader bn-menu-toggler .icon{
     width: 0.827rem;
     height: 0.56rem;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 0, 0, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    display: inline-block;
+    vertical-align: middle;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100%;
   }
   #navHeader .navbar .navOffsetLeft{
     transition-property: all;

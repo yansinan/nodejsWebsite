@@ -214,10 +214,10 @@
                     {% endif %} {% endfor %}
                 </ul>
                 {# search #}
-                <div class="input-group input-group-lg w-auto d-flex" :class="['input-area',(@activeSearch? 'active':'')]">
+                <div class="input-group input-group-lg search" type="button" :class="['input-area',(@activeSearch? 'active':'')]">
                     {# <input ms-on-keyup="@onKeyUp" type="text" class="form-control" ms-duplex="@searchkey" placeholder="Search">                             #}
                     <span class="input-group-text"><i ms-click='@searchMe' class="fa fa-search"></i></span>
-                </div>
+                </div> 
             </div>
             {# 手机缩略菜单 #}
             {# 
@@ -229,9 +229,9 @@
             <div class="navOffsetRight navOffsetRight-md d-flex d-md-flex">
                 <button type="button" class="d-none d-md-none btn-close text-reset" aria-label="Close" onclick="eClickTimelineClose()"></button>
             </div>
-            <button class="navbar-toggler" type="button"  data-bs-toggle="offcanvas" href="#offcanvasRightMenu" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+            <bn-menu-toggler class="" type="button"  data-bs-toggle="offcanvas" href="#offcanvasRightMenu" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="icon"></span>
+            </bn-menu-toggler>
         {# </div> #}
     </nav>
     <div id="collapseNavbarMobile" class="d-none navbar-collapse navbar-collapse-md">
@@ -251,7 +251,7 @@
     let $navOffsetRight=$headerNav.querySelector(".navOffsetRight");
     let $navBnClose=$navOffsetRight.querySelector(".btn-close");
     let $navOffsetLeft=$headerNav.querySelector(".navOffsetLeft");
-    let $navTogglerMenu=$headerNav.querySelector(".navbar-toggler");
+    let $navTogglerMenu=$headerNav.querySelector("bn-menu-toggler");
 
     {# 居中菜单 #}
     let $collapseNavbarMobile = document.getElementById('collapseNavbarMobile');
