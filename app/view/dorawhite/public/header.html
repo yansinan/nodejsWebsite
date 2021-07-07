@@ -196,7 +196,7 @@
 
 
     {# toggle内容上部分 #}
-    <nav id="headerNav" class="navbar navbar-expand-md d-flex flex-nowrap justify-content-between navbar-light bg-transparent sticky-top" ms-controller="headerCtr" style="">
+    <nav id="headerNav" class="navbar d-flex flex-nowrap justify-content-between navbar-light bg-transparent sticky-top" ms-controller="headerCtr" style="">
         {# <div class="row"> #}
             <div class="navOffsetLeft d-flex"></div>
             {# logo&name #}
@@ -204,7 +204,7 @@
                 <a class="d-flex" data-bs-toggle="offcanvas" href="#offcanvasRight"><img class="img-fluid" src="{{site.logo}}" alt="{{site.title}}"/></a>
             </div>
             {# collapse  nav&search #}
-            <div class="d-none collapse navbar-collapse navbar-collapse-md">
+            <div id="collapseNavbarPC" class="d-none d-md-flex navbar-collapse navbar-collapse-md">
                 <ul>
                     {% for cate in navigation %} {% if cate.parentId == '0' %}
                     <li class="nav-item text-nowrap rounded-pill" role="presentation" dr-dom-nav-bn="{{cate.defaultUrl}}">
@@ -256,11 +256,11 @@
     {# 居中菜单 #}
     let $collapseNavbarMobile = document.getElementById('collapseNavbarMobile');
     {# PC顶端Timeline导航 #}
-    let $collapseNavbarPC = $headerNav.querySelector(".navbar-collapse");//document.getElementById('collapseNavbarPC');
-    let $collapseNavBnGroupPC = $headerNav.querySelector('.navbar-collapse ul');
-    let bsCollapseNavbarPC = new bootstrap.Collapse($collapseNavbarPC, {
-        toggle: false,
-    })
+    let $collapseNavbarPC = document.getElementById('collapseNavbarPC');//$headerNav.querySelector("");//
+    let $collapseNavBnGroupPC = $collapseNavbarPC.querySelector(' ul');
+    //let bsCollapseNavbarPC = new bootstrap.Collapse($collapseNavbarPC, {
+    //    toggle: false,
+    //})
     {# 如果用animation动画的监听 #}
     //$collapseNavbarMobile.addEventListener("webkitAnimationEnd", function(e){ //动画结束时事件 
     //    {# this.className = this.className.replace('change', ' ');  #}
@@ -305,7 +305,6 @@
         }, 400);
 
         {# PC #}
-        bsCollapseNavbarPC.hide();
 
 
     })
@@ -327,7 +326,6 @@
         {# PC #}
         $collapseNavBnGroupPC.classList.remove("d-md-none");
         $collapseNavBnGroupPC.classList.add("d-md-flex");
-        bsCollapseNavbarPC.show();
     })
     {# 时间轴右上角叉 #}
     function eClickTimelineClose(){

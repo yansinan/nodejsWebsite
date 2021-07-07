@@ -40,19 +40,23 @@
     object-fit: contain;
 }
   /* 菜单及搜索关闭 */
-  #navHeader .navbar-expand-md .navbar-collapse{
+  #navHeader #collapseNavbarPC{
     width:auto;
     flex:1 1 100%;
     justify-content: flex-end;
-
+    align-items: center;
+    flex-wrap: nowrap;
+    overflow: hidden;
   }
   /* 菜单及搜索按钮打开 */
+  /*
   #navHeader .navbar-expand-md .navbar-collapse.collapsing{
     width:100%;
   }
   #navHeader .navbar-expand-md .navbar-collapse.show{
     width:100%;
   }  
+  */
   /* 移动端，timeline导航菜单 */
   #navHeader #collapseNavbarMobile.navbar-collapse{
     display: flex;
@@ -177,9 +181,15 @@
 @media (min-width: 768px) {
   #navHeader .navOffsetRight-md{
   }
-  /* PC端，隐藏移动端的居中timeline导航菜单 */
+  /* PC端，乐队列表页隐藏移动端的居中timeline导航菜单 */
   #navHeader #collapseNavbarMobile.navbar-collapse-md{
     display:none;
+  }
+  #navHeader.timeline #collapseNavbarPC.navbar-collapse-md ul{
+    animation:slideIn .3s ease 0s 1 normal both;
+  }
+  #navHeader #collapseNavbarPC.navbar-collapse-md ul{
+    animation:slideOut .3s ease 0s 1 normal both;
   }
   #navHeader .navbar .navbar-collapse.navbar-collapse-md ul li a
   {
@@ -187,7 +197,26 @@
     line-height: 0.6rem;
   }
 }
-
+@keyframes slideIn {
+  0%{
+    opacity:0;
+    transform:translateY(100%);
+  }
+  100%{
+    opacity:.5;
+    transform:translateY(0px);
+  }
+}
+@keyframes slideOut {
+  0%{
+    opacity:.5;
+    transform:translateY(0px);
+  }
+  100%{
+    opacity:0;
+    transform:translateY(100px);
+  }
+}
 @keyframes rollIn {
   0%{
     opacity:0;
