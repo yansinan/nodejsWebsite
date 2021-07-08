@@ -1,11 +1,11 @@
 {% extends "../public/footer.html" %} 
 {% block footerUp %}
-    <div class="d-flex flex-column justify-content-end position-relative p-0 border border-dark border-1">
+    <div class="timelineContainer d-flex flex-column justify-content-end position-relative p-0 border-top border-dark">
         <div class="d-none" id="scrollbarTimeLine" style="overflow:visible;height:0px;width:100vw;">
             <div class="border-4 border-start border-dark" style="width:10px;height:105px;background-color:#52FF00;opacity: 1;"></div>
         </div>
 
-        <div class="d-flex">            
+        <div class="timelineBar d-flex">            
             {# {{timelineBar(objTimeline)}} #}
             {{timelineBarDocs(objTimeline,false)}}
         </div>
@@ -20,15 +20,32 @@
     </div>
     <script>
         {# 时间轴上拉动画 #}
-        this.$svgTimelineBar=document.getElementById("svgTimelineBar");
+        Object.defineProperties(this,{
+            $footer:{
+                get:()=>{this._$footer = this._$footer || document.getElementById("dr-footer");return this._$footer;},
+            }
+        })
+        this.$footer.$svgTimelineBar=document.getElementById("svgTimelineBar");
         // 添加一个适当的事件监听器
         this.addEventListener("BS_COVER_WILL_LISTARTISTS", (page)=>{
-            this.$svgTimelineBar.classList.add("timelineBarClose");
-            this.$svgTimelineBar.classList.remove("timelineBarOpen");
+            document.documentElement.style.setProperty('--footer-size', "16px");
+            $footer.classList.add("listArtist");
+            $footer.classList.remove("done");
         })
         this.addEventListener("BS_COVER_WILL_TIMELINE", (page)=>{
-            this.$svgTimelineBar.classList.add("timelineBarOpen");
-            this.$svgTimelineBar.classList.remove("timelineBarClose");
+            document.documentElement.style.setProperty('--footer-size', "106px");
+            $footer.classList.add("timeline");
+            $footer.classList.remove("done");
         })
+        this.addEventListener("BS_COVER_TIMELINE", (page)=>{
+            $footer.classList.add("timeline","done");
+            $footer.classList.remove("listArtist");
+        })
+        this.addEventListener("BS_COVER_LISTARTISTS", (page)=>{
+            $footer.classList.add("listArtist","done");
+            $footer.classList.remove("timeline");
+        })
+
+
     </script>
 {% endblock%}

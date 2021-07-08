@@ -1,6 +1,11 @@
 /* :root{
     font-size: 37.5px;
 } */
+:root{
+    --footer-size: 16px;
+    --footer-size-open-mobile:54px;
+    --footer-size-open-pc:106px;
+}
 
 html {
     font-size: 162.5%;/*292.5%;*/
@@ -105,11 +110,20 @@ body.flex #mainCover div.w-100.heightNav{
 body.flex #mainCover div.bs-wrapper-cover.heightMain{
     height:100%;
 }
-body.flex #dr-footer{
-    /*  */
-    position:inherit!important;
-    bottom:inherit!important;
+
+/* 移动端:乐队列表页footer无尺寸，避免下方空白 */
+body.flex #dr-footer.footerContainer{
     order:30;
-    flex:0 0 15px;
+    flex:0 0 0px;
     /* flex:0 0 193.2px; */
+}
+
+@media only screen and (min-width: 768px) {
+    /* PC版Footer高度和位置 */
+    body.flex #dr-footer.footerContainer-md{
+        position:inherit!important;
+        bottom:inherit!important;
+
+        flex:0 0 var(--footer-size,16px);
+    }
 }

@@ -1,10 +1,29 @@
 #dr-footer{
-    z-index:1000;
-    background-color: transparent!important;
-    width: 100%!important;
-    /*  */
     position: absolute;
     bottom: 0;
+    /* 以上是flex版之前的 */
+    transition-property: all;
+    transition-duration: 0.5s;
+
+    z-index:1000;
+
+    width:calc(var(--vh, 1vh) * 100)!important;
+
+    height:0px;
+    max-height: var(--footer-size,16px);
+
+    position: relative;
+    /* bottom: unset!important; */
+    /* top: calc(15px - 100vh); */
+    /* top: calc(var(--vh, 1vh) * -100 + var(--footer-size,16px) + 2px); */
+    top: calc(var(--vh, 1vh) * -100);
+
+    /* left: calc(15px); */
+    transform: rotate(90deg);
+    transform-origin: calc(var(--footer-size,16px)/2) calc(var(--footer-size,16px)/2);
+}
+#dr-footer .timelineContainer{
+    background-color: white;
 }
 /* 测试用：悬浮按钮 */
 .foot-float.bnTest{
@@ -48,20 +67,39 @@
     background: url(/static/upload/images/defaultlogo.png) center/1.752rem auto no-repeat ;
     box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);
 }
+
 #svgTimelineBar{
     width:82.3%;
 }
-.timelineBarOpen{
+/* 通用：变形到乐队列表页的尺寸 */
+#dr-footer.footerContainer-md .timelineBar{
     transition-property: all;
     transition-duration: 0.5s;
-    height:105px;
+    height:var( --footer-size,16px)
 }
-.timelineBarClose{
-    transition-property: all;
-    transition-duration: 0.5s;
-    height:15px;
+/* 移动端：旋转中心变 */
+#dr-footer.timeline.footerContainer{
+    transform-origin: calc(var(--footer-size-open-mobile,54px)/2) calc(var(--footer-size-open-mobile,54px)/2);
 }
+/* 移动端，时间轴页时间轴尺寸 */
+#dr-footer.timeline.footerContainer .timelineBar{
+    height:var(--footer-size-open-mobile,54px);
+    max-height:var(--footer-size-open-mobile,54px);
+}
+
+
 @media (min-width: 768px) {
+    /* PC版Footer高度和位置 恢复*/
+    #dr-footer.footerContainer-md{
+        top:unset;
+        width:100%!important;
+        transform:none;
+    }
+    /* PC端，时间轴页时间轴尺寸 */
+    #dr-footer.timeline.footerContainer-md .timelineBar{
+        height:var(--footer-size-open-pc,105px);
+        max-height:var(--footer-size-open-pc,105px);
+    }
     .foot-float .btnRubyEyes-md{
         width: 2rem;
         height: 2rem;
