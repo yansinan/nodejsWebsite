@@ -23,6 +23,13 @@
     padding-top:0.08rem;
     padding-bottom:0;
 }
+#navHeader .navbar .navOffsetLeft{
+  transition-property: all;
+  transition-duration: .3s;
+  flex:0 1 calc(var(--main-offset-left-mobile,20px) + var(--footer-size-mobile,16px));
+  min-width: calc(var(--main-offset-left-mobile,20px) + var(--footer-size-mobile,16px));/*22px;*/
+}
+
 #navHeader .navbar-brand{
   display: flex;
   height: 100%;
@@ -72,8 +79,8 @@
     overflow: hidden;
 
     /* 左侧缩进 */
-    padding-left: calc(0.76rem + var(--footer-size-mobile,16px) );
-    padding-right: 0.76rem;
+    padding-left: calc(var(--main-offset-left-mobile,20px) + var(--footer-size-mobile,16px) );
+    padding-right: var(--main-offset-left-mobile,20px);
   }
   #navHeader.listArtist #collapseNavbarMobile.navbar-collapse{
     /* 缩回用all,展开用max-height（ios） */
@@ -272,19 +279,14 @@
     animation:slideOut .3s ease 0s 1 normal both; 
   }
 
-  #navHeader .navbar .navOffsetLeft{
-    transition-property: all;
-    transition-duration: .3s;
-    flex:0 1 46px;
-    min-width: 22px;
-  }
+
   #navHeader .navbar .navOffsetRight{
     transition-property: all;
     transition-duration: .3s;
     /* overflow: hidden; */
     /* margin-right:  auto!important; */
     display: flex;
-    flex: 1 1 100%!important;
+    flex: 1 1 100%;
     justify-content: flex-end;
     align-items: center;
     height:100%;
@@ -309,12 +311,22 @@
   }
   */
 
-
+  /* 移动端:时间轴页，两侧相等，居中logo */
   #navHeader.timeline .navbar .navOffset{
     margin-right: 0px!important;
-    flex: 1 0 48px!important;
+    /* flex: 1 0 46px!important; */
+    flex: 1 0 calc(var(--main-offset-left-mobile,20px) + var(--footer-size-mobile,16px) );
   }
 @media (min-width: 768px) {
+  /* PC版缩进，保持跟mainCover对齐 */
+  #navHeader .navbar .navOffsetLeft-md{
+    flex: 0 0 calc(var(--main-offset-left-pc,46px));
+    min-width: calc(var(--main-offset-left-pc,46px));
+  }
+  #navHeader.timeline .navbar .navOffsetLeft-md{
+    flex: 0 0 calc(var(--main-offset-left-pc,46px));
+    min-width: calc(var(--main-offset-left-pc,46px));
+  }
   #navHeader .navOffsetRight-md{
   }
   /* PC端，乐队列表页隐藏移动端的居中timeline导航菜单 */
@@ -327,7 +339,7 @@
   #navHeader.timeline #collapseNavbarPC.navbar-collapse-md ul{
     animation:slideUpIn .3s ease 0s 1 normal both;
   }
-  #navHeader #collapseNavbarPC.navbar-collapse-md ul{
+  #navHeader.listArtist #collapseNavbarPC.navbar-collapse-md ul{
     animation:slideOut .3s ease 0s 1 normal both;
   }
   #navHeader .navbar .navbar-collapse.navbar-collapse-md ul li a

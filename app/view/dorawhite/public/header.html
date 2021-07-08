@@ -198,7 +198,7 @@
     {# toggle内容上部分 #}
     <nav id="headerNav" class="navbar d-flex flex-nowrap justify-content-between navbar-light bg-transparent sticky-top" ms-controller="headerCtr" style="">
         {# <div class="row"> #}
-            <div class="navOffset navOffsetLeft d-flex"></div>
+            <div class="navOffset navOffsetLeft navOffsetLeft-md d-flex"></div>
             {# logo&name #}
             <div class="navbar-brand">
                 <a class="d-flex" data-bs-toggle="offcanvas" href="#offcanvasRight"><img class="img-fluid" src="{{site.logo}}" alt="{{site.title}}"/></a>
@@ -289,7 +289,7 @@
     //})
     {# 切换到乐队列表页 #}{# Mobile：隐藏菜单，隐藏中英文， PC：显示中英文，隐藏菜单#}
     this.addEventListener("BS_COVER_WILL_LISTARTISTS", (page)=>{
-        {# $headerContainer.classList.add("listArtist"); #}
+        $headerContainer.classList.add("listArtist");
         {# $headerContainer.classList.remove("done","timeline"); #}
         //$navBnClose.className=$navBnClose.className.replace("show","hide");//classList.add("hide");
         {# 隐藏居中菜单 #}

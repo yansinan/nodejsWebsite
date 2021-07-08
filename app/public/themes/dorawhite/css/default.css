@@ -2,6 +2,9 @@
     font-size: 37.5px;
 } */
 :root{
+    --main-offset-left-mobile:0.76rem;
+    --main-offset-left-pc:1.25rem; 
+
     --footer-size-mobile: 16px;
     --footer-size-pc: 16px;
     --footer-size-open-mobile:54px;
@@ -40,7 +43,7 @@ body * {
 
     transition-property: padding-left;
     transition-duration: .5s;
-    padding-left: calc(0.76rem + var(--footer-size-mobile,16px) );
+    padding-left: calc(var(--main-offset-left-mobile,20px) + var(--footer-size-mobile,16px) );
 }
 #mainCover .bs-wrapper-cover{
     /* display:flex; */
@@ -92,7 +95,7 @@ body.flex #mainCover.paddingCoverTop{
         /* height:74px; */
         /* flex:0 0 74px; */
         padding-top:74px;
-        padding-left: calc(1.25rem);
+        padding-left: calc(var(--main-offset-left-pc,46px));
     }
 }
 body.flex #mainCover{
