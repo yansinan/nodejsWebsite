@@ -32,12 +32,28 @@
   overflow: hidden;
 }
 #timelineContent .wapper-mm .item{
+  margin-left: 0;
   margin-right: 0rem;
   margin-bottom: 0.77rem;
-  font-size: 0.69rem;
-  line-height: 1.16rem;
+  font-size: 0.69rem;/*18px*/
+  line-height: 0.76rem;/*20px*/
   font-family: NHaasGroteskTXPro-Rg, NHaasGroteskTXPro;
+  /* 摘自row */
+  --bs-gutter-x: 1.5rem;
+  /* --bs-gutter-y: 0; */
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: calc(var(--bs-gutter-y) * -1);
 }
+#timelineContent .wapper-mm .item>* {
+  /* flex-shrink: 0; */
+  /* width: 100%; */
+  max-width: 100%;
+  padding-right: calc(var(--bs-gutter-x) * .5);
+  /* padding-left: calc(var(--bs-gutter-x) * .5); */
+  margin-top: var(--bs-gutter-y);
+}
+
 #timelineContent .wapper-mm .item .titleContainer{
   padding-left: 0px;
 }

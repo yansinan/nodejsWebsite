@@ -10,17 +10,17 @@
     width:calc(var(--vh, 1vh) * 100)!important;
 
     height:0px;
-    max-height: var(--footer-size,16px);
+    max-height: var(--footer-size-mobile,16px);
 
     position: relative;
     /* bottom: unset!important; */
     /* top: calc(15px - 100vh); */
-    /* top: calc(var(--vh, 1vh) * -100 + var(--footer-size,16px) + 2px); */
+    /* top: calc(var(--vh, 1vh) * -100 + var(--footer-size-mobile,16px) + 2px); */
     top: calc(var(--vh, 1vh) * -100);
 
     /* left: calc(15px); */
     transform: rotate(90deg);
-    transform-origin: calc(var(--footer-size,16px)/2) calc(var(--footer-size,16px)/2);
+    transform-origin: calc(var(--footer-size-mobile,16px)/2) calc(var(--footer-size-mobile,16px)/2);
 }
 #dr-footer .timelineContainer{
     background-color: white;
@@ -75,16 +75,8 @@
 #dr-footer.footerContainer-md .timelineBar{
     transition-property: all;
     transition-duration: 0.5s;
-    height:var( --footer-size,16px)
-}
-/* 移动端：旋转中心变 */
-#dr-footer.timeline.footerContainer{
-    transform-origin: calc(var(--footer-size-open-mobile,54px)/2) calc(var(--footer-size-open-mobile,54px)/2);
-}
-/* 移动端，时间轴页时间轴尺寸 */
-#dr-footer.timeline.footerContainer .timelineBar{
-    height:var(--footer-size-open-mobile,54px);
-    max-height:var(--footer-size-open-mobile,54px);
+    height:var(--footer-size-mobile,16px);
+    max-height:var(--footer-size-mobile,54px);
 }
 
 
@@ -97,8 +89,8 @@
     }
     /* PC端，时间轴页时间轴尺寸 */
     #dr-footer.timeline.footerContainer-md .timelineBar{
-        height:var(--footer-size-open-pc,105px);
-        max-height:var(--footer-size-open-pc,105px);
+        height:var(--footer-size-pc,105px);
+        max-height:var(--footer-size-pc,105px);
     }
     .foot-float .btnRubyEyes-md{
         width: 2rem;

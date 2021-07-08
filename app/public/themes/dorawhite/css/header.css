@@ -70,6 +70,10 @@
     flex:0 0 0%;
     max-height: 0rem;
     overflow: hidden;
+
+    /* 左侧缩进 */
+    padding-left: calc(0.76rem + var(--footer-size-mobile,16px) );
+    padding-right: 0.76rem;
   }
   #navHeader.listArtist #collapseNavbarMobile.navbar-collapse{
     /* 缩回用all,展开用max-height（ios） */
@@ -79,16 +83,17 @@
   }
   #navHeader.timeline.done #collapseNavbarMobile.navbar-collapse{
     /* 缩回用all,展开用max-height（ios） */
-    transition-property: max-height;    
+    transition-property: max-height,padding-left;    
     flex:1 1 0%;
     max-height: 1.2rem; /*1.154rem */
   }  
   #navHeader #collapseNavbarMobile.navbar-collapse ul{
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     transition-property: all;
     transition-duration: .4s;
   }
+  /* ul上移动画 */
   #navHeader.listArtist #collapseNavbarMobile.navbar-collapse ul{
     transform: translateY(-1.15rem);
     /* animation:slideUpOut .4s ease 0s 1 normal both;  */
@@ -97,12 +102,27 @@
     transform: translateY(0%);
     /* animation:slideDownIn .4s ease 0s 1 normal both;  */
   }
+  /* 子元素最少间距 */
+  #navHeader #collapseNavbarMobile.navbar-collapse ul li{
+    margin-left: 2.5px;
+    margin-right:2.5px;
+  }
+  #navHeader #collapseNavbarMobile.navbar-collapse ul li:first-child{
+    margin-left: 0px;
+  }
+  #navHeader #collapseNavbarMobile.navbar-collapse ul li:last-child{
+    margin-right:0px;
+  }
+
+  /*PC移动 通用 navbar-collapse*/
   #navHeader .navbar-collapse ul
   {
     /* max-width: 68.9vw; */
     overflow: hidden;
     display: none;
     flex:1 1 auto;
+    width:100%;
+
     justify-content: flex-end;
     flex-wrap: nowrap;
     /* instead of navbar-nav */
@@ -119,9 +139,7 @@
     height:fit-content;
     /* height: 1.094rem; */
     /* width: 3.04rem; */
-    /* margin-left: 0.134rem; */
-    margin: 0.22rem 0 0 0.22rem;
-    margin-right:0.278rem;
+    margin: 0.22rem 0.22rem 0 0.22rem;/*上右下左*/
 
     overflow: hidden;
     background-color: transparent;
