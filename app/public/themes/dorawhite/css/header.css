@@ -29,7 +29,12 @@
   flex:0 1 calc(var(--main-offset-left-mobile,20px) + var(--footer-size-mobile,16px));
   min-width: calc(var(--main-offset-left-mobile,20px) + var(--footer-size-mobile,16px));/*22px;*/
 }
-
+#navHeader.listArtist .navbar .navOffsetLeft{
+  flex: 1 0 calc(var(--main-offset-left-mobile,20px) + var(--footer-size-mobile,16px) );  
+}
+#navHeader.listArtist.done .navbar .navOffsetLeft{
+  flex:0 1 calc(var(--main-offset-left-mobile,20px) + var(--footer-size-mobile,16px));
+}
 #navHeader .navbar-brand{
   display: flex;
   height: 100%;
@@ -293,23 +298,12 @@
     /* min-width: fit-content; */
     /* width:fit-content; */
   }
-  /*
-  #navHeader .navbar .navOffsetRight::before{
-    content:"";
-    aspect-ratio: 1 / 1;
-    width: auto;
-    height:100%;
-    position: relative;
-    left:-100%;
+  #navHeader.listArtist .navbar .navOffsetRight{
+    flex: 1 0 calc(var(--main-offset-left-mobile,20px) + var(--footer-size-mobile,16px) );
   }
-  #navHeader .navbar .navOffsetRight::after{
-    content:"";
-    width: 0%;
-    height:100%;
-    position: relative;
-    left:-100%;
+  #navHeader.listArtist.done .navbar .navOffsetRight{
+    flex: 1 1 100%;
   }
-  */
 
   /* 移动端:时间轴页，两侧相等，居中logo */
   #navHeader.timeline .navbar .navOffset{
@@ -320,13 +314,12 @@
 @media (min-width: 768px) {
   /* PC版缩进，保持跟mainCover对齐 */
   #navHeader .navbar .navOffsetLeft-md{
-    flex: 0 0 calc(var(--main-offset-left-pc,46px));
-    min-width: calc(var(--main-offset-left-pc,46px));
+    flex: 0 0 calc(var(--main-offset-left-pc,46px))!important;
+    min-width: calc(var(--main-offset-left-pc,46px))!important;
   }
-  #navHeader.timeline .navbar .navOffsetLeft-md{
-    flex: 0 0 calc(var(--main-offset-left-pc,46px));
-    min-width: calc(var(--main-offset-left-pc,46px));
-  }
+  /* #navHeader.timeline .navbar .navOffsetLeft-md */
+  /* #navHeader.timeline.done .navbar .navOffsetLeft-md */
+
   #navHeader .navOffsetRight-md{
   }
   /* PC端，乐队列表页隐藏移动端的居中timeline导航菜单 */
