@@ -106,7 +106,7 @@
   
   }
   #timelineContent .wapper-mm .item .titleContainer{
-    padding-left: calc(var(--bs-gutter-x) * .5);
+    /* padding-left: calc(var(--bs-gutter-x) * .5); */
   }
 }
 
