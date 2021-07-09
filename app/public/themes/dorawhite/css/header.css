@@ -302,7 +302,7 @@
     flex: 1 0 calc(var(--main-offset-left-mobile,20px) + var(--footer-size-mobile,16px) );
   }
   #navHeader.listArtist.done .navbar .navOffsetRight{
-    flex: 1 1 100%;
+    flex: 1 1 0;
   }
 
   /* 移动端:时间轴页，两侧相等，居中logo */
@@ -319,15 +319,13 @@
   }
   /* #navHeader.timeline .navbar .navOffsetLeft-md */
   /* #navHeader.timeline.done .navbar .navOffsetLeft-md */
-
-  #navHeader .navOffsetRight-md{
+  #navHeader .navbar .navOffsetRight-md{
+    flex: 1 1 0;
   }
+
   /* PC端，乐队列表页隐藏移动端的居中timeline导航菜单 */
   #navHeader #collapseNavbarMobile.navbar-collapse-md{
     display:none!important;
-  }
-  #navHeader.timeline .navbar .navOffsetRight-md{
-    flex: 1 1 100%!important;
   }
   #navHeader.timeline #collapseNavbarPC.navbar-collapse-md ul{
     animation:slideUpIn .3s ease 0s 1 normal both;
