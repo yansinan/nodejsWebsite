@@ -17,10 +17,11 @@
 {% endmacro %}
 
 {% macro timelineBarDocs(objTimeline,isExpend=false) %}
-    {# {% if objTimeline.length>0%} #}
-            <svg id="svgTimelineBar" width="82.3%" class="timelineBarClose">
+    {# {% if objTimeline.length>0%} width="82.3%" #}
+            <svg id="svgTimelineBar" width="{{objTimeline.cntDays*6}}px"class="timelineBarClose">
                 {% for idxDays in objTimeline.listIdxDays %}
-                    <rect x="{{idxDays}}%" width="{{objTimeline.widthPercent*0.5}}%" height="16px" fill="#231F20" />
+                    {# <rect x="{{idxDays}}%" width="{{objTimeline.widthPercent*0.5}}%" height="16px" fill="#231F20" /> #}
+                    <rect x="{{idxDays}}%" width="6px" height="16px" fill="#231F20" />
                 {% endfor %}
                 {% if isExpend %}
                     {% for season in objTimeline.listIdxSeasons %}

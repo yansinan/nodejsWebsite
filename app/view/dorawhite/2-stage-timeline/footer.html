@@ -1,22 +1,28 @@
 {% extends "../public/footer.html" %} 
 {% block footerUp %}
-    <div class="timelineContainer d-flex flex-column justify-content-end position-relative p-0 border-top border-dark">
-        <div class="d-none" id="scrollbarTimeLine" style="overflow:visible;height:0px;width:100vw;">
-            <div class="border-4 border-start border-dark" style="width:10px;height:105px;background-color:#52FF00;opacity: 1;"></div>
-        </div>
+    <div class="timelineContainer border-top border-dark">
+        <div class="timelineLeft timelineLeft-md">
 
-        <div class="timelineBar d-flex">            
-            {# {{timelineBar(objTimeline)}} #}
-            {{timelineBarDocs(objTimeline,false)}}
         </div>
-        {# 年份 #}
-        <div class="d-none overflow-visible" style="width:82.3%">            
-            <div class="d-flex justify-content-center display-4 position-relative overflow-visible" style="width:0px;text-anchor: middle;left:99.5%">
-                2021
+        <div class="timelineMain">
+            <div id="scrollbarTimeLine" class="" style="overflow:visible;height:0px;">
+                <div class="border-4 border-start border-dark" style="width:10px;height:105px;background-color:#52FF00;opacity: 1;"></div>
             </div>
-        </div>
-        <div class="row"></div>
 
+            <div id="bsTimelineBarWrapper" class="timelineBar d-flex"> 
+                <div class="bsTimelineBarContent">           
+                {# {{timelineBar(objTimeline)}} #}
+                {{timelineBarDocs(objTimeline,true)}}
+                </div>
+            </div>
+            {# 年份 #}
+            <div class="d-none overflow-visible" style="width:82.3%">            
+                <div class="d-flex justify-content-center display-4 position-relative overflow-visible" style="width:0px;text-anchor: middle;left:99.5%">
+                    2021
+                </div>
+            </div>
+            <div class="row"></div>
+        </div>
     </div>
     <script>
         {# 时间轴上拉动画 #}
@@ -47,7 +53,6 @@
             $footer.classList.add("listArtist","done");
             $footer.classList.remove("timeline");
         })
-
-
     </script>
+    {% include "../js/timelineBar.html" %}
 {% endblock%}

@@ -1,0 +1,48 @@
+<script>
+    this.bsTimelineBarWrapper = new BetterScroll.createBScroll('#bsTimelineBarWrapper', {
+        //specifiedIndexAsContent:1,
+        disableMouse: false,
+        disableTouch: false,
+        scrollX: true,
+        scrollY: false,
+        //nestedScroll: {
+        //    groupId: 'cover-scrollY'
+        //},
+        //slide: {
+        //    threshold: 100,
+        //    loop: false,//TODO：可以优化为循环slide；注意：复制出来的slide需要querySelector and 设置translateY同步
+        //    autoplay:false,
+        //    listenFlick:false,
+        //},
+        useTransition: true,
+        momentum: true,
+        //momentumLimitTime:100,//{# 快速滑动的时间小于xx开启#}
+        //momentumLimitDistance:50,//{# 快速滑动的距离大于xx开启#}
+        //deceleration:0.005,//{# momentum 动画的减速度 #}
+        //swipeTime:300,//{# momentum 动画时长 #}
+        bounce: {
+            top: true,
+            bottom: true,
+            left: true,
+            right: true
+        },
+        mouseWheel: {
+            speed: 50,
+            invert: false,
+            easeTime: 100
+        },
+        observeDOM: true ,// 开启 observe-dom 插件
+        stopPropagation: false,
+        probeType: 3,
+    })
+    {# 手机版使用坐标转换 #}
+    this.bsTimelineBarWrapper.scroller.actions.hooks.on('coordinateTransformation', (transformateDeltaData) => { 
+        // 获取用户手指移动的距离
+        const originDeltaX = transformateDeltaData.deltaX
+        const originDeltaY = transformateDeltaData.deltaY
+        // 变换位移
+        transformateDeltaData.deltaX = originDeltaY// transformateDeltaData.deltaX 最终作用在 BetterScroll content DOM 的 translateX
+        transformateDeltaData.deltaY = originDeltaX// transformateDeltaData.deltaY 最终作用在 BetterScroll content DOM 的 translateY
+    })
+    
+</script>

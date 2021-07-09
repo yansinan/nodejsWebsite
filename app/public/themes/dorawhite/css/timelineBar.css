@@ -1,0 +1,63 @@
+
+#dr-footer .timelineContainer{
+    /* d-flex flex-row justify-content-end position-relative p-0 */
+    display: flex;
+    justify-content: stretch;
+    padding:0;
+    background-color: white;
+    max-width: 100%;
+    overflow: hidden;
+}
+#dr-footer .timelineContainer .timelineLeft{
+    transition-property: all;
+    transition-duration: 0.5s;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: stretch;
+    /* position: relative; */
+    flex: 0 0 calc(var(--main-offset-left-mobile,20px) + var(--footer-size-mobile,16px) + 46px);
+}
+#dr-footer .timelineMain{
+    flex:1;
+}
+/* 通用：变形到乐队列表页的尺寸 */
+#bsTimelineBarWrapper{
+    transition-property: all;
+    transition-duration: 0.5s;
+    overflow: hidden;
+
+    width:82.3%;
+
+    height:var(--footer-size-mobile,16px);
+    max-height:var(--footer-size-mobile,54px);
+}
+#bsTimelineBarWrapper .bsTimelineBarContent{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+}
+#svgTimelineBar{
+}
+
+@media (min-width: 768px) {
+    /* PC版Footer高度和位置 恢复*/
+    #dr-footer.footerContainer-md{
+        top:unset;
+        width:100%!important;
+        max-height: var(--footer-size-pc,16px);
+        transform:none;
+    }
+    #dr-footer .timelineContainer .timelineLeft-md{
+        flex:0 0 calc(var(--main-offset-left-pc,46px));
+    }
+
+    /* PC端，时间轴页时间轴尺寸 */
+    #dr-footer.timeline.footerContainer-md #bsTimelineBarWrapper{
+        height:var(--footer-size-pc,105px);
+        max-height:var(--footer-size-pc,105px);
+    }
+
+}
