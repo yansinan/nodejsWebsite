@@ -85,6 +85,6 @@
 </button>
 <script>
     function eClickTest(){
-        $collapseNavbarMobile.className.indexOf("show")!=-1?$collapseNavbarMobile.classList.remove("show"):$collapseNavbarMobile.classList.add("show");
+        this.slideCover.goToPage(0,this.slideCover.getCurrentPage().pageY==1?0:1);
     }
 </script>
