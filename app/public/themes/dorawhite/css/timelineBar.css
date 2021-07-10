@@ -73,7 +73,8 @@
     /* 测试用 */
     height:100%;
     /* border:1px solid black; */
-
+    /* transition-property: opacity; */
+    /* transition-duration: .5s; */
 }
 #dr-footer .timelineContainer .timelineYearContainer .timelineYear span{
     transform: translateX(-50%);

@@ -51,34 +51,12 @@
     //    let $firstYear=$timelineYearContainer.querySelector("#timelineYearContainer .timelineYear");
     //    $firstYear.style.left = point.x + "px";
     //})
-    const getOffsetLeft = function(obj){
-              const tmp = obj.offsetLeft;
-              const val = obj.offsetParent;
-              while(val != null){
-              tmp += val.offsetLeft;
-                val = val.offsetParent;
-               }
-            return tmp;
-    }
+
     let $bsTimelineBarWrapper=document.getElementById("bsTimelineBarWrapper");
     let $timelineYearContainer=document.getElementById("timelineYearContainer");
-
-    let paramTimeline={
-        wWrapper:$bsTimelineBarWrapper.clientWidth,
-        wYear:$timelineYearContainer.querySelector("#timelineYearContainer .timelineYear span").clientWidth,
-    }
-    {# 位置 #}
-    Object.assign(paramTimeline,{
-        startLeft: -paramTimeline.wWrapper - paramTimeline.wYear,
-        start: -paramTimeline.wWrapper,
-        end:0,
-        endRight:paramTimeline.wYear,
-    })
-    //let wWrapper=$bsTimelineBarWrapper.clientWidth;
-    //let start= -wWrapper;
-    //let end=0;
     let $svgTimelineBar=document.getElementById("svgTimelineBar");
-    function updateBnYear(position,$year,idx,$list){
+
+    function updateBnYear(paramTimeline,$year,idx,$list){
 
         let strYear=$year.querySelector("span").innerText;
 
@@ -88,7 +66,7 @@
         {# 宽度 #}
         //let wTimelineYearGroup=$timelineBarYearGroup.attributes["width-year"].value * $svgTimelineBar.clientWidth/100;
         {# 年坐标在wrapper中的相对x% #}
-        let xOffset = $svgTimelineBar.clientWidth*($yearPos.attributes.x.value.replace("%","")/100)+position.x;//Math.max(0,position.x + "px");
+        let xOffset = $svgTimelineBar.clientWidth*($yearPos.attributes.x.value.replace("%","")/100)+paramTimeline.position.x;//Math.max(0,position.x + "px");
         let xTo=(paramTimeline.start+Math.round(xOffset));//$year.style.left-xOffset;
         
 
@@ -97,88 +75,46 @@
         else if(xTo<paramTimeline.start)$year.style["z-index"]=4000-strYear;
         else if(xTo>paramTimeline.end)$year.style["z-index"]=strYear;
 
-        {# 超出显示区,并且当前年份组仍在显示中 #}
-        //let isTooFar=(xOffset > wWrapper + wTimelineYearGroup) || (xOffset < -wTimelineYearGroup)
-        //let isInWrapper=xTo>start && xTo<end; 
-        //if(isTooFar){
-        //    {# $year.style.display="none"; #}
-        //    {# return; #}
-        //}else{
-        //    $year.style.display="flex";
-        //    //if(!(xTo<startLeft || xTo > endRight)){
-        //    //    {# 判断是否超出右停止位 #}
-        //    //    if(xTo>end)xTo=end;
-        //    //    {# 左边停止位 #}
-        //    //    if(xTo<start)xTo=start;            
-        //    //}else if(!isTooFar){
-        //    //    {# 第二级位移计算 #}
-        //    //    if(xOffset > -wTimelineYearGroup)xTo=Math.max(startLeft,xTo);
-        //    //    if(xOffset < wWrapper + wTimelineYearGroup)xTo=Math.min(endRight,xTo);
-        //    //}
-        //    {# 判断是否超出右停止位 #}
-        //    if(xTo>end)xTo=end;
-        //    {# 左边停止位 #}
-        //    if(xTo<start)xTo=start;            
-        //    
-        //}
         {# 判断是否超出右停止位 #}
         xTo=Math.max(Math.min(xTo,paramTimeline.end),paramTimeline.start);
-        $year.style.left=xTo+"px";
 
-
-        {# 碰撞挤出 #}
-        let $left= idx>0 ? $list[idx-1] : false;
-
-        let wLeft=paramTimeline.wYear;//$left?$left.querySelector("span").clientWidth:0;
-        let wYear=paramTimeline.wYear;//$year.querySelector("span").clientWidth;
-
-        let xLeft=$left && $left.style.display!="none" ? $left.style.left.replace("px",""):false;
-        let xYear=$year.style.left?$year.style.left.replace("px",""):false;
-        xLeft=parseInt(xLeft);
-        xYear=parseInt(xYear);
-        {# 检查左侧 #}        
+        {# 碰撞挤出 检查左侧#}
+        let $left= idx>0 ? $list[idx-1] : false;    
         if($left){
+            let xLeft=$left.style.opacity!="0" ? parseInt($left.style.left.replace("px","")):false;
             {# 只有最左侧才往左推，否则右侧会影响左侧 #}
-            if(xLeft <= paramTimeline.start && xLeft + wLeft >= xYear){
-                let xLeftTo=Math.max(Math.min(xLeft,(xYear - wLeft)),paramTimeline.startLeft);
+            if(xLeft <= paramTimeline.start && xLeft + paramTimeline.wYear >= xTo){
+                let xLeftTo=Math.max(Math.min(xLeft,(xTo - paramTimeline.wYear)),paramTimeline.startLeft);
                 $left.style.left=xLeftTo+"px";
-                $left.style.display = ( xLeftTo >= paramTimeline.endRight )?"none":"flex";
+                {# $left.style.opacity = ( xLeftTo <= paramTimeline.startLeft )?"0":"1"; #}
+                $left.style.opacity = Math.abs(( xLeftTo - paramTimeline.startLeft )/paramTimeline.wYear);
             }
-            if(xLeft >= paramTimeline.end - wLeft && xLeft + wLeft >= xYear){
-                let xYearTo=Math.min(Math.max(xLeft + wLeft, xYear),paramTimeline.endRight);
-                $year.style.left=xYearTo+"px";
-                $year.style.display = ( xYearTo >= paramTimeline.endRight )?"none":"flex";
-            }
-            
+            {# 左推右，必须在end附近，否则循环修改 #}
+            if(xTo >= paramTimeline.end)xTo=Math.min(Math.max(xLeft + paramTimeline.wYear, xTo),paramTimeline.endRight);
         }
+        {# 调整过左侧，最后确定自身坐标 #}
+        $year.style.left=xTo+"px";
+        {# $year.style.opacity = ( xTo >= paramTimeline.endRight )?"0":"1"; #}
+        $year.style.opacity = Math.abs(( xTo - paramTimeline.endRight )/paramTimeline.wYear);
     }
-    //function pushBnYear($year,idx,$list){
-    //    let $left= idx>0 ? $list[idx-1] : false;
-    //    let wLeft=paramTimeline.wYear;//$left?$left.querySelector("span").clientWidth:0;
-    //    let wYear=paramTimeline.wYear;//$year.querySelector("span").clientWidth;
-    //    let xLeft=$left && $left.style.display!="none" ? $left.style.left.replace("px",""):false;
-    //    let xYear=$year.style.left?$year.style.left.replace("px",""):false;
-    //    xLeft=parseInt(xLeft);
-    //    xYear=parseInt(xYear);
-    //    {# 检查左侧 #}        
-    //    if($left){
-    //        {# 只有最左侧才往左推，否则右侧会影响左侧 #}
-    //        if(xLeft <= paramTimeline.start && xLeft + wLeft >= xYear){
-    //            let xLeftTo=Math.max(Math.min(xLeft,(xYear - wLeft)),paramTimeline.startLeft);
-    //            $left.style.left=xLeftTo+"px";
-    //            $left.style.display = ( xLeftTo >= paramTimeline.endRight )?"none":"flex";
-    //        }
-    //        if(xLeft >= paramTimeline.end - wLeft && xLeft + wLeft >= xYear){
-    //            let xYearTo=Math.min(Math.max(xLeft + wLeft, xYear),paramTimeline.endRight);
-    //            $year.style.left=xYearTo+"px";
-    //            $year.style.display = ( xYearTo >= paramTimeline.endRight )?"none":"flex";
-    //        }            
-    //    }
-    //}
+
     function updateTimelineBar(position={x:0}){
+        {# 初始化参数 #}
+        let paramTimeline={
+            wWrapper:$bsTimelineBarWrapper.clientWidth,
+            wYear:$timelineYearContainer.querySelector("#timelineYearContainer .timelineYear span").clientWidth,
+        }
+        {# 位置 #}
+        Object.assign(paramTimeline,{
+            startLeft: -paramTimeline.wWrapper - paramTimeline.wYear,
+            start: -paramTimeline.wWrapper,
+            end:0,
+            endRight:paramTimeline.wYear,
+            position:position,
+        })
         let $listYears=$timelineYearContainer.querySelectorAll("#timelineYearContainer .timelineYear");
         $listYears.forEach(($year,idx,$list)=>{
-            updateBnYear(position,$year,idx,$list);
+            updateBnYear(paramTimeline,$year,idx,$list);
         })
         //$listYears.forEach(pushBnYear);
     }
