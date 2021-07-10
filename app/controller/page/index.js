@@ -80,31 +80,74 @@ class IndexController extends Controller {
         }
         let docs=[]
         let timeLast=new Date().getTime();
+        // 起始日期
         let dateFirst=new Date(timeLast);
-        let dateLast=new Date("2018/07/01");
+        // 终止日期
+        let dateLast=new Date("2019/1/1");//new Date("2018/07/01");
+        //生成概率:越小越小,初始500
+        let factor=100;//500;
+        // 随机日期间隔（日）
+        let diffDays=20;//5;
+        
+
         let timeRange=dateFirst.getTime()-dateLast.getTime();
         let cntDays=Math.round(timeRange/(1000*60*60*24));
         // 生成全部日期数组
-        let listIdxDays=[]
+        let listTmpYearDocs=[]
+        // let listIdxDaysGroup=[];
+        // let lastYear=dateFirst.getFullYear();
+        let listIdxDays=[];
         let listDateAll=[];
         let listIdxYears=[];
         let listIdxSeasons=[];
         for(let i=0 ;i<cntDays;i++){
-            let posX=(i*100/cntDays).toFixed(1);
+            let posX=(i*100/cntDays).toFixed(3);
             // let date=timeLast-Math.floor(Math.random()*1000*60*60*24*5);
-            if(Math.random()<(500/cntDays)){
-                let date=timeLast-Math.floor(Math.random()*1000*60*60*24*5);
+            if(Math.random()<(factor/cntDays)){
+                let date=timeLast-Math.floor(Math.random()*1000*60*60*24*diffDays);
                 listIdxDays.push(posX);
                 listDateAll.push(date);
                 timeLast=new Date(date).getTime();
+                //// 添加到年份组
+                //let nowYear=date.getFullYear();
+                //if(listIdxDaysGroup.length==0 || listIdxDaysGroup[listIdxDaysGroup.length-1].year!=nowYear){
+                //    listIdxDaysGroup.push({
+                //        year:lastYear,
+                //        listIdxDocs:[posX],
+                //        objYear:{x:posX,strTitle:nowYear},
+                //    })
+                //    lastYear=nowYear;
+                //}else{
+                //    listIdxDaysGroup.findIndex()
+                //}
+                listTmpYearDocs.push(posX);
             }
             let dateTmp=new Date(dateFirst);
             dateTmp.setTime(dateTmp.setDate(dateTmp.getDate()-i));
             
             let m=dateTmp.getMonth()+1;
-            if(m%3==0 && dateTmp.getDate()==1){
+
+            let isSeasonEnd=moment(dateTmp).endOf('quarter').isSame(moment(dateTmp),"date");
+            // if(m%3==0 && dateTmp.getDate()==lastDateInMonth && m!=12){
+            if(isSeasonEnd && m!=12){
                 listIdxSeasons.push({x:posX,strTitle:m+"月"});
-                if(m==12)listIdxYears.push({x:posX,strTitle:dateTmp.getFullYear()+1,});
+            }
+            if(m==1 && dateTmp.getDate()==1){
+                let objDetailYear={
+                    x:posX,
+                    "width-year":listIdxYears.length==0?posX:posX-listIdxYears[listIdxYears.length-1].x,
+                    strTitle:dateTmp.getFullYear(),
+                    listIdxDocs:listTmpYearDocs.concat(),
+                };
+                listIdxSeasons.push(objDetailYear);
+                listIdxYears.push(objDetailYear);
+                // 添加到日期按年分组
+                // listIdxDaysGroup.findIndex((idx,v)=>{
+                    // if(v.year==dateTmp.getFullYear()+1){
+                        // listIdxDaysGroup[idx].objYear=objDetailYear;
+                    // }
+                // })
+                listTmpYearDocs=[];
             }
         }
         let objTimeline={
@@ -114,14 +157,14 @@ class IndexController extends Controller {
             dateFirst,
             dateLast,
             cntDays,
-            widthPercent:(100/cntDays).toFixed(1),
+            widthPercent:(100/listIdxDays.length).toFixed(1),
 
         }
 
         
         let listImg=this.ctx.service.uploadFiles.listUrlImg();
 
-        for(let i=0 ; i<100;i++){
+        for(let i=0 ; i<listIdxDays.length/3;i++){
             let _id=shortid.generate();
             let idxSubstring=Math.floor(Math.random()*doc.discription.length)
             let title=doc.discription.substring(idxSubstring,idxSubstring+10+Math.round(Math.random()*20));

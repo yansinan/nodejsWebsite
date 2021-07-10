@@ -44,5 +44,118 @@
         transformateDeltaData.deltaX = originDeltaY// transformateDeltaData.deltaX 最终作用在 BetterScroll content DOM 的 translateX
         transformateDeltaData.deltaY = originDeltaX// transformateDeltaData.deltaY 最终作用在 BetterScroll content DOM 的 translateY
     })
-    
+    {# 移动中对齐内容，控制年份跟踪 #}
+    //this.bsTimelineBarWrapper.scroller.translater.hooks.on('translate', (point) => {
+    //    let bs=this.bsTimelineBarWrapper;
+    //    let $timelineYearContainer=document.getElementById("timelineYearContainer");
+    //    let $firstYear=$timelineYearContainer.querySelector("#timelineYearContainer .timelineYear");
+    //    $firstYear.style.left = point.x + "px";
+    //})
+    const getOffsetLeft = function(obj){
+              const tmp = obj.offsetLeft;
+              const val = obj.offsetParent;
+              while(val != null){
+              tmp += val.offsetLeft;
+                val = val.offsetParent;
+               }
+            return tmp;
+    }
+    let $bsTimelineBarWrapper=document.getElementById("bsTimelineBarWrapper");
+    let paramTimeline={
+        wWrapper:$bsTimelineBarWrapper.clientWidth,
+        start: -$bsTimelineBarWrapper.clientWidth,
+        end:0,
+    }
+    //let wWrapper=$bsTimelineBarWrapper.clientWidth;
+    //let start= -wWrapper;
+    //let end=0;
+    let $svgTimelineBar=document.getElementById("svgTimelineBar");
+    function updateBnYear(position,$year){
+
+        let strYear=$year.querySelector("span").innerText;
+
+        let $timelineBarYearGroup=$svgTimelineBar.getElementById("timelineBarYearGroup"+strYear);
+        let $yearPos=document.getElementById("timelineBarYear"+strYear);
+        {# 计算过程 #}
+        {# 宽度 #}
+        //let wTimelineYearGroup=$timelineBarYearGroup.attributes["width-year"].value * $svgTimelineBar.clientWidth/100;
+        let wYear=$year.querySelector("span").clientWidth;
+        {# 位置 #}
+        let startLeft= paramTimeline.start - wYear;
+        let endRight=wYear;
+        {# 年坐标在wrapper中的相对x% #}
+        let xOffset = $svgTimelineBar.clientWidth*($yearPos.attributes.x.value.replace("%","")/100)+position.x;//Math.max(0,position.x + "px");
+        let xTo=(paramTimeline.start+Math.round(xOffset));//$year.style.left-xOffset;
+        
+
+        {# z-index #}
+        if(xTo<paramTimeline.end && xTo>paramTimeline.start)$year.style["z-index"]=4000;
+        else if(xTo<paramTimeline.start)$year.style["z-index"]=4000-strYear;
+        else if(xTo>paramTimeline.end)$year.style["z-index"]=strYear;
+
+        {# 超出显示区,并且当前年份组仍在显示中 #}
+        //let isTooFar=(xOffset > wWrapper + wTimelineYearGroup) || (xOffset < -wTimelineYearGroup)
+        //let isInWrapper=xTo>start && xTo<end; 
+        //if(isTooFar){
+        //    {# $year.style.display="none"; #}
+        //    {# return; #}
+        //}else{
+        //    $year.style.display="flex";
+        //    //if(!(xTo<startLeft || xTo > endRight)){
+        //    //    {# 判断是否超出右停止位 #}
+        //    //    if(xTo>end)xTo=end;
+        //    //    {# 左边停止位 #}
+        //    //    if(xTo<start)xTo=start;            
+        //    //}else if(!isTooFar){
+        //    //    {# 第二级位移计算 #}
+        //    //    if(xOffset > -wTimelineYearGroup)xTo=Math.max(startLeft,xTo);
+        //    //    if(xOffset < wWrapper + wTimelineYearGroup)xTo=Math.min(endRight,xTo);
+        //    //}
+        //    {# 判断是否超出右停止位 #}
+        //    if(xTo>end)xTo=end;
+        //    {# 左边停止位 #}
+        //    if(xTo<start)xTo=start;            
+        //    
+        //}
+        {# 判断是否超出右停止位 #}
+        xTo=Math.max(Math.min(xTo,paramTimeline.end),paramTimeline.start);
+        $year.style.left=xTo+"px";
+    }
+    function pushBnYear($year,idx,$list){
+        let $left= idx>0 ? $list[idx-1] : false;
+        let $right = idx<$list.length-1 ? $list[idx+1] : false;
+
+        let wLeft=$left?$left.querySelector("span").clientWidth:0;
+        let wRight=$right?$right.querySelector("span").clientWidth:0;
+        let wYear=$year.querySelector("span").clientWidth;
+
+        let xLeft=$left && $left.style.display!="none" ? $left.style.left.replace("px",""):false;
+        let xRight=$right && $right.style.display!="none" ?$right.style.left.replace("px",""):false;
+        let xYear=$year.style.left?$year.style.left.replace("px",""):false;
+        xLeft=parseInt(xLeft);
+        xRight=parseInt(xRight);
+        xYear=parseInt(xYear);
+        {# 检查左侧 #}        
+        if($left){
+            if(xYear <= paramTimeline.start)$left.style.display="none";
+            else $left.style.display="flex";
+            if(xLeft <= paramTimeline.start && xLeft + wLeft >= xYear)$left.style.left=Math.min(xLeft,(xYear - wLeft))+"px";
+        }
+        if($right){
+            if(xYear >= paramTimeline.end )$right.style.display="none";
+            else $right.style.display="flex";
+            if(xRight >=paramTimeline.end && xRight - wRight <= xYear )$right.style.left=Math.max(xRight,(xYear + wRight))+"px";
+        }
+    }
+    this.bsTimelineBarWrapper.on('scroll', (position) => {
+        let bs=this.bsTimelineBarWrapper;
+        let $timelineYearContainer=document.getElementById("timelineYearContainer");
+        let $listYears=$timelineYearContainer.querySelectorAll("#timelineYearContainer .timelineYear");
+        {# let $year=$timelineYearContainer.querySelector("#timelineYearContainer .timelineYear"); #}
+
+        $listYears.forEach(($year,idx,$list)=>{
+            updateBnYear(position,$year,idx,$list);
+        })
+        $listYears.forEach(pushBnYear);
+    })
 </script>

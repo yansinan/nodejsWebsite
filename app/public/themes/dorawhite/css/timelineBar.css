@@ -1,8 +1,10 @@
 
 #dr-footer .timelineContainer{
+    --width-timeline-bar-wrapper:82.3%;
     /* d-flex flex-row justify-content-end position-relative p-0 */
     display: flex;
     justify-content: stretch;
+    flex-wrap: nowrap;
     padding:0;
     background-color: white;
     max-width: 100%;
@@ -20,6 +22,7 @@
 }
 #dr-footer .timelineMain{
     flex:1;
+    overflow: hidden;
 }
 /* 通用：变形到乐队列表页的尺寸 */
 #bsTimelineBarWrapper{
@@ -27,7 +30,8 @@
     transition-duration: 0.5s;
     overflow: hidden;
 
-    width:82.3%;
+    /* width:var(--width-timeline-bar-wrapper,82.3%); */
+    width:100%;
 
     height:var(--footer-size-mobile,16px);
     max-height:var(--footer-size-mobile,54px);
@@ -42,6 +46,42 @@
 #svgTimelineBar{
 }
 
+#dr-footer .timelineContainer .timelineYearContainer{
+    display: flex;
+    align-items: flex-start;
+    flex:0 0 calc(100% - var(--width-timeline-bar-wrapper,82.3%));
+    overflow: visible;
+    /* transform: translateY(54px); */
+    /* height: 100%; */
+    font-size: 0.5rem;
+}
+#dr-footer .timelineContainer .timelineYearContainer .timelineYear{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    text-anchor: middle;
+    font-size: 1.11rem;
+    /* font-family: HelveticaNeue; */
+    color: #000000;
+    /* line-height: 1.333rem; */
+
+    width:0px;
+    height:0px;
+    position: relative;
+    /* left: 0px; */
+    overflow: visible;
+    /* 测试用 */
+    height:100%;
+    /* border:1px solid black; */
+
+}
+#dr-footer .timelineContainer .timelineYearContainer .timelineYear span{
+    transform: translateX(-50%);
+    /* border:1px solid green; */
+    /* background-color: white; */
+    /* -webkit-text-stroke: 2.0px white; */
+
+}
 @media (min-width: 768px) {
     /* PC版Footer高度和位置 恢复*/
     #dr-footer.footerContainer-md{

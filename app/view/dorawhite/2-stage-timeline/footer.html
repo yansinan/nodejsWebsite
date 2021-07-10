@@ -5,7 +5,7 @@
 
         </div>
         <div class="timelineMain">
-            <div id="scrollbarTimeLine" class="" style="overflow:visible;height:0px;">
+            <div id="scrollbarTimeLine" class="d-none" style="overflow:visible;height:0px;">
                 <div class="border-4 border-start border-dark" style="width:10px;height:105px;background-color:#52FF00;opacity: 1;"></div>
             </div>
 
@@ -15,13 +15,12 @@
                 {{timelineBarDocs(objTimeline,true)}}
                 </div>
             </div>
-            {# 年份 #}
-            <div class="d-none overflow-visible" style="width:82.3%">            
-                <div class="d-flex justify-content-center display-4 position-relative overflow-visible" style="width:0px;text-anchor: middle;left:99.5%">
-                    2021
-                </div>
-            </div>
-            <div class="row"></div>
+        </div>
+        {# 年份 #}
+        <div id="timelineYearContainer" class="timelineYearContainer">
+            {% for year in objTimeline.listIdxYears %}  
+            <div class="timelineYear"><span>{{year.strTitle}}</span></div>
+            {% endfor %}
         </div>
     </div>
     <script>
