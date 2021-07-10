@@ -18,18 +18,28 @@
 
 {% macro timelineBarDocs(objTimeline,isExpend=false) %}
     {# {% if objTimeline.length>0%} width="82.3%" #}
-            <svg id="svgTimelineBar" width="{{objTimeline.cntDays*6}}px"class="timelineBarClose">
-                {% for idxDays in objTimeline.listIdxDays %}
+            <svg id="svgTimelineBar" width="{{objTimeline.cntDays*4}}px"class="timelineBarClose">
+                <defs>
+                    <rect id="svgD" width="4px" height="16px" fill="#231F20" />
+                </defs>
+                {# {% for idxDays in objTimeline.listIdxDays %} #}
                     {# <rect x="{{idxDays}}%" width="{{objTimeline.widthPercent*0.5}}%" height="16px" fill="#231F20" /> #}
-                    <rect x="{{idxDays}}%" width="6px" height="16px" fill="#231F20" />
-                {% endfor %}
+                    {# <use  x="{{idxDays}}%" href="#svgD"/> #}
+                {# {% endfor %} #}
                 {% if isExpend %}
                     {% for season in objTimeline.listIdxSeasons %}
-                        <rect x="{{season.x}}%" y="22px" width="0.2%" height="18px" fill="black" />
+                        <rect id="timelineSeason{{season.strTitle}}" x="{{season.x}}%" y="22px" width="0.2%" height="18px" fill="black" />
                     {% endfor %}
-                    {# {% for year in objTimeline.listIdxYears %} #}
-                        {# <text x="{{year.x}}%" y="80%" class="display-4" style="text-anchor: middle;">{{year.strTitle}}</text> #}
-                    {# {% endfor %} #}
+                    {% for year in objTimeline.listIdxYears %}
+                        <g id="timelineBarYearGroup{{year.strTitle}}" width-year={{year["width-year"]}}>
+                            {% for idxDays in year.listIdxDocs %}
+                                {# <rect x="{{idxDays}}%" width="{{objTimeline.widthPercent*0.5}}%" height="16px" fill="#231F20" /> #}
+                                <use  x="{{idxDays}}%" href="#svgD"/>
+                            {% endfor %}
+                            {# <text x="{{year.x}}%" y="80%" class="display-4" style="text-anchor: middle;">{{year.strTitle}}</text> #}
+                            <a id="timelineBarYear{{year.strTitle}}" x="{{year.x}}%"></a>
+                        </g>
+                    {% endfor %}
                 {% endif %}
            </svg>
     {# {% endif %} #}
