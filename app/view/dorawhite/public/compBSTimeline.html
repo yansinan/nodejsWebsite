@@ -52,7 +52,7 @@
                     {# 日期内容区 #}
 
                     {% for item in monthItems %}
-                    <div class="item row">
+                    <div class="item row" dr-date-doc="{{item.date}}">
                         {# 图 手机图 #}
                         <div id="timelineTitleImg{{item._id}}" class="col-6 ps-0 d-flex d-md-none">                        
                             <img src="{{item.sImg}}" alt="{{item.name}}"  class="img-fluid" alt="{{item.title}} " dr-id-doc="img{{item._id}}"/>
@@ -96,7 +96,9 @@
     </div>
     {# 时间轴控制 #}
     <script>
-    let slideMain = new BetterScroll.createBScroll('.bs-wrapper-main', {
+    var $timelineWrapper = document.getElementById('timelineWrapper');
+
+    let slideMain = new BetterScroll.createBScroll($timelineWrapper, {
         //specifiedIndexAsContent:1,
         disableMouse: false,
         disableTouch: false,
@@ -130,7 +132,7 @@
         },
         observeDOM: true ,// 开启 observe-dom 插件
         stopPropagation: false,
-        probeType: 0,
+        probeType: 3,
     })
     //slideMain.on('slidePageChanged', (page) => {
     //    // currentPageIndex = page.pageX
@@ -150,21 +152,81 @@
     //    }
     //});
 
+    {# 按月或者按日期滚动时触发事件 #}
+    this.funScrollTimeline=function($mmNow){
+        {# 查询当前日期 #}
+        let topMM=$mmNow.getBoundingClientRect().top;
+        let $listDocs=$mmNow.querySelectorAll("[dr-date-doc]");
+        let $docNow=Array.from($listDocs).find(($doc,idx)=>{
+            return $doc.getBoundingClientRect().bottom > topMM;
+        });
+        if($docNow){
+            this.dispatchEvent(new CustomEvent("BS_MAIN_SCROLL", {
+                detail:{
+                    strDateNow:$docNow.getAttribute("dr-date-doc"),
+                }
+            }))
+            console.log("now Date",$docNow.getAttribute("dr-date-doc"));
+        }else debugger;
+    }
+
+    {# 月份计算坐标 #}
+    let $listMM=$timelineWrapper.querySelectorAll(".wapper-mm");
+    {# 上一个当前月 #}
+    let $mmLast=$listMM[0];
+    let $mmNow=$listMM[0];
+    //slideMain.findNow=function(pos){
+    //    if($listMMNow){
+    //        return 
+    //    }
+    //}
+    slideMain.on('scroll', (pos) => {
+        {# PC:第一个跨出左屏幕的 ,同时记录最后一个 x <-pos.x #}
+        let idxNearest = 0;
+        let paddingLeftTimelineWrapper=$timelineWrapper.getBoundingClientRect().left;
+        let $mmLeftOut=Array.from($listMM).find(($mm,idx)=>{
+            idxNearest = idx;
+            //return $mm.getBoundingClientRect().right > -pos.x;
+            return $mm.getBoundingClientRect().left + ($mm.getBoundingClientRect().width*3/4) > paddingLeftTimelineWrapper;
+        });
+        //let $listMMNow=listMMLeft.find(($mm)=>( $mm.getBoundingClientRect().x <= -pos.x );
+        $mmNow=false;
+        if($mmLeftOut){
+            $mmNow=$mmLeftOut;
+        }else{
+            $mmNow = $listMM[idxNearest+1] ? $listMM[idxNearest+1] : ($listMM[idxNearest]?$listMM[idxNearest]:false) ;
+        }
+        if(!$mmNow)debugger;
+        else{
+            {# 是否需要改变class #}
+            if($mmNow!=$mmLast){                
+                $mmLast.classList.remove("now");
+                $mmLast=$mmNow;                
+                {# console.log("now:"+$mmNow.getAttribute("dr-bs-wrapper"),$mmNow.getBoundingClientRect().left,pos.x,$mmNow.getBoundingClientRect().right) #}
+            }
+            $mmNow.classList.add("now");
+
+            this.funScrollTimeline($mmNow);
 
 
-    var $timelineWrapper = document.getElementById('timelineWrapper');
+        }
+    })
+    
     var mutationObserver = new MutationObserver(function (mutations) {
         
         let status=window.getComputedStyle($timelineWrapper).getPropertyValue('display');
         {# //显示时初始化内容 #}
         if(status!="none"){
-            let domListBSMM=document.querySelectorAll("[dr-bs-wrapper]");
-            domListBSMM.forEach((bsMM)=>{
-                let idxMM=bsMM.getAttribute("ms-controller");
+            //let domListBSMM=document.querySelectorAll("[dr-bs-wrapper]");
+            $listMM.forEach(($bsMM)=>{
+                let idxMM=$bsMM.getAttribute("ms-controller");
                 let objName="bs-"+idxMM;
-                that[objName]=that[objName] ||  new BetterScroll.createBScroll("[dr-bs-wrapper=mm-"+idxMM+"]", objInitBSMM)
+                //let $mm=$timelineWrapper.querySelectorAll
+                that[objName]=that[objName] ||  new BetterScroll.createBScroll($bsMM, objInitBSMM)
                 that[objName].on('beforeScrollStart', that[objName].refresh)
-
+                that[objName].on("scroll",(pos)=>{//this===MutationObserver
+                    if($bsMM.classList.contains("now"))that.funScrollTimeline($bsMM);
+                })
                 that[objName].refresh();
             })
             console.log("监听到#timelineWrapper显示，初始化纵向月份");
@@ -179,6 +241,8 @@
         //characterData: true, // 节点内容或节点文本的变动
         //subtree: true // 是否将观察器应用于该节点的所有后代节点
     })
+
+
     </script>
 
 </div>

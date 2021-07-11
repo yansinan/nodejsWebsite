@@ -66,7 +66,8 @@
         {# 宽度 #}
         //let wTimelineYearGroup=$timelineBarYearGroup.attributes["width-year"].value * $svgTimelineBar.clientWidth/100;
         {# 年坐标在wrapper中的相对x% #}
-        let xOffset = $svgTimelineBar.clientWidth*($yearPos.attributes.x.value.replace("%","")/100)+paramTimeline.position.x;//Math.max(0,position.x + "px");
+        //let xOffset = $svgTimelineBar.clientWidth*($yearPos.attributes.x.value.replace("%","")/100)+paramTimeline.position.x;//Math.max(0,position.x + "px");
+        let xOffset = $yearPos.x.baseVal.value + paramTimeline.position.x;
         let xTo=(paramTimeline.start+Math.round(xOffset));//$year.style.left-xOffset;
         
 
@@ -117,7 +118,21 @@
             updateBnYear(paramTimeline,$year,idx,$list);
         })
         //$listYears.forEach(pushBnYear);
+        {# 触发事件 #}
+        that.dispatchEvent(new CustomEvent("BS_TIMELINE_BAR_SCROLL", {
+            detail:{
+                strDateNow:"",
+            }
+        }))
     }
     this.bsTimelineBarWrapper.on('scroll', updateTimelineBar);
     updateTimelineBar();
+
+    
+    {# 时间轴scroll #}
+    this.addEventListener("BS_MAIN_SCROLL",(e)=>{
+        let $now=document.getElementById("b"+e.detail.strDateNow);
+        let posX=-$now.x.baseVal.value;//-$now.x*$svgTimelineBar.clientWidth;
+        this.bsTimelineBarWrapper.scrollTo(posX);
+    })
 </script>
