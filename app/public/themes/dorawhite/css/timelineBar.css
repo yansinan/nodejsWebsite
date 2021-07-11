@@ -45,7 +45,11 @@
 }
 #svgTimelineBar{
 }
-
+#svgTimelineBar .b-doc { 
+    width:4px;
+    height:16px;
+    fill:#231F20;
+}
 #dr-footer .timelineContainer .timelineYearContainer{
     display: flex;
     align-items: flex-start;

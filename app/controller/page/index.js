@@ -104,7 +104,8 @@ class IndexController extends Controller {
             let posX=(i*100/cntDays).toFixed(3);
             // let date=timeLast-Math.floor(Math.random()*1000*60*60*24*5);
             if(Math.random()<(factor/cntDays)){
-                let date=timeLast-Math.floor(Math.random()*1000*60*60*24*diffDays);
+                // let date=timeLast-Math.floor(Math.random()*1000*60*60*24*diffDays);
+                let date=moment(timeLast).add(Math.floor((Math.random())*diffDays),"days").toDate();
                 listIdxDays.push(posX);
                 listDateAll.push(date);
                 timeLast=new Date(date).getTime();
@@ -120,10 +121,14 @@ class IndexController extends Controller {
                 //}else{
                 //    listIdxDaysGroup.findIndex()
                 //}
-                listTmpYearDocs.push(posX);
+                listTmpYearDocs.push({
+                    posX,
+                    date:moment(date).format("YYYY-MM-DD")
+                });
             }
-            let dateTmp=new Date(dateFirst);
-            dateTmp.setTime(dateTmp.setDate(dateTmp.getDate()-i));
+            // let dateTmp=new Date(dateFirst);
+            // dateTmp.setTime(dateTmp.setDate(dateTmp.getDate()-i));
+            let dateTmp=moment(dateFirst).subtract(i, 'days').toDate();;
             
             let m=dateTmp.getMonth()+1;
 
