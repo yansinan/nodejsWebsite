@@ -211,7 +211,9 @@
 
         }
     })
-    
+    this.addEventListener("BS_TIMELINE_BAR_SCROLL",(e)=>{
+        console.log("e::BS_TIMELINE_BAR_SCROLL",e.detail.strDateNow);
+    })
     var mutationObserver = new MutationObserver(function (mutations) {
         
         let status=window.getComputedStyle($timelineWrapper).getPropertyValue('display');
