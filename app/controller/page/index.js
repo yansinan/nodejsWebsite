@@ -90,8 +90,8 @@ class IndexController extends Controller {
         let diffDays=20;//5;
         
 
-        let timeRange=dateFirst.getTime()-dateLast.getTime();
-        let cntDays=Math.round(timeRange/(1000*60*60*24));
+        //let timeRange=dateFirst.getTime()-dateLast.getTime();
+        let cntDays=moment(dateFirst).diff(moment(dateLast).startOf("year"),"days");//Math.round(timeRange/(1000*60*60*24));
         // 生成全部日期数组
         let listTmpYearDocs=[]
         // let listIdxDaysGroup=[];
@@ -132,7 +132,10 @@ class IndexController extends Controller {
             if(isSeasonEnd && m!=12){
                 listIdxSeasons.push({x:posX,strTitle:m+"月"});
             }
-            if(m==1 && dateTmp.getDate()==1){
+            let isNewYear=moment(dateTmp).isSame(moment(dateTmp).startOf("year"),"date");
+            // 如果最后日期在元旦之前，补加当年元旦
+            let isLastDateBeforeNewYear=(i >= cntDays-1) && moment(dateTmp).isAfter(moment(dateTmp).startOf("year"),"date");
+            if(isNewYear || isLastDateBeforeNewYear){
                 let objDetailYear={
                     x:posX,
                     "width-year":listIdxYears.length==0?posX:posX-listIdxYears[listIdxYears.length-1].x,
@@ -148,6 +151,7 @@ class IndexController extends Controller {
                     // }
                 // })
                 listTmpYearDocs=[];
+                
             }
         }
         let objTimeline={
