@@ -76,6 +76,18 @@
     /* transition-property: opacity; */
     /* transition-duration: .5s; */
 }
+#dr-footer .timelineContainer .timelineYearContainer .timelineYear.right:not(.out){
+    animation:fadeInRightBig 1s .2s ease both;
+}
+#dr-footer .timelineContainer .timelineYearContainer .timelineYear.right.out{
+    animation:fadeOutRightBig 1s .2s ease both;
+}
+#dr-footer .timelineContainer .timelineYearContainer .timelineYear.left:not(.out){
+    animation:fadeInLeftBig 1s .2s ease both;
+}
+#dr-footer .timelineContainer .timelineYearContainer .timelineYear.left.out{
+    animation:fadeOutLeftBig 1s .2s ease both;
+}
 #dr-footer .timelineContainer .timelineYearContainer .timelineYear span{
     transform: translateX(-50%);
     /* border:1px solid green; */
@@ -102,3 +114,41 @@
     }
 
 }
+
+    @keyframes fadeInRightBig{
+        0%{
+            opacity:0;
+            transform:translateX(100vw)
+        }
+        100%{
+            opacity:1;
+            transform:translateX(0)}
+    }
+    @keyframes fadeOutRightBig{
+        0%{
+            opacity:1;
+            transform:translateX(0)}
+        100%{
+            opacity:0;
+            transform:translateX(100vw)
+        }
+    }
+
+    @keyframes fadeInLeftBig{
+        0%{
+            opacity:0;
+            transform:translateX(-100vw)
+        }
+        100%{
+            opacity:1;
+            transform:translateX(0)}
+    }
+    @keyframes fadeOutLeftBig{
+        0%{
+            opacity:1;
+            transform:translateX(0)}
+        100%{
+            opacity:0;
+            transform:translateX(-100vw)
+        }
+    }
