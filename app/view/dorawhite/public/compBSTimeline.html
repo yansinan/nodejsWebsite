@@ -234,6 +234,7 @@
                     strDateNow:slideMain.strDateNow,
                 }
             }))
+            console.info("timeline触发","BS_MAIN_DATE_CHANGE");
         }
     }
     slideMain.on('scroll', (pos) => {
@@ -264,8 +265,6 @@
         //that.dispatchEvent(new CustomEvent("BS_TIMELINE_SCROLL_END"));
     })
     this.eDateChange=function(e){
-        {# 防止循环控制 #}
-        if(slideMain.strDateNow == e.detail.strDateNow)return false;
         {# 查找月份，保存doc #}
         let xScrollTimeline=0;//-($mmTo.getBoundingClientRect().left);
         let $mmTo=Array.from($listMM).find(($mm,idx)=>{
@@ -277,18 +276,21 @@
             if(!$docTo)xScrollTimeline-=$mm.parentElement.clientWidth;
             return $docTo ? true : false;
         });
-        {# 滚动timelineMain #}
         if(!$mmTo){
             console.warn("月份超出范围");
             return false;
         }
-        let paddingLeftTimelineWrapper=$timelineWrapper.getBoundingClientRect().left;
+        {# 滚动timelineMain #}
+        {# 防止循环控制 #}
+        if(slideMain.strDateNow != e.detail.strDateNow){
+            let paddingLeftTimelineWrapper=$timelineWrapper.getBoundingClientRect().left;
 
-        let yScrollTimeline = 0 ;
-        console.log("e::"+e.type,$mmTo.getAttribute("dr-bs-wrapper"),e.detail.strDateNow);
-        {# slideMain.stop(); #}
-        slideMain.disable();
-        slideMain.scrollTo(xScrollTimeline,yScrollTimeline,500);
+            let yScrollTimeline = 0 ;
+            console.log("e::"+e.type,$mmTo.getAttribute("dr-bs-wrapper"),e.detail.strDateNow);
+            {# slideMain.stop(); #}
+            slideMain.disable();
+            slideMain.scrollTo(xScrollTimeline,yScrollTimeline,500);
+        };
         return $mmTo;
     }
 
@@ -304,7 +306,7 @@
         //let yScrollMM=$docTo.getBoundingClientRect().top;
         let strMMIdx=e.detail.strDateNow.substr(0,7);
         strMMIdx=strMMIdx.split("-")[0]+parseInt(strMMIdx.split("-")[1]);
-        that["bs-"+strMMIdx].scrollToElement($docTo,1000);
+        that["bs-"+strMMIdx].scrollToElement($docTo,2000);
     })
     {# 保留月份滚----end #}
 
