@@ -181,6 +181,8 @@
     //    }
     //}
     slideMain.on('scroll', (pos) => {
+        {# if(slideMain.pending)return; #}
+        return
         {# PC:第一个跨出左屏幕的 ,同时记录最后一个 x <-pos.x #}
         let idxNearest = 0;
         let paddingLeftTimelineWrapper=$timelineWrapper.getBoundingClientRect().left;
@@ -212,7 +214,41 @@
         }
     })
     this.addEventListener("BS_TIMELINE_BAR_SCROLL",(e)=>{
-        console.log("e::BS_TIMELINE_BAR_SCROLL",e.detail.strDateNow);
+        {# 查找月份，保存doc #}
+        let xScrollTimeline=0;//-($mmTo.getBoundingClientRect().left);
+        let $mmTo=Array.from($listMM).find(($mm,idx)=>{
+            let $listDocs=$mm.querySelectorAll("[dr-date-doc]");
+            let $docTo=Array.from($listDocs).find(($doc,idx)=>{
+                return $doc.getAttribute("dr-date-doc") == e.detail.strDateNow;
+            });
+            {# 累加x位置 #}
+            if(!$docTo)xScrollTimeline-=$mm.parentElement.clientWidth;
+            return $docTo ? true : false;
+        });
+        {# 滚动timelineMain #}
+        if(!$mmTo){
+            console.warn("月份超出范围");
+            return;
+        }
+        let paddingLeftTimelineWrapper=$timelineWrapper.getBoundingClientRect().left;
+
+        let yScrollTimeline = 0 ;
+        console.log("scroll::",xScrollTimeline,yScrollTimeline,$mmTo.getBoundingClientRect().left);
+        if(xScrollTimeline==0 || xScrollTimeline==-0)console.log("月份为当前月份");
+        else {
+        }
+        console.log("e::BS_TIMELINE_BAR_SCROLL",$mmTo.getAttribute("dr-bs-wrapper"),e.detail.strDateNow);
+        {# slideMain.stop(); #}
+        slideMain.scrollTo(xScrollTimeline,yScrollTimeline,500);
+
+        {# 滚动月份 #}
+        let $docTo=$mmTo.querySelector("[dr-date-doc='" + e.detail.strDateNow + "']");
+        if(!$docTo)return;
+        //let yScrollMM=$docTo.getBoundingClientRect().top;
+        let strMMIdx=e.detail.strDateNow.substr(0,7);
+        strMMIdx=strMMIdx.split("-")[0]+parseInt(strMMIdx.split("-")[1]);
+        that["bs-"+strMMIdx].scrollToElement($docTo,1000);
+        
     })
     var mutationObserver = new MutationObserver(function (mutations) {
         
@@ -227,6 +263,8 @@
                 that[objName]=that[objName] ||  new BetterScroll.createBScroll($bsMM, objInitBSMM)
                 that[objName].on('beforeScrollStart', that[objName].refresh)
                 that[objName].on("scroll",(pos)=>{//this===MutationObserver
+                    {# if(slideMain.pending)return; #}
+                    return;
                     if($bsMM.classList.contains("now"))that.funScrollTimeline($bsMM);
                 })
                 that[objName].refresh();

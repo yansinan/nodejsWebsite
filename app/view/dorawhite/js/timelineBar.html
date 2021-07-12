@@ -125,18 +125,19 @@
         })
         if($docNow){
             let strDate=$docNow.id.replace("b","");
-            that.dispatchEvent(new CustomEvent("BS_TIMELINE_BAR_SCROLL", {
-                detail:{
-                    strDateNow:strDate,
-                }
-            }))
+
+            $docNow.classList.add("now");
             {# 是否需要改变class #}
             $docLast=$docLast || $docNow;
             if($docNow!=$docLast){                
                 $docLast.classList.remove("now");
                 $docLast=$docNow;                
+                that.dispatchEvent(new CustomEvent("BS_TIMELINE_BAR_SCROLL", {
+                    detail:{
+                        strDateNow:strDate,
+                    }
+                }))
             }
-            $docNow.classList.add("now");
 
         }else debugger
     }
