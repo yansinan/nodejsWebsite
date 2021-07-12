@@ -152,37 +152,22 @@
     //    }
     //});
 
-    {# 按月或者按日期滚动时触发事件 #}
-    this.funScrollTimeline=function($mmNow){
-        {# 查询当前日期 #}
-        let topMM=$mmNow.getBoundingClientRect().top;
-        let $listDocs=$mmNow.querySelectorAll("[dr-date-doc]");
-        let $docNow=Array.from($listDocs).find(($doc,idx)=>{
-            return $doc.getBoundingClientRect().bottom > topMM;
-        });
-        if($docNow){
-            this.dispatchEvent(new CustomEvent("BS_MAIN_SCROLL", {
-                detail:{
-                    strDateNow:$docNow.getAttribute("dr-date-doc"),
-                }
-            }))
-            console.log("now Date",$docNow.getAttribute("dr-date-doc"));
-        }else debugger;
-    }
+
 
     {# 月份计算坐标 #}
     let $listMM=$timelineWrapper.querySelectorAll(".wapper-mm");
     {# 上一个当前月 #}
     let $mmLast=$listMM[0];
     let $mmNow=$listMM[0];
-    //slideMain.findNow=function(pos){
-    //    if($listMMNow){
-    //        return 
-    //    }
-    //}
-    slideMain.on('scroll', (pos) => {
-        {# if(slideMain.pending)return; #}
-        return
+    Object.defineProperties(slideMain,{
+        strDateNow:{
+            get:()=>{return slideMain.$docNow ? slideMain.$docNow.getAttribute("dr-date-doc") : false ;},
+        },
+        strDateLast:{
+            get:()=>{return slideMain.$docLast ? slideMain.$docLast.getAttribute("dr-date-doc") : false ;},
+        }
+    })
+    slideMain.findMMNow=function(pos){
         {# PC:第一个跨出左屏幕的 ,同时记录最后一个 x <-pos.x #}
         let idxNearest = 0;
         let paddingLeftTimelineWrapper=$timelineWrapper.getBoundingClientRect().left;
@@ -208,12 +193,79 @@
             }
             $mmNow.classList.add("now");
 
-            this.funScrollTimeline($mmNow);
-
-
+            return $mmNow;
         }
+        return false;
+    }
+    {# 查找当前日期，并触发事件 #}
+    slideMain.funFindDateNow=function(pos){
+        $mmNow=slideMain.findMMNow(pos);
+        {# 查询当前日期 #}
+        if($mmNow)slideMain.$docNow=$mmNow.$docNow();//slideMain.funFindDateNow($mmNow);
+        else debugger;
+        return slideMain.$docNow;
+        //let topMM=$mmNow.getBoundingClientRect().top;
+        //let $listDocs=$mmNow.querySelectorAll("[dr-date-doc]");
+        //slideMain.$docNow=Array.from($listDocs).find(($doc,idx)=>{
+        //    return $doc.getBoundingClientRect().bottom > topMM;
+        //});
+        //return slideMain.$docNow;
+    }
+    {# 设置class标记，并恢复上一个 #}
+    slideMain.getNewStrDate=function(){
+        if(slideMain.$docNow){
+            slideMain.$docLast=slideMain.$docLast || slideMain.$docNow;
+            if(slideMain.strDateNow != slideMain.strDateLast){
+                console.log("timeline new Date",slideMain.strDateNow);
+                {# 更新last #}
+                slideMain.$docLast = slideMain.$docNow;
+                return slideMain.strDateNow;
+            }
+        }else debugger;
+        return false
+    }
+    {# 触发外部事件的逻辑 #}
+    slideMain.checkEvent=function(){
+        let strNewDate=slideMain.getNewStrDate();
+        if(strNewDate && slideMain.enabled){
+            {# 触发事件 #}
+            that.dispatchEvent(new CustomEvent("BS_MAIN_DATE_CHANGE", {
+                detail:{
+                    strDateNow:slideMain.strDateNow,
+                }
+            }))
+        }
+    }
+    slideMain.on('scroll', (pos) => {
+        {# if(slideMain.pending)return; #}
+        {# return #}
+        //$mmNow=slideMain.findMMNow(pos);
+        //if($mmNow)slideMain.$docNow=$mmNow.$docNow();//slideMain.funFindDateNow($mmNow);
+        //else debugger;
+
+        slideMain.funFindDateNow(pos);
+        {# 日期变化，且用户操作产生的，才触发同步通知 #}
+        slideMain.checkEvent();
     })
-    this.addEventListener("BS_TIMELINE_BAR_SCROLL",(e)=>{
+    //slideMain.scroller.hooks.on("scrollTo",(pos)=>{
+    //    console.log("时间轴scrollTo");
+    //})
+    //slideMain.scroller.actions.hooks.on('scrollStart', () => {
+    //    that.dispatchEvent(new CustomEvent("BS_TIMELINE_SCROLL_START"));
+    //})
+    slideMain.scroller.animater.hooks.on('end', () => {
+        slideMain.enable();
+        console.log("时间轴animater.end停止");
+        //that.dispatchEvent(new CustomEvent("BS_TIMELINE_SCROLL_END"));
+    })
+    slideMain.scroller.hooks.on('scrollEnd', () => {
+        slideMain.enable();
+        console.log("时间轴scrollEnd停止");
+        //that.dispatchEvent(new CustomEvent("BS_TIMELINE_SCROLL_END"));
+    })
+    this.eDateChange=function(e){
+        {# 防止循环控制 #}
+        if(slideMain.strDateNow == e.detail.strDateNow)return false;
         {# 查找月份，保存doc #}
         let xScrollTimeline=0;//-($mmTo.getBoundingClientRect().left);
         let $mmTo=Array.from($listMM).find(($mm,idx)=>{
@@ -228,18 +280,23 @@
         {# 滚动timelineMain #}
         if(!$mmTo){
             console.warn("月份超出范围");
-            return;
+            return false;
         }
         let paddingLeftTimelineWrapper=$timelineWrapper.getBoundingClientRect().left;
 
         let yScrollTimeline = 0 ;
-        console.log("scroll::",xScrollTimeline,yScrollTimeline,$mmTo.getBoundingClientRect().left);
-        if(xScrollTimeline==0 || xScrollTimeline==-0)console.log("月份为当前月份");
-        else {
-        }
-        console.log("e::BS_TIMELINE_BAR_SCROLL",$mmTo.getAttribute("dr-bs-wrapper"),e.detail.strDateNow);
+        console.log("e::"+e.type,$mmTo.getAttribute("dr-bs-wrapper"),e.detail.strDateNow);
         {# slideMain.stop(); #}
+        slideMain.disable();
         slideMain.scrollTo(xScrollTimeline,yScrollTimeline,500);
+        return $mmTo;
+    }
+
+    this.addEventListener("BS_TIMELINE_BAR_DATE_CHANGE",this.eDateChange);
+    {# 保留月份滚 #}
+    this.addEventListener("BS_TIMELINE_BAR_DATE_CHANGE_FINAL",(e)=>{
+        let $mmTo=this.eDateChange(e);
+        if(!$mmTo)return;
 
         {# 滚动月份 #}
         let $docTo=$mmTo.querySelector("[dr-date-doc='" + e.detail.strDateNow + "']");
@@ -248,8 +305,15 @@
         let strMMIdx=e.detail.strDateNow.substr(0,7);
         strMMIdx=strMMIdx.split("-")[0]+parseInt(strMMIdx.split("-")[1]);
         that["bs-"+strMMIdx].scrollToElement($docTo,1000);
-        
     })
+    {# 保留月份滚----end #}
+
+    {# timelineBar 防止冲突控制 #}
+    //this.addEventListener("BS_TIMELINE_BAR_SCROLL_START",(e)=>{slideMain.disable()});
+    //his.addEventListener("BS_TIMELINE_BAR_SCROLL_END",(e)=>{
+    //   slideMain.enable();
+    //);
+
     var mutationObserver = new MutationObserver(function (mutations) {
         
         let status=window.getComputedStyle($timelineWrapper).getPropertyValue('display');
@@ -261,11 +325,45 @@
                 let objName="bs-"+idxMM;
                 //let $mm=$timelineWrapper.querySelectorAll
                 that[objName]=that[objName] ||  new BetterScroll.createBScroll($bsMM, objInitBSMM)
+                //Object.defineProperty($bsMM,"$docNow",{
+                //        get:()=>{
+                //            let $mmNow=$bsMM;
+                //            {# 查询当前日期 #}
+                //            let topMM=$mmNow.getBoundingClientRect().top;
+                //            let $listDocs=$mmNow.querySelectorAll("[dr-date-doc]");
+                //            slideMain.$docNow=Array.from($listDocs).find(($doc,idx)=>{
+                //                return $doc.getBoundingClientRect().bottom > topMM;
+                //            });
+                //            return slideMain.$docNow;
+                //        },
+                //})
+                $bsMM.$docNow=function(){
+                    let $mmNow=this;
+                    {# 查询当前日期 #}
+                    let topMM=$mmNow.getBoundingClientRect().top;
+                    let $listDocs=$mmNow.querySelectorAll("[dr-date-doc]");
+                    let $docNow=Array.from($listDocs).find(($doc,idx)=>{
+                        return $doc.getBoundingClientRect().bottom > topMM;
+                    });
+                    return $docNow;
+                }
                 that[objName].on('beforeScrollStart', that[objName].refresh)
                 that[objName].on("scroll",(pos)=>{//this===MutationObserver
-                    {# if(slideMain.pending)return; #}
-                    return;
-                    if($bsMM.classList.contains("now"))that.funScrollTimeline($bsMM);
+                    
+                    if($bsMM.classList.contains("now")){
+                        slideMain.$docNow=$bsMM.$docNow();
+                        {# 当前月份滚动 && #}{# 日期变化，且用户操作产生的，才触发同步通知 #}
+                        slideMain.checkEvent();
+                    }
+                })
+                that[objName].scroller.animater.hooks.on('end', () => {
+                    slideMain.enable();
+                    console.log("时间轴:月份end停止");
+                })
+                that[objName].scroller.hooks.on('scrollEnd', () => {
+                    slideMain.enable();
+                    console.log("时间轴:月份scrollEnd停止");
+                    //that.dispatchEvent(new CustomEvent("BS_TIMELINE_SCROLL_END"));
                 })
                 that[objName].refresh();
             })

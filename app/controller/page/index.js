@@ -85,7 +85,7 @@ class IndexController extends Controller {
         // 终止日期
         let dateLast=new Date("2019/1/1");//new Date("2018/07/01");
         //生成概率:越小越小,初始500
-        let factor=100;//500;
+        let factor=150;//500;
         // 随机日期间隔（日）
         let diffDays=20;//5;
         

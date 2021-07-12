@@ -32,7 +32,7 @@
             easeTime: 100
         },
         observeDOM: true ,// 开启 observe-dom 插件
-        stopPropagation: false,
+        stopPropagation: true,
         probeType: 3,
     })
     {# 手机版使用坐标转换 #}
@@ -55,7 +55,32 @@
     let $bsTimelineBarWrapper=document.getElementById("bsTimelineBarWrapper");
     let $timelineYearContainer=document.getElementById("timelineYearContainer");
     let $svgTimelineBar=document.getElementById("svgTimelineBar");
+    {# 找到当前日期 #}
+    this.bsTimelineBarWrapper.findDateNow=function(position){
+        let $listDocs=$svgTimelineBar.querySelectorAll(".b-doc");
+        let $docNow=Array.from($listDocs).find(($doc,idx,$list)=>{
+            return $doc.x.baseVal.value >= -position.x;
+        })
+        return $docNow;
+    }
+    {# 设置class标记，并恢复上一个 #}
+    this.bsTimelineBarWrapper.getNewStrDate=function(){
+        if(that.bsTimelineBarWrapper.$docNow){
+            let strDate=that.bsTimelineBarWrapper.$docNow.id.replace("b","");
+            that.bsTimelineBarWrapper.$docNow.classList.add("now");
 
+            {# 是否需要改变class #}
+            that.bsTimelineBarWrapper.$docLast=that.bsTimelineBarWrapper.$docLast || that.bsTimelineBarWrapper.$docNow;
+            {# $docNow有变化 #}
+            if(that.bsTimelineBarWrapper.$docNow != that.bsTimelineBarWrapper.$docLast){                
+                that.bsTimelineBarWrapper.$docLast.classList.remove("now");
+                that.bsTimelineBarWrapper.$docLast=that.bsTimelineBarWrapper.$docNow;                
+                return strDate;
+            }else return false;
+
+        }else debugger
+        return false;
+    }
     function updateBnYear(paramTimeline,$year,idx,$list){
 
         let strYear=$year.querySelector("span").innerText;
@@ -98,7 +123,19 @@
         {# $year.style.opacity = ( xTo >= paramTimeline.endRight )?"0":"1"; #}
         $year.style.opacity = Math.abs(( xTo - paramTimeline.endRight )/paramTimeline.wYear);
     }
-    let $docLast=false;
+    {# 检查并触发事件 #}
+    that.bsTimelineBarWrapper.checkEvent=function(strEvent="BS_TIMELINE_BAR_DATE_CHANGE"){
+        {# 日期变化，且用户操作产生的，才触发同步通知 #}
+        let strNewDate=that.bsTimelineBarWrapper.getNewStrDate();
+        if(strNewDate && that.bsTimelineBarWrapper.enabled){
+            {# 触发事件 #}
+            that.dispatchEvent(new CustomEvent(strEvent, {
+                detail:{
+                    strDateNow:strNewDate,
+                }
+            }))
+        }
+    }
     function updateTimelineBar(position={x:0}){
         {# 初始化参数 #}
         let paramTimeline={
@@ -117,38 +154,59 @@
         $listYears.forEach(($year,idx,$list)=>{
             updateBnYear(paramTimeline,$year,idx,$list);
         })
-        //$listYears.forEach(pushBnYear);
-        {# 触发事件 #}
-        let $listDocs=$svgTimelineBar.querySelectorAll(".b-doc");
-        let $docNow=Array.from($listDocs).find(($doc,idx,$list)=>{
-            return $doc.x.baseVal.value >= -position.x;
-        })
-        if($docNow){
-            let strDate=$docNow.id.replace("b","");
-
-            $docNow.classList.add("now");
-            {# 是否需要改变class #}
-            $docLast=$docLast || $docNow;
-            if($docNow!=$docLast){                
-                $docLast.classList.remove("now");
-                $docLast=$docNow;                
-                that.dispatchEvent(new CustomEvent("BS_TIMELINE_BAR_SCROLL", {
-                    detail:{
-                        strDateNow:strDate,
-                    }
-                }))
-            }
-
-        }else debugger
+        {# 找到当前日期 #}
+        that.bsTimelineBarWrapper.$docNow=that.bsTimelineBarWrapper.findDateNow(position);
+        
+        {# 如果已经到位 #}
+        //if(Math.abs(that.bsTimelineBarWrapper.$docNow.x.baseVal.value + position.x ) <= 5 )that.bsTimelineBarWrapper.checkEvent("BS_TIMELINE_BAR_DATE_CHANGE_FINAL");
+        //else that.bsTimelineBarWrapper.checkEvent("BS_TIMELINE_BAR_DATE_CHANGE");
+        that.bsTimelineBarWrapper.checkEvent("BS_TIMELINE_BAR_DATE_CHANGE");
     }
     this.bsTimelineBarWrapper.on('scroll', updateTimelineBar);
+    //this.bsTimelineBarWrapper.scroller.hooks.on("scrollToElement",(pos)=>{
+    //    this.bsTimelineBarWrapper.disable();
+    //    console.log("底条scrollTo");
+    //})
+    this.bsTimelineBarWrapper.scroller.animater.hooks.on('end', () => {
+        this.bsTimelineBarWrapper.enable();
+        console.log("底条animater.end停止");
+        //that.dispatchEvent(new CustomEvent("BS_TIMELINE_SCROLL_END"));
+    })
+    this.bsTimelineBarWrapper.scroller.hooks.on("scrollEnd", () => {
+        this.bsTimelineBarWrapper.enable();
+        if(that.bsTimelineBarWrapper.$docNow){
+            let strNowDate=that.bsTimelineBarWrapper.$docNow.id.replace("b","");
+            {# 触发事件 #}
+            that.dispatchEvent(new CustomEvent("BS_TIMELINE_BAR_DATE_CHANGE_FINAL", {
+                detail:{
+                    strDateNow:strNowDate,
+                }
+            }))
+        }
+        console.log("底条scrollEnd停止");
+    })
+    //this.bsTimelineBarWrapper.scroller.actions.hooks.on('scrollStart', () => {
+    //    that.dispatchEvent(new CustomEvent("BS_TIMELINE_BAR_SCROLL_START"));
+    //})
+    //this.bsTimelineBarWrapper.scroller.animater.hooks.on('end', () => {
+    //    that.dispatchEvent(new CustomEvent("BS_TIMELINE_BAR_SCROLL_END"));
+    //})
     updateTimelineBar();
 
     
     {# 时间轴scroll #}
-    this.addEventListener("BS_MAIN_SCROLL",(e)=>{
-        let $now=document.getElementById("b"+e.detail.strDateNow);
-        let posX=-$now.x.baseVal.value;//-$now.x*$svgTimelineBar.clientWidth;
-        this.bsTimelineBarWrapper.scrollTo(posX);
+    this.addEventListener("BS_MAIN_DATE_CHANGE",(e)=>{
+        {# 如果日期没变化，不额外触发，方式循环控制 #}
+        if(e.detail.strDateNow == that.bsTimelineBarWrapper.$docNow.id.replace("b",""))return;
+
+        let $dateTo=document.getElementById("b"+e.detail.strDateNow);
+        let posX=-$dateTo.x.baseVal.value;//-$dateTo.x*$svgTimelineBar.clientWidth;
+        this.bsTimelineBarWrapper.disable();
+        this.bsTimelineBarWrapper.scrollTo(posX,0,300);
+        //this.bsTimelineBarWrapper.scrollToElement($dateTo,300);
     })
+    //this.addEventListener("BS_TIMELINE_SCROLL_START",(e)=>{this.bsTimelineBarWrapper.disable()});
+    //this.addEventListener("BS_TIMELINE_SCROLL_END",(e)=>{
+    //    this.bsTimelineBarWrapper.enable();
+    //});
 </script>
