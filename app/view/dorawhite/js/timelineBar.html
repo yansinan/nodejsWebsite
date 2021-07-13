@@ -41,8 +41,9 @@
         const originDeltaX = transformateDeltaData.deltaX
         const originDeltaY = transformateDeltaData.deltaY
         // 变换位移
-        transformateDeltaData.deltaX = true?originDeltaX:originDeltaY// transformateDeltaData.deltaX 最终作用在 BetterScroll content DOM 的 translateX
-        transformateDeltaData.deltaY = true?originDeltaY:originDeltaX// transformateDeltaData.deltaY 最终作用在 BetterScroll content DOM 的 translateY
+        let isRotated=this.$footer.isRotated();
+        transformateDeltaData.deltaX = isRotated?originDeltaY:originDeltaX;// transformateDeltaData.deltaX 最终作用在 BetterScroll content DOM 的 translateX
+        transformateDeltaData.deltaY = isRotated?originDeltaX:originDeltaY;// transformateDeltaData.deltaY 最终作用在 BetterScroll content DOM 的 translateY
     })
     {# 移动中对齐内容，控制年份跟踪 #}
     //this.bsTimelineBarWrapper.scroller.translater.hooks.on('translate', (point) => {
