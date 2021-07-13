@@ -41,8 +41,8 @@
         const originDeltaX = transformateDeltaData.deltaX
         const originDeltaY = transformateDeltaData.deltaY
         // 变换位移
-        transformateDeltaData.deltaX = originDeltaY// transformateDeltaData.deltaX 最终作用在 BetterScroll content DOM 的 translateX
-        transformateDeltaData.deltaY = originDeltaX// transformateDeltaData.deltaY 最终作用在 BetterScroll content DOM 的 translateY
+        transformateDeltaData.deltaX = true?originDeltaX:originDeltaY// transformateDeltaData.deltaX 最终作用在 BetterScroll content DOM 的 translateX
+        transformateDeltaData.deltaY = true?originDeltaY:originDeltaX// transformateDeltaData.deltaY 最终作用在 BetterScroll content DOM 的 translateY
     })
     {# 移动中对齐内容，控制年份跟踪 #}
     //this.bsTimelineBarWrapper.scroller.translater.hooks.on('translate', (point) => {
@@ -171,7 +171,6 @@
     })
     this.bsTimelineBarWrapper.scroller.hooks.on("scrollEnd", () => {
         this.bsTimelineBarWrapper.enable();
-        {# that.bsTimelineBarWrapper.strDateTo=false; #}
         that.bsTimelineBarWrapper.$docNow=that.bsTimelineBarWrapper.findDateNow({x:that.bsTimelineBarWrapper.x,y:that.bsTimelineBarWrapper.y});
         if(that.bsTimelineBarWrapper.$docNow){
             let strNowDate=that.bsTimelineBarWrapper.$docNow.id.replace("b","");
@@ -196,12 +195,10 @@
         if(e.detail.strDateNow == strDateNow)return;
         let $dateTo=document.getElementById("b"+e.detail.strDateNow);
         let posX=-$dateTo.x.baseVal.value;//-$dateTo.x*$svgTimelineBar.clientWidth;
-        console.log("e::timelineBar::",e.type,strDateNow,"=",that.bsTimelineBarWrapper.strDateTo || "","=>",e.detail.strDateNow,posX);
+        console.log("e::timelineBar::",e.type,strDateNow,"==>",e.detail.strDateNow,posX);
 
         that.bsTimelineBarWrapper.disable();
-        that.bsTimelineBarWrapper.scrollTo(posX,0,e.detail.strDateNow == that.bsTimelineBarWrapper.strDateTo ? 0 : 300);
-        {# 记录让去哪里，如果新目标和正在去的一致，忽略移动 #}
-        {# that.bsTimelineBarWrapper.strDateTo=e.detail.strDateNow; #}
+        that.bsTimelineBarWrapper.scrollTo(posX,0,300);
     })
 
 </script>
