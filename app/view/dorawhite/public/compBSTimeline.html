@@ -97,6 +97,7 @@
     {# 时间轴控制 #}
     <script>
     var $timelineWrapper = document.getElementById('timelineWrapper');
+    let $timelineContent = document.getElementById('timelineContent');
 
     let slideMain = new BetterScroll.createBScroll($timelineWrapper, {
         //specifiedIndexAsContent:1,
@@ -205,17 +206,28 @@
         }
     })
     slideMain.findMMNow=function(){
-        {# PC:第一个跨出左屏幕的 ,同时记录最后一个 x <-pos.x #}
         let idxNearest = 0;
-        let paddingLeftTimelineWrapper=$timelineWrapper.getBoundingClientRect().left;
-        let $mmLeftOut=Array.from($listMM).find(($mm,idx)=>{
-            idxNearest = idx;
-            //return $mm.getBoundingClientRect().right > -pos.x;
-            return $mm.getBoundingClientRect().left + ($mm.getBoundingClientRect().width*3/4) > paddingLeftTimelineWrapper;
-        });
-        $mmNow=false;
-        if($mmLeftOut){
-            $mmNow=$mmLeftOut;
+        let $mmOut = false;
+        if($timelineContent.clientWidth == $timelineWrapper.clientWidth){
+            {# 移动：横向不移动，宽相等第一个跨出上边的 #}
+            let paddingTopTimelineWrapper=$timelineWrapper.getBoundingClientRect().top;
+            $mmOut=Array.from($listMM).find(($mm,idx)=>{
+                idxNearest = idx;
+                return $mm.getBoundingClientRect().bottom > paddingTopTimelineWrapper;
+            });
+        }else{
+            {# PC:第一个跨出左屏幕的 ,同时记录最后一个 x <-pos.x #}
+            let paddingLeftTimelineWrapper=$timelineWrapper.getBoundingClientRect().left;
+            $mmOut=Array.from($listMM).find(($mm,idx)=>{
+                idxNearest = idx;
+                //return $mm.getBoundingClientRect().right > -pos.x;
+                return $mm.getBoundingClientRect().left + ($mm.getBoundingClientRect().width*3/4) > paddingLeftTimelineWrapper;
+            });
+                    
+        }
+        $mmNow=false;   
+        if($mmOut){
+            $mmNow=$mmOut;
         }else{
             $mmNow = $listMM[idxNearest+1] ? $listMM[idxNearest+1] : ($listMM[idxNearest]?$listMM[idxNearest]:false) ;
             debugger;
