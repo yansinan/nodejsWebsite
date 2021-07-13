@@ -59,7 +59,7 @@
     this.bsTimelineBarWrapper.findDateNow=function(position){
         let $listDocs=$svgTimelineBar.querySelectorAll(".b-doc");
         let $docNow=Array.from($listDocs).find(($doc,idx,$list)=>{
-            return $doc.x.baseVal.value >= -position.x;
+            return $doc.x.baseVal.value >= -position.x -1;//动画导致对齐存在误差，保留1像素
         })
         return $docNow;
     }
@@ -128,6 +128,7 @@
         {# 日期变化，且用户操作产生的，才触发同步通知 #}
         let strNewDate=that.bsTimelineBarWrapper.getNewStrDate();
         if(strNewDate && that.bsTimelineBarWrapper.enabled){
+            {# console.log("timelineBar:onScroll:时间轴日期有变化:触发",strEvent,strNewDate,pos.x); #}
             {# 触发事件 #}
             that.dispatchEvent(new CustomEvent(strEvent, {
                 detail:{
@@ -163,20 +164,19 @@
         that.bsTimelineBarWrapper.checkEvent("BS_TIMELINE_BAR_DATE_CHANGE");
     }
     this.bsTimelineBarWrapper.on('scroll', updateTimelineBar);
-    //this.bsTimelineBarWrapper.scroller.hooks.on("scrollToElement",(pos)=>{
-    //    this.bsTimelineBarWrapper.disable();
-    //    console.log("底条scrollTo");
-    //})
+
     this.bsTimelineBarWrapper.scroller.animater.hooks.on('end', () => {
         this.bsTimelineBarWrapper.enable();
         console.log("底条animater.end停止");
-        //that.dispatchEvent(new CustomEvent("BS_TIMELINE_SCROLL_END"));
     })
     this.bsTimelineBarWrapper.scroller.hooks.on("scrollEnd", () => {
         this.bsTimelineBarWrapper.enable();
+        {# that.bsTimelineBarWrapper.strDateTo=false; #}
+        that.bsTimelineBarWrapper.$docNow=that.bsTimelineBarWrapper.findDateNow({x:that.bsTimelineBarWrapper.x,y:that.bsTimelineBarWrapper.y});
         if(that.bsTimelineBarWrapper.$docNow){
             let strNowDate=that.bsTimelineBarWrapper.$docNow.id.replace("b","");
             {# 触发事件 #}
+            {# console.log("timelineBar:scrollEnd:触发FINAL",that.bsTimelineBarWrapper.$docNow.id,that.bsTimelineBarWrapper.$docNow.x.baseVal.value); #}
             that.dispatchEvent(new CustomEvent("BS_TIMELINE_BAR_DATE_CHANGE_FINAL", {
                 detail:{
                     strDateNow:strNowDate,
@@ -185,28 +185,23 @@
         }
         console.log("底条scrollEnd停止");
     })
-    //this.bsTimelineBarWrapper.scroller.actions.hooks.on('scrollStart', () => {
-    //    that.dispatchEvent(new CustomEvent("BS_TIMELINE_BAR_SCROLL_START"));
-    //})
-    //this.bsTimelineBarWrapper.scroller.animater.hooks.on('end', () => {
-    //    that.dispatchEvent(new CustomEvent("BS_TIMELINE_BAR_SCROLL_END"));
-    //})
+
     updateTimelineBar();
 
     
     {# 时间轴scroll #}
     this.addEventListener("BS_MAIN_DATE_CHANGE",(e)=>{
         {# 如果日期没变化，不额外触发，方式循环控制 #}
-        if(e.detail.strDateNow == that.bsTimelineBarWrapper.$docNow.id.replace("b",""))return;
-
+        let strDateNow=that.bsTimelineBarWrapper.$docNow.id.replace("b","");
+        if(e.detail.strDateNow == strDateNow)return;
         let $dateTo=document.getElementById("b"+e.detail.strDateNow);
         let posX=-$dateTo.x.baseVal.value;//-$dateTo.x*$svgTimelineBar.clientWidth;
-        this.bsTimelineBarWrapper.disable();
-        this.bsTimelineBarWrapper.scrollTo(posX,0,300);
-        //this.bsTimelineBarWrapper.scrollToElement($dateTo,300);
+        console.log("e::timelineBar::",e.type,strDateNow,"=",that.bsTimelineBarWrapper.strDateTo || "","=>",e.detail.strDateNow,posX);
+
+        that.bsTimelineBarWrapper.disable();
+        that.bsTimelineBarWrapper.scrollTo(posX,0,e.detail.strDateNow == that.bsTimelineBarWrapper.strDateTo ? 0 : 300);
+        {# 记录让去哪里，如果新目标和正在去的一致，忽略移动 #}
+        {# that.bsTimelineBarWrapper.strDateTo=e.detail.strDateNow; #}
     })
-    //this.addEventListener("BS_TIMELINE_SCROLL_START",(e)=>{this.bsTimelineBarWrapper.disable()});
-    //this.addEventListener("BS_TIMELINE_SCROLL_END",(e)=>{
-    //    this.bsTimelineBarWrapper.enable();
-    //});
+
 </script>
