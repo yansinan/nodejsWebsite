@@ -219,14 +219,12 @@
         let $mmOut = false;
         if(slideMain.isMobile){
             {# 移动：横向不移动，宽相等第一个跨出上边的 #}
-            //let paddingTopTimelineWrapper=$timelineWrapper.getBoundingClientRect().top;
             $mmOut=Array.from($listMM).find(($mm,idx)=>{
                 idxNearest = idx;
                 return $mm.getBoundingClientRect().bottom > slideMain.paddingTop;
             });
         }else{
             {# PC:第一个跨出左屏幕的 ,同时记录最后一个 x <-pos.x #}
-            //let paddingLeftTimelineWrapper=$timelineWrapper.getBoundingClientRect().left;
             $mmOut=Array.from($listMM).find(($mm,idx)=>{
                 idxNearest = idx;
                 //return $mm.getBoundingClientRect().right > -pos.x;
