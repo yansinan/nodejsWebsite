@@ -164,12 +164,13 @@
                     get:()=>{
                         let $mmNow=this;
                         {# 查询当前日期 #}
-                        let topMM=$mmNow.getBoundingClientRect().top;
+                        let topMM=this.isMobile ? slideMain.paddingTop : $mmNow.getBoundingClientRect().top;
                         let $listDocs=$mmNow.querySelectorAll("[dr-date-doc]");
                         $mmNow.$docLast=$mmNow._$docNow || false;
                         $mmNow._$docNow=Array.from($listDocs).find(($doc,idx)=>{
                             return $doc.getBoundingClientRect().bottom > topMM;
                         });
+                        if(!$mmNow._$docNow)$mmNow._$docNow=$listDocs[$listDocs.length-1];
                         return $mmNow._$docNow;
                     },
                     configurable:true,
@@ -189,6 +190,9 @@
                 objName:{
                     get:()=>("bs-"+this.idxMM),
                 },
+                objBS:{ get:()=>(that[this.objName]), },
+                $content: { get:()=>( this.objBS.content ) },
+                isMobile:{ get:()=>( this.objBS.wrapper.clientHeight == this.objBS.content.clientHeight ), },
             })            
         }
         $bsMM.initProperty();
@@ -221,14 +225,14 @@
             {# 移动：横向不移动，宽相等第一个跨出上边的 #}
             $mmOut=Array.from($listMM).find(($mm,idx)=>{
                 idxNearest = idx;
-                return $mm.getBoundingClientRect().bottom > slideMain.paddingTop;
+                return $mm.$content.getBoundingClientRect().bottom > slideMain.paddingTop;
             });
         }else{
             {# PC:第一个跨出左屏幕的 ,同时记录最后一个 x <-pos.x #}
             $mmOut=Array.from($listMM).find(($mm,idx)=>{
                 idxNearest = idx;
                 //return $mm.getBoundingClientRect().right > -pos.x;
-                return $mm.getBoundingClientRect().left + ($mm.getBoundingClientRect().width*3/4) > slideMain.paddingLeft;
+                return $mm.getBoundingClientRect().left + ($mm.getBoundingClientRect().width*3/4) >= slideMain.paddingLeft;
             });
                     
         }
