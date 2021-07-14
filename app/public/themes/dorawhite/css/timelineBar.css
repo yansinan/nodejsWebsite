@@ -13,12 +13,14 @@
 #dr-footer .timelineContainer .timelineLeft{
     transition-property: all;
     transition-duration: 0.5s;
+    overflow: visible;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     align-items: stretch;
     /* position: relative; */
-    flex: 0 0 calc(var(--main-offset-left-mobile,20px) + var(--footer-size-mobile,16px) + 46px);
+    /* flex: 0 0 calc(var(--main-offset-left-mobile,20px) + var(--footer-size-mobile,16px) + 46px); */
+    flex:0 0 0px;
 }
 #dr-footer .timelineMain{
     flex:1;
@@ -38,17 +40,39 @@
 }
 #bsTimelineBarWrapper .bsTimelineBarContent{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: flex-start;
     align-items: flex-start;
     flex-wrap: nowrap;
 }
-#svgTimelineBar{
+#bsTimelineBarWrapper .bsTimelineBarContent .left{
+    flex: 0 0 calc(var(--main-offset-left-mobile,20px) + var(--footer-size-mobile,16px) + 46px);
 }
-#svgTimelineBar .b-doc { 
-    width:4px;
-    height:16px;
+#svgTimelineBar{
+    transition-property: transform;
+    transition-duration: 0.3s;
+    flex:0 0 auto;
+}
+#dr-footer.timeline.done #bsTimelineBarWrapper .bsTimelineBarContent #svgTimelineBar{
+    transform: translateY(12px);
+}
+#dr-footer.listArtist #bsTimelineBarWrapper .bsTimelineBarContent #svgTimelineBar{
+    transform: translateY(0px);
+}
+#bsTimelineBarWrapper .bsTimelineBarContent #svgTimelineBar .b-s {
+    y:calc(31px - 12px);
+    width:2px;
+    height:10px;
+    fill: #000;
+}
+#bsTimelineBarWrapper .bsTimelineBarContent #svgTimelineBar .b-d {
+    width:3px;
+    height:15px;
     fill:#231F20;
+}
+/* 测试用 */
+#svgTimelineBar .b-d.now{
+    fill:chartreuse!important;
 }
 #dr-footer .timelineContainer .timelineYearContainer{
     display: flex;
@@ -62,10 +86,12 @@
 #dr-footer .timelineContainer .timelineYearContainer .timelineYear{
     display: flex;
     justify-content: flex-start;
-    align-items: center;
+    align-items: flex-start;
     text-anchor: middle;
-    font-size: 1.11rem;
-    /* font-family: HelveticaNeue; */
+    /* font-family: NHaasGroteskTXPro-Rg, NHaasGroteskTXPro; */
+    font-weight: normal;
+    font-size:0.46rem;
+    font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB", "Source Han Sans", "Noto Sans CJK Sc", "Microsoft YaHei", "Microsoft Jhenghei", sans-serif;
     color: #000000;
     /* line-height: 1.333rem; */
 
@@ -74,19 +100,17 @@
     position: relative;
     /* left: 0px; */
     overflow: visible;
-    /* 测试用 */
-    height:100%;
     /* border:1px solid black; */
     /* transition-property: opacity; */
     /* transition-duration: .5s; */
 }
 
 #dr-footer .timelineContainer .timelineYearContainer .timelineYear span{
-    transform: translateX(-50%);
+    transform: translate(6px,32px);
+    padding-right:13px;
     /* border:1px solid green; */
     /* background-color: white; */
     /* -webkit-text-stroke: 2.0px white; */
-
 }
 @media (min-width: 768px) {
     /* PC版Footer高度和位置 恢复*/
@@ -96,14 +120,45 @@
         max-height: var(--footer-size-pc,16px);
         transform:none;
     }
+    /*
     #dr-footer .timelineContainer .timelineLeft-md{
         flex:0 0 calc(var(--main-offset-left-pc,46px));
     }
-
+    */
+    #bsTimelineBarWrapper .bsTimelineBarContent-md .left{
+        flex: 0 0 calc(var(--main-offset-left-pc,46px));
+    }
     /* PC端，时间轴页时间轴尺寸 */
     #dr-footer.timeline.footerContainer-md #bsTimelineBarWrapper{
         height:var(--footer-size-pc,105px);
         max-height:var(--footer-size-pc,105px);
     }
+    #dr-footer.timeline.done #bsTimelineBarWrapper .bsTimelineBarContent-md #svgTimelineBar{
+        transform: translateY(20px);
+    }
+    #dr-footer.listArtist #bsTimelineBarWrapper .bsTimelineBarContent-md #svgTimelineBar{
+        transform: translateY(0px);
+    }
+    #bsTimelineBarWrapper .bsTimelineBarContent-md #svgTimelineBar .b-s {
+        y:calc(37px - 20px);
+        width:1px;
+        height:18px;
+    }
+    #bsTimelineBarWrapper .bsTimelineBarContent-md #svgTimelineBar .b-d {
+        /* y:20px; */
+        width:2.4px;
+    }
 
+    /* 年份 */
+    #dr-footer .timelineContainer .timelineYearContainer-md .timelineYear{
+        font-size: 1.11rem;
+        /* font-family: HelveticaNeue; */
+    }
+    #dr-footer .timelineContainer .timelineYearContainer .timelineYear span{
+        transform: translate(calc(-50% + 35.5px),44px);
+        padding-right:71px;
+        /* border:1px solid green; */
+        /* background-color: white; */
+        /* -webkit-text-stroke: 2.0px white; */
+    }
 }

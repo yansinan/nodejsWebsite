@@ -10,14 +10,15 @@
             </div>
 
             <div id="bsTimelineBarWrapper" class="timelineBar d-flex"> 
-                <div class="bsTimelineBarContent">           
-                {# {{timelineBar(objTimeline)}} #}
-                {{timelineBarDocs(objTimeline,true)}}
+                <div class="bsTimelineBarContent bsTimelineBarContent-md">
+                    <div class="left"></div>
+                    {# {{timelineBar(objTimeline)}} #}
+                    {{timelineBarDocs(objTimeline,true)}}
                 </div>
             </div>
         </div>
         {# 年份 #}
-        <div id="timelineYearContainer" class="timelineYearContainer">
+        <div id="timelineYearContainer" class="timelineYearContainer timelineYearContainer-md">
             {% for year in objTimeline.listIdxYears %}  
             <div class="timelineYear"><span>{{year.strTitle}}</span></div>
             {% endfor %}
@@ -30,9 +31,7 @@
                 get:()=>{this._$footer = this._$footer || document.getElementById("dr-footer");return this._$footer;},
             }
         })
-        this.$footer.$svgTimelineBar=document.getElementById("svgTimelineBar");
-        {# 判断是否经过旋转 #}
-        this.$footer.isRotated=function(){
+        this.$footer.init=function(){
             function getTranslate(node,sty){//获取transform值
                 var translates=document.defaultView.getComputedStyle(node,null).transform.substring(7);
                 var result = translates.match(/\(([^)]*)\)/);// 正则()内容
@@ -63,30 +62,48 @@
                 return deg>=360?0:deg;
             
             }
-            if(getTranslate(this,"rotate")==90)return true;
-            return false;
+            Object.defineProperties(this,{
+                {# 判断是否经过旋转 #}
+                isRotated: { get:()=>( getTranslate(this,"rotate")==90 ) },
+                {# footer左缩进,对齐内容页 #}
+                paddingNow: { 
+                    get:()=>{
+                        let $coverWrapper=document.getElementById("coverWrapper");
+                        if(!$coverWrapper)return 0;
+                        else return this.isRotated ? $coverWrapper.getBoundingClientRect().top : $coverWrapper.getBoundingClientRect().left;
+                    } 
+                },
+            })
+            this.$svgTimelineBar=document.getElementById("svgTimelineBar");
+            
+
+
+
         }
+        {# footer初始化 #}
+        this.$footer.init();
+
 
         // 添加一个适当的事件监听器
         this.addEventListener("BS_COVER_WILL_LISTARTISTS", (page)=>{
             document.documentElement.style.setProperty('--footer-size-mobile', "16px");
             document.documentElement.style.setProperty('--footer-size-pc', "16px");
-            $footer.classList.add("listArtist");
-            $footer.classList.remove("done");
+            this.$footer.classList.add("listArtist");
+            this.$footer.classList.remove("done");
         })
         this.addEventListener("BS_COVER_WILL_TIMELINE", (page)=>{
             document.documentElement.style.setProperty('--footer-size-mobile', "54px");
             document.documentElement.style.setProperty('--footer-size-pc', "106px");
-            $footer.classList.add("timeline");
-            $footer.classList.remove("done");
+            this.$footer.classList.add("timeline");
+            this.$footer.classList.remove("done");
         })
         this.addEventListener("BS_COVER_TIMELINE", (page)=>{
-            $footer.classList.add("timeline","done");
-            $footer.classList.remove("listArtist");
+            this.$footer.classList.add("timeline","done");
+            this.$footer.classList.remove("listArtist");
         })
         this.addEventListener("BS_COVER_LISTARTISTS", (page)=>{
-            $footer.classList.add("listArtist","done");
-            $footer.classList.remove("timeline");
+            this.$footer.classList.add("listArtist","done");
+            this.$footer.classList.remove("timeline");
         })
     </script>
     {% include "../js/timelineBar.html" %}

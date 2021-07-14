@@ -41,9 +41,8 @@
         const originDeltaX = transformateDeltaData.deltaX
         const originDeltaY = transformateDeltaData.deltaY
         // 变换位移
-        let isRotated=this.$footer.isRotated();
-        transformateDeltaData.deltaX = isRotated?originDeltaY:originDeltaX;// transformateDeltaData.deltaX 最终作用在 BetterScroll content DOM 的 translateX
-        transformateDeltaData.deltaY = isRotated?originDeltaX:originDeltaY;// transformateDeltaData.deltaY 最终作用在 BetterScroll content DOM 的 translateY
+        transformateDeltaData.deltaX = this.$footer.isRotated?originDeltaY:originDeltaX;// transformateDeltaData.deltaX 最终作用在 BetterScroll content DOM 的 translateX
+        transformateDeltaData.deltaY = this.$footer.isRotated?originDeltaX:originDeltaY;// transformateDeltaData.deltaY 最终作用在 BetterScroll content DOM 的 translateY
     })
     {# 移动中对齐内容，控制年份跟踪 #}
     //this.bsTimelineBarWrapper.scroller.translater.hooks.on('translate', (point) => {
@@ -58,7 +57,7 @@
     let $svgTimelineBar=document.getElementById("svgTimelineBar");
     {# 找到当前日期 #}
     this.bsTimelineBarWrapper.findDateNow=function(position){
-        let $listDocs=$svgTimelineBar.querySelectorAll(".b-doc");
+        let $listDocs=$svgTimelineBar.querySelectorAll(".b-d");
         let $docNow=Array.from($listDocs).find(($doc,idx,$list)=>{
             return $doc.x.baseVal.value >= -position.x -1;//动画导致对齐存在误差，保留1像素
         })
@@ -82,7 +81,7 @@
         }else debugger
         return false;
     }
-    function updateBnYear(paramTimeline,$year,idx,$list){
+    this.bsTimelineBarWrapper.updateBnYear = function(paramTimeline,$year,idx,$list){
 
         let strYear=$year.querySelector("span").innerText;
 
@@ -93,7 +92,7 @@
         //let wTimelineYearGroup=$timelineBarYearGroup.attributes["width-year"].value * $svgTimelineBar.clientWidth/100;
         {# 年坐标在wrapper中的相对x% #}
         //let xOffset = $svgTimelineBar.clientWidth*($yearPos.attributes.x.value.replace("%","")/100)+paramTimeline.position.x;//Math.max(0,position.x + "px");
-        let xOffset = $yearPos.x.baseVal.value + paramTimeline.position.x;
+        let xOffset = $yearPos.x.baseVal.value + paramTimeline.position.x + paramTimeline.paddingLeft;
         let xTo=(paramTimeline.start+Math.round(xOffset));//$year.style.left-xOffset;
         
 
@@ -103,26 +102,28 @@
         else if(xTo>paramTimeline.end)$year.style["z-index"]=strYear;
 
         {# 判断是否超出右停止位 #}
-        xTo=Math.max(Math.min(xTo,paramTimeline.end),paramTimeline.start);
+        xTo=Math.max(Math.min(xTo,paramTimeline.end),paramTimeline.stopStart);
 
         {# 碰撞挤出 检查左侧#}
         let $left= idx>0 ? $list[idx-1] : false;    
         if($left){
             let xLeft=$left.style.opacity!="0" ? parseInt($left.style.left.replace("px","")):false;
             {# 只有最左侧才往左推，否则右侧会影响左侧 #}
-            if(xLeft <= paramTimeline.start && xLeft + paramTimeline.wYear >= xTo){
-                let xLeftTo=Math.max(Math.min(xLeft,(xTo - paramTimeline.wYear)),paramTimeline.startLeft);
+            if(xLeft <= paramTimeline.stopStart && xLeft + paramTimeline.wYear >= xTo){
+                let xLeftTo=Math.max(Math.min(xLeft,(xTo - paramTimeline.wYear)),paramTimeline.stopStartLeft);
                 $left.style.left=xLeftTo+"px";
-                {# $left.style.opacity = ( xLeftTo <= paramTimeline.startLeft )?"0":"1"; #}
-                $left.style.opacity = Math.abs(( xLeftTo - paramTimeline.startLeft )/paramTimeline.wYear);
+                {# $left.style.opacity = ( xLeftTo <= paramTimeline.stopStartLeft )?"0":"1"; #}
+                $left.style.opacity = Math.abs(( xLeftTo - paramTimeline.stopStartLeft )/paramTimeline.wYear);
             }
             {# 左推右，必须在end附近，否则循环修改 #}
-            if(xTo >= paramTimeline.end)xTo=Math.min(Math.max(xLeft + paramTimeline.wYear, xTo),paramTimeline.endRight);
+            {# if(xTo >= paramTimeline.end)xTo=Math.min(Math.max(xLeft + paramTimeline.wYear, xTo),paramTimeline.endRight); #}
+            if(xTo >= paramTimeline.end)xTo=Math.min(Math.max(xLeft + paramTimeline.wYear, xTo),paramTimeline.endLast);
         }
         {# 调整过左侧，最后确定自身坐标 #}
         $year.style.left=xTo+"px";
         {# $year.style.opacity = ( xTo >= paramTimeline.endRight )?"0":"1"; #}
-        $year.style.opacity = Math.abs(( xTo - paramTimeline.endRight )/paramTimeline.wYear);
+        {# $year.style.opacity = Math.abs(( xTo - paramTimeline.endRight )/paramTimeline.wYear); #}
+        $year.style.opacity = Math.abs(( xTo - paramTimeline.endLast )/paramTimeline.wYear);
     }
     {# 检查并触发事件 #}
     that.bsTimelineBarWrapper.checkEvent=function(strEvent="BS_TIMELINE_BAR_DATE_CHANGE"){
@@ -143,18 +144,23 @@
         let paramTimeline={
             wWrapper:$bsTimelineBarWrapper.clientWidth,
             wYear:$timelineYearContainer.querySelector("#timelineYearContainer .timelineYear span").clientWidth,
+            paddingLeft:$bsTimelineBarWrapper.querySelector(".bsTimelineBarContent .left").clientWidth,
         }
         {# 位置 #}
         Object.assign(paramTimeline,{
-            startLeft: -paramTimeline.wWrapper - paramTimeline.wYear,
+            startLeft: (-paramTimeline.wWrapper - paramTimeline.wYear),
             start: -paramTimeline.wWrapper,
             end:0,
             endRight:paramTimeline.wYear,
+            endLast:paramTimeline.wYear*2,
+
+            stopStart:that.$footer.isRotated?-paramTimeline.wWrapper : (-paramTimeline.wWrapper + 95),
+            stopStartLeft:that.$footer.isRotated ? (-paramTimeline.wWrapper - paramTimeline.wYear) : (-paramTimeline.wWrapper - paramTimeline.wYear + 95),
             position:position,
         })
         let $listYears=$timelineYearContainer.querySelectorAll("#timelineYearContainer .timelineYear");
         $listYears.forEach(($year,idx,$list)=>{
-            updateBnYear(paramTimeline,$year,idx,$list);
+            that.bsTimelineBarWrapper.updateBnYear(paramTimeline,$year,idx,$list);
         })
         {# 找到当前日期 #}
         that.bsTimelineBarWrapper.$docNow=that.bsTimelineBarWrapper.findDateNow(position);
@@ -186,8 +192,7 @@
         console.log("底条scrollEnd停止");
     })
 
-    updateTimelineBar();
-
+    
     
     {# 时间轴scroll #}
     this.addEventListener("BS_MAIN_DATE_CHANGE",(e)=>{
@@ -201,5 +206,8 @@
         that.bsTimelineBarWrapper.disable();
         that.bsTimelineBarWrapper.scrollTo(posX,0,300);
     })
-
+    {# 到时间轴页时才更新bar坐标 #}
+    this.addEventListener("BS_COVER_WILL_TIMELINE", (page)=>{
+        updateTimelineBar();
+    })
 </script>
