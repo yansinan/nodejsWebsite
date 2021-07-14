@@ -203,25 +203,34 @@
         },
         strDateLast:{
             get:()=>{return slideMain.$docLast ? slideMain.$docLast.getAttribute("dr-date-doc") : false ;},
-        }
+        },
+        isMobile:{
+            get:()=>{return $timelineContent.clientWidth == $timelineWrapper.clientWidth ;},
+        },
+        paddingTop:{
+            get:()=>($timelineWrapper.getBoundingClientRect().top),
+        },
+        paddingLeft:{
+            get:()=>($timelineWrapper.getBoundingClientRect().left),
+        },
     })
     slideMain.findMMNow=function(){
         let idxNearest = 0;
         let $mmOut = false;
-        if($timelineContent.clientWidth == $timelineWrapper.clientWidth){
+        if(slideMain.isMobile){
             {# 移动：横向不移动，宽相等第一个跨出上边的 #}
-            let paddingTopTimelineWrapper=$timelineWrapper.getBoundingClientRect().top;
+            //let paddingTopTimelineWrapper=$timelineWrapper.getBoundingClientRect().top;
             $mmOut=Array.from($listMM).find(($mm,idx)=>{
                 idxNearest = idx;
-                return $mm.getBoundingClientRect().bottom > paddingTopTimelineWrapper;
+                return $mm.getBoundingClientRect().bottom > slideMain.paddingTop;
             });
         }else{
             {# PC:第一个跨出左屏幕的 ,同时记录最后一个 x <-pos.x #}
-            let paddingLeftTimelineWrapper=$timelineWrapper.getBoundingClientRect().left;
+            //let paddingLeftTimelineWrapper=$timelineWrapper.getBoundingClientRect().left;
             $mmOut=Array.from($listMM).find(($mm,idx)=>{
                 idxNearest = idx;
                 //return $mm.getBoundingClientRect().right > -pos.x;
-                return $mm.getBoundingClientRect().left + ($mm.getBoundingClientRect().width*3/4) > paddingLeftTimelineWrapper;
+                return $mm.getBoundingClientRect().left + ($mm.getBoundingClientRect().width*3/4) > slideMain.paddingLeft;
             });
                     
         }
@@ -308,31 +317,45 @@
     })
     this.eDateChange=function(e){
         {# 查找月份，保存doc #}
-        let xScrollTimeline=0;//-($mmTo.getBoundingClientRect().left);
+        let xScrollTimeline = 0;//-($mmTo.getBoundingClientRect().left);
+        let yScrollTimeline = 0 ;
         {# 方案B：用idxMM查找$ #}
-        {# let strMMIdx=e.detail.strDateNow.substr(0,7); #}
-        {# strMMIdx=strMMIdx.split("-")[0]+parseInt(strMMIdx.split("-")[1]); #}
+        let strMMIdx=e.detail.strDateNow.substr(0,7);
+        strMMIdx=strMMIdx.split("-")[0]+parseInt(strMMIdx.split("-")[1]);
 
-        let $mmTo=Array.from($listMM).find(($mm,idx)=>{
-            let $listDocs=$mm.querySelectorAll("[dr-date-doc]");
-            let $docTo=Array.from($listDocs).find(($doc,idx)=>{
-                return $doc.getAttribute("dr-date-doc") == e.detail.strDateNow;
-            });
-            {# 累加x位置 #}
-            if(!$docTo)xScrollTimeline-=$mm.parentElement.clientWidth;
-            return $docTo ? true : false;
-        });
+        //let $mmTo=Array.from($listMM).find(($mm,idx)=>{
+        //    let $listDocs=$mm.querySelectorAll("[dr-date-doc]");
+        //    let $docTo=Array.from($listDocs).find(($doc,idx)=>{
+        //        return $doc.getAttribute("dr-date-doc") == e.detail.strDateNow;
+        //    });
+        //    {# 累加x位置 #}
+        //    if(!$docTo)xScrollTimeline-=$mm.parentElement.clientWidth;
+        //    return $docTo ? true : false;
+        //});
+
+        let $mmTo=$timelineContent.querySelector("[dr-bs-wrapper='mm-"+strMMIdx+"']");
+
         if(!$mmTo){
             console.warn("月份超出范围");
             return false;
         }
+        {# PC:计算横坐标，手机应该是0 #}
+        xScrollTimeline = -($mmTo.getBoundingClientRect().left-slideMain.paddingLeft);
+        if(slideMain.isMobile){
+            {# 移动端：计算纵坐标 #}
+            let $dateTo=$mmTo.querySelector("[dr-date-doc='" + e.detail.strDateNow + "']");
+            if($dateTo)yScrollTimeline = -($dateTo.getBoundingClientRect().top-slideMain.paddingTop);
+            else {
+                console.warn("日期超出月份");
+                return false;                    
+            }
+        }
         {# 滚动timelineMain #}{# 防止循环控制 ,防止两次scrollTo同一个位置#}
         if((slideMain.strDateNow != e.detail.strDateNow) && ($mmTo.idxMM != slideMain.idxMMScrollingTo)){
-            let yScrollTimeline = 0 ;
             slideMain.disable();
             console.log("e:timeline:"+e.type,"时间轴按月可以移动",$mmTo.idxMM,"==>",slideMain.idxMMScrollingTo);
             slideMain.idxMMScrollingTo=$mmTo.idxMM;
-            slideMain.scrollTo(xScrollTimeline,yScrollTimeline,500);
+            slideMain.scrollBy(xScrollTimeline,yScrollTimeline,500);
         };
         {# 滚动月份 #}{# 防止循环控制 #}
         if($mmTo.strDateNow != e.detail.strDateNow){
