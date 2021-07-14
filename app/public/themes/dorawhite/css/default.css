@@ -68,7 +68,6 @@ body.flex{
     font-size:1.2rem ;
     */
 /*  */
-    background-color: bisque;
     display:flex;
     flex-direction: column;
 
@@ -100,7 +99,7 @@ body.flex #mainCover.paddingCoverTop{
 }
 body.flex #mainCover{
     /* position: relative; */
-    background-color:rgb(204, 164, 89);
+    
     order:20;
     flex:1 1 100%;
 }
@@ -127,4 +126,20 @@ body.flex #dr-footer.footerContainer{
 
         flex:0 0 var(--footer-size-pc,16px);
     }
+}
+
+body.debug{
+    background-color: bisque;
+}
+
+/* 测试用 */
+body.debug #timelineContent .wapper-mm.now{
+    background-color:blanchedalmond;
+}
+
+body.debug #coverArtistsWrapper{
+    background-color: lawngreen;
+}
+body.debug #coverArtistsWrapper .bs-content-listArtist{
+    background-color:rgb(205, 255, 182);
 }
