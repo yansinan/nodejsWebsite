@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="19px" viewBox="0 0 20 19" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.3 (57544) - http://www.bohemiancoding.com/sketch -->
+    <title>Left Arrow Round Small</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="RubyEyes-Desktop-ideal" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Timeline-Copy" transform="translate(-11.000000, -975.000000)">
+            <g id="Group-5" transform="translate(-1.000000, 0.000000)">
+                <g id="TIMELINE" transform="translate(0.000000, 919.000000)">
+                    <rect id="Rectangle-4" stroke="#979797" fill="#FDFDFD" x="1.5" y="0.5" width="1439" height="104"></rect>
+                    <g id="Left-Arrow-Round-Small" transform="translate(12.000000, 56.000000)">
+                        <g id="Left-Arrow">
+                            <path d="M19.1045,9.5176 C19.1045,14.6666 14.9295,18.8406 9.7805,18.8406 C4.6305,18.8406 0.4575,14.6666 0.4575,9.5176 C0.4575,4.3686 4.6305,0.1936 9.7805,0.1936 C14.9295,0.1936 19.1045,4.3686 19.1045,9.5176" id="Fill-206" fill="#000000"></path>
+                            <path d="M10.3056,13.331 C9.2386,10.908 7.2546,9.518 7.2546,9.518 C7.2546,9.518 9.2386,8.127 10.3056,5.704" id="Stroke-208" stroke="#FFFFFF" stroke-width="2" stroke-linejoin="bevel"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

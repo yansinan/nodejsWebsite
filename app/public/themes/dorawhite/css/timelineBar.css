@@ -1,6 +1,11 @@
 
 #dr-footer .timelineContainer{
     --width-timeline-bar-wrapper:82.3%;
+    --width-timeline-bar-year-span-pc:160px;
+    --width-timeline-bar-year-span-mobile:40px;
+    /* --width-timeline-bar-year-bn-pc:160px; */
+    /* --width-timeline-bar-year-bn-mobile:40px; */
+
     /* d-flex flex-row justify-content-end position-relative p-0 */
     display: flex;
     justify-content: stretch;
@@ -10,18 +15,30 @@
     max-width: 100%;
     overflow: hidden;
 }
-#dr-footer .timelineContainer .timelineLeft{
+#dr-footer .timelineContainer .timelineBn{
     transition-property: all;
     transition-duration: 0.5s;
     overflow: visible;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    align-items: stretch;
+    justify-content: center;
+    align-items: flex-end;
     /* position: relative; */
     /* flex: 0 0 calc(var(--main-offset-left-mobile,20px) + var(--footer-size-mobile,16px) + 46px); */
-    flex:0 0 0px;
+    flex:0 0 34px;
 }
+#dr-footer .timelineContainer .timelineBn.next{
+    transform: rotate(180deg);
+}
+#dr-footer .timelineContainer .timelineBn .bnArrow{
+    height:100%;
+    width:100%;
+    background-image: url("/static/themes/images/bnArrow.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 20px 20px;
+}
+
 #dr-footer .timelineMain{
     flex:1;
     overflow: hidden;
@@ -78,7 +95,7 @@
     display: flex;
     align-items: flex-start;
     /* flex:0 0 calc(100% - var(--width-timeline-bar-wrapper,82.3%)); */
-    flex : 0 0 40px;
+    flex : 0 0 0px;
     overflow: visible;
     /* transform: translateY(54px); */
     /* height: 100%; */
@@ -113,6 +130,67 @@
     /* background-color: white; */
     /* -webkit-text-stroke: 2.0px white; */
 }
+
+/* 多余年份bar */
+#dr-footer .timelineContainer .timelineYearContainer .barContainer{
+    width:0px;
+    height:0px;
+    position: relative;
+    /* left: 0px; */
+    overflow: visible;
+    /* display: flex; */
+    /* justify-content: stretch; */
+    /* flex-wrap: nowrap; */
+    transform: translate(calc( -1 * (var(--width-timeline-bar-year-span-mobile) * 2) - 0px),calc(12px));
+}
+#dr-footer .timelineContainer .timelineYearContainer .barContainer .bar{
+    width:0px;
+    height:35px;
+    position: relative;
+    /* left: 0px; */
+    overflow: visible;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    background-color: white;
+    width: calc( (var(--width-timeline-bar-year-span-mobile) * 2));
+}    
+#dr-footer .timelineContainer .timelineYearContainer .year{
+    display: flex;
+    justify-content: stretch;
+    background-color: black;
+    /* transform: translate(calc( -1 * (var(--width-timeline-bar-year-span-pc) + 4.44rem + var(--main-offset-left-pc))),20px); */
+
+    flex:0 0 var(--width-timeline-bar-year-span-mobile);
+    height:15px;
+}
+#dr-footer .timelineContainer .timelineYearContainer .year .line{
+    display: none;
+    flex: 1;
+    border-right:1.5px solid white;
+    height:100%;
+}
+
+#dr-footer .timelineContainer .timelineYearContainer .year.more{
+    display: flex;
+    justify-content: stretch;
+    background-color: black;
+    /* transform: translate(calc( -1 * (var(--width-timeline-bar-year-span-pc) + 4.44rem + var(--main-offset-left-pc))),20px); */
+    /* transform: translate(calc( -1 * (var(--width-timeline-bar-year-span-pc) / 2)),20px); */
+    flex:0 0 calc(var(--width-timeline-bar-year-span-mobile));
+    height:15px;
+}
+#dr-footer .timelineContainer .timelineYearContainer .year.more .line{
+    display: flex;
+}
+/* 年：长刻度 */
+#dr-footer .timelineContainer .timelineYearContainer .barContainer .bar .year.line{
+    height:10px;
+    border-left: 2px solid black;
+    border-right: 2px solid black;
+    background: transparent;
+}
 @media (min-width: 768px) {
     /* PC版Footer高度和位置 恢复*/
     #dr-footer.footerContainer-md{
@@ -121,11 +199,23 @@
         max-height: var(--footer-size-pc,16px);
         transform:none;
     }
-    /*
-    #dr-footer .timelineContainer .timelineLeft-md{
-        flex:0 0 calc(var(--main-offset-left-pc,46px));
+    #dr-footer.footerContainer-md .timelineBn{
+        /* flex:0 0 calc(var(--main-offset-left-pc,46px)); */
+        flex:0 0 0px;
+        width:0px;
+        transform: translate(40px,15px);
     }
-    */
+    #dr-footer.footerContainer-md .timelineBn.next {
+        transform: rotate(180deg) translate(40px,-15px);
+    }
+    #dr-footer.footerContainer-md .timelineBn .bnArrow{
+        height:40px;
+        width:40px;
+    }
+    #dr-footer .timelineMain{
+        flex:1;
+        overflow: hidden;
+    }    
     #bsTimelineBarWrapper .bsTimelineBarContent-md .left{
         flex: 0 0 calc(var(--main-offset-left-pc,46px));
     }
@@ -152,17 +242,46 @@
 
     /* 年份 */
     #dr-footer .timelineContainer .timelineYearContainer-md{
+        width:0px;
         flex : 0 0 0px;
     }
     #dr-footer .timelineContainer .timelineYearContainer-md .timelineYear{
         font-size: 1.11rem;
         /* font-family: HelveticaNeue; */
     }
-    #dr-footer .timelineContainer .timelineYearContainer .timelineYear span{
+    #dr-footer .timelineContainer .timelineYearContainer-md .timelineYear span{
         transform: translate(calc(-50% + 35.5px),44px);
         padding-right:71px;
         /* border:1px solid green; */
         /* background-color: white; */
         /* -webkit-text-stroke: 2.0px white; */
+    }
+    /* 多余年份bar */
+    #dr-footer .timelineContainer .timelineYearContainer-md .barContainer{
+        transform: translate(calc( -1 * (var(--width-timeline-bar-year-span-pc) * 3 / 2)),20px);
+    }
+    #dr-footer .timelineContainer .timelineYearContainer-md .barContainer .bar{
+        height:35px;
+        width: calc( (var(--width-timeline-bar-year-span-pc) * 3 / 2));
+    }    
+    #dr-footer .timelineContainer .timelineYearContainer-md .year{
+        flex:0 0 var(--width-timeline-bar-year-span-pc);
+        height:15px;
+    }
+    #dr-footer .timelineContainer .timelineYearContainer-md .year .line{
+        display: flex;
+    }
+
+    #dr-footer .timelineContainer .timelineYearContainer-md .year.more{
+        flex:0 0 calc(var(--width-timeline-bar-year-span-pc) / 2);
+        height:15px;
+    }
+    #dr-footer .timelineContainer .timelineYearContainer-md .year.more .line.line-md{
+        display:none;
+    }
+    #dr-footer .timelineContainer .timelineYearContainer-md .barContainer .bar .year.line{
+        height:18px;
+        border-left: 1px solid black;
+        border-right: 1px solid black;
     }
 }

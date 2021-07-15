@@ -156,9 +156,9 @@
 
             stopStart:that.$footer.isRotated?-paramTimeline.wWrapper : (-paramTimeline.wWrapper + 95),
             stopStartLeft:that.$footer.isRotated ? (-paramTimeline.wWrapper - paramTimeline.wYear) : (-paramTimeline.wWrapper - paramTimeline.wYear + 95),
-            stopEnd:-paramTimeline.wYear*3/2,
-            stopEndRight:-paramTimeline.wYear/2,
-            stopEndLast:paramTimeline.wYear/2,
+            stopEnd:that.$footer.isRotated ? -paramTimeline.wYear *2 : -paramTimeline.wYear*3/2,
+            stopEndRight:that.$footer.isRotated ? -paramTimeline.wYear : -paramTimeline.wYear/2,
+            stopEndLast:that.$footer.isRotated ? 0 : paramTimeline.wYear/2,
             
             position:position,
         })
