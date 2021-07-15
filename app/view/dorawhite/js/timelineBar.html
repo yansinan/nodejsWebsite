@@ -102,7 +102,7 @@
         else if(xTo>paramTimeline.end)$year.style["z-index"]=strYear;
 
         {# 判断是否超出右停止位 #}
-        xTo=Math.max(Math.min(xTo,paramTimeline.end),paramTimeline.stopStart);
+        xTo=Math.max(Math.min(xTo,paramTimeline.stopEnd),paramTimeline.stopStart);
 
         {# 碰撞挤出 检查左侧#}
         let $left= idx>0 ? $list[idx-1] : false;    
@@ -116,14 +116,14 @@
                 $left.style.opacity = Math.abs(( xLeftTo - paramTimeline.stopStartLeft )/paramTimeline.wYear);
             }
             {# 左推右，必须在end附近，否则循环修改 #}
-            {# if(xTo >= paramTimeline.end)xTo=Math.min(Math.max(xLeft + paramTimeline.wYear, xTo),paramTimeline.endRight); #}
-            if(xTo >= paramTimeline.end)xTo=Math.min(Math.max(xLeft + paramTimeline.wYear, xTo),paramTimeline.endLast);
+            {# if(xTo >= paramTimeline.stopEnd)xTo=Math.min(Math.max(xLeft + paramTimeline.wYear, xTo),paramTimeline.stopEndRight); #}
+            if(xTo >= paramTimeline.stopEnd)xTo=Math.min(Math.max(xLeft + paramTimeline.wYear, xTo),paramTimeline.stopEndLast);
         }
         {# 调整过左侧，最后确定自身坐标 #}
         $year.style.left=xTo+"px";
         {# $year.style.opacity = ( xTo >= paramTimeline.endRight )?"0":"1"; #}
         {# $year.style.opacity = Math.abs(( xTo - paramTimeline.endRight )/paramTimeline.wYear); #}
-        $year.style.opacity = Math.abs(( xTo - paramTimeline.endLast )/paramTimeline.wYear);
+        $year.style.opacity = Math.abs(( xTo - paramTimeline.stopEndLast )/paramTimeline.wYear);
     }
     {# 检查并触发事件 #}
     that.bsTimelineBarWrapper.checkEvent=function(strEvent="BS_TIMELINE_BAR_DATE_CHANGE"){
@@ -156,6 +156,10 @@
 
             stopStart:that.$footer.isRotated?-paramTimeline.wWrapper : (-paramTimeline.wWrapper + 95),
             stopStartLeft:that.$footer.isRotated ? (-paramTimeline.wWrapper - paramTimeline.wYear) : (-paramTimeline.wWrapper - paramTimeline.wYear + 95),
+            stopEnd:-paramTimeline.wYear*3/2,
+            stopEndRight:-paramTimeline.wYear/2,
+            stopEndLast:paramTimeline.wYear/2,
+            
             position:position,
         })
         let $listYears=$timelineYearContainer.querySelectorAll("#timelineYearContainer .timelineYear");

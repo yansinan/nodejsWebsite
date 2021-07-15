@@ -77,7 +77,8 @@
 #dr-footer .timelineContainer .timelineYearContainer{
     display: flex;
     align-items: flex-start;
-    flex:0 0 calc(100% - var(--width-timeline-bar-wrapper,82.3%));
+    /* flex:0 0 calc(100% - var(--width-timeline-bar-wrapper,82.3%)); */
+    flex : 0 0 40px;
     overflow: visible;
     /* transform: translateY(54px); */
     /* height: 100%; */
@@ -150,6 +151,9 @@
     }
 
     /* 年份 */
+    #dr-footer .timelineContainer .timelineYearContainer-md{
+        flex : 0 0 0px;
+    }
     #dr-footer .timelineContainer .timelineYearContainer-md .timelineYear{
         font-size: 1.11rem;
         /* font-family: HelveticaNeue; */
