@@ -3,6 +3,8 @@
     --width-timeline-bar-wrapper:82.3%;
     --width-timeline-bar-year-span-pc:160px;
     --width-timeline-bar-year-span-mobile:40px;
+    --width-footer-bn-mobile:34px;
+    --width-footer-bn-pc:40px;
     /* --width-timeline-bar-year-bn-pc:160px; */
     /* --width-timeline-bar-year-bn-mobile:40px; */
 
@@ -25,7 +27,7 @@
     align-items: flex-end;
     /* position: relative; */
     /* flex: 0 0 calc(var(--main-offset-left-mobile,20px) + var(--footer-size-mobile,16px) + 46px); */
-    flex:0 0 34px;
+    flex:0 0 var(--width-footer-bn-mobile,34px);
 }
 #dr-footer .timelineContainer .timelineBn.next{
     transform: rotate(180deg);
@@ -38,11 +40,31 @@
     background-position: center;
     background-size: 20px 20px;
 }
+/* 当前标记 */
+#dr-footer .scrollBar{
+    overflow: visible;
+    width: 0px;
+    flex: 0 0 0px;
+    height:var(--footer-size-mobile,105px);
+    transform: translateX(90px);
+}
+#dr-footer .scrollBar div{
+    content:"";
+    box-sizing: content-box;
+    border-left: 4px solid black;
+    width:10px;
+    height:100%;
+    /* height:100%; */
+    background-color:#52FF00;
+    opacity: 1;
+
+}
 
 #dr-footer .timelineMain{
     flex:1;
     overflow: hidden;
 }
+
 /* 通用：变形到乐队列表页的尺寸 */
 #bsTimelineBarWrapper{
     transition-property: all;
@@ -63,8 +85,20 @@
     flex-wrap: nowrap;
 }
 #bsTimelineBarWrapper .bsTimelineBarContent .left{
-    flex: 0 0 calc(var(--main-offset-left-mobile,20px) + var(--footer-size-mobile,16px) + 46px);
+    transition-property: flex-basis;
+    transition-duration: 0.3s;
+    flex : 0 0 0px;
 }
+#dr-footer.timeline.done #bsTimelineBarWrapper .bsTimelineBarContent .left{
+    /* flex: 0 0 calc(var(--main-offset-left-mobile,20px) + var(--footer-size-mobile,16px) + 46px); */
+    flex-basis:calc(var(--top-main-timeline-mobile,0px) - var(--width-footer-bn-mobile,20px));
+}
+#dr-footer.listArtist.done #bsTimelineBarWrapper .bsTimelineBarContent .left{
+    /* flex: 0 0 calc(var(--main-offset-left-mobile,20px) + var(--footer-size-mobile,16px) + 46px); */
+    flex-basis:0px;
+}
+
+
 #svgTimelineBar{
     transition-property: transform;
     transition-duration: 0.3s;
@@ -203,21 +237,24 @@
         /* flex:0 0 calc(var(--main-offset-left-pc,46px)); */
         flex:0 0 0px;
         width:0px;
-        transform: translate(40px,15px);
+        transform: translate(var(--width-footer-bn-pc,40px),15px);
     }
     #dr-footer.footerContainer-md .timelineBn.next {
-        transform: rotate(180deg) translate(40px,-15px);
+        transform: rotate(180deg) translate(var(--width-footer-bn-pc,40px),-15px);
     }
     #dr-footer.footerContainer-md .timelineBn .bnArrow{
-        height:40px;
-        width:40px;
+        height:var(--width-footer-bn-pc,40px);
+        width:var(--width-footer-bn-pc,40px);
     }
-    #dr-footer .timelineMain{
-        flex:1;
-        overflow: hidden;
-    }    
+    /* 当前标记 */
+    #dr-footer.footerContainer-md .scrollBar{
+        height:var(--footer-size-pc,105px);
+        transform: translateX(280px);
+    }
+  
     #bsTimelineBarWrapper .bsTimelineBarContent-md .left{
-        flex: 0 0 calc(var(--main-offset-left-pc,46px));
+        flex-basis: calc(var(--main-offset-left-pc,46px))!important;
+        
     }
     /* PC端，时间轴页时间轴尺寸 */
     #dr-footer.timeline.footerContainer-md #bsTimelineBarWrapper{

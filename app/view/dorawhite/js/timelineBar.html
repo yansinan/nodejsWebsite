@@ -59,7 +59,7 @@
     this.bsTimelineBarWrapper.findDateNow=function(position){
         let $listDocs=$svgTimelineBar.querySelectorAll(".b-d");
         let $docNow=Array.from($listDocs).find(($doc,idx,$list)=>{
-            return $doc.x.baseVal.value >= -position.x -1;//动画导致对齐存在误差，保留1像素
+            return $doc.x.baseVal.value >= -position.x -1 ;// + ( that.$footer.isRotated ? $bsTimelineBarWrapper.getBoundingClientRect().top : $bsTimelineBarWrapper.getBoundingClientRect().left);//动画导致对齐存在误差，保留1像素
         })
         return $docNow;
     }
@@ -204,7 +204,7 @@
         let strDateNow=that.bsTimelineBarWrapper.$docNow.id.replace("b","");
         if(e.detail.strDateNow == strDateNow)return;
         let $dateTo=document.getElementById("b"+e.detail.strDateNow);
-        let posX=-$dateTo.x.baseVal.value;//-$dateTo.x*$svgTimelineBar.clientWidth;
+        let posX=-$dateTo.x.baseVal.value;// + ( that.$footer.isRotated ? $bsTimelineBarWrapper.getBoundingClientRect().top : $bsTimelineBarWrapper.getBoundingClientRect().left);//-$dateTo.x*$svgTimelineBar.clientWidth;
         console.log("e::timelineBar::",e.type,strDateNow,"==>",e.detail.strDateNow,posX);
 
         that.bsTimelineBarWrapper.disable();
