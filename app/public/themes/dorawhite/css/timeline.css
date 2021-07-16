@@ -16,10 +16,27 @@
 #timelineContent {
   max-height: none;
   overflow: visible;
+  position: relative;
+  top:0px;
 }
-#timelineContent .container-mm{
-  /* margin-right: 5rem; */
+#timelineContent .pulldown-tip{
+  position :absolute;
+  overflow: visible;
+  /* padding :20px; */
+  box-sizing :border-box;
+  font-size: 0.5rem;
+
+  max-width: 100vw;
+  width :100%;
+  height:0;
+
+  height:1.5rem;
+  text-align :center;
+  color :#ccc;
+  /* background-color: gainsboro; */
+  transform :translateY(-100%) translateZ(0);
 }
+
 #timelineContent .container-mm .month{
   font-size: 0.5rem;
   margin-bottom: 1.22rem;
@@ -30,7 +47,9 @@
   min-width:34.7vw;
   height:100%;
   overflow: hidden;
+  position: relative;
 }
+
 #timelineContent .wapper-mm .item{
   margin-left: 0;
   margin-right: 0rem;
@@ -85,12 +104,10 @@
     /* height: 73vh!important; */
     height:100%;
   }
-  /* PC指定最大高度 */
-  /* #timelineContent.heightMain-md { */
-    /* max-height: 78vh; */
-    /* height: 78vh; */
-    /* overflow: hidden; */
-  /* } */
+  /* PC高度定位有bug */
+  #timelineContent.heightMain-md {
+    top:-26px;
+  }
 
 
   /* PC内容一屏2个半 */

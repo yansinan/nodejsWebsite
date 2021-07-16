@@ -208,7 +208,7 @@
         console.log("e::timelineBar::",e.type,strDateNow,"==>",e.detail.strDateNow,posX);
 
         that.bsTimelineBarWrapper.disable();
-        that.bsTimelineBarWrapper.scrollTo(posX,0,300);
+        that.bsTimelineBarWrapper.scrollTo(posX,0,500);
     })
     {# 到时间轴页时才更新bar坐标 #}
     this.addEventListener("BS_COVER_WILL_TIMELINE", (page)=>{

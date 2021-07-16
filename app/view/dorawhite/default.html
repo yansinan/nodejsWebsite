@@ -70,9 +70,9 @@
                             invert: false,
                             easeTime: 300
                         },
-                        nestedScroll: {
-                            groupId: 'cover-scrollY'
-                        },
+                        //nestedScroll: {
+                        //    groupId: 'cover-scrollY'
+                        //},
                         slide: {
                             threshold: 0.3,
                             loop: false,
@@ -112,9 +112,13 @@
                     //})
                     this.slideCover.on('slidePageChanged', (page) => {
                         if(page.pageY==1){
+                            this.slideCover.disable();
+                            console.info("去使能");
+
                             // 创建并分发事件
                             this.dispatchEvent(new CustomEvent("BS_COVER_TIMELINE", {detail:{page}}))
                         }else{
+                            this.slideCover.enable();
                             // 创建并分发事件
                             this.dispatchEvent(new CustomEvent("BS_COVER_LISTARTISTS", {detail:{page}}))
                         }
@@ -123,6 +127,11 @@
                         this.slideCover.refresh();
                     })
                     
+                    {# 监听时间轴下拉事件 #}
+                    this.addEventListener("BS_TIMELINE_PULL_DOWN",(e)=>{
+                        console.info("BS_TIMELINE_PULL_DOWN=============>");
+                        this.slideCover.goToPage(0,0);
+                    })
 
                 </script>
             </div>

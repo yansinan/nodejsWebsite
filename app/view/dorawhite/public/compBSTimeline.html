@@ -3,6 +3,7 @@
 <div id="timelineWrapper" class="d-none bs-wrapper-main">
     {# 不指定高：手机纵向自适应高，PC在定义高度 #}
     <div id="timelineContent" class="heightMain-md px-0 d-block d-md-inline-flex w-auto" style="max-width:none;">
+        <div class="pulldown-tip"></div>
         {# 单页模式 #}
         {% set infoPagination={page:"timeline",idDOM:"list-timeline",api:"/api/timeline/getList",pageInfo:pageInfo,cateInfo:cateInfo} %}
         {# 临时设置，确保不输出默认数据，且有posts #}
@@ -33,6 +34,10 @@
                     invert: false,
                     easeTime: 300
                 },
+                pullDownRefresh: {
+                    threshold: 80,
+                    stop: 40
+                },
                 scrollbar: true,
                 //observeDOM: true // 开启 observe-dom 插件
             }
@@ -48,6 +53,7 @@
             <div class="wapper-mm wapper-mm-md" style="white-space:normal;" dr-bs-wrapper="mm-{{month|trim}}" ms-controller="{{month|trim}}">
                 {# 纵向滚动组件 #}
                 <div class="d-flex flex-column" >
+                    <div class="pulldown-tip"></div>
                     {# 日期纵向滚动容器 #}
                     {# 日期内容区 #}
 
@@ -98,63 +104,20 @@
     <script>
     var $timelineWrapper = document.getElementById('timelineWrapper');
     let $timelineContent = document.getElementById('timelineContent');
-
-    let slideMain = new BetterScroll.createBScroll($timelineWrapper, {
-        //specifiedIndexAsContent:1,
-        disableMouse: false,
-        disableTouch: false,
-        scrollX: true,
-        scrollY: true,
-        //nestedScroll: {
-        //    groupId: 'cover-scrollY'
-        //},
-        //slide: {
-        //    threshold: 100,
-        //    loop: false,//TODO：可以优化为循环slide；注意：复制出来的slide需要querySelector and 设置translateY同步
-        //    autoplay:false,
-        //    listenFlick:false,
-        //},
-        useTransition: true,
-        momentum: true,
-        //momentumLimitTime:100,//{# 快速滑动的时间小于xx开启#}
-        //momentumLimitDistance:50,//{# 快速滑动的距离大于xx开启#}
-        deceleration:0.005,//{# momentum 动画的减速度 #}
-        swipeTime:300,//{# momentum 动画时长 #}
-        bounce: {
-            top: true,
-            bottom: false,
-            left: true,
-            right: true
+    Object.defineProperties($timelineContent,{
+        isMobile:{
+            get:()=>{return $timelineContent.clientWidth == $timelineWrapper.clientWidth ;},
         },
-        mouseWheel: {
-            speed: 50,
-            invert: false,
-            easeTime: 100
+        paddingTop:{
+            get:()=>($timelineWrapper.getBoundingClientRect().top),
         },
-        observeDOM: true ,// 开启 observe-dom 插件
-        stopPropagation: false,
-        probeType: 3,
+        paddingLeft:{
+            get:()=>($timelineWrapper.getBoundingClientRect().left),
+        },
     })
-    //slideMain.on('slidePageChanged', (page) => {
-    //    // currentPageIndex = page.pageX
-    //})
-    //slideMain.on('slideWillChange', (page) => {
-    //    currentPageIndex = page.pageX;
-    //    console.log("slideMain.on(slideWillChange)",page,this.header.listNav[currentPageIndex]);
-    //    {# history路由 #}
-    //    window.history.pushState({}, "{{site.title}}|"+ this.header.listNav[currentPageIndex].name, this.header.listNav[currentPageIndex].url);//设置状态
-    //    //listBnNav.addClass("bg-light text-dark").removeClass("bg-dark text-light");
-    //    //bnNav.addClass("bg-dark text-light").removeClass("bg-light text-dark");             
-    //})
-    {# 页面重新加载时，路由到指定的slide页 #}
-    //window.addEventListener('DOMContentLoaded', (event) => {
-    //    if(this.header.idxNav>=0){
-    //        slideMain.goToPage(this.header.idxNav,0);
-    //    }
-    //});
 
-
-
+    let slideMain = {};
+    
     {# 月份计算坐标 #}
     let $listMM=$timelineWrapper.querySelectorAll(".wapper-mm");
     $listMM.forEach(($bsMM)=>{
@@ -201,122 +164,280 @@
     {# 上一个当前月 #}
     let $mmLast=$listMM[0];
     let $mmNow=$listMM[0];
-    Object.defineProperties(slideMain,{
-        strDateNow:{
-            get:()=>{return slideMain.$docNow ? slideMain.$docNow.getAttribute("dr-date-doc") : false ;},
-        },
-        strDateLast:{
-            get:()=>{return slideMain.$docLast ? slideMain.$docLast.getAttribute("dr-date-doc") : false ;},
-        },
-        isMobile:{
-            get:()=>{return $timelineContent.clientWidth == $timelineWrapper.clientWidth ;},
-        },
-        paddingTop:{
-            get:()=>($timelineWrapper.getBoundingClientRect().top),
-        },
-        paddingLeft:{
-            get:()=>($timelineWrapper.getBoundingClientRect().left),
-        },
-    })
-    slideMain.findMMNow=function(){
-        let idxNearest = 0;
-        let $mmOut = false;
-        if(slideMain.isMobile){
-            {# 移动：横向不移动，宽相等第一个跨出上边的 #}
-            $mmOut=Array.from($listMM).find(($mm,idx)=>{
-                idxNearest = idx;
-                return $mm.$content.getBoundingClientRect().bottom > slideMain.paddingTop;
-            });
-        }else{
-            {# PC:第一个跨出左屏幕的 ,同时记录最后一个 x <-pos.x #}
-            $mmOut=Array.from($listMM).find(($mm,idx)=>{
-                idxNearest = idx;
-                //return $mm.getBoundingClientRect().right > -pos.x;
-                return $mm.getBoundingClientRect().left + ($mm.getBoundingClientRect().width*3/4) >= slideMain.paddingLeft;
-            });
-                    
-        }
-        $mmNow=false;   
-        if($mmOut){
-            $mmNow=$mmOut;
-        }else{
-            $mmNow = $listMM[idxNearest+1] ? $listMM[idxNearest+1] : ($listMM[idxNearest]?$listMM[idxNearest]:false) ;
-            debugger;
-        }
-        if(!$mmNow)debugger;
-        else{
-            {# 是否需要改变class #}
-            if($mmNow!=$mmLast){                
-                $mmLast.classList.remove("now");
-                $mmLast=$mmNow;                
-            }
-            $mmNow.classList.add("now");
-            return $mmNow;
-        }
-        return false;
-    }
-    {# 查找当前日期，并触发事件 #}
-    slideMain.funFindDateNow=function(){
-        $mmNow=slideMain.findMMNow();
-        {# 查询当前日期 #}
-        if($mmNow)slideMain.$docNow=$mmNow.$docNow;
-        else debugger;
-        return slideMain.$docNow;
-        //let topMM=$mmNow.getBoundingClientRect().top;
-        //let $listDocs=$mmNow.querySelectorAll("[dr-date-doc]");
-        //slideMain.$docNow=Array.from($listDocs).find(($doc,idx)=>{
-        //    return $doc.getBoundingClientRect().bottom > topMM;
-        //});
-        //return slideMain.$docNow;
-    }
-    {# 设置class标记，并恢复上一个 #}
-    slideMain.getNewStrDate=function(){
-        if(slideMain.$docNow){
-            slideMain.$docLast=slideMain.$docLast || slideMain.$docNow;
-            if(slideMain.strDateNow != slideMain.strDateLast){
-                console.log("timeline new Date",slideMain.strDateLast,"==>",slideMain.strDateNow);
-                {# 更新last #}
-                slideMain.$docLast = slideMain.$docNow;
-                return slideMain.strDateNow;
-            }
-        }else debugger;
-        return false
-    }
-    {# 触发外部事件的逻辑 #}
-    slideMain.checkEvent=function(isNewDateInMM=false){
-        let strNewDate=slideMain.getNewStrDate();
-        if((strNewDate || isNewDateInMM)&& slideMain.enabled){
-            {# 触发事件 #}
-            that.dispatchEvent(new CustomEvent("BS_MAIN_DATE_CHANGE", {
-                detail:{
-                    strDateNow:slideMain.strDateNow,
+    {# 初始化每月的bs #}
+    this.resetBSMM=function($bsMM,idx,$listMM){
+        let idxMM=$bsMM.getAttribute("ms-controller");
+        let objName="bs-"+idxMM;
+        {# 只初始化一次，防止事件多次触发 #}
+        if(!that[objName]){
+            that[objName]=that[objName] ||  new BetterScroll.createBScroll($bsMM, objInitBSMM)
+            that[objName].on('beforeScrollStart', that[objName].refresh)
+            that[objName].on("scroll",(pos)=>{//this===MutationObserver
+                
+                if($bsMM.classList.contains("now")){
+                    that.slideMain.$docNow=$bsMM.$docNow;
+                    {# 当前月份滚动 && #}{# 日期变化，且用户操作产生的，才触发同步通知 #}
+                    that.slideMain.checkEvent($bsMM.isDateNew);
                 }
-            }))
+            })
+            that[objName].scroller.animater.hooks.on('end', () => {
+                that.slideMain.enable();
+                console.log("时间轴:月份end停止");
+            })
+            that[objName].scroller.hooks.on('scrollEnd', () => {
+                that.slideMain.enable();
+                console.log("时间轴:月份scrollEnd停止");
+                //that.dispatchEvent(new CustomEvent("BS_TIMELINE_SCROLL_END"));
+            })
+            {# that[objName].on('pullingDown', that.slideMain.ePullDown)     #}
+            that.slideMain.initPullDown(that[objName]);
         }
+        that[objName].refresh();
     }
-    slideMain.on('scroll', (pos) => {
+    this.resetSlideMain=function(){
+        let objInitBSTimeline={
+            //specifiedIndexAsContent:1,
+            disableMouse: false,
+            disableTouch: false,
+            scrollX: true,
+            scrollY: true,
+            //nestedScroll: {
+            //    groupId: 'cover-scrollY'
+            //},
+            //slide: {
+            //    threshold: 100,
+            //    loop: false,//TODO：可以优化为循环slide；注意：复制出来的slide需要querySelector and 设置translateY同步
+            //    autoplay:false,
+            //    listenFlick:false,
+            //},
+            useTransition: true,
+            momentum: true,
+            //momentumLimitTime:100,//{# 快速滑动的时间小于xx开启#}
+            //momentumLimitDistance:50,//{# 快速滑动的距离大于xx开启#}
+            deceleration:0.005,//{# momentum 动画的减速度 #}
+            swipeTime:300,//{# momentum 动画时长 #}
+            bounce: {
+                top: true,
+                bottom: true,
+                left: true,
+                right: true
+            },
+            mouseWheel: {
+                speed: 50,
+                invert: false,
+                easeTime: 100
+            },
+            pullDownRefresh: {
+                threshold: 60,
+                stop: 40
+            },
+            observeDOM: true ,// 开启 observe-dom 插件
+            stopPropagation: false,
+            probeType: 3,
+        }
+        if( slideMain.destroy )slideMain.destroy();
+        {# 根据屏幕初始化功能 #}
+        let objOption={};
+        if(!$timelineContent.isMobile){
+            objOption={
+                pullDownRefresh:false,
+                scrollY:false,
+            }
+        }else{
+            objOption={
+                scrollX:false,
+            }
+        }
+        slideMain = new BetterScroll.createBScroll($timelineWrapper, Object.assign({},objInitBSTimeline,objOption));
+        this.slideMain=slideMain;
+        console.warn("高度差？",slideMain.wrapper.getBoundingClientRect().height,slideMain.content.getBoundingClientRect().height,)
 
-        //$mmNow=slideMain.findMMNow(pos);
-        //if($mmNow)slideMain.$docNow=$mmNow.$docNow;//slideMain.funFindDateNow($mmNow);
-        //else debugger;
+        Object.defineProperties(slideMain,{
+            strDateNow:{
+                get:()=>{return slideMain.$docNow ? slideMain.$docNow.getAttribute("dr-date-doc") : false ;},
+            },
+            strDateLast:{
+                get:()=>{return slideMain.$docLast ? slideMain.$docLast.getAttribute("dr-date-doc") : false ;},
+            },
+            isMobile:{
+                get:()=>{return $timelineContent.clientWidth == $timelineWrapper.clientWidth ;},
+            },
+            paddingTop:{
+                get:()=>($timelineWrapper.getBoundingClientRect().top),
+            },
+            paddingLeft:{
+                get:()=>($timelineWrapper.getBoundingClientRect().left),
+            },
+        })
+        //slideMain.on('slidePageChanged', (page) => {
+        //    // currentPageIndex = page.pageX
+        //})
+        //slideMain.on('slideWillChange', (page) => {
+        //    currentPageIndex = page.pageX;
+        //    console.log("slideMain.on(slideWillChange)",page,this.header.listNav[currentPageIndex]);
+        //    {# history路由 #}
+        //    window.history.pushState({}, "{{site.title}}|"+ this.header.listNav[currentPageIndex].name, this.header.listNav[currentPageIndex].url);//设置状态
+        //    //listBnNav.addClass("bg-light text-dark").removeClass("bg-dark text-light");
+        //    //bnNav.addClass("bg-dark text-light").removeClass("bg-light text-dark");             
+        //})
+        {# 页面重新加载时，路由到指定的slide页 #}
+        //window.addEventListener('DOMContentLoaded', (event) => {
+        //    if(this.header.idxNav>=0){
+        //        slideMain.goToPage(this.header.idxNav,0);
+        //    }
+        //});
+        {# 上拉刷新事件 #}
+        slideMain.initPullDown=function(bsTar){
+            // pulldownRefresh state
+            const PHASE = {
+                moving: {
+                    enter: 'enter',
+                    leave: 'leave'
+                },
+                fetching: 'fetching',
+                succeed: 'succeed'
+            }
+            const ARROW_BOTTOM = '<svg width="16" height="16" viewBox="0 0 512 512"><path fill="currentColor" d="M367.997 338.75l-95.998 95.997V17.503h-32v417.242l-95.996-95.995l-22.627 22.627L256 496l134.624-134.623l-22.627-22.627z"></path></svg>'
+            const ARROW_UP = '<svg width="16" height="16" viewBox="0 0 512 512"><path fill="currentColor" d="M390.624 150.625L256 16L121.376 150.625l22.628 22.627l95.997-95.998v417.982h32V77.257l95.995 95.995l22.628-22.627z"></path></svg>'
 
+            bsTar.setTipText=function(phase = PHASE.default){
+                const TEXTS_MAP = {
+                    'enter': `${ARROW_BOTTOM} 下拉回首页`,
+                    'leave': `${ARROW_UP} 松开前往`,
+                    'fetching': '准备中...',
+                    'succeed': '正在前往'
+                }
+                let $pulldown=bsTar.content.querySelector(".pulldown-tip")
+                if($pulldown)$pulldown.innerHTML = TEXTS_MAP[phase];
+            }
+            bsTar.ePullDown=function(){
+                that.dispatchEvent(new CustomEvent("BS_TIMELINE_PULL_DOWN", {
+                    detail:{}
+                }))
+                // tell BetterScroll to finish pull down
+                bsTar.finishPullDown();
+                bsTar.setTipText(PHASE.moving.succeed);
+            }
+
+            bsTar.on('pullingDown', bsTar.ePullDown)
+            // v2.4.0 supported
+            bsTar.on('enterThreshold', () => {
+                bsTar.setTipText(PHASE.moving.enter)
+            })
+            bsTar.on('leaveThreshold', () => {
+                bsTar.setTipText(PHASE.moving.leave)
+            })        
+        }
+        if(slideMain.isMobile)slideMain.initPullDown(slideMain);
+        
+        {#  #}
+        slideMain.findMMNow=function(){
+            let idxNearest = 0;
+            let $mmOut = false;
+            if(slideMain.isMobile){
+                {# 移动：横向不移动，宽相等第一个跨出上边的 #}
+                $mmOut=Array.from($listMM).find(($mm,idx)=>{
+                    idxNearest = idx;
+                    return $mm.$content.getBoundingClientRect().bottom > slideMain.paddingTop;
+                });
+            }else{
+                {# PC:第一个跨出左屏幕的 ,同时记录最后一个 x <-pos.x #}
+                $mmOut=Array.from($listMM).find(($mm,idx)=>{
+                    idxNearest = idx;
+                    //return $mm.getBoundingClientRect().right > -pos.x;
+                    return $mm.getBoundingClientRect().left + ($mm.getBoundingClientRect().width*3/4) >= slideMain.paddingLeft;
+                });
+                        
+            }
+            $mmNow=false;   
+            if($mmOut){
+                $mmNow=$mmOut;
+            }else{
+                $mmNow = $listMM[idxNearest+1] ? $listMM[idxNearest+1] : ($listMM[idxNearest]?$listMM[idxNearest]:false) ;
+                debugger;
+            }
+            if(!$mmNow)debugger;
+            else{
+                {# 是否需要改变class #}
+                if($mmNow!=$mmLast){                
+                    $mmLast.classList.remove("now");
+                    $mmLast=$mmNow;                
+                }
+                $mmNow.classList.add("now");
+                return $mmNow;
+            }
+            return false;
+        }
+        {# 查找当前日期，并触发事件 #}
+        slideMain.funFindDateNow=function(){
+            $mmNow=slideMain.findMMNow();
+            {# 查询当前日期 #}
+            if($mmNow)slideMain.$docNow=$mmNow.$docNow;
+            else debugger;
+            return slideMain.$docNow;
+            //let topMM=$mmNow.getBoundingClientRect().top;
+            //let $listDocs=$mmNow.querySelectorAll("[dr-date-doc]");
+            //slideMain.$docNow=Array.from($listDocs).find(($doc,idx)=>{
+            //    return $doc.getBoundingClientRect().bottom > topMM;
+            //});
+            //return slideMain.$docNow;
+        }
+        {# 设置class标记，并恢复上一个 #}
+        slideMain.getNewStrDate=function(){
+            if(slideMain.$docNow){
+                slideMain.$docLast=slideMain.$docLast || slideMain.$docNow;
+                if(slideMain.strDateNow != slideMain.strDateLast){
+                    console.log("timeline new Date",slideMain.strDateLast,"==>",slideMain.strDateNow);
+                    {# 更新last #}
+                    slideMain.$docLast = slideMain.$docNow;
+                    return slideMain.strDateNow;
+                }
+            }else debugger;
+            return false
+        }
+        {# 触发外部事件的逻辑 #}
+        slideMain.checkEvent=function(isNewDateInMM=false){
+            let strNewDate=slideMain.getNewStrDate();
+            if((strNewDate || isNewDateInMM)&& slideMain.enabled){
+                {# 触发事件 #}
+                that.dispatchEvent(new CustomEvent("BS_MAIN_DATE_CHANGE", {
+                    detail:{
+                        strDateNow:slideMain.strDateNow,
+                    }
+                }))
+            }
+        }
+        slideMain.on('scroll', (pos) => {
+
+            //$mmNow=slideMain.findMMNow(pos);
+            //if($mmNow)slideMain.$docNow=$mmNow.$docNow;//slideMain.funFindDateNow($mmNow);
+            //else debugger;
+
+            slideMain.funFindDateNow();
+            {# 日期变化，且用户操作产生的，才触发同步通知 #}
+            slideMain.checkEvent();
+        })
+
+        slideMain.scroller.animater.hooks.on('end', () => {
+            slideMain.enable();
+            slideMain.idxMMScrollingTo=false;
+            console.log("时间轴animater.end停止");
+            //that.dispatchEvent(new CustomEvent("BS_TIMELINE_SCROLL_END"));
+        })
+        slideMain.scroller.hooks.on('scrollEnd', () => {
+            slideMain.enable();
+            slideMain.idxMMScrollingTo=false;
+            console.log("时间轴scrollEnd停止");
+            //that.dispatchEvent(new CustomEvent("BS_TIMELINE_SCROLL_END"));
+        })
+
+        {# 初始化每月的bs #}
+        $listMM.forEach(this.resetBSMM);
+        {# 标记当前月 #}
         slideMain.funFindDateNow();
-        {# 日期变化，且用户操作产生的，才触发同步通知 #}
-        slideMain.checkEvent();
-    })
 
-    slideMain.scroller.animater.hooks.on('end', () => {
-        slideMain.enable();
-        slideMain.idxMMScrollingTo=false;
-        console.log("时间轴animater.end停止");
-        //that.dispatchEvent(new CustomEvent("BS_TIMELINE_SCROLL_END"));
-    })
-    slideMain.scroller.hooks.on('scrollEnd', () => {
-        slideMain.enable();
-        slideMain.idxMMScrollingTo=false;
-        console.log("时间轴scrollEnd停止");
-        //that.dispatchEvent(new CustomEvent("BS_TIMELINE_SCROLL_END"));
-    })
+    }
+
     this.eDateChange=function(e){
         {# 查找月份，保存doc #}
         let xScrollTimeline = 0;//-($mmTo.getBoundingClientRect().left);
@@ -376,6 +497,12 @@
     {# 保留月份滚 #}
     this.addEventListener("BS_TIMELINE_BAR_DATE_CHANGE_FINAL",this.eDateChange)
     {# 保留月份滚----end #}
+    this.addEventListener("BS_COVER_TIMELINE",()=>{
+        this.resetSlideMain();
+    })
+    this.addEventListener("BS_COVER_LISTARTISTS",()=>{
+        slideMain.destroy();
+    })
 
     {# timelineBar 防止冲突控制 #}
     //this.addEventListener("BS_TIMELINE_BAR_SCROLL_START",(e)=>{slideMain.disable()});
@@ -384,38 +511,11 @@
     //);
 
     var mutationObserver = new MutationObserver(function (mutations) {
-        
         let status=window.getComputedStyle($timelineWrapper).getPropertyValue('display');
         {# //显示时初始化内容 #}
         if(status!="none"){
             //let domListBSMM=document.querySelectorAll("[dr-bs-wrapper]");
-            $listMM.forEach(($bsMM)=>{
-                let idxMM=$bsMM.getAttribute("ms-controller");
-                let objName="bs-"+idxMM;
-                {# 只初始化一次，防止事件多次触发 #}
-                if(!that[objName]){
-                    that[objName]=that[objName] ||  new BetterScroll.createBScroll($bsMM, objInitBSMM)
-                    that[objName].on('beforeScrollStart', that[objName].refresh)
-                    that[objName].on("scroll",(pos)=>{//this===MutationObserver
-                        
-                        if($bsMM.classList.contains("now")){
-                            slideMain.$docNow=$bsMM.$docNow;
-                            {# 当前月份滚动 && #}{# 日期变化，且用户操作产生的，才触发同步通知 #}
-                            slideMain.checkEvent($bsMM.isDateNew);
-                        }
-                    })
-                    that[objName].scroller.animater.hooks.on('end', () => {
-                        slideMain.enable();
-                        console.log("时间轴:月份end停止");
-                    })
-                    that[objName].scroller.hooks.on('scrollEnd', () => {
-                        slideMain.enable();
-                        console.log("时间轴:月份scrollEnd停止");
-                        //that.dispatchEvent(new CustomEvent("BS_TIMELINE_SCROLL_END"));
-                    })                    
-                }
-                that[objName].refresh();
-            })
+            //$listMM.forEach(that.resetBSMM)
             console.log("监听到#timelineWrapper显示，初始化纵向月份");
         }
         return;
