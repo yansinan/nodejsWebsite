@@ -13,7 +13,7 @@
                 class="noticeCnt d-flex flex-shrink-0 justify-content-center border border-1 border-dark rounded-circle" 
                 data-bs-toggle="tooltip" 
                 data-bs-html="true" 
-                title="<div>演出回顾|重庆巡回</div><div>专辑发布|永无宁日RURBUR-Evening Sitdown Vision</div>">
+                title="<div>演出回顾|重庆巡回{{artist.name}}</div><div>专辑发布|永无宁日RURBUR-Evening Sitdown Vision</div>">
                 +2
             </button>
         </div >
@@ -24,35 +24,7 @@
     {# 乐手列表 #}
     <script>
         let $coverArtistsWrapper=document.getElementById("coverArtistsWrapper");
-        let eShow=function(e){
-            if(e.target.tooltip)e.target.tooltip.show();
-        }
-        let eHide=function(e){
-            if(e.target.tooltip)e.target.tooltip.hide();
-        }
-        var tooltipTriggerList = [].slice.call($coverArtistsWrapper.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            let tooltip = new bootstrap.Tooltip(tooltipTriggerEl,{
-                boundary: $coverArtistsWrapper, // or document.querySelector('#boundary')
-                container:tooltipTriggerEl,//$coverArtistsWrapper.querySelector(".bs-content-listArtist"),
-                //trigger:"hover focus",
-                trigger:"manual",
-            })
-            tooltipTriggerEl.tooltip=tooltip;
-            tooltipTriggerEl.addEventListener('hidden.bs.tooltip', function (e) {
-                this.classList.remove("now");
-            })
-            tooltipTriggerEl.addEventListener('show.bs.tooltip', function (e) {
-                this.classList.add("now");
-            })
-            tooltipTriggerEl.addEventListener("touchstart",eShow);
-            tooltipTriggerEl.addEventListener("mouseenter",eShow);
 
-            tooltipTriggerEl.addEventListener("mouseleave",eHide);
-            //tooltipTriggerEl.addEventListener("touchcancel",tooltipTriggerEl.tooltip.show);
-            
-            return tooltip;
-        })
         let slideListArtist = new BetterScroll.createBScroll('.bs-wrapper-listArtist', {
             //specifiedIndexAsContent:1,
             disableMouse: false,
@@ -78,19 +50,119 @@
             probeType: 3,
             observeDOM: true ,// 开启 observe-dom 插件
         })
-        $coverArtistsWrapper.addEventListener("click",(e)=>{
-            if(e.isTrusted)return;
-            tooltipList.forEach((tooltip)=>{
-                tooltip.hide();
-            })
-            //$coverArtistsWrapper.querySelector(".noticeCnt.now").classList.remove("now")
-        },false)
+
         {# slideListArtist.refresh(); #}
+
         slideListArtist.on('contentChanged', (newContent) => {
             slideListArtist.refresh();
             window.alert("beforeScrollStart");
         })
         slideListArtist.on('beforeScrollStart', slideListArtist.refresh)
 
+
+
+        function eInitTooltip(e){
+            let eShow=function(e){
+                if(e.target.tooltip){
+                    e.target.tooltip.update()
+                    e.target.tooltip.show();
+                }
+                //e.preventDefault();
+            }
+            let eHide=function(e){
+                if(e.target.tooltip)e.target.tooltip.hide();
+            }
+            let isIOS=function(){
+                var u = navigator.userAgent, app = navigator.appVersion;
+                var isXiaomi = u.indexOf('XiaoMi') > -1; // 小米手机
+                var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1; // 其它安卓
+                var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); // ios
+                if (isAndroid) {
+                    {# alert("Android系统"); #}
+                }else if (isIOS) {
+                    if(isXiaomi) {
+                        {# alert("您的浏览器标识为iPhone，请前往设置：“设置”->“高级设置”->“浏览器标识=默认”"); #}
+                    }else {
+                        {# alert("ios系统"); #}
+                        return isIOS
+                    }
+                }
+                return false;
+            }
+            var tooltipTriggerList = [].slice.call($coverArtistsWrapper.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            $coverArtistsWrapper.tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+
+                if(tooltipTriggerEl.tooltip && tooltipTriggerEl.tooltip.dispose)tooltipTriggerEl.tooltip.dispose();
+                let tooltip = new bootstrap.Tooltip(tooltipTriggerEl,{
+                    //boundary: $coverArtistsWrapper, // or document.querySelector('#boundary')
+                    //container: $coverArtistsWrapper,//tooltipTriggerEl,//$coverArtistsWrapper.querySelector(".bs-content-listArtist"),
+                    //trigger:"hover focus",
+                    trigger:"manual",
+                    popperConfig:{
+                        modifiers:[
+                            {
+                                name: 'offset',
+                                options: {
+                                    offset:({ placement, reference, popper }) => {
+                                        if (isIOS()) {
+                                            return [];//[-35, -50];
+                                        } else {
+                                            return [];
+                                        }
+                                    },
+                                }
+                            },{
+                                name: 'preventOverflow',
+                                options: {
+                                    mainAxis: true, // true by default
+                                    boundary: $coverArtistsWrapper,
+                                },
+                            },
+                        ]
+                                                                            
+                    }
+                })
+                tooltipTriggerEl.tooltip=tooltip;
+                tooltipTriggerEl.addEventListener('hidden.bs.tooltip', function (e) {
+                    this.classList.remove("now");
+                })
+                tooltipTriggerEl.addEventListener('show.bs.tooltip', function (e) {
+                    this.classList.add("now");
+                })
+                tooltipTriggerEl.addEventListener("touchstart",eShow);
+                tooltipTriggerEl.addEventListener("mouseenter",eShow);
+
+                tooltipTriggerEl.addEventListener("mouseleave",eHide);
+                //tooltipTriggerEl.addEventListener("touchcancel",tooltipTriggerEl.tooltip.show);
+                
+                return tooltip;
+            })
+        }
+        {# this.addEventListener("BS_COVER_LISTARTISTS",eInitTooltip); #}
+        eInitTooltip();
+        slideListArtist.on("scroll",()=>{
+            if(!$coverArtistsWrapper.tooltipList)return;
+            $coverArtistsWrapper.tooltipList.forEach((tooltip)=>{
+                if(tooltip && tooltip.tip && !tooltip.tip.hidden){
+                    tooltip.update();
+                }
+            });
+        })
+        slideListArtist.on('scrollStart', () => {
+            if(!$coverArtistsWrapper.tooltipList)return;
+            $coverArtistsWrapper.tooltipList.forEach((tooltip)=>{
+                if(tooltip && tooltip.tip && !tooltip.tip.hidden){
+                    tooltip.hide();
+                }
+            });
+
+        })
+        $coverArtistsWrapper.addEventListener("click",(e)=>{
+            if(e.isTrusted || !$coverArtistsWrapper.tooltipList)return;
+            $coverArtistsWrapper.tooltipList.forEach((tooltip)=>{
+                tooltip.hide();
+            })
+            //$coverArtistsWrapper.querySelector(".noticeCnt.now").classList.remove("now")
+        },false)
     </script>  
 </div>

@@ -71,17 +71,26 @@
     line-height: 1rem;
 
     align-items: center;
+    background-color: white;
+    color:black;
+    -webkit-appearance:none;
 }
 #coverArtistsWrapper .noticeCnt.now{
     filter: invert(100%);
 }
-#coverArtistsWrapper .tooltip{
-    filter: invert(100%);
+.tooltip{
+    /* filter: invert(100%); */
+    /* padding:.4rem .4rem; */
+    /* border: 1px solid red; */
+    padding-right: .4rem;    
 }
-#coverArtistsWrapper .tooltip .tooltip-arrow{
+.tooltip.show{
+    opacity: 1;
+}
+.tooltip .tooltip-arrow{
     display: none;
 }
-#coverArtistsWrapper .tooltip .tooltip-inner{
+.tooltip .tooltip-inner{
     display:flex;
     flex-direction: column;
     border:1px solid black;
@@ -92,10 +101,11 @@
     color:black;
     font-size: 0.85rem;
     writing-mode: horizontal-tb;
-    max-width:13.85rem;
-    width:13.85rem;
+    /* max-width:13.85rem; */
+    max-width:13rem;
+    width:13rem;
 }
-#coverArtistsWrapper .tooltip .tooltip-inner div{
+.tooltip .tooltip-inner div{
     display:flex;
     justify-content: flex-start;
     align-items: baseline;
@@ -104,7 +114,7 @@
     padding:0.42rem;
     
 }
-#coverArtistsWrapper .tooltip .tooltip-inner div::before{
+.tooltip .tooltip-inner div::before{
     content:"";
     flex: 0 0 20px;
     height:20px;
@@ -127,7 +137,7 @@
         /* padding-bottom: 6px; */
         height:1.2rem;
     }
-    #coverArtistsWrapper .paddingTop-md .tooltip .tooltip-inner{
+    body .tooltip .tooltip-inner{
         max-width:10rem;
         width:10rem;
     }
