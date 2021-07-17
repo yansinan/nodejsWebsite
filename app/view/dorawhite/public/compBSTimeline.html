@@ -8,40 +8,6 @@
         {% set infoPagination={page:"timeline",idDOM:"list-timeline",api:"/api/timeline/getList",pageInfo:pageInfo,cateInfo:cateInfo} %}
         {# 临时设置，确保不输出默认数据，且有posts #}
         {# {% set posts=[] %} #}
-        <script>
-            let objInitBSMM={
-                //specifiedIndexAsContent:1,
-                disableMouse: false,
-                disableTouch: false,
-                scrollY: true,
-                scrollX: false,
-                nestedScroll: {
-                    groupId: 'cover-scrollY'
-                },
-                useTransition: true,//是否使用 CSS3 transition 动画
-                momentum: true,//滚动动画
-                bounce: {
-                    top: true,
-                    bottom: true,
-                    left: true,
-                    right: true
-                },//回弹动画
-                //outOfBoundaryDampingFactor:0.1,
-                //stopPropagation: false,//阻止事件冒泡。多用在嵌套 scroll 的场景
-                probeType: 3,
-                mouseWheel: {
-                    speed: 20,
-                    invert: false,
-                    easeTime: 300
-                },
-                pullDownRefresh: {
-                    threshold: 80,
-                    stop: 40
-                },
-                scrollbar: true,
-                //observeDOM: true // 开启 observe-dom 插件
-            }
-        </script>
 
         {# 每月纵向 #}
         {% for month, monthItems in posts|groupby("dateYYMM") %}
@@ -60,7 +26,7 @@
                     {% for item in monthItems %}
                     <div class="item row" dr-date-doc="{{item.date}}">
                         {# 图 手机图 #}
-                        <div id="timelineTitleImg{{item._id}}" class="col-6 ps-0 d-flex d-md-none">                        
+                        <div id="timelineTitleImg{{item._id}}" class="imgContainer col-6 ps-0 d-flex d-md-none">                        
                             <img src="{{item.sImg}}" alt="{{item.name}}"  class="img-fluid" alt="{{item.title}} " dr-id-doc="img{{item._id}}"/>
                         </div>
 
@@ -168,6 +134,38 @@
     this.resetBSMM=function($bsMM,idx,$listMM){
         let idxMM=$bsMM.getAttribute("ms-controller");
         let objName="bs-"+idxMM;
+        let objInitBSMM={
+            //specifiedIndexAsContent:1,
+            disableMouse: false,
+            disableTouch: false,
+            scrollY: true,
+            scrollX: false,
+            nestedScroll: {
+                groupId: 'cover-scrollY'
+            },
+            useTransition: true,//是否使用 CSS3 transition 动画
+            momentum: true,//滚动动画
+            bounce: {
+                top: true,
+                bottom: true,
+                left: true,
+                right: true
+            },//回弹动画
+            //outOfBoundaryDampingFactor:0.1,
+            //stopPropagation: false,//阻止事件冒泡。多用在嵌套 scroll 的场景
+            probeType: 3,
+            mouseWheel: {
+                speed: 20,
+                invert: false,
+                easeTime: 300
+            },
+            pullDownRefresh: {
+                threshold: 80,
+                stop: 40
+            },
+            scrollbar: true,
+            //observeDOM: true // 开启 observe-dom 插件
+        }
         {# 只初始化一次，防止事件多次触发 #}
         if(!that[objName]){
             that[objName]=that[objName] ||  new BetterScroll.createBScroll($bsMM, objInitBSMM)
@@ -214,8 +212,8 @@
             momentum: true,
             //momentumLimitTime:100,//{# 快速滑动的时间小于xx开启#}
             //momentumLimitDistance:50,//{# 快速滑动的距离大于xx开启#}
-            deceleration:0.005,//{# momentum 动画的减速度 #}
-            swipeTime:300,//{# momentum 动画时长 #}
+            //deceleration:0.005,//{# momentum 动画的减速度 #}
+            //swipeTime:300,//{# momentum 动画时长 #}
             bounce: {
                 top: true,
                 bottom: true,

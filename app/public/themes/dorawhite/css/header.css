@@ -98,6 +98,7 @@
     transition-property: max-height,padding-left;    
     flex:1 1 0%;
     max-height: 1.2rem; /*1.154rem */
+    padding-bottom: 1px;
   }  
   #navHeader #collapseNavbarMobile.navbar-collapse ul{
     display: flex;
