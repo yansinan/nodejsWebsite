@@ -8,7 +8,14 @@
             <a href="{{artist.url}} " target="_blank ">
                 {{artist.name}}
             </a>
-            <span class="noticeCnt d-flex flex-shrink-0 justify-content-center border border-1 border-dark rounded-circle" style="">+2</span>
+            <button 
+                tabindex="0"
+                class="noticeCnt d-flex flex-shrink-0 justify-content-center border border-1 border-dark rounded-circle" 
+                data-bs-toggle="tooltip" 
+                data-bs-html="true" 
+                title="<div>演出回顾|重庆巡回</div><div>专辑发布|永无宁日RURBUR-Evening Sitdown Vision</div>">
+                +2
+            </button>
         </div >
         {% endfor %}
         {# 最后一列占宽用 #}
@@ -16,12 +23,43 @@
     </div>
     {# 乐手列表 #}
     <script>
+        let $coverArtistsWrapper=document.getElementById("coverArtistsWrapper");
+        let eShow=function(e){
+            if(e.target.tooltip)e.target.tooltip.show();
+        }
+        let eHide=function(e){
+            if(e.target.tooltip)e.target.tooltip.hide();
+        }
+        var tooltipTriggerList = [].slice.call($coverArtistsWrapper.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            let tooltip = new bootstrap.Tooltip(tooltipTriggerEl,{
+                boundary: $coverArtistsWrapper, // or document.querySelector('#boundary')
+                container:tooltipTriggerEl,//$coverArtistsWrapper.querySelector(".bs-content-listArtist"),
+                //trigger:"hover focus",
+                trigger:"manual",
+            })
+            tooltipTriggerEl.tooltip=tooltip;
+            tooltipTriggerEl.addEventListener('hidden.bs.tooltip', function (e) {
+                this.classList.remove("now");
+            })
+            tooltipTriggerEl.addEventListener('show.bs.tooltip', function (e) {
+                this.classList.add("now");
+            })
+            tooltipTriggerEl.addEventListener("touchstart",eShow);
+            tooltipTriggerEl.addEventListener("mouseenter",eShow);
+
+            tooltipTriggerEl.addEventListener("mouseleave",eHide);
+            //tooltipTriggerEl.addEventListener("touchcancel",tooltipTriggerEl.tooltip.show);
+            
+            return tooltip;
+        })
         let slideListArtist = new BetterScroll.createBScroll('.bs-wrapper-listArtist', {
             //specifiedIndexAsContent:1,
             disableMouse: false,
             disableTouch: false,
             mouseWheel: true,
             scrollX: true,
+            startX:-1,
             scrollY: false,
             //nestedScroll: {
             //    groupId: 'cover-scrollY'
@@ -36,9 +74,17 @@
             momentum: true,
             bounce: true,
             //stopPropagation: true,
+            click:true,
             probeType: 3,
             observeDOM: true ,// 开启 observe-dom 插件
         })
+        $coverArtistsWrapper.addEventListener("click",(e)=>{
+            if(e.isTrusted)return;
+            tooltipList.forEach((tooltip)=>{
+                tooltip.hide();
+            })
+            //$coverArtistsWrapper.querySelector(".noticeCnt.now").classList.remove("now")
+        },false)
         {# slideListArtist.refresh(); #}
         slideListArtist.on('contentChanged', (newContent) => {
             slideListArtist.refresh();

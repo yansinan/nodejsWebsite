@@ -72,6 +72,46 @@
 
     align-items: center;
 }
+#coverArtistsWrapper .noticeCnt.now{
+    filter: invert(100%);
+}
+#coverArtistsWrapper .tooltip{
+    filter: invert(100%);
+}
+#coverArtistsWrapper .tooltip .tooltip-arrow{
+    display: none;
+}
+#coverArtistsWrapper .tooltip .tooltip-inner{
+    display:flex;
+    flex-direction: column;
+    border:1px solid black;
+    border-bottom: none;
+    background-color: white;
+    border-radius: 0px;
+    padding:0;
+    color:black;
+    font-size: 0.85rem;
+    writing-mode: horizontal-tb;
+    max-width:13.85rem;
+    width:13.85rem;
+}
+#coverArtistsWrapper .tooltip .tooltip-inner div{
+    display:flex;
+    justify-content: flex-start;
+    align-items: baseline;
+    text-align: left;
+    border-bottom:1px solid black;
+    padding:0.42rem;
+    
+}
+#coverArtistsWrapper .tooltip .tooltip-inner div::before{
+    content:"";
+    flex: 0 0 20px;
+    height:20px;
+    margin-right: 0.47rem;
+    transform: rotate(-90deg);
+    background:url('/static/themes/images/bnArrowLine.svg') no-repeat center /20px 20px;/*兼容没测*/
+}
 
 @media (min-width: 768px) {
     /* 与导航的间距 */
@@ -86,5 +126,9 @@
         /* width:32.4vw; */
         /* padding-bottom: 6px; */
         height:1.2rem;
+    }
+    #coverArtistsWrapper .paddingTop-md .tooltip .tooltip-inner{
+        max-width:10rem;
+        width:10rem;
     }
 }
