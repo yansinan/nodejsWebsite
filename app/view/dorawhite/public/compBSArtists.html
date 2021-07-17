@@ -140,14 +140,14 @@
         }
         {# this.addEventListener("BS_COVER_LISTARTISTS",eInitTooltip); #}
         eInitTooltip();
-        slideListArtist.on("scroll",()=>{
-            if(!$coverArtistsWrapper.tooltipList)return;
-            $coverArtistsWrapper.tooltipList.forEach((tooltip)=>{
-                if(tooltip && tooltip.tip && !tooltip.tip.hidden){
-                    tooltip.update();
-                }
-            });
-        })
+        //slideListArtist.on("scroll",()=>{
+        //    if(!$coverArtistsWrapper.tooltipList)return;
+        //    $coverArtistsWrapper.tooltipList.forEach((tooltip)=>{
+        //        if(tooltip && tooltip.tip && !tooltip.tip.hidden){
+        //            tooltip.update();
+        //        }
+        //    });
+        //})
         slideListArtist.on('scrollStart', () => {
             if(!$coverArtistsWrapper.tooltipList)return;
             $coverArtistsWrapper.tooltipList.forEach((tooltip)=>{
