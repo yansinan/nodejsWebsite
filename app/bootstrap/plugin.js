@@ -19,5 +19,6 @@ module.exports = {
     betterScroll:['better-scroll.min.js',],//'better-scroll.js','betterScroll/core.min.js',
     ['avalon.js']: ['2.2.7/avalon.min.js'],
     layer: ['layer.js', 'theme/default/layer.css'],
-    ['font-awesome']: ['4.7.0/css/font-awesome.min.css']
+    ['font-awesome']: ['4.7.0/css/font-awesome.min.css'],
+    LazyLoad:['lazyload.min.js'],
 }

@@ -4,7 +4,19 @@
 <head>
     {# <meta name='viewport' content='initial-scale=1, viewport-fit=cover'> #}
     {% header adaptor="ie" %}
-
+    <script>
+        // Set the options globally
+        // to make LazyLoad self-initialize
+        window.lazyLoadOptions = {
+            threshold:800,
+            use_native: true
+        };
+        // Listen to the initialization event
+        // and get the instance of LazyLoad
+        window.addEventListener("LazyLoad::Initialized",(event)=>{
+                window.lazyLoadInstance = event.detail.instance;
+        },false);
+    </script>
     <!-- 引入组件库 -->
     <!-- Production version -->
     {# <script src="https://unpkg.com/@popperjs/core@2"></script> #}
@@ -155,7 +167,10 @@
         {% endblock %} 
         #}
     </div>
-    
+    <script
+    async
+    src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.4.0/dist/lazyload.min.js"
+    ></script>    
 </body>
 
 </html>
