@@ -15,17 +15,12 @@
         //    listenFlick:false,
         //},
         useTransition: true,
-        momentum: true,
+        momentum: false,
         //momentumLimitTime:100,//{# 快速滑动的时间小于xx开启#}
         //momentumLimitDistance:50,//{# 快速滑动的距离大于xx开启#}
         //deceleration:0.005,//{# momentum 动画的减速度 #}
         //swipeTime:300,//{# momentum 动画时长 #}
-        bounce: {
-            top: true,
-            bottom: true,
-            left: true,
-            right: true
-        },
+        bounce: false,
         mouseWheel: {
             speed: 50,
             invert: false,
@@ -33,8 +28,11 @@
         },
         observeDOM: true ,// 开启 observe-dom 插件
         stopPropagation: true,
+        //tap:"tap",
+        //click:true,
         probeType: 3,
     })
+
     {# 手机版使用坐标转换 #}
     this.bsTimelineBarWrapper.scroller.actions.hooks.on('coordinateTransformation', (transformateDeltaData) => { 
         // 获取用户手指移动的距离
@@ -175,6 +173,10 @@
         $listYears.forEach(($year,idx,$list)=>{
             that.bsTimelineBarWrapper.updateBnYear(paramTimeline,$year,idx,$list);
         })
+
+        {# 如果不是在时间轴页，不执行 #}
+        if(that.slideCover.getCurrentPage().pageY==0)return;
+
         {# 找到当前日期 #}
         that.bsTimelineBarWrapper.$docNow=that.bsTimelineBarWrapper.findDateNow(position);
         
@@ -184,7 +186,14 @@
         that.bsTimelineBarWrapper.checkEvent("BS_TIMELINE_BAR_DATE_CHANGE");
     }
     this.bsTimelineBarWrapper.on('scroll', updateTimelineBar);
-
+    {# 点击开始判断是否成员列表页，则goto时间轴 #}
+    this.bsTimelineBarWrapper.on("beforeScrollStart",()=>{
+        {# 首页点击进时间轴 #}
+        if(this.slideCover.getCurrentPage().pageY==0){
+            //this.bsTimelineBarWrapper.stop();
+            this.slideCover.goToPage(0,1);
+        }
+    })
     this.bsTimelineBarWrapper.scroller.animater.hooks.on('end', () => {
         this.bsTimelineBarWrapper.enable();
         console.log("底条animater.end停止");
@@ -209,7 +218,8 @@
     
     {# 时间轴scroll #}
     this.addEventListener("BS_MAIN_DATE_CHANGE",(e)=>{
-        {# 如果日期没变化，不额外触发，方式循环控制 #}
+        {# 如果日期没变化，不额外触发，防止循环控制 #}
+        if(!that.bsTimelineBarWrapper.$docNow)return;
         let strDateNow=that.bsTimelineBarWrapper.$docNow.id.replace("b","");
         if(e.detail.strDateNow == strDateNow)return;
         let $dateTo=document.getElementById("b"+e.detail.strDateNow);
@@ -220,7 +230,13 @@
         that.bsTimelineBarWrapper.scrollTo(posX,0,500);
     })
     {# 到时间轴页时才更新bar坐标 #}
-    this.addEventListener("BS_COVER_WILL_TIMELINE", (page)=>{
+    this.addEventListener("BS_COVER_TIMELINE", (page)=>{
         updateTimelineBar();
+        setTimeout(updateTimelineBar,500)
     })
+    this.addEventListener("BS_COVER_LISTARTISTS", (page)=>{
+        this.bsTimelineBarWrapper.scrollTo(0,0,500);
+    })
+
+
 </script>

@@ -36,7 +36,12 @@
   /* background-color: gainsboro; */
   transform :translateY(-100%) translateZ(0);
 }
-
+/* 占位列2个 */
+#timelineContent .container-mm.end{
+  width:50vw;
+  min-width:50vw;
+  height:100%;
+}
 #timelineContent .container-mm .month{
   font-size: 0.5rem;
   margin-bottom: 1.22rem;

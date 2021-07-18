@@ -165,6 +165,14 @@
 #svgTimelineBar .b-d.now{
     fill:#ccc!important;
 }
+
+/* 结尾占位日期空间 */
+#bsTimelineBarWrapper .bsTimelineBarContent .blank{
+    flex:0 0 calc(99.9vw - (var(--top-main-timeline-mobile,0px) - var(--width-footer-bn-mobile,20px) + var(--width-footer-bn-mobile,34px)));
+    min-width: calc(99.9vw - (var(--top-main-timeline-mobile,0px) - var(--width-footer-bn-mobile,20px) + var(--width-footer-bn-mobile,34px)));
+    height: 27px;
+    border-bottom: 1px dashed #ccc;
+}
 #dr-footer .timelineContainer .timelineYearContainer{
     display: flex;
     align-items: flex-start;

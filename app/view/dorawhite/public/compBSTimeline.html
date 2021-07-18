@@ -64,7 +64,9 @@
             </div>
         </div>
         {% endfor %}
-
+        {# 最后两个空列占位 #}
+        {# 月份行 手机隐藏#}
+        <div class="container-mm end d-flex flex-column"></div>
     </div>
     {# 时间轴控制 #}
     <script>
@@ -212,7 +214,7 @@
             momentum: true,
             //momentumLimitTime:100,//{# 快速滑动的时间小于xx开启#}
             //momentumLimitDistance:50,//{# 快速滑动的距离大于xx开启#}
-            //deceleration:0.005,//{# momentum 动画的减速度 #}
+            deceleration:0.005,//{# momentum 动画的减速度 #}
             //swipeTime:300,//{# momentum 动画时长 #}
             bounce: {
                 top: true,
