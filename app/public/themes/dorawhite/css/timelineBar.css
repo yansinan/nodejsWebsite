@@ -32,19 +32,19 @@
     flex-basis: 0px;
 }
 #dr-footer.listArtist.done .timelineContainer .timelineBn{
-    /* opacity:0; */
+    opacity:0;
     flex-basis: 0px;
 }
 #dr-footer.timeline.done .timelineContainer .timelineBn{
-    /* opacity:1; */
+    opacity:1;
     flex-basis: var(--width-footer-bn-mobile,34px);
 }
 #dr-footer .timelineContainer .timelineBn.next{
     transform: rotate(180deg);
 }
 #dr-footer .timelineContainer .timelineBn .bnArrow{
-    transition-property: transform;
-    transition-duration: 0.5s;
+    transition-property: transform opacity;
+    transition-duration: 3s;
     height:100%;
     width:100%;
     background-image: url("/static/themes/images/bnArrow.svg");
@@ -53,9 +53,16 @@
     background-size: 20px 20px;
 }
 #dr-footer.footerContainer .timelineContainer .timelineBn .bnArrow{
+    transition-delay: 0s;
+    opacity: 0;
     transform: translateX(-40px);
 }
 #dr-footer.footerContainer.done .timelineContainer .timelineBn .bnArrow{
+    opacity: 0;
+}
+#dr-footer.footerContainer.timeline.done .timelineContainer .timelineBn .bnArrow{
+    transition-delay: 0.5s;
+    opacity: 1;
     transform: translateX(0px);
 }
 

@@ -74,17 +74,24 @@
 </div>
 
 
-<div class="foot-float back-to-top" id="gotop">
+<div class="foot-float back-to-top" id="bnRubyEyes">
     {# <img class="btnRubyEyes glyphicon glyphicon-chevron-up" src=""></i> #}
     <div class="btnRubyEyes btnRubyEyes-md glyphicon glyphicon-chevron-up" data-bs-toggle="offcanvas" href="#offcanvasRight"></div>
 
 </div>
 
-<button class="foot-float bnTest" onclick="eClickTest()">
+<button id="bnArrowTimeline" class="foot-float bnTest" onclick="eClickTest()">
 
 </button>
 <script>
+    let $bnArrowTimeline=document.getElementById("bnArrowTimeline");
     function eClickTest(){
         this.slideCover.goToPage(0,this.slideCover.getCurrentPage().pageY==1?0:1);
     }
+    this.addEventListener("BS_COVER_TIMELINE", (page)=>{
+        $bnArrowTimeline.classList.add("d-none");
+    })
+    this.addEventListener("BS_COVER_WILL_LISTARTISTS", (page)=>{
+        $bnArrowTimeline.classList.remove("d-none");
+    })
 </script>

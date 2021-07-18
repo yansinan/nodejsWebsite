@@ -27,18 +27,20 @@
 .foot-float.bnTest{
     background-color: #fff;
     position: fixed;
-    width: 40px;
-    height: 40px;
+    width: 1.25rem;
+    height: 1.25rem;
     border-radius: 20px;
     cursor: pointer;
     -webkit-transition: .3s;
     transition: .3s;
     z-index: 1001;
     right:0.534rem;
-    top:60vh;
+    bottom:1.25rem;
+    
     display:flex;
     justify-content: center;
     align-items: center;
+    background: url(/static/themes/images/bnArrowLine.svg) center/1.25rem auto no-repeat ;
 
     box-shadow: none;
     border: none;
@@ -53,7 +55,6 @@
     display:flex;
     justify-content: center;
     align-items: center;
-
     box-shadow: none;
     border: none;
     overflow: visible;
