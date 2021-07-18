@@ -163,7 +163,7 @@
 }
 /* 测试用 */
 #svgTimelineBar .b-d.now{
-    fill:chartreuse!important;
+    fill:#ccc!important;
 }
 #dr-footer .timelineContainer .timelineYearContainer{
     display: flex;
@@ -184,7 +184,7 @@
     font-weight: normal;
     font-size:0.46rem;
     font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB", "Source Han Sans", "Noto Sans CJK Sc", "Microsoft YaHei", "Microsoft Jhenghei", sans-serif;
-    color: #000000;
+    
     /* line-height: 1.333rem; */
 
     width:0px;
@@ -200,11 +200,14 @@
 #dr-footer .timelineContainer .timelineYearContainer .timelineYear span{
     transform: translate(6px,32px);
     padding-right:13px;
+    color: #c2c2c2;
     /* border:1px solid green; */
     /* background-color: white; */
     /* -webkit-text-stroke: 2.0px white; */
 }
-
+#dr-footer .timelineContainer .timelineYearContainer .timelineYear.now span{
+    color: #000000;
+}
 /* 多余年份bar */
 #dr-footer .timelineContainer .timelineYearContainer .barContainer{
     width:0px;

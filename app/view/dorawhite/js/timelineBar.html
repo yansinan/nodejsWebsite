@@ -95,11 +95,15 @@
         let xOffset = $yearPos.x.baseVal.value + paramTimeline.position.x + paramTimeline.paddingLeft;
         let xTo=(paramTimeline.start+Math.round(xOffset));//$year.style.left-xOffset;
         
-
         {# z-index #}
-        if(xTo<paramTimeline.end && xTo>paramTimeline.start)$year.style["z-index"]=4000;
-        else if(xTo<paramTimeline.start)$year.style["z-index"]=4000-strYear;
-        else if(xTo>paramTimeline.end)$year.style["z-index"]=strYear;
+        if(xTo<=paramTimeline.stopEnd && xTo>=paramTimeline.stopStart){
+            $year.style["z-index"]=4000;
+        }else if(xTo<paramTimeline.stopStart){
+            $year.style["z-index"]=4000-strYear;
+        }else if(xTo>paramTimeline.stopEnd){
+            $year.style["z-index"]=strYear;
+        }
+
 
         {# 判断是否超出右停止位 #}
         xTo=Math.max(Math.min(xTo,paramTimeline.stopEnd),paramTimeline.stopStart);
@@ -121,6 +125,11 @@
         }
         {# 调整过左侧，最后确定自身坐标 #}
         $year.style.left=xTo+"px";
+        {# 当前年份字色变化 #}
+        if(xTo <= paramTimeline.stopEnd && xTo> paramTimeline.stopStart){
+            $year.classList.add("now");
+        }else $year.classList.remove("now")
+
         {# $year.style.opacity = ( xTo >= paramTimeline.endRight )?"0":"1"; #}
         {# $year.style.opacity = Math.abs(( xTo - paramTimeline.endRight )/paramTimeline.wYear); #}
         $year.style.opacity = Math.abs(( xTo - paramTimeline.stopEndLast )/paramTimeline.wYear);
