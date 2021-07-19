@@ -1,4 +1,21 @@
 /* base factor 16/37.5px=0.427   2.34 */  
+/* header详情弹出层 */
+.offcanvas-end{
+    width:100vw;
+}
+.offcanvas-header{
+    padding: 0.77rem 0.77rem;
+}
+.offcanvas-header .btn-close{
+    padding: .214rem .214rem;
+    margin-top: -.214rem;
+    margin-right: -.214rem;
+    margin-bottom: -.214rem;
+}
+.offcanvas-body{
+    padding: 0.77rem 0.77rem;
+}  
+
 .section {
     /* width: 10.054rem; */
     /* height: 34.214rem; */
@@ -8,7 +25,7 @@
   }
 .section span{
     font-size: 0.64rem;
-    font-family: PingFangSC-Regular;
+    /* font-family: PingFangSC-Regular; */
     color: rgba(0, 0, 0, 1);
     line-height: 0.88rem;
 }
@@ -18,10 +35,41 @@
     display: block;
     overflow-wrap: break-word;
     color: rgba(155, 155, 155, 0.8);
-    font-size: 0.426rem;
+    font-size: 0.615rem;
     letter-spacing: 0.02181817963719368px;
-    font-family: PingFangSC-Regular;
     line-height: 0.587rem;
     text-align: center;
     margin-top: 0.854rem;
+}
+
+@media (min-width: 768px) {
+/* header详情弹出层 */
+    .offcanvas-end{
+        width:65vw;
+    }
+    .offcanvas-header{
+        justify-content:flex-end;
+        padding: 0.427rem 0.427rem;
+    }
+    .offcanvas-header .icon-arrow.left{
+        display: none;
+    }
+    .offcanvas-header .btn-close{
+        padding: .214rem .214rem;
+        margin-top: -.214rem;
+        margin-right: -.214rem;
+        margin-bottom: -.214rem;
+    }
+    .offcanvas-body{
+        padding: 0.427rem 0.427rem;
+        padding-right: 3.67rem;
+    }  
+
+    .section span{
+        font-size: 0.667rem;
+    }
+    .section .foot {
+        font-size: 0.426rem;
+    }
+
 }

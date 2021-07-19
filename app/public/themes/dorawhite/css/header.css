@@ -522,22 +522,6 @@
     line-height: 0.56rem;
     margin-bottom:8px;
   }    
-/* header详情弹出层 */
-.offcanvas-end{
-    width:100vw;
-}
-.offcanvas-header{
-    padding: 0.427rem 0.427rem;
-}
-.offcanvas-header .btn-close{
-    padding: .214rem .214rem;
-    margin-top: -.214rem;
-    margin-right: -.214rem;
-    margin-bottom: -.214rem;
-}
-.offcanvas-body{
-    padding: 0.427rem 0.427rem;
-}  
 
 @media (min-width: 768px) {
   #offcanvasRightMenu .offcanvas-header {
