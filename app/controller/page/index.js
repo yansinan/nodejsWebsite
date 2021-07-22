@@ -82,6 +82,8 @@ class IndexController extends Controller {
         let timeLast=new Date().getTime();
         // 起始日期
         let dateFirst=new Date(timeLast);
+        // 起始日期的全年（后面日期只增加季度、年份、长度）
+        //let dateFirstYearEnd=moment(dateFirst).add(1,"year").startOf("year").toDate();
         // 终止日期
         let dateLast=new Date("2019/1/1");//new Date("2018/07/01");
         //生成概率:越小越小,初始500
@@ -132,9 +134,9 @@ class IndexController extends Controller {
             
             let m=dateTmp.getMonth()+1;
 
-            let isSeasonEnd=moment(dateTmp).endOf('quarter').isSame(moment(dateTmp),"date");
+            let isSeasonEnd=moment(dateTmp).startOf('quarter').isSame(moment(dateTmp),"date");
             // if(m%3==0 && dateTmp.getDate()==lastDateInMonth && m!=12){
-            if(isSeasonEnd && m!=12){
+            if(isSeasonEnd){
                 listIdxSeasons.push({x:posX,strTitle:m+"月"});
             }
             let isNewYear=moment(dateTmp).isSame(moment(dateTmp).startOf("year"),"date");
@@ -173,7 +175,7 @@ class IndexController extends Controller {
         
         let listImg=this.ctx.service.uploadFiles.listUrlImg();
 
-        for(let i=0 ; i<listIdxDays.length/3;i++){
+        for(let i=0 ; i<listIdxDays.length;i++){
             let _id=shortid.generate();
             let idxSubstring=Math.floor(Math.random()*doc.discription.length)
             let title=doc.discription.substring(idxSubstring,idxSubstring+10+Math.round(Math.random()*20));
