@@ -139,7 +139,7 @@ export default {
     },
     addContent() {
       this.$store.dispatch("content/showContentForm");
-      this.$router.push(this.$root.adminBasePath + "/content/addContent");
+      this.$router.push(this.$root.adminBasePath + "/content/add");
     },
     directUser() {
       this.$store.dispatch("content/showDirectUserForm");

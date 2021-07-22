@@ -26,9 +26,9 @@ module.exports = appInfo => {
             // 'templateConfig',
             // 'versionManage',
             // 'content',8900
-            // 'artist',//8888
+            //'artist',//8888
             // 'record',//8899
-            'show',//8899
+            //'show',//8899
             // 'contentTags',
             // 'contentCategory',
             // 'contentMessage',
@@ -71,6 +71,6 @@ module.exports = appInfo => {
         server_path: 'http://wx.z-core.cn:8791',
         server_api: 'http://wx.z-core.cn:8791/api',
         server_neteaseCloudMusicApi:"http://192.168.1.202:3000",
-        server_puppeteerApi:"http://puppeteer",
+        server_puppeteerApi:"http://puppeteer:8080",
     }
 };

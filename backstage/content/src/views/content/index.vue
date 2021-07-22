@@ -11,17 +11,19 @@
       <el-row class="dr-datatable">
         <el-col :span="24">
           <TopBar
+            :nameMod="nameMod"
             :device="device"
             type="content"
             :ids="selectlist"
             :pageInfo="contentList.pageInfo"
           ></TopBar>
           <DataTable
+            :nameMod="nameMod"
             :dataList="contentList.docs"
             :pageInfo="contentList.pageInfo"
             @changeContentSelectList="changeSelect"
           ></DataTable>
-          <Pagination :device="device" :pageInfo="contentList.pageInfo" pageType="content"></Pagination>
+          <Pagination :nameMod="nameMod" :device="device" :pageInfo="contentList.pageInfo" pageType="content"></Pagination>
         </el-col>
       </el-row>
     </div>
@@ -37,13 +39,16 @@ import Pagination from "../common/Pagination.vue";
 import { mapGetters, mapActions } from "vuex";
 import { initEvent } from "@root/publicMethods/events";
 
+import '@/set-public-path'
+
 export default {
   name: "index",
   data() {
     return {
       selectlist: [],
       sidebarOpened: true,
-      device: "desktop"
+      device: "desktop",
+      nameMod:nameMod,
     };
   },
   components: {

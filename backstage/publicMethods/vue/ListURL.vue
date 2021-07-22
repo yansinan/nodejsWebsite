@@ -54,7 +54,7 @@
         },
         value: {
             type:Array,
-            default:()=>([Object.assign({},objURLDefault)]),
+            default:()=>([]),
         },
     },
     data() {
@@ -261,6 +261,10 @@
           }
         });
       },      
-    }
+    },
+    //mounted() {
+    //  this.objToAdd=Object.assign({},objURLDefault);
+    //  this.value = [];
+    //}
   }
 </script>

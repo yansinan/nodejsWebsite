@@ -3,6 +3,12 @@
     <div class="main-container">
         <!--  @submit="eFormSubmit" -->
         <ContentForm :nameMod="nameMod" v-model="formState">
+          <template v-slot:top>
+            <el-form-item v-if="!formState.edit" :label="'公众号文章链接'">
+              <LinkWX v-model="formState.formData" />
+            </el-form-item>
+          </template>
+
           <template v-slot:leftMiddle>
             <!-- 日期&地点 -->
             <el-row v-if="formState.formData" :gutter="40" type="flex" justify="space-between" style="flex-wrap: wrap;">
@@ -105,7 +111,7 @@ export default {
     // },
   },
   computed: {
-    // ...computed,
+    ...computed,
     ...mapGetters(["contentCategoryList",]),//"regUserList","contentTagList", 
     ...mod.mapState({
       formState: state => state.formState,

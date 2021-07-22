@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import settings from "@root/publicMethods/settings";
-import Content from '@/views/content'
+import '@/set-public-path'
 
 Vue.use(Router)
 
@@ -12,17 +12,21 @@ const createRouter = () => new Router({
     y: 0
   }),
   routes: [{
-    path: settings.admin_base_path + '/content',
-    name: 'content',
-    component: Content
+    path: settings.admin_base_path + '/' + nameMod,
+    name: "list",
+    component:  () => import('@/views/content')
   }, {
-    path: settings.admin_base_path + '/content/addContent',
-    name: 'addContent',
-    component: () => import( /* webpackChunkName: "addContent" */ '@/views/content/contentForm.vue')
+    path: settings.admin_base_path + '/' + nameMod + '/add',
+    name: 'add',
+    component: () => import('@/views/content/contentForm.vue')
   }, {
-    path: settings.admin_base_path + '/content/editContent/:id',
-    name: 'editContent',
-    component: () => import( /* webpackChunkName: "editContent" */ '@/views/content/contentForm.vue')
+    path: settings.admin_base_path + '/' + nameMod + '/edit/:id',
+    name: 'edit',
+    component: () => import('@/views/content/contentForm.vue')
+  }, {
+    path: settings.admin_base_path + '/' + nameMod + '/editContent/:id',
+    name: 'edit',
+    component: () => import('@/views/content/contentForm.vue')
   }]
 })
 

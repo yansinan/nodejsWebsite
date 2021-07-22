@@ -42,3 +42,18 @@
     display: block
   }
 }
+
+// datePicker
+.el-date-editor .el-range-input{
+  flex:1;
+}
+.el-date-editor.el-input, .el-date-editor.el-input__inner {
+  min-width: 9rem;
+  width:auto!important;
+}
+.el-date-editor .el-range-separator{
+  width:auto!important;
+}
+.el-date-editor .el-range__close-icon{
+  width:auto!important;
+}

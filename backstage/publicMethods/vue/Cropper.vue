@@ -4,9 +4,9 @@
         <div slot="header" class="clearfix">
           <!-- <span class="el-upload__tip">只能上传jpg/png文件，上传前自动裁切</span> -->
           <el-button @click="eClickOpenImg" type="primary" plain style="width:100%;">上传<i class="el-icon-upload el-icon--right"></i></el-button>
+          <input v-show="false" type="file" multiple="" accept="image/png,image/gif,image/jpeg" @change="uploadImg" ref="inputFile"/>
         </div>
         <el-tooltip content="只能上传jpg/png文件，上传前自动裁切" placement="top" effect="light">
-          <input v-show="false" type="file" multiple="" accept="image/png,image/gif,image/jpeg" @change="uploadImg" ref="inputFile"/>
           <img v-if="srcPreview" :src="srcPreview" class="imgResult" style="" ref="imgPreview"/>
         </el-tooltip>
 
@@ -260,7 +260,7 @@ export default {
             that.src = URL.createObjectURL(blobImg);
             that.imgName = blobImg.name || "unknow."+blobImg.type.split("/")[1];
           }else{
-            that.handleClose();
+            that.handleClose.call(that);
           }
         },
         // 获取网络图片，相当于浏览网络文件;
@@ -311,7 +311,7 @@ export default {
                 // if(objData.data.path)this.$emit('on-success',objData);
                 // if(typeof _this["onSuccess"] === "function")_this["onSuccess"](objData)
                 if(_this.src)_this.$emit("input",_this.src);
-                _this.handleClose();
+                _this.handleClose.call(_this);
               }
           }).catch(e=>{
             debugger

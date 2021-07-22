@@ -105,6 +105,9 @@ export function initData(that){
             });
         } else {
             //初始化表單
+            that.showContentForm({
+                edit: false,
+            });
         }
     }
     that.$store.dispatch("contentCategory/getContentCategoryList");
@@ -193,6 +196,7 @@ export let methods={
                 if (that.formState.edit) {
                     updateOne(params,that.nameMod).then(result => {
                         if (result.status === 200) {
+                            localStorage.removeItem(that.$route.path.split("/")[1]);
                             that.backToList();
                             that.$message({
                                 message: that.$t("main.updateSuccess"),
@@ -211,6 +215,7 @@ export let methods={
                     addOne(params,that.nameMod).then(result => {
                         console.log("新增:",params,result);
                         if (result.status === 200) {
+                            localStorage.removeItem(that.$route.path.split("/")[1]);
                             that.backToList();
                             that.$message({
                                 message: that.$t("main.addSuccess"),
@@ -229,5 +234,25 @@ export let methods={
                 return false;
             }
         });
+    },
+}
+
+export let computed= {
+    classObj() {
+      return {
+        hideSidebar: !this.sidebarOpened,
+        openSidebar: this.sidebarOpened,
+        withoutAnimation: "false",
+        mobile: this.device === "mobile"
+      };
+    },
+    device(){
+        // 修改移动端标记
+        const {
+            body
+        } = document
+        const WIDTH = 992
+        const rect = body.getBoundingClientRect();
+        return (rect.width - 1 < WIDTH ? 'mobile' : 'desktop');
     },
 }
