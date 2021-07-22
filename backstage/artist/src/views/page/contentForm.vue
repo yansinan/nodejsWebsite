@@ -1,17 +1,9 @@
 <template>
   <div :class="classObj" class="dr-contentForm">
     <div class="main-container">
-      <el-form
-        :model="formState.formData"
-        :rules="rules"
-        ref="ruleForm"
-        label-width="120px"
-        class="demo-ruleForm"
-        :label-position="device == 'mobile' ? 'top' : 'top'"
-      >
-        <!-- 标题&缩略图 -->
-        <el-row :gutter="40" type="flex" justify="space-between" style="flex-wrap: wrap;">
-          <el-col :lg="12" :xl="14">
+        <!--  @submit="eFormSubmit" -->
+        <ContentForm :nameMod="nameMod" v-model="formState">
+          <template v-slot:leftTop>
             <!-- 乐队名 -->
             <el-form-item :label="$t(nameMod + '.name')" prop="name">
               <el-input size="small" v-model="formState.formData.name" ref="inputName" maxlength="50" show-word-limit>
@@ -20,11 +12,9 @@
                 </el-tooltip>            
               </el-input>
             </el-form-item>
-            <!-- 乐队别名 -->
-            <el-form-item prop="alias">
-              <el-input size="small" v-model="formState.formData.alias" :placeholder="'别名或英文名'" maxlength="50" show-word-limit><template slot="suffix">{{$t(nameMod + '.nameAlias')}}</template></el-input>
-            </el-form-item>
+          </template>
 
+          <template v-slot:leftMiddle>
             <!-- 日期&地点 -->
             <el-row v-if="formState.formData" :gutter="40" type="flex" justify="space-between" style="flex-wrap: wrap;">
               <el-col :lg="16">
@@ -59,86 +49,16 @@
               </el-col> 
             </el-row>
             <!-- 乐队成员 -->
-            <SelectIds :label="this.$t(nameMod+'.listMembers')" @change="eChangeMember" :listIds="formState.formData.listMembers" :nameMode="nameMod" apiAdd="/manage/regUser/addOneName" apiFind="/manage/regUser/findByName" :initTag="createMember"/>
-            <!-- 标签 -->
-            <SelectIds :label="this.$t(nameMod+'.tags')" @change="eChangeTag" :listIds="formState.formData.tags" :nameMode="nameMod" :initTag="createTag" />
+            <SelectIds :label="$t(nameMod+'.listMembers')" @change="eChangeMember" :listIds="formState.formData.listMembers" :nameMode="nameMod" apiAdd="/manage/regUser/addOneName" apiFind="/manage/regUser/findByName" :initTag="createMember"/>
+          </template>
 
-            <el-form-item prop="discription">
-              <el-input type="textarea" v-model="formState.formData.discription" maxlength="300" show-word-limit :autosize="{minRows: 4, maxRows: 10 }"></el-input>
-              <div class="el-select-suffix el-input--small el-input__suffix"><span class=" el-input__suffix-inner">{{$t('contents.discription')}}</span></div>
-            </el-form-item>
-
-            <slot name="leftBottom"></slot>
-          </el-col> 
-          <el-col :lg="12" :xl="10">
-            <Cropper 
-              :nameMod="nameMod"
-              v-model="formState.formData.sImg" 
-              :label="$t('contents.sImg')" 
-              prop="sImg"></Cropper>
-          </el-col> 
-        </el-row>
-
-
-        <el-form-item :label="$t('contents.comments')" prop="comments">
-          <!-- <Ueditor @ready="editorReady" ref="ueditor"></Ueditor> -->
-          <vue-ueditor-wrap
-            class="editorForm"
-            @ready="editorReady"
-            v-model="formState.formData.comments"
-            :config="editorConfig"
-          ></vue-ueditor-wrap>
-        </el-form-item>
-
-        <el-row :gutter="40" type="flex" justify="space-between" style="flex-wrap: wrap;">
-          <el-col :lg="18" style="min-width: min-content;">
-            <!-- 关键词 -->
-            <el-form-item label="" prop="keywords">
-              <el-input v-model="formState.formData.keywords"><template slot="suffix">关键字</template></el-input>
-            </el-form-item>
-          </el-col> 
-          <el-col style="min-width: min-content;max-width:max-content;text-align: right;">
-            <!-- 日期 :label="$t('contents.date')" -->
-            <el-form-item prop="date">
-              <el-date-picker
-                v-model="formState.formData.date"
-                type="date"
-                format="yyyy 年 MM 月 dd 日"
-                value-format="yyyy-MM-dd"
-                :placeholder="$t('contents.date')" >
-              </el-date-picker>
-              <div class="el-select-suffix el-input--small el-input__suffix"><span class=" el-input__suffix-inner">{{$t('contents.date')}}</span></div>
-
-            </el-form-item>
-          </el-col> 
-        </el-row>
-        <!-- 
-        <div v-if="formState.formData.type == '1'">
-          <SelectIds :label="this.$t(nameMod+'.tags')" @change="eChangeTag" :listIds="formState.formData.tags" :nameMode="nameMod" :initTag="createTag" />
-          <el-form-item label="乐队关键字" prop="keywords">
-            <el-input size="small" v-model="formState.formData.keywords"></el-input>
-          </el-form-item>
-        </div>
-         -->
-        <ListURL v-model="formState.formData.listLinks" label="其他链接" ref="listLinks"></ListURL>
-        <!-- 热门歌曲：相关链接 -->
-        <ListURL v-model="formState.formData.listHotMusics" label="热门歌曲"></ListURL>
-
-        <!-- dr-submitContent
-        <el-form-item class="" style="text-align:right;">
-          <el-button size="medium" type="primary" @click="submitForm('ruleForm')">{{formState.edit ? $t('main.form_btnText_update') : $t('main.form_btnText_save')}}</el-button>
-          <el-button size="medium" @click="backToList">{{$t('main.back')}}</el-button>
-        </el-form-item>
-         -->
-        <!-- 保存返回 -->
-        <el-form-item class="" style="text-align:right;"><!-- dr-submitContent -->
-          <el-button size="medium" @click="backToList">{{$t('main.back')}}</el-button>
-          <el-button size="medium" type="info" plain @click="submitForm('ruleForm','0')">撤回</el-button>
-          <!-- <el-button size="medium" type="primary" @click="submitForm('ruleForm','1')">{{formState.edit ? $t('main.form_btnText_update') : $t('main.form_btnText_save')}}</el-button> -->
-          <el-button size="medium" type="primary" @click="submitForm('ruleForm','1')">存草稿</el-button>
-          <el-button size="medium" type="success" @click="submitForm('ruleForm','2')">发布</el-button>
-        </el-form-item>
-      </el-form>
+          <template v-slot:footer>
+            <!-- 相关链接 -->
+            <ListURL v-model="formState.formData.listLinks" label="其他链接" ref="listLinks"></ListURL>
+            <!-- 热门歌曲 -->
+            <ListURL v-model="formState.formData.listHotMusics" label="热门歌曲"></ListURL>
+          </template>
+        </ContentForm>
     </div>
 
     <!-- 网易云结果 -->
@@ -174,7 +94,6 @@
 
 <script>
 import '@/set-public-path'
-import VueUeditorWrap from "vue-ueditor-wrap";
 import { initEvent } from "@root/publicMethods/events";
 import {methods,initData,components,data,props,computed} from "@root/publicMethods/vue/contentForm";
 
@@ -189,99 +108,20 @@ export default {
   data() {
     return {
       ...data,
-      editorConfig: {
-        // 编辑器不自动被内容撑高
-        autoHeightEnabled: false,
-        // 初始容器高度
-        initialFrameHeight: 240,
-        // 初始容器宽度
-        initialFrameWidth: "100%",
-        // 上传文件接口（这个地址是我为了方便各位体验文件上传功能搭建的临时接口，请勿在生产环境使用！！！）
-        serverUrl: "/api/upload/ueditor",
-        // UEditor 资源文件的存放路径，如果你使用的是 vue-cli 生成的项目，通常不需要设置该选项，vue-ueditor-wrap 会自动处理常见的情况，如果需要特殊配置，参考下方的常见问题2
-        UEDITOR_HOME_URL: this.$root.staticRootPath + "/plugins/ueditor/"
-      },
-      rules: {
-        sImg: [
-          {
-            required: true,
-            message: this.$t("validate.selectNull", {
-              label: "缩略图"
-            }),
-            trigger: "blur"
-          }
-        ],
-        name: [
-          {
-            required: true,
-            message: this.$t("validate.inputNull", {
-              label: this.$t("contents.name")
-            }),
-            trigger: "blur"
-          },
-          {
-            min: 1,
-            max: 50,
-            message: this.$t("validate.rangelength", { min: 1, max: 50 }),
-            trigger: "blur"
-          }
-        ],
-        tags: [
-          {
-            validator: (rule, value, callback) => {
-              if (_.isEmpty(value)) {
-                callback(
-                  new Error(
-                    this.$t("validate.selectNull", {
-                      label: this.$t("contents.tags")
-                    })
-                  )
-                );
-              } else {
-                callback();
-              }
-            },
-            trigger: "change"
-          }
-        ],
-        discription: [
-          {
-            required: true,
-            message: this.$t("validate.inputNull", {
-              label: this.$t("contents.discription")
-            }),
-            trigger: "blur"
-          },
-          {
-            min: 5,
-            max: 300,
-            message: this.$t("validate.rangelength", { min: 5, max: 100 }),
-            trigger: "blur"
-          }
-        ],
-        comments: [
-          {
-            required: true,
-            message: this.$t("validate.inputNull", {
-              label: this.$t("contents.comments")
-            }),
-            trigger: "blur"
-          },
-          {
-            min: 5,
-            message: this.$t("validate.rangelength", { min: 5, max: 100000 }),
-            trigger: "blur"
-          }
-        ],
-      }, 
+      nameMod:nameMod,
       objDataNCM:{isPop:false,isFetched:false},//用于存储网易云抓取结果
     };
   },
   components: {
     ...components,
+    ContentForm: () => import('@root/publicMethods/vue/ContentForm.vue'),//表格头部
+
   },
   methods: {
-    ...methods,
+    //...methods,
+    backToList:methods.backToList,
+    updateKeywords:methods.updateKeywords,
+    getLocalContents:methods.getLocalContents,
 
     //获取表单信息
     ...mod.mapActions(["showContentForm"]),// 将 `this.showContentForm(params)` 映射为 `this.$store.dispatch(nameMod+'/incrementBy', params)`
@@ -299,24 +139,7 @@ export default {
       this.formState.formData.listMembers=e.listIds;
       this.updateKeywords(e.listObjDiff,e.strAction=="delete");
     },
-    // SelectIds变化;
-    // {
-    //     listObjDiff:listObjDiff,
-    //     listIds:listIds,
-    //     strAction:(isAdd?"add":"delete")
-    // }
-    eChangeTag(e){
-      this.formState.formData.tags=e.listIds;
-      this.updateKeywords(e.listObjDiff,e.strAction=="delete");
-    },
-    // 创建新标签时上传的基本数据
-    createTag(v){
-      return {
-          name:v,
-          comments:"即时创建",
-          alias:v,
-      }
-    },
+
     // 名字改变，搜索网易云
     eBnFetchNCM(e){
       let that=this;
@@ -354,7 +177,7 @@ export default {
       that.formState.formData.sImg=(that.formState.formData.sImg && that.formState.formData.sImg!="/static/upload/images/defaultImg.jpg")?that.formState.formData.sImg:(that.objDataNCM.sImg || "");
       that.formState.formData.discription=that.formState.formData.discription?that.formState.formData.discription:(that.objDataNCM.discription || "");
       that.formState.formData.alias=that.formState.formData.alias?that.formState.formData.alias:(that.objDataNCM.alias || "");
-      that.formState.formData.comments=that.formState.formData.comments?that.formState.formData.comments:(that.objDataNCM.comments.txt || "");
+      that.formState.formData.comments=that.formState.formData.comments?that.formState.formData.comments:(that.objDataNCM.comments.txt || that.formState.formData.discription);
       let isLinked=that.formState.formData.listLinks.find(v=>(v.url==that.objDataNCM.link));
       if(!isLinked)that.$refs.listLinks.eAddURL(that.objDataNCM.link);
       console.warn("网易云音乐数据自动填充",that.objDataNCM);

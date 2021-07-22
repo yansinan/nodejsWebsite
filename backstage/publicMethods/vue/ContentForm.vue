@@ -8,17 +8,16 @@
         size="medium"
         :label-position="device == 'mobile' ? 'top' : 'top'"
       >
-        <el-form-item v-if="!formState.edit" :label="'公众号文章链接'">
-          <LinkWX v-model="formState.formData" />
-        </el-form-item>
-
+        <slot name="top"></slot> 
         <!-- 标题&缩略图 -->
         <el-row :gutter="40" type="flex" justify="space-between" style="flex-wrap: wrap;">
           <el-col :lg="12" :xl="14">
             <!-- 大标题 -->
-            <el-form-item prop="name">
-              <el-input v-model="formState.formData.name" maxlength="50" show-word-limit><template slot="suffix" style="color:red;">{{$t(nameMod + '.name')}}</template><!-- <label slot="suffix" class="el-form-item__label">{{$t(nameMod + '.name')}}</label> --></el-input>
-            </el-form-item>
+            <slot name="leftTop">
+              <el-form-item prop="name">
+                <el-input v-model="formState.formData.name" maxlength="50" show-word-limit><template slot="suffix" style="color:red;">{{$t(nameMod + '.name')}}</template><!-- <label slot="suffix" class="el-form-item__label">{{$t(nameMod + '.name')}}</label> --></el-input>
+              </el-form-item>
+            </slot>
             <!-- 副标题 -->
             <el-form-item prop="alias">
               <el-input v-model="formState.formData.alias" maxlength="50" show-word-limit><template slot="suffix">{{$t(nameMod + '.nameAlias')}}</template></el-input>
