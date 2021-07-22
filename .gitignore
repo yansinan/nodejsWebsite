@@ -7,7 +7,7 @@ coverage/
 run/
 .DS_Store
 *.swp
-*.vscode
+# *.vscode
 package-lock.json
 # app/public/upload
 
@@ -23,5 +23,4 @@ app/public/upload
 .npminstall_tarball
 .config
 .ash_history
-.vscode
 .local

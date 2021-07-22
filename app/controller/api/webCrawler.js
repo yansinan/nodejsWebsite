@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-02-16 22:53:59 
  * @Last Modified by: dr
- * @Last Modified time: 2021-02-17 03:55:10
+ * @Last Modified time: 2021-04-02 19:07:25
  */
 
 const Controller = require('egg').Controller;
@@ -53,6 +53,32 @@ class UserController extends Controller {
             });
         }
             
+    }
+    async fetchWXImg(){
+        const {
+            ctx,
+            app
+        } = this;
+        let service=ctx.service[SERVICE_NAME];
+        try {
+            let params=ctx.params;
+            let request=ctx.req;
+            let search=new URL(request.url, `http://${request.headers.host}`).search.split("?")[1];
+            // ctx.redirect(this.app.config.server_puppeteerApi+"/getImg/"+ctx.params[0])
+            
+            let res=await Axios.get(this.app.config.server_puppeteerApi+`/getImg/${params.typeId}/${params.id}/${params.size}?${search}`,{ params:ctx.query,responseType: 'arraybuffer'});
+
+            ctx.set('Content-Type', res.headers["content-type"]);
+            // this.ctx.set('Content-Type', 'image/jpeg');
+            // debugger
+            ctx.body = res.data;
+        } catch (error) {
+            debugger;
+            ctx.helper.renderFail(ctx, {
+                message: error.message,
+                error,
+            });
+        }        
     }
 }
 

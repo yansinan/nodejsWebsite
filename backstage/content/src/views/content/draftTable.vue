@@ -3,12 +3,12 @@
     <el-dialog
       :xs="20"
       :sm="20"
-      :md="4"
-      :lg="4"
-      :xl="4"
+      :md="8"
+      :lg="8"
+      :xl="8"
       class="cover-dialog"
       title="回收站"
-      width="60%"
+      width="80%"
       :visible.sync="dialogState.show"
       :close-on-click-modal="false"
     >

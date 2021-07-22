@@ -205,18 +205,28 @@ export default {
             let time=new Date();
             let srcOrg=img.src;
             img.type='image/jpeg';
+            // return;
+            // img.crossOrigin = "Anonymous";
             imgFit(img,targetWidth,targetHeight).then(resSrc=>{
                 img.srcOrg=img.src;
+                img.crossOrigin=undefined;
                 img.src=resSrc.src;
                 img.blob=resSrc.blob;
                 // objToChange.blob=resSrc.blob;
                 // objToChange.isFitted=true;
                 // img.src= resSrc;
-                debugger;
+                // debugger;
                 console.log("图片裁切完成",img.src,(new Date()-time),typeSrc)
             });//网易云MV图尺寸628,353
             
-        },        
+        },
+        // eImgErr(e){
+        //     let that=this;
+        //     let img=e.target;
+        //     let src=img.src;
+        //     // img.crossorigin=undefine;
+        //     // img.src=img.src+"&nocrossorigin";
+        // },    
     }
 }
 </script>
