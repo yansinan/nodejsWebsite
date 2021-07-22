@@ -87,7 +87,7 @@ export default {
       })
       .then(result => {
         if (result.status === 200) {
-          this.$store.dispatch(this.nameMod+"/list");
+          this.$store.dispatch(this.nameMod+"/getList",{mod:nameMod});
           this.$message({
             message: `${this.$t("main.scr_modal_del_succes_info")}`,
             type: "success"

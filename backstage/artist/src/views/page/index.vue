@@ -19,7 +19,7 @@
 <script>
 import '@/set-public-path'
 import DataTable from "./dataTable.vue";
-import TopBar from "../common/TopBar.vue";
+import TopBar from "@root/publicMethods/vue/TopBar.vue";
 import Pagination from "../common/Pagination.vue";
 import { mapGetters, mapActions,createNamespacedHelpers} from "vuex";
 import { initEvent } from "@root/publicMethods/events";

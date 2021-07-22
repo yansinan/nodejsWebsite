@@ -93,6 +93,11 @@ const actions = {
     list(params,params.mod).then((result) => {
       result.data.docs.forEach(v=>{
         if(!v.listRecords)v.listRecords=[]
+        if(!v.listImages)v.listImages=[]
+        if(!v.listVideos)v.listVideos=[]
+        if(!v.listHotMusics)v.listHotMusics=[]
+        if(!v.listLinks)v.listLinks=[]
+        if(!v.listDateDur)v.listDateDur=[]
       })
       commit("GET_LIST", result.data)
     }).catch(error=>{
