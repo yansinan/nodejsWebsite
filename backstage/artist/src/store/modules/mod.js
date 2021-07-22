@@ -34,10 +34,19 @@ const defautlFormData={
   listVideos:[],
   listImages:[],
 }
+function initDefautlFormData(){
+  return Object.assign({},defautlFormData,{
+    listDateDur:[],
+    listHotMusics:[],
+    listLinks:[],
+    listVideos:[],
+    listImages:[],    
+  })
+}
 const state = {
   formState: {
     edit: false,
-    formData: defautlFormData,
+    formData: initDefautlFormData(),
   },
   dataList: {
     pageInfo: {},
@@ -52,11 +61,10 @@ const state = {
   //   docs:[],
   // }
 }
-
 const mutations = {
   FORMSTATE(state, formState) {
     state.formState.edit = formState.edit;
-    state.formState.formData = Object.assign({},defautlFormData, formState.formData);
+    state.formState.formData = Object.assign(initDefautlFormData(), formState.formData);
   },
   GET_LIST(state, dataList) {
     state.dataList = dataList
@@ -72,11 +80,11 @@ const actions = {
     commit
   }, params = {
     edit: false,
-    formData: defautlFormData
+    formData: initDefautlFormData()
   }) => {
     commit("FORMSTATE", {
       edit: params.edit || false,
-      formData: params.isInit?defautlFormData:params.formData
+      formData: params.isInit?initDefautlFormData():params.formData
     })
   },
   getList({
