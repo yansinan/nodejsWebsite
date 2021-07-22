@@ -322,8 +322,9 @@ class ServicePlugin extends Service {
             app
         } = this;            
         //存放路径
-        let options = !_.isEmpty(app.config.doraUploadFile.uploadFileFormat) ? app.config.doraUploadFile.uploadFileFormat : {};
-        const root = options.upload_path || (process.cwd() + '/app/public/upload/images');
+        // let options = !_.isEmpty(app.config.doraUploadFile.uploadFileFormat) ? app.config.doraUploadFile.uploadFileFormat : {};
+        // const root = options.upload_path || (process.cwd() + '/app/public/upload/images');
+        const root = (process.cwd() + '/app/public/upload/images');
 
         let listFilePathTree=[];
         listFilePathTree=getListFile(root,listFilePathTree);
