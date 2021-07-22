@@ -131,7 +131,7 @@
 <script>
     import '@/set-public-path'
     import VueUeditorWrap from "vue-ueditor-wrap";
-    import {methods,initData,components,data,props} from "@root/publicMethods/vue/contentForm";
+    import {methods,initData,components,data,props,computed} from "@root/publicMethods/vue/contentForm";
 
     import _ from "lodash";
     // v-model nameMod
@@ -255,6 +255,7 @@
         }
     },
     computed: {
+        ...computed,
         formState(){return this.value}
     },
     methods: {

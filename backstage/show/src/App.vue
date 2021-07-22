@@ -1,5 +1,5 @@
 <template>
-  <div :id="nameMod+'-app'" class=“vue-app”>
+  <div :id="nameMod+'-app'" class="manageMainOuter">
     <router-view />
   </div>
 </template>

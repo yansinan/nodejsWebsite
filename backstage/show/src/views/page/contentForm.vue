@@ -105,7 +105,7 @@ export default {
     // },
   },
   computed: {
-    // ...computed,
+    ...computed,
     ...mapGetters(["contentCategoryList",]),//"regUserList","contentTagList", 
     ...mod.mapState({
       formState: state => state.formState,

@@ -231,3 +231,23 @@ export let methods={
         });
     },
 }
+
+export let computed= {
+    classObj() {
+      return {
+        hideSidebar: !this.sidebarOpened,
+        openSidebar: this.sidebarOpened,
+        withoutAnimation: "false",
+        mobile: this.device === "mobile"
+      };
+    },
+    device(){
+        // 修改移动端标记
+        const {
+            body
+        } = document
+        const WIDTH = 992
+        const rect = body.getBoundingClientRect();
+        return (rect.width - 1 < WIDTH ? 'mobile' : 'desktop');
+    },
+}
