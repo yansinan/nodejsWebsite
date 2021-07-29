@@ -45,6 +45,46 @@ class IndexController extends Controller {
         //最终渲染
         await ctx.renderPageData(pageData);
     }
+    // 关于我们
+    async getDataAbout(){//about___8hIKx4Ulz
+        const ctx = this.ctx;
+
+        let strCategory = ctx.params.cate1 || "about";
+        let typeId=ctx.params.typeId || "";
+        // let current = ctx.params.current || "last";
+        if (!shortid.isValid(typeId)) {
+            let resCategory = false;
+            // 优先按id查找类别，没有则按名称查找
+            try {
+                resCategory=await ctx.service.contentCategory.item(ctx, {
+                    query: {
+                        defaultUrl: strCategory
+                    }
+                });
+            } catch (err) {
+                ctx.helper.renderFail(ctx, {
+                    message: err
+                });
+            }
+            typeId = resCategory._id || "";
+        }
+        if (!shortid.isValid(typeId)){
+            ctx.redirect("/");
+            return;
+        }        
+        // 列表栏目中最新内容
+        let listDocs=(await ctx.helper.reqJsonData("content/getList",{typeId}));
+        if (!listDocs.docs || listDocs.docs.length==0) {
+            ctx.redirect("/");
+            return;
+        }
+        
+        listDocs=listDocs.docs;
+        let post = listDocs[0];//(await ctx.helper.reqJsonData('content/getContent', { id: current })).comments;
+        //最终渲染
+        ctx.body=post.comments;
+        // await ctx.renderPageData(discription);
+    }
     // 测试新的复杂滚动首页
     // 生成伪数据
     getTestData(listTagsAll){
