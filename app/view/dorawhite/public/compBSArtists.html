@@ -5,9 +5,9 @@
         {# 乐队名列表 #}
         {# <h1 class="display-1">RUBY</h1> #}
         <div class="artist artist-md d-flex align-items-center ">
-            <a href="{{artist.url}} " target="_blank ">
+            <button class="name btn btn-link" data-dr-url="/artist/{{artist.id}}.html" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight">
                 {{artist.name}}
-            </a>
+            </button>
             <button 
                 tabindex="0"
                 class="noticeCnt d-flex flex-shrink-0 justify-content-center border border-1 border-dark rounded-circle" 
@@ -31,7 +31,7 @@
             disableTouch: false,
             mouseWheel: true,
             scrollX: true,
-            startX:-1,
+            //startX:-1,
             scrollY: false,
             //nestedScroll: {
             //    groupId: 'cover-scrollY'
@@ -47,6 +47,8 @@
             bounce: true,
             //stopPropagation: true,
             click:true,
+            //tap:"tap",
+            //preventDefaultException:{ tagName: /^(INPUT|TEXTAREA|BUTTON|SELECT|AUDIO|A)$/},
             probeType: 3,
             observeDOM: true ,// 开启 observe-dom 插件
         })

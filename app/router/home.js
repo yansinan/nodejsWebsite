@@ -18,10 +18,14 @@ module.exports = app => {
 
     router.get("/page/:current.html", controller.page.home.getDataForIndexPage);
 
+    // 静态介绍入口
+    router.get("/about___", controller.page.detail.getDataAbout);
+    router.get("/about___:typeId?", controller.page.detail.getDataAbout);
+
     // 内容详情入口
     router.get("/details/:id.html", controller.page.home.getDataForContentDetails);
     // 艺术家详情
-    router.get("/artist/:id.html", controller.page.home.getDataForArtistDetails);
+    router.get("/artist/:id.html", controller.page.detail.getDataForArtistDetails);
     //检索艺术家的专辑
     router.get("/record/artist/:idArtist", controller.api.record.list);
     // 专辑详情

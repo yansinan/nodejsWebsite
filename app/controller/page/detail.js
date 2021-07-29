@@ -1,0 +1,109 @@
+const Controller = require('egg').Controller;
+const _ = require('lodash');
+const shortid = require('shortid');
+const pkg = require('@root/package.json')
+const validator = require('validator')
+const captcha = require('trek-captcha')
+const path = require('path')
+const fs = require('fs')
+const qr = require('qr-image')
+const moment = require('moment')
+
+class IndexController extends Controller {
+
+    // 关于我们
+    async getDataAbout(){//about___8hIKx4Ulz
+        const ctx = this.ctx;
+
+        let strCategory = ctx.params.cate1 || "about";
+        let typeId=ctx.params.typeId || "";
+        // let current = ctx.params.current || "last";
+        if (!shortid.isValid(typeId)) {
+            let resCategory = false;
+            // 优先按id查找类别，没有则按名称查找
+            try {
+                resCategory=await ctx.service.contentCategory.item(ctx, {
+                    query: {
+                        defaultUrl: strCategory
+                    }
+                });
+            } catch (err) {
+                ctx.helper.renderFail(ctx, {
+                    message: err
+                });
+            }
+            typeId = resCategory._id || "";
+        }
+        if (!shortid.isValid(typeId)){
+            ctx.helper.renderSuccess(ctx,{data:false,message:"没有找到栏目"});
+            return;
+        }        
+        // 列表栏目中最新内容
+        let listDocs=(await ctx.helper.reqJsonData("content/getList",{typeId}));
+        if (!listDocs.docs || listDocs.docs.length==0) {
+            ctx.helper.renderSuccess(ctx,{data:false,message:"栏目没有找到内容"});
+            return;
+        }
+        
+        listDocs=listDocs.docs;
+        let post = listDocs[0];//(await ctx.helper.reqJsonData('content/getContent', { id: current })).comments;
+        //最终渲染
+        ctx.helper.renderSuccess(ctx,{data:post});
+        //ctx.body=post.comments;
+        // await ctx.renderPageData(discription);
+    }
+    // 艺术家详情
+    async getDataForArtistDetails() {
+        const ctx = this.ctx;
+        let contentId = ctx.params.id;
+        if (contentId) {
+            if (!shortid.isValid(contentId)) {
+                ctx.redirect("/");
+            } else {
+                // 挂载钩子
+                await this.app.hooks(ctx, 'messageBoard', {
+                    contentId
+                });
+                // ctx.pageType = "artist"
+                // 获取通用页面信息
+                let {pageData,defaultTemp}=await ctx.getInitPageData("artist");//
+                
+                //数据提取、修改标题；需要根据post信息修改内容：pageData.post,pageData.site,pageData.ogData,ctx.tempPage
+                pageData.post = await ctx.helper.reqJsonData('artist/get', { id: contentId })
+                if (!_.isEmpty(pageData.post)) {
+                    // 更改文档meta
+                    pageData.site.title = pageData.post.name + ' '+ pageData.post.alias + ' | ' + pageData.site.title;
+                    pageData.site.discription = pageData.post.discription;
+                    // 获取文档所属类别下的分类列表
+                    // pageData.currentCateList = await ctx.helper.reqJsonData('contentCategory/getCurrentCategoriesById', {
+                    //     contentId: pageData.post._id
+                    // });
+                    let siteDomain = pageData.site.configs.siteDomain;
+                    pageData.ogData.url = siteDomain + pageData.post.url;
+                    if (pageData.post.sImg && (pageData.post.sImg).indexOf('defaultImg.jpg') < 0) {
+                        pageData.ogData.img = siteDomain + pageData.post.sImg;
+                    }
+                    // let parentCateTemp = "";//pageData.post.categories[0].contentTemp;
+                    // ctx.tempPage = ctx.getCateOrDetailTemp(defaultTemp, parentCateTemp, 'detail');
+
+                    // TODO：不要硬编码
+                    // 校验模板的真实路径
+                    let themePath = this.app.config.temp_view_forder + defaultTemp.alias + '/';
+                    let currentPath="2-stage-artist" + "/" + "detail.html"
+                    ctx.tempPage = fs.existsSync(themePath + currentPath)?currentPath:"2-stage-default/detail.html";
+                    
+                } else {
+                    throw new Error(ctx.__('label_page_no_power_content'));
+                }
+                //最终渲染
+                ctx.tempPage=pageData.staticforder + '/' + ctx.tempPage;
+                let dom=await ctx.renderView(ctx.tempPage, pageData);
+                ctx.helper.renderSuccess(ctx,{data:dom});
+            }
+        } else {
+            ctx.redirect("/");
+        }
+    }
+}
+
+module.exports = IndexController;

@@ -12,10 +12,6 @@ module.exports = app => {
     router.post('/api/admin/doLogin', controller.api.admin.loginAction);
     router.get('/api/systemConfig/getConfig', controller.api.systemConfig.list)
 
-    // 静态介绍入口
-    router.get("/about___", controller.page.index.getDataAbout);
-    router.get("/about___:typeId?", controller.page.index.getDataAbout);
-    
     //ApiRouters
     // 艺人
     let API="artist";

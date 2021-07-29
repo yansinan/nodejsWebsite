@@ -43,10 +43,29 @@
     /* height:calc(min(1.8rem,(100%/12))); */
     /* height:1.8rem; */
     flex:0 0 1.5rem;
+    
     min-height:1.2rem;
     max-height:1.8rem;
+    height: fit-content;
+
 }
-#coverArtistsWrapper .artist a{
+#coverArtistsWrapper .artist .btn:active, 
+#coverArtistsWrapper .artist .btn:focus, 
+#coverArtistsWrapper .artist .btn:active:focus, 
+#coverArtistsWrapper .artist .btn.active:focus,
+#coverArtistsWrapper .artist .btn.focus, 
+#coverArtistsWrapper .artist .btn:active.focus, 
+#coverArtistsWrapper .artist .btn.active.focus {
+	outline: none;
+    /* box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%); */
+    box-shadow: none;
+}
+#coverArtistsWrapper .artist button.name{
+    text-align: left;
+    padding: 0;
+    -webkit-appearance: none;
+}
+#coverArtistsWrapper .artist .name{
     
     /* font-size: 0.693rem; */
     font-size: 1rem;
@@ -54,8 +73,9 @@
     /* line-height: 1.15rem; */
     color: rgba(0, 0, 0, 1);
     text-decoration: underline;
+    line-height: 1rem;
 }
-#coverArtistsWrapper .artist a:not(:hover) {
+#coverArtistsWrapper .artist .name:not(:hover) {
     text-decoration: none;
 }
 #coverArtistsWrapper .noticeCnt{
@@ -136,6 +156,13 @@
         /* width:32.4vw; */
         /* padding-bottom: 6px; */
         height:1.2rem;
+        height: fit-content;
+        margin-right: 1rem;
+        flex: 0 0 1.5rem;
+        min-height: fit-content;
+        max-height: none;
+        padding-bottom: 0.5rem;
+
     }
     body .tooltip .tooltip-inner{
         max-width:10rem;

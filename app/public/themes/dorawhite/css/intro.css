@@ -1,20 +1,6 @@
 /* base factor 16/37.5px=0.427   2.34 */  
 /* header详情弹出层 */
-.offcanvas-end{
-    width:100vw;
-}
-.offcanvas-header{
-    padding: 0.77rem 0.77rem;
-}
-.offcanvas-header .btn-close{
-    padding: .214rem .214rem;
-    margin-top: -.214rem;
-    margin-right: -.214rem;
-    margin-bottom: -.214rem;
-}
-.offcanvas-body{
-    padding: 0.77rem 0.77rem;
-}  
+
 
 .section {
     /* width: 10.054rem; */
