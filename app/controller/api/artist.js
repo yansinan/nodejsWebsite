@@ -92,7 +92,7 @@ class APIController extends Controller {
         } else if (type == 'navAvatar') {
             files = '_id url name alias sImg roofPlacement isTop '
         } else {
-            files = '_id url name alias sImg date discription clickNum roofPlacement type appShowType imageArr videoArr duration simpleComments comments videoImg state dismissReason categories isTop from listHotMusics listLinks listMembers listDateDur dateStart dateEnd dateYear'
+            files = '_id url name alias sImg date discription clickNum roofPlacement type appShowType imageArr videoArr duration simpleComments comments videoImg state dismissReason categories isTop from listHotMusics listLinks listMembers listDateDur listVideos listImages dateStart dateEnd dateYear'
         }
         // console.log('--files----', files)
         return files;
@@ -508,7 +508,7 @@ class APIController extends Controller {
 
             let queryObj = {
                 _id: targetId,
-                state: '2',
+                //state: '2',
                 //uAuthor: {
                 //    $ne: null
                 //}
@@ -528,12 +528,20 @@ class APIController extends Controller {
             renderContent = await this.renderList(userInfo._id, renderContent);
             // 获取唱片
             // ctx.query.idArtist=targetId;
-            renderContent[0].objDocsRecords=await ctx.service.record.find(ctx.query, {
+            renderContent[0].objDocsRecords=await ctx.service.record.find({isPaging:false,pageSize:0,},{
                 sort: {dateRelease: -1},
-                query: {state: '2',listArtists:targetId},
-                searchKeys: ['sImg', 'name', 'dateRelease', 'listFormatTags'],
+                query:{                    
+                    listRefs:targetId,
+                    state: '2'
+                },
                 files: "sImg name listFormatTags date"
             });
+            //await ctx.service.record.find(ctx.query, {
+            //    sort: {dateRelease: -1},
+            //    query: {state: '2',listArtists:targetId},
+            //    searchKeys: ['sImg', 'name', 'dateRelease', 'listFormatTags'],
+            //    files: "sImg name listFormatTags date"
+            //});
             // 获取时间线:演出，唱片，新闻，视频，加入
             renderContent[0].listTimeline= await this.getListTimeline(renderContent[0]);
 
