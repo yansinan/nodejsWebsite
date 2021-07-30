@@ -15,7 +15,7 @@
         <div id="carouselArtistDetail" class="carousel slide w-100" data-bs-ride="carousel">
             <div class="carousel-inner">
                 {% for image in post.listImages %}
-                    <div class="carousel-item {{ "active" if loop.first }}">
+                    <div class="carousel-item {{ "active" if loop.first }} h-100">
                         <img src="{{image.url}}" alt="{{image.name}}"/>
                     </div>
                 {% endfor %}

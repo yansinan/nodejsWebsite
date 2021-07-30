@@ -1,3 +1,7 @@
+#offcanvasDetailAll{
+    background: white;
+    color: black;
+}
 #offcanvasDetailAll.artistDetailColor{
     background-color: black;
     color:white;
@@ -14,18 +18,23 @@
     flex-direction: column;
     
 }
-
+/* 右侧详情 */
 #offcanvasRight.offcanvas-end{
     width:100vw;
     background-color: inherit;
     border:none;
 }
-#offcanvasRight.offcanvas-header{
+#offcanvasRight .offcanvas-header{
     padding: 0.77rem 0.77rem;
 }
 #offcanvasDetailAll.artistDetailColor .offcanvas-end .offcanvas-header{
     filter: invert(1);
 }
+/* 移动端隐藏叉子 */
+#offcanvasRight .offcanvas-header .btn-close{
+    display:none;
+}
+
 .offcanvas-header .btn-close{
     padding: .214rem .214rem;
     margin-top: -.214rem;
@@ -42,34 +51,41 @@
 	outline: none;
     box-shadow: none;
 }
-#offcanvasRight.offcanvas-body{
+#offcanvasRight .offcanvas-body{
     padding: 0.77rem 0.77rem;
-}  
+}
 
+#offcanvasRight .offcanvas-body .loading{
+    height:calc(100% + 1px);
+    display: flex;
+    font-size: 1.5rem;
+}  
 
 @media (min-width: 768px) {
     #offcanvasLeft.offcanvas-start{
-        width:35vw;
+        width:13.89rem;
         display:flex;
     }
     /* header详情弹出层 */
     #offcanvasRight.offcanvas-end{
-        width:65vw;
+        width:calc(100vw - 13.89rem);
     }
-    #offcanvasRight.offcanvas-header{
+    #offcanvasRight .offcanvas-header{
         justify-content:flex-end;
-        padding: 0.427rem 0.427rem;
+        /* padding: 0.427rem 0.427rem; */
+        padding: 1rem 1rem;/* 不准确使用bs值 */
     }
-    #offcanvasRight.offcanvas-header .icon-arrow.left{
+    #offcanvasRight .offcanvas-header .icon-arrow.left{
         display: none;
     }
-    #offcanvasRight.offcanvas-header .btn-close{
+    #offcanvasRight .offcanvas-header .btn-close{
+        display:block;
         padding: .214rem .214rem;
         margin-top: -.214rem;
         margin-right: -.214rem;
         margin-bottom: -.214rem;
     }
-    #offcanvasRight.offcanvas-body{
+    #offcanvasRight .offcanvas-body{
         padding: 0.427rem 0.427rem;
         padding-right: 3.67rem;
     }      
@@ -107,8 +123,10 @@
 }
 .artistDetail .album img{
     object-fit:cover;
-    width: 100%;
-    height:auto;
+    /* 手机竖屏高充满，宽自动 */
+    width: auto;
+    max-width:100%;
+    height:100%;
     max-height: 100%;
 }
 /* 标签 */
@@ -146,6 +164,8 @@
 @media (min-width: 768px) {
     .artistDetail .album img{
         width: 55vw;
+        width: 100%;
+        height:auto;
     }    
 }
 
@@ -188,7 +208,7 @@
     object-fit:cover;
     width: 100%;
     height:auto;
-    max-height: 400px;
+    /* max-height: 400px; */
 }
 
 .artistDetail .block.title.videos::before{
@@ -215,7 +235,7 @@
     object-fit:cover;
     width: 100%;
     height:auto;
-    max-height: 400px;
+    /* max-height: 400px; */
 }
 .artistDetail .videos .list .item span{
     position: absolute;

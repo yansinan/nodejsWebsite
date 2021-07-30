@@ -29,27 +29,7 @@
 }
 
 @media (min-width: 768px) {
-/* header详情弹出层 */
-    .offcanvas-end{
-        width:65vw;
-    }
-    .offcanvas-header{
-        justify-content:flex-end;
-        padding: 0.427rem 0.427rem;
-    }
-    .offcanvas-header .icon-arrow.left{
-        display: none;
-    }
-    .offcanvas-header .btn-close{
-        padding: .214rem .214rem;
-        margin-top: -.214rem;
-        margin-right: -.214rem;
-        margin-bottom: -.214rem;
-    }
-    .offcanvas-body{
-        padding: 0.427rem 0.427rem;
-        padding-right: 3.67rem;
-    }  
+
 
     .section span{
         font-size: 0.667rem;
