@@ -55,6 +55,9 @@
     /* transition-property: box-shadow; */
     /* transition-duration: .5s; */
 }
+.offcanvas{
+    border:none;
+}
 .offcanvas-body {
     /* ios */
     -webkit-overflow-scrolling: touch;
@@ -62,12 +65,13 @@
     overflow-y: overlay; 
     overflow-x: hidden;
 } /* 需要滚动的地方加上这个class */
+/* 
 .offcanvas-body::after{
     content:"";
     min-height: calc(100% + 1px);
-    /* display: block; */
     width:0px;
 }
+*/
 .offcanvas-body::-webkit-scrollbar { /* 组件内滚动条不显示 */
   display: none;
 }
