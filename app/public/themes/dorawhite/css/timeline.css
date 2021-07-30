@@ -104,6 +104,7 @@
 #timelineContent .wapper-mm .item .tags{
   margin-bottom: 0.86rem;
 }
+/* 
 #timelineContent .wapper-mm .item .list-inline-item{
   font-size: 0.444rem;
   margin: 0px;
@@ -111,7 +112,7 @@
   padding: 0.05rem 0.5rem;
   line-height: 0.6rem;
 }
-
+ */
 
 @media (min-width: 768px) {
   .heightNav{
