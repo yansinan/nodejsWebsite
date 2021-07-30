@@ -46,7 +46,7 @@ class IndexController extends Controller {
         }
         
         listDocs=listDocs.docs;
-        let post = listDocs[0];//(await ctx.helper.reqJsonData('content/getContent', { id: current })).comments;
+        let post = (await ctx.helper.reqJsonData('content/getContent', { id: listDocs[0]._id }));
         //最终渲染
         ctx.helper.renderSuccess(ctx,{data:post});
         //ctx.body=post.comments;
