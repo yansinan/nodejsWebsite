@@ -31,7 +31,7 @@
     max-height:100%;
     min-height:calc(1.5rem*12);
 }
-#coverArtistsWrapper .artist{
+.listArtists .artist{
     display: flex;
     align-items: flex-start;
     max-width:78.26vw;
@@ -49,36 +49,37 @@
     height: fit-content;
 
 }
-#coverArtistsWrapper .artist .btn:active, 
-#coverArtistsWrapper .artist .btn:focus, 
-#coverArtistsWrapper .artist .btn:active:focus, 
-#coverArtistsWrapper .artist .btn.active:focus,
-#coverArtistsWrapper .artist .btn.focus, 
-#coverArtistsWrapper .artist .btn:active.focus, 
-#coverArtistsWrapper .artist .btn.active.focus {
+.listArtists .artist .btn:active, 
+.listArtists .artist .btn:focus, 
+.listArtists .artist .btn:active:focus, 
+.listArtists .artist .btn.active:focus,
+.listArtists .artist .btn.focus, 
+.listArtists .artist .btn:active.focus, 
+.listArtists .artist .btn.active.focus {
 	outline: none;
     /* box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%); */
     box-shadow: none;
 }
-#coverArtistsWrapper .artist button.name{
+.listArtists .artist button.name{
     text-align: left;
     padding: 0;
     -webkit-appearance: none;
 }
-#coverArtistsWrapper .artist .name{
+.listArtists .artist .name{
     
     /* font-size: 0.693rem; */
     font-size: 1rem;
     /* line-height: 0.8rem; */
     /* line-height: 1.15rem; */
-    color: rgba(0, 0, 0, 1);
+    /* color: rgba(0, 0, 0, 1); */
+    color: inherit;
     text-decoration: underline;
     line-height: 1rem;
 }
-#coverArtistsWrapper .artist .name:not(:hover) {
+.listArtists .artist .name:not(:hover) {
     text-decoration: none;
 }
-#coverArtistsWrapper .noticeCnt{
+.listArtists .noticeCnt{
     /* font-size:0.373rem; */
     /* font-size: 0.426rem; */
     font-size: 0.48rem;
@@ -95,7 +96,7 @@
     color:black;
     -webkit-appearance:none;
 }
-#coverArtistsWrapper .noticeCnt.now{
+.listArtists .noticeCnt.now{
     filter: invert(100%);
 }
 .tooltip{
@@ -148,7 +149,7 @@
     #coverArtistsWrapper.paddingTop-md{
         padding-top: 15px;
     }
-    #coverArtistsWrapper .artist-md{
+    .listArtists .artist-md{
         /* height:calc(100%/15); */
         /* PC宽415+52 */
         min-width:32.4vw;
