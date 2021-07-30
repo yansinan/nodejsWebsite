@@ -1,8 +1,30 @@
-.offcanvas-end{
-    width:100vw;
+#offcanvasDetailAll.artistDetailColor{
+    background-color: black;
+    color:white;
 }
-.offcanvas-header{
+#offcanvasLeft.offcanvas-start{
+    width:0vw;
+    display:none;
+    background-color: inherit;
+    color:inherit;
+    border:none;
+}
+#offcanvasLeft.offcanvas-body{
+    display:flex;
+    flex-direction: column;
+    
+}
+
+#offcanvasRight.offcanvas-end{
+    width:100vw;
+    background-color: inherit;
+    border:none;
+}
+#offcanvasRight.offcanvas-header{
     padding: 0.77rem 0.77rem;
+}
+#offcanvasDetailAll.artistDetailColor .offcanvas-end .offcanvas-header{
+    filter: invert(1);
 }
 .offcanvas-header .btn-close{
     padding: .214rem .214rem;
@@ -10,31 +32,238 @@
     margin-right: -.214rem;
     margin-bottom: -.214rem;
 }
-.offcanvas-body{
+.offcanvas-header .btn-close:active, 
+.offcanvas-header .btn-close:focus, 
+.offcanvas-header .btn-close:active:focus, 
+.offcanvas-header .btn-close.active:focus,
+.offcanvas-header .btn-close.focus, 
+.offcanvas-header .btn-close:active.focus, 
+.offcanvas-header .btn-close.active.focus {
+	outline: none;
+    box-shadow: none;
+}
+#offcanvasRight.offcanvas-body{
     padding: 0.77rem 0.77rem;
 }  
 
 
 @media (min-width: 768px) {
+    #offcanvasLeft.offcanvas-start{
+        width:35vw;
+        display:flex;
+    }
     /* header详情弹出层 */
-    .offcanvas-end{
+    #offcanvasRight.offcanvas-end{
         width:65vw;
     }
-    .offcanvas-header{
+    #offcanvasRight.offcanvas-header{
         justify-content:flex-end;
         padding: 0.427rem 0.427rem;
     }
-    .offcanvas-header .icon-arrow.left{
+    #offcanvasRight.offcanvas-header .icon-arrow.left{
         display: none;
     }
-    .offcanvas-header .btn-close{
+    #offcanvasRight.offcanvas-header .btn-close{
         padding: .214rem .214rem;
         margin-top: -.214rem;
         margin-right: -.214rem;
         margin-bottom: -.214rem;
     }
-    .offcanvas-body{
+    #offcanvasRight.offcanvas-body{
         padding: 0.427rem 0.427rem;
         padding-right: 3.67rem;
     }      
+}
+
+
+/* artistDetail */
+.artistDetail.font-normal{
+    font-size:0.667rem;
+    line-height: 0.917rem;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color:white;
+}
+.artistDetail{
+    display:flex;
+    flex-direction: column;
+    align-items: flex-start;
+    
+    background-color: black;
+}
+.artistDetail .name{
+    flex: 0 0 3rem;    
+    display:flex;
+    align-items: flex-start;
+}
+
+.artistDetail .album{
+    flex:0 0 450px;
+    width:100%;
+    max-height:450px;
+    display:flex;
+    flex-wrap: nowrap;
+    position: relative;
+}
+.artistDetail .album img{
+    object-fit:cover;
+    width: 100%;
+    height:auto;
+    max-height: 100%;
+}
+/* 标签 */
+.artistDetail .list-inline{
+    line-height: 0px;
+    margin-top: 2.28rem;
+    margin-bottom:1.75rem;
+}
+
+.artistDetail article{
+
+}
+.artistDetail article p{
+    margin-block: 0px;
+    margin-bottom: 0rem;
+}
+.artistDetail ol{
+    margin-top:1.444rem;
+    /* margin-bottom:5.667rem; */
+
+    font-size: 0.389rem;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #979797;
+    line-height: 0.694rem;
+    text-decoration: underline;
+    -webkit-background-clip: text;
+}
+
+.artistDetail .headEnd{
+    flex:0 0 5.667rem;
+    border-bottom: 1px solid #FFFFFF;
+    width: 100%;
+}
+@media (min-width: 768px) {
+    .artistDetail .album img{
+        width: 55vw;
+    }    
+}
+
+.artistDetail .block{
+    display:flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width:100%;
+}
+.artistDetail .block.title::before{
+    content:"专辑";
+    width:100%;
+    flex:1;
+    display:flex;
+    align-items: flex-start;
+    margin-top:1.528rem;
+    margin-bottom:1.528rem;
+}
+.artistDetail .block.title.records::before{
+    content:"专辑";
+}
+.artistDetail .records .list{
+    width:100%;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    /* # 三列，并三等分，用fr做单位，不会产生横向的滚动条 */
+    /* #grid-template-columns:1fr 2fr 2fr; */
+    /* # 三列，二三列各占五份中的两份 */
+    grid-gap:3.47vw;
+    /* # 行间距，列间距都设为1rem */
+    grid-auto-rows:minmax(100px,auto);
+    /* # 自动改变div高度 */
+}
+.artistDetail .records .list .item{
+    /* flex:0 1 calc(50% - 2.94%); */
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.8) 100%);
+    border: 1px solid #979797;
+}
+.artistDetail .records .list .item img{
+    object-fit:cover;
+    width: 100%;
+    height:auto;
+    max-height: 400px;
+}
+
+.artistDetail .block.title.videos::before{
+    content:"影像";
+}
+
+.artistDetail .videos .list{
+    width:79.8%;
+    display:grid;
+    grid-template-columns:1fr;
+    /* # 三列，并三等分，用fr做单位，不会产生横向的滚动条 */
+    /* #grid-template-columns:1fr 2fr 2fr; */
+    /* # 三列，二三列各占五份中的两份 */
+    grid-gap:0.833rem;
+    /* # 行间距，列间距都设为1rem */
+    grid-auto-rows:minmax(100px,auto);
+    /* # 自动改变div高度 */
+}
+.artistDetail .videos .list .item{
+    background: rgba(0, 0, 0, 0.75);
+    position: relative;
+}
+.artistDetail .videos .list .item img{
+    object-fit:cover;
+    width: 100%;
+    height:auto;
+    max-height: 400px;
+}
+.artistDetail .videos .list .item span{
+    position: absolute;
+    left: 20px;
+    bottom: 20px;
+    width:calc(100% - 40px);
+}
+
+/* 新闻动态 */
+.artistDetail .block.title.news::before{
+    content:"时间线";
+}
+
+.artistDetail .news .list{
+    width:79.8%;
+    display:grid;
+    grid-template-columns:1fr;
+    /* # 三列，并三等分，用fr做单位，不会产生横向的滚动条 */
+    /* #grid-template-columns:1fr 2fr 2fr; */
+    /* # 三列，二三列各占五份中的两份 */
+    grid-gap:1.277rem;
+    /* # 行间距，列间距都设为1rem */
+    grid-auto-rows:minmax(1rem,auto);
+    /* # 自动改变div高度 */
+}
+.artistDetail .news .list .year{
+    
+}
+.artistDetail .news .list .item{
+    position: relative;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+.artistDetail .news .list .item::before{
+    content:"";
+    background: url(/static/themes/images/bnArrowLine.svg) center/0.55rem auto no-repeat ;
+    height: 0.55rem;
+    margin-right: 0.55rem;
+    flex: 0 0 0.55rem;
+    display: flex;
+    transform: rotate(-90deg);
+    filter: invert(1);
+}
+.artistDetail .news .list a{
+    color:white;
+    text-decoration: none;
+}
+.artistDetail .news .list a:hover{
+    text-decoration: underline;
 }

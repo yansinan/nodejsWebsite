@@ -28,65 +28,104 @@
     </div>
 </div>
 
-
-{# 详细内容页框架 #}
-<div id="offcanvasRight"  class="offcanvas offcanvas-end" tabindex="-1" aria-labelledby="offcanvasRightLabel">
-  <div class="offcanvas-header">
-    {# <h5 id="offcanvasRightLabel">Offcanvas right</h5> #}
-    <div class="icon-arrow left flex-column" data-bs-dismiss="offcanvas"></div>
-    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-  </div>
-  <div id="offcanvasDetail" class="offcanvas-body" ms-controller="offcanvasDetail">
-    <div :visible="!@loadingState" ms-html="@dom"></div>
-    <div :visible="@loadingState" class="w-100 h-100 justify-content-center align-items-center position-absolute" style="display: flex;font-size: 1.5rem;">
-		<i class="fa fa-spin fa-spinner"></i>
-	</div>
-  </div>
-</div>
-<script>
-    let $offcanvasDetail=document.getElementById("offcanvasDetail");
-    let aOffcanvasBody = avalon.define({
-		$id: 'offcanvasDetail',
-		dom: "",
-		loadingState: false,
-	})
-    this.addEventListener("OPEN_OFFCANVAS_DETAIL",function(e){
-        let url=e.detail.relatedTarget.attributes["data-dr-url"].value ||  "/about___";
-        console.info("event:详情即将打开：",url);
-        let cateId="8hIKx4Ulz";
-        
-        aOffcanvasBody.loadingState=true;
-        $.ajax({
-			type: 'GET',
-			url,//url: '/about___' + cateId,
-			success: function (res) {
-                debugger
-				if (res.status == 200) {
+<div id="offcanvasDetailAll" class="">
+    {# 详细内容页左侧列表 #}
+    <div id="offcanvasLeft"  class="offcanvas offcanvas-start" tabindex="-1" aria-labelledby="offcanvasRightLabel">
+        {# <div class="offcanvas-header"> #}
+            {# <div class="icon-arrow left flex-column" data-bs-dismiss="offcanvas"></div> #}
+            {# <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button> #}
+        {# </div> #}
+        <div id="offcanvasListArtists" class="offcanvas-body listArtists">
+            {% for artist in listArtists %}
+            {# 乐队名列表 #}
+            {# <h1 class="display-1">RUBY</h1> #}
+            <div class="artist artist-md d-flex align-items-center ">
+                <button class="name btn btn-link" data-dr-url="/artist/{{artist.id}}.html" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight">
+                    {{artist.name}}
+                </button>
+                <button 
+                    tabindex="0"
+                    class="noticeCnt d-flex flex-shrink-0 justify-content-center border border-1 border-dark rounded-circle" 
+                    data-bs-toggle="tooltip" 
+                    data-bs-html="true" 
+                    title="<div>演出回顾|重庆巡回{{artist.name}}</div><div>专辑发布|永无宁日RURBUR-Evening Sitdown Vision</div>">
+                    +2
+                </button>
+            </div >
+            {% endfor %}
+        </div>
+    </div>
+    {# 详细内容页框架 #}
+    <div id="offcanvasRight"  class="offcanvas offcanvas-end" tabindex="-1" aria-labelledby="offcanvasRightLabel">
+        <div class="offcanvas-header">
+            {# <h5 id="offcanvasRightLabel">Offcanvas right</h5> #}
+            <div class="icon-arrow left flex-column" data-bs-dismiss="offcanvas"></div>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div id="offcanvasDetail" class="offcanvas-body" ms-controller="offcanvasDetail">
+            <div :visible="!@loadingState" ms-html="@dom" class="position-relative"></div>
+            <div :visible="@loadingState" class="w-100 h-100 justify-content-center align-items-center position-absolute" style="display: flex;font-size: 1.5rem;">
+                <i class="fa fa-spin fa-spinner"></i>
+            </div>
+        </div>
+    </div>
+    <script>
+        let $offcanvasDetailAll=document.getElementById("offcanvasDetailAll");
+        let $offcanvasLeft=document.getElementById("offcanvasLeft");
+        let $offcanvasRight=document.getElementById("offcanvasRight");
+        let $offcanvasDetail=document.getElementById("offcanvasDetail");
+        let aOffcanvasBody = avalon.define({
+            $id: 'offcanvasDetail',
+            dom: "",
+            loadingState: false,
+        })
+        this.addEventListener("OPEN_OFFCANVAS_DETAIL",function(e){
+            let url=e.detail.relatedTarget.attributes["data-dr-url"].value ||  "/about___";
+            {# 如果是乐队列表详情 #}
+            if(url.indexOf("/artist/")!=-1){
+                $offcanvasDetailAll.classList.add("artistDetailColor");
+            }else{
+                $offcanvasDetailAll.classList.remove("artistDetailColor");
+            }
+            console.info("event:详情即将打开：",url);
+            let cateId="8hIKx4Ulz";
+            
+            aOffcanvasBody.loadingState=true;
+            $.ajax({
+                type: 'GET',
+                url,//url: '/about___' + cateId,
+                success: function (res) {
+                    debugger
+                    if (res.status == 200) {
+                        aOffcanvasBody.loadingState = false;
+                        aOffcanvasBody.dom = res.data.comments || res.data;
+                    }
+                },
+                error: function (d) {
+                    console.error('error:', d);
+                    debugger;
                     aOffcanvasBody.loadingState = false;
-                    aOffcanvasBody.dom = res.data.comments || res.data;
-				}
-			},
-			error: function (d) {
-				console.error('error:', d);
-                debugger;
-                aOffcanvasBody.loadingState = false;
-                aOffcanvasBody.dom = "网络故障，内容获取失败："+d.toString();
-			}
-		})
-    });
-    this.addEventListener("CLOSE_OFFCANVAS_DETAIL",(e)=>{
+                    aOffcanvasBody.dom = "网络故障，内容获取失败："+d.toString();
+                }
+            })
+        });
+        this.addEventListener("CLOSE_OFFCANVAS_DETAIL",(e)=>{
 
-    });
-    
-    let $offcanvasRight = document.getElementById('offcanvasRight')
-    $offcanvasRight.addEventListener('show.bs.offcanvas', function (e) {
-        that.dispatchEvent(new CustomEvent("OPEN_OFFCANVAS_DETAIL", {detail:e}))
-    })
-    $offcanvasRight.addEventListener('hide.bs.offcanvas', function (e) {
-        that.dispatchEvent(new CustomEvent("CLOSE_OFFCANVAS_DETAIL",{detail:e}));
-    })
+        });
+        
+        $offcanvasRight.addEventListener('show.bs.offcanvas', function (e) {
+            let bsOffcanvasLeft=bootstrap.Offcanvas.getOrCreateInstance($offcanvasLeft);
+            bsOffcanvasLeft.show();
+            that.dispatchEvent(new CustomEvent("OPEN_OFFCANVAS_DETAIL", {detail:e}))
+        })
+        $offcanvasRight.addEventListener('hide.bs.offcanvas', function (e) {
+            let bsOffcanvasLeft=bootstrap.Offcanvas.getOrCreateInstance($offcanvasLeft);
+            bsOffcanvasLeft.hide();
+            that.dispatchEvent(new CustomEvent("CLOSE_OFFCANVAS_DETAIL",{detail:e}));
+        })
 
-</script>
+    </script>
+</div>
 
 <div class="foot-float back-to-top" id="bnRubyEyes">
     {# <img class="btnRubyEyes glyphicon glyphicon-chevron-up" src=""></i> #}
