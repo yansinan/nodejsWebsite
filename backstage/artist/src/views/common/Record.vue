@@ -14,7 +14,7 @@
 
       <el-row :gutter="40">
           <el-col v-for="(domain, index) in listRecords" :key="domain.idAlbumNCM" :md="6" style="margin-bottom:40px;">
-            <el-card :body-style="{ padding: '0px' }" shadow="hover" v-loading="domain.isLoading">
+            <el-card :body-style="{ padding: '0px' ,filter: domain.state!=2 ? 'grayscale(1) opacity(0.5)' : ''}" shadow="hover" v-loading="domain.isLoading">
               <el-image :span="24" :src="domain.sImg" :fit="contain" crossOrigin="Anonymous" />
               <div class="titleVideo" style="">
                 <span v-if="domain.name">{{domain.name}}</span>
