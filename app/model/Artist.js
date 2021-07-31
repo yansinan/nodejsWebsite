@@ -165,7 +165,24 @@ module.exports =app=>{
         });
         let model=app.model.Artist || Doc.discriminator("Artist", schema);
         // app.model.Artist=model;
-    
+        schema.path("listImages").get(function(v){
+            // 补充sImg到listImages
+            let artist=this;
+            if(artist.sImg){
+                let objImage={
+                    url:artist.sImg,
+                    name:artist.name,
+                    type:"link",
+                };
+                if(v){
+                    let isInList=v.find((img)=>(img.url == artist.sImg));
+                    if(!isInList)v.push(objImage)
+                }else{                        
+                    v = [objImage];
+                }
+            }
+            return v;
+        })
         return model//mongoose.model("Artist", schema);
     }
 
