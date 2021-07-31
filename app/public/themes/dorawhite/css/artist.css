@@ -103,7 +103,7 @@
     /* filter: invert(100%); */
     /* padding:.4rem .4rem; */
     /* border: 1px solid red; */
-    padding-right: .4rem;    
+    /* padding-right: .4rem;     */
 }
 .tooltip.show{
     opacity: 1;
