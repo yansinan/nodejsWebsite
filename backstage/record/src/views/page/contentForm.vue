@@ -1,83 +1,44 @@
 <template>
   <div :class="classObj" class="dr-contentForm">
     <div class="main-container">
-      <el-form
-        :model="formState.formData"
-        :rules="rules"
-        ref="ruleForm"
-        label-width="120px"
-        class="demo-ruleForm"
-        :label-position="device == 'mobile' ? 'top' : 'right'"
-      >
-        <el-form-item :label="$t('contents.enable')" prop="state">
-          <el-select size="small" v-model="formState.formData.state" placeholder="审核文章">
-            <el-option
-              v-for="item in contentState"
-              :key="'kw_'+item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item v-if="formState.formData.state == '3'" label="驳回原因" prop="dismissReason">
-          <el-input size="small" v-model="formState.formData.dismissReason"></el-input>
-        </el-form-item>
-        <el-form-item :label="$t(nameMod + '.name')" prop="name">
-          <el-input size="small" v-model="formState.formData.name" maxlength="50" show-word-limit></el-input>
-        </el-form-item>
-        <el-form-item :label="$t(nameMod + '.nameAlias')" prop="alias">
-          <el-input size="small" v-model="formState.formData.alias" maxlength="50" show-word-limit></el-input>
-        </el-form-item>
-        <!-- 作者 -->
-        <SelectIds :label="this.$t(nameMod+'.listArtists')" :allow-create="false" @change="eChangeArtist" :listIds="formState.formData.listRefs" :nameMode="nameMod" :apiAdd="false" apiFind="/manage/artist/getList" :initTag="false"/>
-
-        <!-- 发行日期 -->
-        <el-form-item :label="$t(nameMod + '.dateRelease')" prop="dateRelease">
-          <el-date-picker v-model="formState.formData.dateRelease" type="date" placeholder="发行日期" @change="eChangeDate"/>
-        </el-form-item>
-
-        <!-- 发行介质 -->
-        <SelectIds :label="this.$t(nameMod+'.listFormatTags')" @change="eChangeFormats" :listIds="formState.formData.listFormatTags" :nameMode="nameMod" apiFind="/api/record/listAllFormats" :initTag="createFormatTag"/>
-        <!-- 标签 -->
-        <div v-if="formState.formData.type == '1'">
-          <SelectIds :label="this.$t(nameMod+'.tags')" @change="eChangeTag" :listIds="formState.formData.tags" :nameMode="nameMod" :initTag="createTag" />
-          <el-form-item label="乐队关键字" prop="keywords">
-            <el-input size="small" v-model="formState.formData.keywords"></el-input>
+      <ContentForm :nameMod="nameMod" v-model="formState">
+        <template v-slot:leftTop>
+          <!-- 专辑名 -->
+          <el-form-item prop="name">
+            <el-input size="small" v-model="formState.formData.name" maxlength="50" show-word-limit><template slot="suffix">{{$t(nameMod + '.name')}}</template></el-input>
           </el-form-item>
-        </div>
 
-        <Cropper 
-          :nameMod="nameMod"
-          v-model="formState.formData.sImg" 
-          :label="$t('contents.sImg')" 
-          prop="sImg"></Cropper>
-        <!-- 发行编号 -->
-        <el-form-item :label="$t(nameMod + '.catalog')" prop="catalog">
-          <el-input size="small" v-model="formState.formData.catalog" placeholder=""></el-input>
-        </el-form-item>
+        </template>
 
-        <el-form-item :label="$t('contents.discription')" prop="discription">
-          <el-input size="small" type="textarea" v-model="formState.formData.discription" maxlength="300" show-word-limit :autosize="{minRows: 4, maxRows: 10 }"></el-input>
-        </el-form-item>
-        <el-form-item :label="$t('contents.comments')" prop="comments">
-          <!-- <Ueditor @ready="editorReady" ref="ueditor"></Ueditor> -->
-          <vue-ueditor-wrap
-            class="editorForm"
-            @ready="editorReady"
-            v-model="formState.formData.comments"
-            :config="editorConfig"
-          ></vue-ueditor-wrap>
-        </el-form-item>
-        <!-- 热门歌曲：相关链接 -->
-        <el-form-item :label="$t(nameMod + '.listLinks')" prop="listLinks">
+        <template v-slot:leftMiddle>
+          <!-- 日期&地点 -->
+          <el-row v-if="formState.formData" :gutter="40" type="flex" justify="space-between" style="flex-wrap: wrap;">
+            <el-col :lg="12">
+              <!-- 发行日期 -->
+              <el-form-item prop="dateRelease">
+                <el-date-picker v-model="formState.formData.dateRelease" type="date" placeholder="发行日期" @change="eChangeDate"/>
+              </el-form-item>
+            </el-col> 
+            <el-col :lg="12" style="min-width: min-content;">
+              <!-- 发行编号 -->
+              <el-form-item prop="catalog">
+                <el-input size="small" v-model="formState.formData.catalog" placeholder=""><template slot="suffix">{{$t(nameMod + '.catalog')}}</template></el-input>
+              </el-form-item>
+            </el-col> 
+          </el-row>
+          <!-- 作者 -->
+          <SelectIds :label="$t(nameMod+'.listArtists')" :allow-create="false" @change="eChangeArtist" :listIds="formState.formData.listRefs" :nameMode="nameMod" :apiAdd="false" apiFind="/manage/artist/getList" :initTag="false"/>
+          <!-- 发行介质 -->
+          <SelectIds :label="$t(nameMod+'.listFormatTags')" @change="eChangeFormats" :listIds="formState.formData.listFormatTags" :nameMode="nameMod" apiFind="/api/record/listAllFormats" :initTag="createFormatTag"/>
+
+        </template>
+
+        <template v-slot:footer>
+          <!-- 热门歌曲：相关链接 -->
           <ListURL v-model="formState.formData.listLinks" label="购买链接" ref="listLinks"></ListURL>
-        </el-form-item>
+        </template>
+      </ContentForm>
 
-        <el-form-item class="" style="text-align:right;"><!-- dr-submitContent -->
-          <el-button size="medium" type="primary" @click="submitForm('ruleForm')">{{formState.edit ? $t('main.form_btnText_update') : $t('main.form_btnText_save')}}</el-button>
-          <el-button size="medium" @click="backToList">{{$t('main.back')}}</el-button>
-        </el-form-item>
-      </el-form>
     </div>
   </div>
 </template>
@@ -90,7 +51,7 @@
 import '@/set-public-path'
 import VueUeditorWrap from "vue-ueditor-wrap";
 import { initEvent } from "@root/publicMethods/events";
-import {methods,initData,data,props} from "@root/publicMethods/vue/contentForm";
+import {methods,initData,components,data,props,computed} from "@root/publicMethods/vue/contentForm";
 
 import _ from "lodash";
 import { mapGetters, mapActions,createNamespacedHelpers} from "vuex";
@@ -98,23 +59,11 @@ const mod = createNamespacedHelpers(nameMod)////模块,含mapGetters, mapActions
 
 export default {
   props: {
-    groups: Array
+    ...props,
   },
   data() {
     return {
       ...data,
-      editorConfig: {
-        // 编辑器不自动被内容撑高
-        autoHeightEnabled: false,
-        // 初始容器高度
-        initialFrameHeight: 240,
-        // 初始容器宽度
-        initialFrameWidth: "100%",
-        // 上传文件接口（这个地址是我为了方便各位体验文件上传功能搭建的临时接口，请勿在生产环境使用！！！）
-        serverUrl: "/api/upload/ueditor",
-        // UEditor 资源文件的存放路径，如果你使用的是 vue-cli 生成的项目，通常不需要设置该选项，vue-ueditor-wrap 会自动处理常见的情况，如果需要特殊配置，参考下方的常见问题2
-        UEDITOR_HOME_URL: this.$root.staticRootPath + "/plugins/ueditor/"
-      },
       rules: {
         sImg: [
           {
@@ -192,10 +141,8 @@ export default {
     };
   },
   components: {
-    VueUeditorWrap,
-    ListURL: () => import('@root/publicMethods/vue/ListURL.vue'),
-    Cropper: () => import('@root/publicMethods/vue/Cropper.vue'),
-    SelectIds: () => import('@root/publicMethods/vue/SelectIds.vue'),
+    ...components,
+    ContentForm: () => import('@root/publicMethods/vue/ContentForm.vue'),//表格头部
   },
   methods: {
       ...methods,
@@ -243,6 +190,7 @@ export default {
 
   },
   computed: {
+    ...computed,
     ...mapGetters(["contentCategoryList"]),
     // formState() {
     //   return this.$store.getters.contentFormState;
