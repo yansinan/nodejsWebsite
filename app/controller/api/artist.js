@@ -92,7 +92,7 @@ class APIController extends Controller {
         } else if (type == 'navAvatar') {
             files = '_id url name alias sImg roofPlacement isTop '
         } else {
-            files = '_id url name alias sImg date discription clickNum roofPlacement type appShowType imageArr videoArr duration simpleComments comments videoImg state dismissReason categories isTop from listHotMusics listLinks listMembers listDateDur listVideos listImages dateStart dateEnd dateYear'
+            files = '_id url name firstLetter letters alias sImg date discription clickNum roofPlacement type appShowType imageArr videoArr duration simpleComments comments videoImg state dismissReason categories isTop from listHotMusics listLinks listMembers listDateDur listVideos listImages dateStart dateEnd dateYear'
         }
         // console.log('--files----', files)
         return files;
@@ -302,15 +302,19 @@ class APIController extends Controller {
             let service=ctx.service[SERVICE_NAME];
 
             let queryObj = {
-                    // state: '2'
+                    state: '2'
                 },
                 sortObj = {
-                    date: -1
+                    letters:-1,
+                    firstLetter:-1,
+                    date: -1,
                 };
 
 
             if (ctx.query.pageType == 'index') {
                 sortObj = {
+                    letters:-1,
+                    firstLetter:-1,
                     roofPlacement: -1,
                     date: -1
                 };

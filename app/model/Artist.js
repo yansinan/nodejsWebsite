@@ -9,6 +9,7 @@ module.exports =app=>{
         const mongoose = app.mongoose
         var Schema = mongoose.Schema;
         var moment = require('moment')
+        let {getPinYin} = require("../utils/modPinYin");
         // 继承自Doc
         
         let Doc=app.model.Doc || require("./Doc")(app) || INIT_DOC(app);//
@@ -163,8 +164,7 @@ module.exports =app=>{
         schema.virtual('url').get(function () {
             return `/artist/${this._id}.html`;
         });
-        let model=app.model.Artist || Doc.discriminator("Artist", schema);
-        // app.model.Artist=model;
+        // listImages补齐sImg
         schema.path("listImages").get(function(v){
             // 补充sImg到listImages
             let artist=this;
@@ -183,6 +183,16 @@ module.exports =app=>{
             }
             return v;
         })
+        //首字母
+        schema.virtual('firstLetter').get(function () {
+            return getPinYin(this.name).substr(0,1).toUpperCase();
+        });
+        schema.virtual('letters').get(function () {
+            return getPinYin(this.name).toUpperCase();
+        });
+        let model=app.model.Artist || Doc.discriminator("Artist", schema);
+        // app.model.Artist=model;
+
         return model//mongoose.model("Artist", schema);
     }
 
