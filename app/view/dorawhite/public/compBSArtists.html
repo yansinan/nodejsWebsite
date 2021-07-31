@@ -1,7 +1,7 @@
 {# 横滚乐队名 #}
 <div id="coverArtistsWrapper" class="d-none bs-wrapper-listArtist paddingTop paddingTop-md">                        
     <div class="bs-content-listArtist listArtists">
-        {% for artist in listArtists %}
+        {% for artist in listArtists|sort(false,false,"letters") %}
         {# 乐队名列表 #}
         {# <h1 class="display-1">RUBY</h1> #}
         <div class="artist artist-md d-flex align-items-center ">

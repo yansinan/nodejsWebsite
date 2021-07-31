@@ -36,22 +36,25 @@
             {# <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button> #}
         {# </div> #}
         <div id="offcanvasListArtists" class="offcanvas-body listArtists">
-            {% for artist in listArtists %}
-            {# 乐队名列表 #}
-            {# <h1 class="display-1">RUBY</h1> #}
-            <div class="artist artist-md d-flex align-items-center ">
-                <button class="name btn btn-link" data-dr-url="/artist/{{artist.id}}.html" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight">
-                    {{artist.name}}
-                </button>
-                <button 
-                    tabindex="0"
-                    class="noticeCnt d-flex flex-shrink-0 justify-content-center border border-1 border-dark rounded-circle" 
-                    data-bs-toggle="tooltip" 
-                    data-bs-html="true" 
-                    title="<div>演出回顾|重庆巡回{{artist.name}}</div><div>专辑发布|永无宁日RURBUR-Evening Sitdown Vision</div>">
-                    +2
-                </button>
-            </div >
+            {% for letter,artistItems in listArtists|sort(false,false,"letters")|groupby("firstLetter") %}
+                <div class="firstLetter">{{letter}}</div>
+                {% for artist in artistItems %}
+                {# 乐队名列表 #}
+                {# <h1 class="display-1">RUBY</h1> #}
+                <div class="artist artist-md d-flex align-items-center ">
+                    <button class="name btn btn-link" data-dr-url="/artist/{{artist.id}}.html" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight">
+                        {{artist.name}}
+                    </button>
+                    <button 
+                        tabindex="0"
+                        class="noticeCnt d-flex flex-shrink-0 justify-content-center border border-1 border-dark rounded-circle" 
+                        data-bs-toggle="tooltip" 
+                        data-bs-html="true" 
+                        title="<div>演出回顾|重庆巡回{{artist.name}}</div><div>专辑发布|永无宁日RURBUR-Evening Sitdown Vision</div>">
+                        +2
+                    </button>
+                </div >
+                {% endfor %}
             {% endfor %}
         </div>
     </div>
