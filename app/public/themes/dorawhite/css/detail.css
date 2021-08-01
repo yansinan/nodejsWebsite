@@ -1,13 +1,17 @@
 #offcanvasDetailAll{
     background: white;
     color: black;
+    --offsetcanvas-padding-right:0.77rem;
+    --offsetcanvas-padding:0.77rem;
+    --offsetcanvas-left:0vw;
+    --offsetcanvas-right:calc( 100vw - var(--offsetcanvas-left,0vw));
 }
 #offcanvasDetailAll.artistDetailColor{
     background-color: black;
     color:white;
 }
 #offcanvasLeft.offcanvas-start{
-    width:0vw;
+    width:var(--offsetcanvas-left,0vw);
     display:none;
     background-color: inherit;
     color:inherit;
@@ -16,16 +20,16 @@
 #offcanvasLeft.offcanvas-body{
     display:flex;
     flex-direction: column;
-    
 }
 /* 右侧详情 */
 #offcanvasRight.offcanvas-end{
-    width:100vw;
+    /* width:calc( 100vw - var(--offsetcanvas-left,0vw)); */
+    width: var(--offsetcanvas-right);
     background-color: inherit;
     border:none;
 }
 #offcanvasRight .offcanvas-header{
-    padding: 0.77rem 0.77rem;
+    padding: var(--offsetcanvas-padding, 0.77rem);
 }
 #offcanvasDetailAll.artistDetailColor .offcanvas-end .offcanvas-header{
     filter: invert(1);
@@ -52,7 +56,8 @@
     box-shadow: none;
 }
 #offcanvasRight .offcanvas-body{
-    padding: 0.77rem 0.77rem;
+    padding: var(--offsetcanvas-padding, 0.77rem);    
+    padding-right: var(--offsetcanvas-padding-right, 0.77rem);
 }
 
 #offcanvasRight .offcanvas-body .loading{
@@ -62,14 +67,17 @@
 }  
 
 @media (min-width: 768px) {
+    #offcanvasDetailAll{
+        background: white;
+        color: black;
+        --offsetcanvas-padding-right:3.67rem;
+        --offsetcanvas-padding:0.427rem;
+        --offsetcanvas-left:13.89rem;
+    }
     #offcanvasLeft.offcanvas-start{
-        width:13.89rem;
         display:flex;
     }
     /* header详情弹出层 */
-    #offcanvasRight.offcanvas-end{
-        width:calc(100vw - 13.89rem);
-    }
     #offcanvasRight .offcanvas-header{
         justify-content:flex-end;
         /* padding: 0.427rem 0.427rem; */
@@ -84,11 +92,7 @@
         margin-top: -.214rem;
         margin-right: -.214rem;
         margin-bottom: -.214rem;
-    }
-    #offcanvasRight .offcanvas-body{
-        padding: 0.427rem 0.427rem;
-        padding-right: 3.67rem;
-    }      
+    } 
 }
 
 
@@ -114,18 +118,47 @@
 }
 
 .artistDetail .album{
-    flex:0 0 450px;
-    width:100%;
+    flex:0 0 400px;
     max-height:450px;
+    height:400px;
+    width:100%;
     display:flex;
     flex-wrap: nowrap;
     position: relative;
+    overflow-x: visible;
+    overflow-y: hidden;
+    /* overflow: visible; */
+}
+/* scroll-snap测试 */
+.artistDetail .album.scrollerSnap{
+    display:flex;
+    flex-wrap: nowrap;
+    /* width: calc(100% + var(--offsetcanvas-padding-right,0.77rem)); */
+    width:var(--offsetcanvas-right);
+    /* height: 100%; */
+    /* position:absolute; */
+    left: calc(-1 * var(--offsetcanvas-padding,0.77rem));
+    overflow-x:auto;
+    overflow-x: overlay; 
+    overflow-y:hidden;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+}
+.artistDetail .album img{
+    scroll-snap-align: center;
+    scroll-snap-stop: normal;
+    /* scroll-margin-left: 20px; */
+    margin:0 .5rem;
+    background-color: #222222a8;
+    flex: 0 0 min(800px,100%,calc( var(--offsetcanvas-right) - var(--offsetcanvas-padding) - var(--offsetcanvas-padding-right,0.77rem) - 1rem));
+    flex: auto;
 }
 .artistDetail .album img{
     object-fit:cover;
     /* 手机竖屏高充满，宽自动 */
     width: auto;
-    max-width:100%;
+    max-width:calc( var(--offsetcanvas-right) - var(--offsetcanvas-padding-right,0.77rem) - var(--offsetcanvas-padding) - 1rem);
     height:100%;
     max-height: 100%;
 }
@@ -162,9 +195,17 @@
     width: 100%;
 }
 @media (min-width: 768px) {
+    .artistDetail .album{
+        flex:0 0 450px;
+        height:450px;
+    
+    }
     .artistDetail .album img{
-        width: 55vw;
-        width: 100%;
+        scroll-snap-align: start;
+        object-fit:contain;
+        /* width: 100%; */
+        flex: 0 0 min(800px,100%,calc( var(--offsetcanvas-right) - var(--offsetcanvas-padding) - var(--offsetcanvas-padding-right,0.77rem) - 1rem));
+
         height:auto;
     }    
 }

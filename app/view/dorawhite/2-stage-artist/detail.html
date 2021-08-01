@@ -10,25 +10,10 @@
     {# 乐队名 #}
     <div class="name">{{post.name}} {{post.alias}}</div>
     {# 乐队图 #}
-    <div class="album">
-        {# <img src="{{post.sImg}}" class="img-fluid" alt="{{post.name}}"> #}
-        <div id="carouselArtistDetail" class="carousel slide w-100" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                {% for image in post.listImages %}
-                    <div class="carousel-item {{ "active" if loop.first }} h-100">
-                        <img src="{{image.url}}" alt="{{image.name}}"/>
-                    </div>
-                {% endfor %}
-            </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselArtistDetail" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselArtistDetail" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
-        </div>
+    <div class="album scrollerSnap">
+        {% for image in post.listImages %}
+        <img src="{{image.url}}" alt="{{image.name}}"/>
+        {% endfor %}
     </div>
     {# 标签 #}
     {# 风格 #}
