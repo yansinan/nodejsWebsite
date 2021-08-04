@@ -26,17 +26,18 @@
     {# <script src="https://unpkg.com/@popperjs/core@2"></script> #}
     {# <script src="https://cdn.bootcdn.net/ajax/libs/popper.js/2.6.0/umd/popper.min.js"></script> #}
     {# <script src="https://unpkg.com/better-scroll@latest/dist/better-scroll.js"></script> #}
-    {# betterScroll #}
-    {% plugin name="popper twitter-bootstrap font-awesome betterScroll" %}
+    {#  font-awesome #}
+    {% plugin name="popper twitter-bootstrap betterScroll" %}
     {% endplugin %}
     {# 模块 #}
-    {% from "./public/compNavAvatar.html" import navAvatar %}
+    {# {% from "./public/compNavAvatar.html" import navAvatar %} #}
     {% from "./public/compContainerList.html" import containerOfList %}
     {% from "./public/compListTags.html" import listTags %}
     {% from "./public/compTimelineBar.html" import timelineBar %}
     {% from "./public/compTimelineBar.html" import timelineBarDocs %}
     <!-- 二次开发静态资源 -->
-    {% assets 'default.css detail.css header.css footer.css timelineBar.css artist.css dora.front.js white.css avatar.css timeline.css utils.css' %}
+    {#  dora.front.js avatar.css  white.css #}
+    {% assets 'default.css detail.css header.css footer.css timelineBar.css artist.css timeline.css utils.css' %}
     {% endassets %}
 
     {% endheader %}

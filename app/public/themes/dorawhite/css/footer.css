@@ -47,6 +47,15 @@
     overflow: visible;
 }
 .foot-float.back-to-top{
+    background-color: #fff;
+    position: fixed;
+    bottom: 150px;
+    border-radius: 20px;
+    cursor: pointer;
+    -webkit-transition: .3s;
+    transition: .3s;
+    /* box-shadow: 0 0 6px rgb(0 0 0 / 12%); */
+    
     z-index: 1001;
     width: min-content;
     height: min-content;
@@ -58,6 +67,7 @@
     box-shadow: none;
     border: none;
     overflow: visible;
+
 }
 .foot-float .btnRubyEyes{
     width: 2.3rem;
