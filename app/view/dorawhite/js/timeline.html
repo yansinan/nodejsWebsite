@@ -1,6 +1,4 @@
 
-{# {% set infoPagination={page:"timeline",idDOM:"list-timeline",api:"/api/timeline/getList",pageInfo:pageInfo,cateInfo:cateInfo} %} #}
-{% macro containerOfList(infoPagination,tempList) %}
 {# 公共的initTimelinePullDown，MM初始化流程 #}
 <script>
     let slideMain = {};
@@ -147,18 +145,8 @@
         that[objName].refresh();
     }
 </script>
-<div id="timelineWrapper" class="d-none bs-wrapper-main">
-    {# 不指定高：手机纵向自适应高，PC在定义高度 #}
-    <div id="timelineContent" class="heightMain-md px-0 d-block d-md-inline-flex w-auto" style="max-width:none;" dr-dom-append="{{infoPagination.idDOM}}">
-        <div class="pulldown-tip"></div>
-        {# 每月纵向 #}
-        {{tempList | safe}}
-        {# 最后两个空列占位:TODO待解决 #}
-        {# 月份行 手机隐藏#}
-        {# <div class="container-mm end d-flex flex-column"></div> #}
-    </div>
-    {# {% include "./pagination.html" %} #}
-</div>
+
+
 {# 时间轴控制 #}
 <script>
     var $timelineWrapper = document.getElementById('timelineWrapper');
@@ -467,4 +455,3 @@
         //subtree: true // 是否将观察器应用于该节点的所有后代节点
     })
 </script>
-{% endmacro %}

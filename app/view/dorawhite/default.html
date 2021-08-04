@@ -31,7 +31,7 @@
     {% endplugin %}
     {# 模块 #}
     {# {% from "./public/compNavAvatar.html" import navAvatar %} #}
-    {% from "./public/compContainerList.html" import containerOfList %}
+    {# {% from "./public/compContainerList.html" import containerOfList %} #}
     {% from "./public/compListTags.html" import listTags %}
     {% from "./public/compTimelineBar.html" import timelineBar %}
     {% from "./public/compTimelineBar.html" import timelineBarDocs %}
@@ -60,14 +60,13 @@
     {% block footer %}
         {% include "./public/footer.html" %}
     {% endblock %}
-    {# mainpage大红标题 scroll#}
 
     {% block cover %}
         <div id="mainCover" class="paddingCoverTop paddingCoverTop-md">
             {# <div class="w-100 heightNav"></div> #}
             {# scroll #}
             <div id="coverWrapper" class="bs-wrapper-cover heightMain">
-                <div class="bs-content-cover bg-transparent text-dark">
+                <div id="bsMainContent"class="bs-content-cover bg-transparent text-dark">
                     {# 空容器 #}
                     {# <div class="d-none bg-transparent"></div> #}
                     {# 横滚乐队名 #}

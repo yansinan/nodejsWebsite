@@ -1,156 +1,88 @@
 {# 时间轴内容区 #}
-<script>
-    let slideMain = {};
-    this.$listBSMM=this.$listBSMM || [];
-    {# 上拉刷新事件，bsMM和slideMain共用 #}
-    this.initTimelinePullDown=function(bsTar){
-        // pulldownRefresh state
-        const PHASE = {
-            moving: {
-                enter: 'enter',
-                leave: 'leave'
-            },
-            fetching: 'fetching',
-            succeed: 'succeed'
-        }
-        const ARROW_BOTTOM = '<svg width="16" height="16" viewBox="0 0 512 512"><path fill="currentColor" d="M367.997 338.75l-95.998 95.997V17.503h-32v417.242l-95.996-95.995l-22.627 22.627L256 496l134.624-134.623l-22.627-22.627z"></path></svg>'
-        const ARROW_UP = '<svg width="16" height="16" viewBox="0 0 512 512"><path fill="currentColor" d="M390.624 150.625L256 16L121.376 150.625l22.628 22.627l95.997-95.998v417.982h32V77.257l95.995 95.995l22.628-22.627z"></path></svg>'
-
-        bsTar.setTipText=function(phase = PHASE.default){
-            const TEXTS_MAP = {
-                'enter': `${ARROW_BOTTOM} 下拉回首页`,
-                'leave': `${ARROW_UP} 松开前往`,
-                'fetching': '准备中...',
-                'succeed': '正在前往'
-            }
-            let $pulldown=bsTar.content.querySelector(".pulldown-tip")
-            if($pulldown)$pulldown.innerHTML = TEXTS_MAP[phase];
-        }
-        bsTar.ePullDown=function(){
-            that.dispatchEvent(new CustomEvent("BS_TIMELINE_PULL_DOWN", {
-                detail:{}
-            }))
-            // tell BetterScroll to finish pull down
-            bsTar.finishPullDown();
-            bsTar.setTipText(PHASE.moving.succeed);
-        }
-
-        bsTar.on('pullingDown', bsTar.ePullDown)
-        // v2.4.0 supported
-        bsTar.on('enterThreshold', () => {
-            bsTar.setTipText(PHASE.moving.enter)
-        })
-        bsTar.on('leaveThreshold', () => {
-            bsTar.setTipText(PHASE.moving.leave)
-        })        
-    }
-    {# 初始化每月的bs #}
-    this.resetBSMM=function($bsMM){
-        let idxMM=$bsMM.getAttribute("ms-controller");
-        let objName="bs-"+idxMM;
-        let objInitBSMM={
-            //specifiedIndexAsContent:1,
-            disableMouse: false,
-            disableTouch: false,
-            scrollY: true,
-            scrollX: false,
-            nestedScroll: {
-                groupId: 'cover-scrollY'
-            },
-            useTransition: true,//是否使用 CSS3 transition 动画
-            momentum: true,//滚动动画
-            bounce: {
-                top: true,
-                bottom: true,
-                left: true,
-                right: true
-            },//回弹动画
-            //outOfBoundaryDampingFactor:0.1,
-            //stopPropagation: false,//阻止事件冒泡。多用在嵌套 scroll 的场景
-            probeType: 3,
-            mouseWheel: {
-                speed: 20,
-                invert: false,
-                easeTime: 300
-            },
-            pullDownRefresh: {
-                threshold: 80,
-                stop: 40
-            },
-            scrollbar: true,
-            //observeDOM: true // 开启 observe-dom 插件
-        }
-        {# 只初始化一次，防止事件多次触发 #}
-        if(!that[objName]){
-            that[objName]=that[objName] ||  new BetterScroll.createBScroll($bsMM, objInitBSMM);
-            {# 月份计算坐标 #}
-            Object.defineProperties($bsMM,{
-                $docNow:{
-                    get:()=>{
-                        let $mmNow=$bsMM;
-                        {# 查询当前日期 #}
-                        let topMM=$bsMM.isMobile ? slideMain.paddingTop : $mmNow.getBoundingClientRect().top;
-                        let $listDocs=$mmNow.querySelectorAll("[dr-date-doc]");
-                        $mmNow.$docLast=$mmNow._$docNow || false;
-                        $mmNow._$docNow=Array.from($listDocs).find(($doc,idx)=>{
-                            return $doc.getBoundingClientRect().bottom > topMM;
-                        });
-                        if(!$mmNow._$docNow)$mmNow._$docNow=$listDocs[$listDocs.length-1];
-                        return $mmNow._$docNow;
-                    },
-                    configurable:true,
-                },
-                isDateNew:{
-                    get:()=>($bsMM.$docLast != $bsMM._$docNow),
-                },
-                strDateNow:{
-                    get:()=>{return $bsMM._$docNow ? $bsMM.$docNow.getAttribute("dr-date-doc") : false ;},
-                },
-                strDateLast:{
-                    get:()=>{return $bsMM.$docLast ? $bsMM.$docLast.getAttribute("dr-date-doc") : false ;},
-                },
-                idxMM:{
-                    get:()=>($bsMM.getAttribute("ms-controller")),
-                },
-                objName:{
-                    get:()=>("bs-"+$bsMM.idxMM),
-                },
-                objBS:{ get:()=>(that[$bsMM.objName]), },
-                $content: { get:()=>( $bsMM.objBS.content ) },
-                isMobile:{ get:()=>( $bsMM.objBS.wrapper.clientHeight == $bsMM.objBS.content.clientHeight ), },
-            })  
-            //设置事件;
-            that[objName].on('beforeScrollStart', that[objName].refresh)
-            that[objName].on("scroll",(pos)=>{//this===MutationObserver
-                
-                if($bsMM.classList.contains("now")){
-                    that.slideMain.$docNow=$bsMM.$docNow;
-                    {# 当前月份滚动 && #}{# 日期变化，且用户操作产生的，才触发同步通知 #}
-                    that.slideMain.checkEvent($bsMM.isDateNew);
-                }
-            })
-            that[objName].scroller.animater.hooks.on('end', () => {
-                that.slideMain.enable();
-                console.log("时间轴:月份end停止");
-            })
-            that[objName].scroller.hooks.on('scrollEnd', () => {
-                that.slideMain.enable();
-                console.log("时间轴:月份scrollEnd停止");
-                //that.dispatchEvent(new CustomEvent("BS_TIMELINE_SCROLL_END"));
-            })
-            {# that[objName].on('pullingDown', that.slideMain.ePullDown)     #}
-            that.initTimelinePullDown(that[objName]);
-        }
-        that[objName].refresh();
-    }
-
-</script>
-{# 单页模式 #}
 {% set infoPagination={page:"timeline",idDOM:"list-timeline",api:"/api/timeline/getListDOM",pageInfo:pageInfo,cateInfo:cateInfo} %}
 {# 临时设置，确保不输出默认数据，且有posts #}
-{% set posts=[] %}
+{# {% set posts=[] %} #}
 {# 时间轴列表模板：根据url选取不同模板 #}
+{# 
 {% set tempList %}
     {% include './compBSTimelineColumn.html' %}
 {% endset %}
-{{containerOfList(infoPagination,tempList)}}
+ #}
+{# {{containerOfList(infoPagination,tempList)}} #}
+<div id="timelineWrapper" class="d-none bs-wrapper-main">
+    {# 不指定高：手机纵向自适应高，PC在定义高度  dr-dom-append="{{infoPagination.idDOM}}"#}
+    <div id="timelineContent" class="heightMain-md px-0 d-block d-md-inline-flex w-auto" style="max-width:none;">
+        <div class="pulldown-tip"></div>
+        {# 每月纵向 #}
+        {# {{tempList | safe}} #}
+        {# 最后两个空列占位:TODO待解决 #}
+        {# 月份行 手机隐藏#}
+        {# <div class="container-mm end d-flex flex-column"></div> #}
+    </div>
+    {# {% include "./pagination.html" %} #}
+</div>
+<script>
+    {# 内容显示控制 #}
+    this["vm-"+"{{infoPagination.page}}"] = this["vm-"+"{{infoPagination.page}}"] || avalon.define({
+        $id: document.getElementById('timelineContent'),//'{{infoPagination.idDOM}}',
+        cateId:"{{infoPagination.cateInfo._id}}",
+        namePage:"{{infoPagination.page}}",
+        urlApi:"{{infoPagination.api}}",
+        current: 1,
+        totalPage:{{infoPagination.pageInfo.totalPage}},
+        appendDocumentList: [],
+        vmPageNation:this["vm-pagenation-"+"{{infoPagination.page}}"] || {},
+        {# 初始化数据 #}
+        init:function(){
+            this.current=0;
+            this.getMoreNews();
+        },
+        getMoreNews: function () {
+            let vm=this;
+            let next=(this.current<this.totalPage)?(this.current+1):false;
+            return new Promise((resolve, reject) => {
+                if(next){
+                    fetch(vm.urlApi+'?type=dom&typeId=' + vm.cateId + '&current=' + next)
+                    .then(function(data){
+                        return data.text();
+                    }).then(function (data) {
+                        // 在这个then里面我们能拿到最终的数据
+                        let objData=JSON.parse(data);
+                        if(objData.status==200){
+                            vm.current=objData.data.pageInfo.current;
+                            vm.totalPage=objData.data.pageInfo.totalPage;
+                            if(vm.vmPageNation){
+                                vm.vmPageNation.current=vm.current;
+                                vm.vmPageNation.totalPage=vm.totalPage;
+                            }
+                            let strToAppend=objData.data.dom;
+                            let domToAppend = document.createRange().createContextualFragment(strToAppend);
+                            {# 插入点 ,用querySelectorAll 防止slider复制后内容缺失#}
+                            {# let listDomContainerOfList=document.querySelectorAll("[dr-dom-append="+vm.$id+"]"); #}
+                            {# listDomContainerOfList.forEach(domList=>{domList.append(domToAppend.cloneNode(true))}); #}
+                            {# 第一次初始化时,会返回domContainer == $timelineWrapper.script #}
+                            if(objData.data.domContainer){
+                                document.getElementById("bsMainContent").append(document.createRange().createContextualFragment(objData.data.domContainer));
+                            }
+
+                            {# 插入列内容#}
+                            vm.$id.append(domToAppend.cloneNode(true));
+
+                            {# 第一次需要初始化 #}
+                            if(!slideMain.refresh)this.resetSlideMain();
+                            slideMain.refresh();
+
+                            resolve({msg:"succ",isEnd:vm.totalPage<=vm.current});
+                        }else{
+                            reject({msg:"服务器返回错误 ", objData});
+                        }
+                    })
+                                        
+                } else {
+                    resolve({msg:"succ",isEnd:vm.totalPage<=vm.current})
+                }
+            });                
+        }
+    })
+    this["vm-"+"{{infoPagination.page}}"].init();
+</script>
