@@ -1,4 +1,5 @@
 {# 时间轴列 #}
+{% from "./compListTags.html" import listTags %}
         {% for month, colItems in posts|groupby("dateYYMM") %}
         <div class="container-mm d-flex flex-column">
             {# 月份行 手机隐藏#}
@@ -38,7 +39,7 @@
 
                     {% endfor %}
                 </div>
-                <script>                  
+                <script>
                     this.$listBSMM.push(document.getElementById("bsWrapperMM{{month|trim}}"));
                     this.resetBSMM(this.$listBSMM[this.$listBSMM.length-1]);
                 </script>

@@ -81,6 +81,7 @@ module.exports = app => {
 
     // 时间线列表
     router.get("/api/timeline/getList", controller.api.timeline.list);
+    router.get("/api/timeline/getListDOM", controller.page.timeline.getListTestTimeline);
 
     // 抓微信公众号文章
     router.get("/api/content/fetchWX",controller.api.webCrawler.fetchWXArticle)

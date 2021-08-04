@@ -146,9 +146,9 @@
 
 </script>
 {# 单页模式 #}
-{% set infoPagination={page:"timeline",idDOM:"list-timeline",api:"/api/timeline/getList",pageInfo:pageInfo,cateInfo:cateInfo} %}
+{% set infoPagination={page:"timeline",idDOM:"list-timeline",api:"/api/timeline/getListDOM",pageInfo:pageInfo,cateInfo:cateInfo} %}
 {# 临时设置，确保不输出默认数据，且有posts #}
-{# {% set posts=[] %} #}
+{% set posts=[] %}
 {# 时间轴列表模板：根据url选取不同模板 #}
 {% set tempList %}
     {% include './compBSTimelineColumn.html' %}

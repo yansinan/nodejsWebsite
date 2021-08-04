@@ -7,9 +7,9 @@
         <div class="pulldown-tip"></div>
         {# 每月纵向 #}
         {{tempList | safe}}
-        {# 最后两个空列占位 #}
+        {# 最后两个空列占位:TODO待解决 #}
         {# 月份行 手机隐藏#}
-        <div class="container-mm end d-flex flex-column"></div>
+        {# <div class="container-mm end d-flex flex-column"></div> #}
     </div>
     {# 时间轴控制 #}
     <script>
@@ -27,10 +27,6 @@
         },
     })
    
-    let $listMM=$timelineWrapper.querySelectorAll(".wapper-mm");
-    {# 上一个当前月 #}
-    let $mmLast=$listMM[0];
-    let $mmNow=$listMM[0];
 
     this.resetSlideMain=function(){
         let objInitBSTimeline={
@@ -86,7 +82,14 @@
         this.slideMain=slideMain;
         console.warn("高度差？",slideMain.wrapper.getBoundingClientRect().height,slideMain.content.getBoundingClientRect().height,)
 
+        let $listMM=$timelineWrapper.querySelectorAll(".wapper-mm");
+        {# 上一个当前月 #}
+        let $mmLast=$listMM[0];
+        let $mmNow=$listMM[0];
         Object.defineProperties(slideMain,{
+            //$listMM:{
+            //    get:()=>($timelineWrapper.querySelectorAll(".wapper-mm") ),
+            //},
             strDateNow:{
                 get:()=>{return slideMain.$docNow ? slideMain.$docNow.getAttribute("dr-date-doc") : false ;},
             },
@@ -226,7 +229,10 @@
 
         {# 标记当前月 #}
         slideMain.funFindDateNow();
-
+        {# 触发事件更新懒加载图片 #}
+        this.dispatchEvent(new CustomEvent("BS_TIMELINE_DOM_CHANGED", {
+            detail:{  }
+        }))
     }
 
     this.eDateChange=function(e){
@@ -332,39 +338,39 @@
                 this.getMoreNews();
             },
             getMoreNews: function () {
-                let that=this;
+                let vm=this;
                 let next=(this.current<this.totalPage)?(this.current+1):false;
                 return new Promise((resolve, reject) => {
                     if(next){
-                        fetch(that.urlApi+'?type=dom&typeId=' + that.cateId + '&current=' + next)
+                        fetch(vm.urlApi+'?type=dom&typeId=' + vm.cateId + '&current=' + next)
                         .then(function(data){
                             return data.text();
                         }).then(function (data) {
                             // 在这个then里面我们能拿到最终的数据
                             let objData=JSON.parse(data);
                             if(objData.status==200){
-                                that.current=objData.data.pageInfo.current;
-                                that.totalPage=objData.data.pageInfo.totalPage;
-                                if(that.vmPageNation){
-                                    that.vmPageNation.current=that.current;
-                                    that.vmPageNation.totalPage=that.totalPage;
+                                vm.current=objData.data.pageInfo.current;
+                                vm.totalPage=objData.data.pageInfo.totalPage;
+                                if(vm.vmPageNation){
+                                    vm.vmPageNation.current=vm.current;
+                                    vm.vmPageNation.totalPage=vm.totalPage;
                                 }
-                                let strToAppend=objData.data.docs;
+                                let strToAppend=objData.data.dom;
                                 let domToAppend = document.createRange().createContextualFragment(strToAppend);
                                 {# 插入点 ,用querySelectorAll 防止slider复制后内容缺失#}
-                                let listDomContainerOfList=document.querySelectorAll("[dr-dom-append="+that.$id+"]");
+                                let listDomContainerOfList=document.querySelectorAll("[dr-dom-append="+vm.$id+"]");
                                 listDomContainerOfList.forEach(domList=>{domList.append(domToAppend.cloneNode(true))});
                                 {# 第一次需要初始化 #}
                                 if(!slideMain.refresh)this.resetSlideMain();
                                 slideMain.refresh();
-                                resolve({msg:"succ",isEnd:that.totalPage<=that.current});
+                                resolve({msg:"succ",isEnd:vm.totalPage<=vm.current});
                             }else{
                                 reject({msg:"服务器返回错误 ", objData});
                             }
                         })
                                             
                     } else {
-                        resolve({msg:"succ",isEnd:that.totalPage<=that.current})
+                        resolve({msg:"succ",isEnd:vm.totalPage<=vm.current})
                     }
                 });                
             }

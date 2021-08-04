@@ -16,6 +16,10 @@
         window.addEventListener("LazyLoad::Initialized",(event)=>{
                 window.lazyLoadInstance = event.detail.instance;
         },false);
+        {# timeline更新了内容，图片需要懒加载 #}
+        this.addEventListener("BS_TIMELINE_DOM_CHANGED",(e)=>{
+            window.lazyLoadInstance.update();
+        })
     </script>
     <!-- 引入组件库 -->
     <!-- Production version -->
