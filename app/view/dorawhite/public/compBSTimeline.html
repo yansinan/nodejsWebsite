@@ -44,45 +44,6 @@
             bsTar.setTipText(PHASE.moving.leave)
         })        
     }
-    {# 月份计算坐标 #}
-    this.initPropertyMM=function(tar){
-        tar=tar || this;
-        Object.defineProperties(tar,{
-            $docNow:{
-                get:()=>{
-                    let $mmNow=tar;
-                    {# 查询当前日期 #}
-                    let topMM=tar.isMobile ? slideMain.paddingTop : $mmNow.getBoundingClientRect().top;
-                    let $listDocs=$mmNow.querySelectorAll("[dr-date-doc]");
-                    $mmNow.$docLast=$mmNow._$docNow || false;
-                    $mmNow._$docNow=Array.from($listDocs).find(($doc,idx)=>{
-                        return $doc.getBoundingClientRect().bottom > topMM;
-                    });
-                    if(!$mmNow._$docNow)$mmNow._$docNow=$listDocs[$listDocs.length-1];
-                    return $mmNow._$docNow;
-                },
-                configurable:true,
-            },
-            isDateNew:{
-                get:()=>(tar.$docLast != tar._$docNow),
-            },
-            strDateNow:{
-                get:()=>{return tar._$docNow ? tar.$docNow.getAttribute("dr-date-doc") : false ;},
-            },
-            strDateLast:{
-                get:()=>{return tar.$docLast ? tar.$docLast.getAttribute("dr-date-doc") : false ;},
-            },
-            idxMM:{
-                get:()=>(tar.getAttribute("ms-controller")),
-            },
-            objName:{
-                get:()=>("bs-"+tar.idxMM),
-            },
-            objBS:{ get:()=>(that[tar.objName]), },
-            $content: { get:()=>( tar.objBS.content ) },
-            isMobile:{ get:()=>( tar.objBS.wrapper.clientHeight == tar.objBS.content.clientHeight ), },
-        })            
-    }
     {# 初始化每月的bs #}
     this.resetBSMM=function($bsMM){
         let idxMM=$bsMM.getAttribute("ms-controller");
@@ -121,7 +82,44 @@
         }
         {# 只初始化一次，防止事件多次触发 #}
         if(!that[objName]){
-            that[objName]=that[objName] ||  new BetterScroll.createBScroll($bsMM, objInitBSMM)
+            that[objName]=that[objName] ||  new BetterScroll.createBScroll($bsMM, objInitBSMM);
+            {# 月份计算坐标 #}
+            Object.defineProperties($bsMM,{
+                $docNow:{
+                    get:()=>{
+                        let $mmNow=$bsMM;
+                        {# 查询当前日期 #}
+                        let topMM=$bsMM.isMobile ? slideMain.paddingTop : $mmNow.getBoundingClientRect().top;
+                        let $listDocs=$mmNow.querySelectorAll("[dr-date-doc]");
+                        $mmNow.$docLast=$mmNow._$docNow || false;
+                        $mmNow._$docNow=Array.from($listDocs).find(($doc,idx)=>{
+                            return $doc.getBoundingClientRect().bottom > topMM;
+                        });
+                        if(!$mmNow._$docNow)$mmNow._$docNow=$listDocs[$listDocs.length-1];
+                        return $mmNow._$docNow;
+                    },
+                    configurable:true,
+                },
+                isDateNew:{
+                    get:()=>($bsMM.$docLast != $bsMM._$docNow),
+                },
+                strDateNow:{
+                    get:()=>{return $bsMM._$docNow ? $bsMM.$docNow.getAttribute("dr-date-doc") : false ;},
+                },
+                strDateLast:{
+                    get:()=>{return $bsMM.$docLast ? $bsMM.$docLast.getAttribute("dr-date-doc") : false ;},
+                },
+                idxMM:{
+                    get:()=>($bsMM.getAttribute("ms-controller")),
+                },
+                objName:{
+                    get:()=>("bs-"+$bsMM.idxMM),
+                },
+                objBS:{ get:()=>(that[$bsMM.objName]), },
+                $content: { get:()=>( $bsMM.objBS.content ) },
+                isMobile:{ get:()=>( $bsMM.objBS.wrapper.clientHeight == $bsMM.objBS.content.clientHeight ), },
+            })  
+            //设置事件;
             that[objName].on('beforeScrollStart', that[objName].refresh)
             that[objName].on("scroll",(pos)=>{//this===MutationObserver
                 
@@ -145,12 +143,7 @@
         }
         that[objName].refresh();
     }
-    this.initBSMM=function($tar){
-        {# 设置$bsMM的计算属性 #}
-        this.initPropertyMM.call($tar);
-        {# 初始化bsMM #}
-        this.resetBSMM($tar);
-    }
+
 </script>
 <div id="timelineWrapper" class="d-none bs-wrapper-main">
     {# 不指定高：手机纵向自适应高，PC在定义高度 #}
@@ -456,12 +449,6 @@
     this.addEventListener("BS_COVER_LISTARTISTS",()=>{
         slideMain.destroy();
     })
-
-    {# timelineBar 防止冲突控制 #}
-    //this.addEventListener("BS_TIMELINE_BAR_SCROLL_START",(e)=>{slideMain.disable()});
-    //his.addEventListener("BS_TIMELINE_BAR_SCROLL_END",(e)=>{
-    //   slideMain.enable();
-    //);
 
     var mutationObserver = new MutationObserver(function (mutations) {
         let status=window.getComputedStyle($timelineWrapper).getPropertyValue('display');
