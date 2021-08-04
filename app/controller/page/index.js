@@ -19,13 +19,10 @@ class IndexController extends Controller {
     
         // 获取通用页面信息
         let {pageData,defaultTemp}=await ctx.getInitPageData("cate");
-        // pageData.listArtists = pageData.listAvatars;
+          
+        // 人物（艺术家）列表
+        pageData.listArtists = (await this.service.uploadFiles.cacheJSON(`${(process.cwd() + '/app/public')}/cache/listArtists.json`,{tar:this,fun:ctx.helper.reqJsonData, params:['artist/getList', {filesType:"navAvatar", pageSize: 0,isPaging:"0",}] },true,true)).docs;
 
-        // 模板的真实路径
-        let pathTemplate = "2-stage-timeline" +"/" + "contentTimeline.html";//this.app.config.temp_view_forder + defaultTemp.alias + '/' + "2-stage-timeline" +"/" + "contentList.html";
-        pathTemplate="default.html";
-        // ctx.tempPage在ctx.renderPageData()中使用
-        ctx.tempPage=pathTemplate;
         
         // 获取分类文档列表
         let {
@@ -37,6 +34,11 @@ class IndexController extends Controller {
         pageData.objTimeline=objTimeline;
 
         //最终渲染
+        // 模板的真实路径
+        let pathTemplate = "2-stage-timeline" +"/" + "contentTimeline.html";//this.app.config.temp_view_forder + defaultTemp.alias + '/' + "2-stage-timeline" +"/" + "contentList.html";
+        pathTemplate="default.html";
+        // ctx.tempPage在ctx.renderPageData()中使用
+        ctx.tempPage=pathTemplate;
         await ctx.renderPageData(pageData);
     }
 
