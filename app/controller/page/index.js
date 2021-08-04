@@ -13,14 +13,13 @@ class IndexController extends Controller {
     async getDataForIndexPage() {
         const ctx = this.ctx;
         ctx.query.current = ctx.params.current;
-        ctx.tempPage = 'index.html';
         ctx.pageType = "index";
         // console.log('-ctx.getSiteInfo();--', await ctx.getSiteInfo())
         // await ctx.getPageData();
     
         // 获取通用页面信息
         let {pageData,defaultTemp}=await ctx.getInitPageData("cate");
-        pageData.listArtists = pageData.listAvatars;
+        // pageData.listArtists = pageData.listAvatars;
 
         // 模板的真实路径
         let pathTemplate = "2-stage-timeline" +"/" + "contentTimeline.html";//this.app.config.temp_view_forder + defaultTemp.alias + '/' + "2-stage-timeline" +"/" + "contentList.html";
@@ -36,7 +35,6 @@ class IndexController extends Controller {
         // debugger;
         pageData.pageInfo = pageInfo;
         pageData.objTimeline=objTimeline;
-
 
         //最终渲染
         await ctx.renderPageData(pageData);
