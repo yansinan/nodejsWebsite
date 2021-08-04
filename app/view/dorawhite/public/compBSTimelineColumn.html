@@ -1,4 +1,5 @@
 {# 时间轴列 #}
+        {% for month, colItems in posts|groupby("dateYYMM") %}
         <div class="container-mm d-flex flex-column">
             {# 月份行 手机隐藏#}
             <div class="month d-md-flex d-none">
@@ -43,3 +44,4 @@
                 </script>
             </div>
         </div>
+        {% endfor %}

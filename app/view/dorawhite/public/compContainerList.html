@@ -1,50 +1,319 @@
 
 {# {% set infoPagination={page:"timeline",idDOM:"list-timeline",api:"/api/timeline/getList",pageInfo:pageInfo,cateInfo:cateInfo} %} #}
 {% macro containerOfList(infoPagination,tempList) %}
-<div class="container-fluid  main-container position-relative d-inline-block" style="height:88vh;overflow:hidden;white-space:normal;" dr-bs-wrapper="{{infoPagination.idDOM}}" ms-controller="{{infoPagination.idDOM}}">
-    <div class="row">
-        <h1 alt="{{site.altkey}}{{infoPagination.cateInfo.name}}">{{infoPagination.cateInfo.name}}</h1>
+<div id="timelineWrapper" class="d-none bs-wrapper-main">
+    {# 不指定高：手机纵向自适应高，PC在定义高度 #}
+    <div id="timelineContent" class="heightMain-md px-0 d-block d-md-inline-flex w-auto" style="max-width:none;" dr-dom-append="{{infoPagination.idDOM}}">
+        <div class="pulldown-tip"></div>
+        {# 每月纵向 #}
+        {{tempList | safe}}
+        {# 最后两个空列占位 #}
+        {# 月份行 手机隐藏#}
+        <div class="container-mm end d-flex flex-column"></div>
     </div>
-    <div class="row" dr-dom-append="{{infoPagination.idDOM}}">
-    {{tempList | safe}}
-    </div>
-
-    {% include "./pagination.html" %}
+    {# 时间轴控制 #}
     <script>
-        {# BScroll.use(MouseWheel) #}
-        {# BScroll.use(Slide) #}
-        {# BScroll.use(Pullup) #}
-        {# BScroll.use(ScrollBar) #}
+    var $timelineWrapper = document.getElementById('timelineWrapper');
+    let $timelineContent = document.getElementById('timelineContent');
+    Object.defineProperties($timelineContent,{
+        isMobile:{
+            get:()=>{return $timelineContent.clientWidth == $timelineWrapper.clientWidth ;},
+        },
+        paddingTop:{
+            get:()=>($timelineWrapper.getBoundingClientRect().top),
+        },
+        paddingLeft:{
+            get:()=>($timelineWrapper.getBoundingClientRect().left),
+        },
+    })
+   
+    let $listMM=$timelineWrapper.querySelectorAll(".wapper-mm");
+    {# 上一个当前月 #}
+    let $mmLast=$listMM[0];
+    let $mmNow=$listMM[0];
 
-        this["bs-"+"{{infoPagination.page}}"] = this["bs-"+"{{infoPagination.page}}"] || new BetterScroll.createBScroll("[dr-bs-wrapper={{infoPagination.idDOM}}]", {
-            specifiedIndexAsContent:1,
+    this.resetSlideMain=function(){
+        let objInitBSTimeline={
+            //specifiedIndexAsContent:1,
             disableMouse: false,
             disableTouch: false,
-            mouseWheel: {
-                speed: 20,
-                invert: false,
-                easeTime: 300
+            scrollX: true,
+            scrollY: true,
+            //nestedScroll: {
+            //    groupId: 'cover-scrollY'
+            //},
+            //slide: {
+            //    threshold: 100,
+            //    loop: false,//TODO：可以优化为循环slide；注意：复制出来的slide需要querySelector and 设置translateY同步
+            //    autoplay:false,
+            //    listenFlick:false,
+            //},
+            useTransition: true,
+            momentum: true,
+            //momentumLimitTime:100,//{# 快速滑动的时间小于xx开启#}
+            //momentumLimitDistance:50,//{# 快速滑动的距离大于xx开启#}
+            deceleration:0.005,//{# momentum 动画的减速度 #}
+            //swipeTime:300,//{# momentum 动画时长 #}
+            bounce: {
+                top: true,
+                bottom: true,
+                left: true,
+                right: true
             },
-            pullUpLoad: true,
-            scrollbar: true,
+            mouseWheel: {
+                speed: 50,
+                invert: false,
+                easeTime: 100
+            },
+            pullDownRefresh: {
+                threshold: 60,
+                stop: 40
+            },
+            observeDOM: true ,// 开启 observe-dom 插件
+            stopPropagation: false,
+            probeType: 3,
+        }
+        if( slideMain.destroy )slideMain.destroy();
+        {# 根据屏幕初始化功能 #}
+        let objOption={scrollX:false,};//mobile配置
+        if(!$timelineContent.isMobile){
+            objOption={
+                pullDownRefresh:false,
+                scrollY:false,
+            }
+        }
+        slideMain = new BetterScroll.createBScroll($timelineWrapper, Object.assign({},objInitBSTimeline,objOption));
+        this.slideMain=slideMain;
+        console.warn("高度差？",slideMain.wrapper.getBoundingClientRect().height,slideMain.content.getBoundingClientRect().height,)
+
+        Object.defineProperties(slideMain,{
+            strDateNow:{
+                get:()=>{return slideMain.$docNow ? slideMain.$docNow.getAttribute("dr-date-doc") : false ;},
+            },
+            strDateLast:{
+                get:()=>{return slideMain.$docLast ? slideMain.$docLast.getAttribute("dr-date-doc") : false ;},
+            },
+            isMobile:{
+                get:()=>{return $timelineContent.clientWidth == $timelineWrapper.clientWidth ;},
+            },
+            paddingTop:{
+                get:()=>($timelineWrapper.getBoundingClientRect().top),
+            },
+            paddingLeft:{
+                get:()=>($timelineWrapper.getBoundingClientRect().left),
+            },
         })
-        {# TODO：可循环 
-        this["bs-"+"{{infoPagination.page}}"].scroller.hooks.on('scrollEnd', (position) => {
-            console.log("bs-"+"{{infoPagination.page}}:::",position);
+        //slideMain.on('slidePageChanged', (page) => {
+        //    // currentPageIndex = page.pageX
+        //})
+        //slideMain.on('slideWillChange', (page) => {
+        //    currentPageIndex = page.pageX;
+        //    console.log("slideMain.on(slideWillChange)",page,this.header.listNav[currentPageIndex]);
+        //    {# history路由 #}
+        //    window.history.pushState({}, "{{site.title}}|"+ this.header.listNav[currentPageIndex].name, this.header.listNav[currentPageIndex].url);//设置状态
+        //    //listBnNav.addClass("bg-light text-dark").removeClass("bg-dark text-light");
+        //    //bnNav.addClass("bg-dark text-light").removeClass("bg-light text-dark");             
+        //})
+        {# 页面重新加载时，路由到指定的slide页 #}
+        //window.addEventListener('DOMContentLoaded', (event) => {
+        //    if(this.header.idxNav>=0){
+        //        slideMain.goToPage(this.header.idxNav,0);
+        //    }
+        //});
+
+        if(slideMain.isMobile)that.initTimelinePullDown(slideMain);
+        
+        {#  #}
+        slideMain.findMMNow=function(){
+            let idxNearest = 0;
+            let $mmOut = false;
+            if(slideMain.isMobile){
+                {# 移动：横向不移动，宽相等第一个跨出上边的 #}
+                $mmOut=Array.from($listMM).find(($mm,idx)=>{
+                    idxNearest = idx;
+                    return $mm.$content.getBoundingClientRect().bottom > slideMain.paddingTop;
+                });
+            }else{
+                {# PC:第一个跨出左屏幕的 ,同时记录最后一个 x <-pos.x #}
+                $mmOut=Array.from($listMM).find(($mm,idx)=>{
+                    idxNearest = idx;
+                    //return $mm.getBoundingClientRect().right > -pos.x;
+                    return $mm.getBoundingClientRect().left + ($mm.getBoundingClientRect().width*3/4) >= slideMain.paddingLeft;
+                });
+                        
+            }
+            $mmNow=false;   
+            if($mmOut){
+                $mmNow=$mmOut;
+            }else{
+                $mmNow = $listMM[idxNearest+1] ? $listMM[idxNearest+1] : ($listMM[idxNearest]?$listMM[idxNearest]:false) ;
+                debugger;
+            }
+            if(!$mmNow)debugger;
+            else{
+                {# 是否需要改变class #}
+                if($mmNow!=$mmLast){                
+                    $mmLast.classList.remove("now");
+                    $mmLast=$mmNow;                
+                }
+                $mmNow.classList.add("now");
+                return $mmNow;
+            }
+            return false;
+        }
+        {# 查找当前日期，并触发事件 #}
+        slideMain.funFindDateNow=function(){
+            $mmNow=slideMain.findMMNow();
+            {# 查询当前日期 #}
+            if($mmNow)slideMain.$docNow=$mmNow.$docNow;
+            else debugger;
+            return slideMain.$docNow;
+            //let topMM=$mmNow.getBoundingClientRect().top;
+            //let $listDocs=$mmNow.querySelectorAll("[dr-date-doc]");
+            //slideMain.$docNow=Array.from($listDocs).find(($doc,idx)=>{
+            //    return $doc.getBoundingClientRect().bottom > topMM;
+            //});
+            //return slideMain.$docNow;
+        }
+        {# 设置class标记，并恢复上一个 #}
+        slideMain.getNewStrDate=function(){
+            if(slideMain.$docNow){
+                slideMain.$docLast=slideMain.$docLast || slideMain.$docNow;
+                if(slideMain.strDateNow != slideMain.strDateLast){
+                    console.log("timeline new Date",slideMain.strDateLast,"==>",slideMain.strDateNow);
+                    {# 更新last #}
+                    slideMain.$docLast = slideMain.$docNow;
+                    return slideMain.strDateNow;
+                }
+            }else debugger;
+            return false
+        }
+        {# 触发外部事件的逻辑 #}
+        slideMain.checkEvent=function(isNewDateInMM=false){
+            let strNewDate=slideMain.getNewStrDate();
+            if((strNewDate || isNewDateInMM)&& slideMain.enabled){
+                {# 触发事件 #}
+                that.dispatchEvent(new CustomEvent("BS_MAIN_DATE_CHANGE", {
+                    detail:{
+                        strDateNow:slideMain.strDateNow,
+                    }
+                }))
+            }
+        }
+        slideMain.on('scroll', (pos) => {
+
+            //$mmNow=slideMain.findMMNow(pos);
+            //if($mmNow)slideMain.$docNow=$mmNow.$docNow;//slideMain.funFindDateNow($mmNow);
+            //else debugger;
+
+            slideMain.funFindDateNow();
+            {# 日期变化，且用户操作产生的，才触发同步通知 #}
+            slideMain.checkEvent();
         })
-        #}
-        {# 上拉事件 #}
-        this["bs-"+"{{infoPagination.page}}"].on('pullingUp', (e)=>{
-            this["vm-"+"{{infoPagination.page}}"].vmPageNation.loadingState = true;
-            this["vm-"+"{{infoPagination.page}}"].getMoreNews().then((res)=>{
-                this["bs-"+"{{infoPagination.page}}"].finishPullUp()
-                this["bs-"+"{{infoPagination.page}}"].refresh()
-                this["vm-"+"{{infoPagination.page}}"].vmPageNation.loadingState = false
-                if(res.isEnd)this["bs-"+"{{infoPagination.page}}"].closePullUp()
-            }).catch(e=>{
-                console.error("加载更多出错:",e);
-            });
+
+        slideMain.scroller.animater.hooks.on('end', () => {
+            slideMain.enable();
+            slideMain.idxMMScrollingTo=false;
+            console.log("时间轴animater.end停止");
+            //that.dispatchEvent(new CustomEvent("BS_TIMELINE_SCROLL_END"));
         })
+        slideMain.scroller.hooks.on('scrollEnd', () => {
+            slideMain.enable();
+            slideMain.idxMMScrollingTo=false;
+            console.log("时间轴scrollEnd停止");
+            //that.dispatchEvent(new CustomEvent("BS_TIMELINE_SCROLL_END"));
+        })
+
+        {# 标记当前月 #}
+        slideMain.funFindDateNow();
+
+    }
+
+    this.eDateChange=function(e){
+        {# 查找月份，保存doc #}
+        let xScrollTimeline = 0;//-($mmTo.getBoundingClientRect().left);
+        let yScrollTimeline = 0 ;
+        {# 方案B：用idxMM查找$ #}
+        let strMMIdx=e.detail.strDateNow.substr(0,7);
+        strMMIdx=strMMIdx.split("-")[0]+parseInt(strMMIdx.split("-")[1]);
+
+        //let $mmTo=Array.from($listMM).find(($mm,idx)=>{
+        //    let $listDocs=$mm.querySelectorAll("[dr-date-doc]");
+        //    let $docTo=Array.from($listDocs).find(($doc,idx)=>{
+        //        return $doc.getAttribute("dr-date-doc") == e.detail.strDateNow;
+        //    });
+        //    {# 累加x位置 #}
+        //    if(!$docTo)xScrollTimeline-=$mm.parentElement.clientWidth;
+        //    return $docTo ? true : false;
+        //});
+
+        let $mmTo=$timelineContent.querySelector("[dr-bs-wrapper='mm-"+strMMIdx+"']");
+
+        if(!$mmTo){
+            console.warn("月份超出范围");
+            return false;
+        }
+        {# PC:计算横坐标，手机应该是0 #}
+        xScrollTimeline = -($mmTo.getBoundingClientRect().left-slideMain.paddingLeft);
+        if(slideMain.isMobile){
+            {# 移动端：计算纵坐标 #}
+            let $dateTo=$mmTo.querySelector("[dr-date-doc='" + e.detail.strDateNow + "']");
+            if($dateTo)yScrollTimeline = -($dateTo.getBoundingClientRect().top-slideMain.paddingTop);
+            else {
+                console.warn("日期超出月份");
+                return false;                    
+            }
+        }
+        {# 滚动timelineMain #}{# 防止循环控制 ,防止两次scrollTo同一个位置#}
+        if((slideMain.strDateNow != e.detail.strDateNow) && ($mmTo.idxMM != slideMain.idxMMScrollingTo)){
+            slideMain.disable();
+            console.log("e:timeline:"+e.type,"时间轴按月可以移动",$mmTo.idxMM,"==>",slideMain.idxMMScrollingTo);
+            slideMain.idxMMScrollingTo=$mmTo.idxMM;
+            slideMain.scrollBy(xScrollTimeline,yScrollTimeline,500);
+        };
+        {# 滚动月份 #}{# 防止循环控制 #}
+        if($mmTo.strDateNow != e.detail.strDateNow){
+            let $docTo=$mmTo.querySelector("[dr-date-doc='" + e.detail.strDateNow + "']");
+            if(!$docTo)return;
+            //let yScrollMM=$docTo.getBoundingClientRect().top;
+            let strMMIdx=e.detail.strDateNow.substr(0,7);
+            strMMIdx=strMMIdx.split("-")[0]+parseInt(strMMIdx.split("-")[1]);
+            console.log("e:timeline:"+e.type,"时间轴月内可以移动",$mmTo.idxMM+"."+slideMain.strDateNow,"==>",e.detail.strDateNow);
+            that["bs-"+strMMIdx].scrollToElement($docTo,2000);
+        }
+        return $mmTo;
+    }
+
+    this.addEventListener("BS_TIMELINE_BAR_DATE_CHANGE",this.eDateChange);
+    {# 保留月份滚 #}
+    this.addEventListener("BS_TIMELINE_BAR_DATE_CHANGE_FINAL",this.eDateChange)
+    {# 保留月份滚----end #}
+    this.addEventListener("BS_COVER_TIMELINE",()=>{
+        this.resetSlideMain();
+    })
+    this.addEventListener("BS_COVER_LISTARTISTS",()=>{
+        slideMain.destroy();
+    })
+
+    var mutationObserver = new MutationObserver(function (mutations) {
+        let status=window.getComputedStyle($timelineWrapper).getPropertyValue('display');
+        {# //显示时初始化内容 #}
+        if(status!="none"){
+            //let domListBSMM=document.querySelectorAll("[dr-bs-wrapper]");
+            console.log("监听到#timelineWrapper显示，初始化纵向月份");
+        }
+        return;
+    })
+
+    mutationObserver.observe($timelineWrapper, {
+        childList: true, // 子节点的变动（新增、删除或者更改）
+        attributes: true, // 属性的变动
+        attributeFilter: ['class', 'style'], // 观察特定属性
+        //characterData: true, // 节点内容或节点文本的变动
+        //subtree: true // 是否将观察器应用于该节点的所有后代节点
+    })
+
+
     </script>
     <script>
         {# 内容显示控制 #}
@@ -85,6 +354,8 @@
                                 {# 插入点 ,用querySelectorAll 防止slider复制后内容缺失#}
                                 let listDomContainerOfList=document.querySelectorAll("[dr-dom-append="+that.$id+"]");
                                 listDomContainerOfList.forEach(domList=>{domList.append(domToAppend.cloneNode(true))});
+                                {# 第一次需要初始化 #}
+                                if(!slideMain.refresh)this.resetSlideMain();
                                 slideMain.refresh();
                                 resolve({msg:"succ",isEnd:that.totalPage<=that.current});
                             }else{
@@ -100,6 +371,7 @@
         })
         this["vm-"+"{{infoPagination.page}}"].init();
     </script>
-</div>
+    {# {% include "./pagination.html" %} #}
 
+</div>
 {% endmacro %}
