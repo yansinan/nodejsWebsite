@@ -1,8 +1,8 @@
 /*
  * @Author: doramart 
  * @Date: 2019-06-18 17:27:24 
- * @Last Modified by: doramart
- * @Last Modified time: 2020-05-14 12:27:28
+ * @Last Modified by: dr
+ * @Last Modified time: 2021-08-04 11:19:46
  */
 
 'use strict';
@@ -426,9 +426,9 @@ global.HeaderExtension = function () {
         // 默认插件支持
         metaArr.push(`<script src="${_ctx.staticRootPath}/plugins/avalon.js/2.2.7/avalon.min.js?version=${_ctx.site.version}"></script>`);
         metaArr.push(`<script src="${_ctx.staticRootPath}/plugins/jquery/1.10.2/jquery.min.js?version=${_ctx.site.version}"></script>`);
-        metaArr.push(`<script src="${_ctx.staticRootPath}/plugins/layer/layer.js?version=${_ctx.site.version}"></script>`);
-        metaArr.push(`<script src="${_ctx.staticRootPath}/themes/users/js/dora.front.js?version=${_ctx.site.version}"></script>\n`)
-        metaArr.push(`<link rel="stylesheet" href="${_ctx.staticRootPath}/plugins/layer/theme/default/layer.css">`);
+        // metaArr.push(`<script src="${_ctx.staticRootPath}/plugins/layer/layer.js?version=${_ctx.site.version}"></script>`);
+        // metaArr.push(`<script src="${_ctx.staticRootPath}/themes/users/js/dora.front.js?version=${_ctx.site.version}"></script>\n`)
+        // metaArr.push(`<link rel="stylesheet" href="${_ctx.staticRootPath}/plugins/layer/theme/default/layer.css">`);
 
         if (params.adaptor == 'ie') {
             metaArr.push(`<!--[if lt IE 9]>`);
