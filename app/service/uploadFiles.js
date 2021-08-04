@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-01-26 
  * @Last Modified by: dr
- * @Last Modified time: 2021-03-18 01:24:56
+ * @Last Modified time: 2021-08-04 12:49:08
  */
 
 'use strict';
@@ -345,6 +345,36 @@ class ServicePlugin extends Service {
         return listFilePathTree;
     }
     
+    //缓存json数据
+    async cacheJSON(pathFile,objCallBack,isLocalFirst=true,isUpdateAfter=true){
+        let folder=path.dirname(pathFile);
+        let data=false;
+        let res = false;
+        if (!fs.existsSync(folder)) {
+            fs.mkdirSync(folder,{recursive: true});
+        }
+        // 强制更新
+        if(isLocalFirst){            
+            if (fs.existsSync(pathFile)) {
+                // 同步读取:TODO错误处理
+                data = JSON.parse(fs.readFileSync(pathFile, 'utf-8'));
+            }            
+        }
+        if((!isLocalFirst || !data)){// 如果强制更新，或者没有缓存，或者强制后更新 
+            
+            data=await objCallBack.fun.call(objCallBack.tar || this,...(objCallBack.params || []));//:TODO错误处理
+            // 写入缓存目录:TODO错误处理
+            res = fs.writeFileSync(pathFile, JSON.stringify(data));
+        }
+        if(isUpdateAfter){
+            new Promise((resolve,reject)=>{
+                return this.cacheJSON(pathFile,objCallBack,false,false);
+            }).then(res=>{
+                console.info("service.uploadFiles.cacheJSON 事后更新",res);
+            })
+        }
+        return data || res;
+    }
     get model(){
         if(!this._model)this._model=this.ctx.model[__filename.slice(__dirname.length + 1, -3)];
         return this._model;
