@@ -1,139 +1,90 @@
 {# 时间轴内容区 #}
-
-<div id="timelineWrapper" class="d-none bs-wrapper-main">
-    {# 不指定高：手机纵向自适应高，PC在定义高度 #}
-    <div id="timelineContent" class="heightMain-md px-0 d-block d-md-inline-flex w-auto" style="max-width:none;">
-        <div class="pulldown-tip"></div>
-        {# 单页模式 #}
-        {% set infoPagination={page:"timeline",idDOM:"list-timeline",api:"/api/timeline/getList",pageInfo:pageInfo,cateInfo:cateInfo} %}
-        {# 临时设置，确保不输出默认数据，且有posts #}
-        {# {% set posts=[] %} #}
-
-        {# 每月纵向 #}
-        {% for month, monthItems in posts|groupby("dateYYMM") %}
-        <div class="container-mm d-flex flex-column">
-            {# 月份行 手机隐藏#}
-            <div class="month d-md-flex d-none">
-                {{monthItems[0].dateYYMM}}
-            </div>
-            <div class="wapper-mm wapper-mm-md" style="white-space:normal;" dr-bs-wrapper="mm-{{month|trim}}" ms-controller="{{month|trim}}">
-                {# 纵向滚动组件 #}
-                <div class="d-flex flex-column" >
-                    <div class="pulldown-tip"></div>
-                    {# 日期纵向滚动容器 #}
-                    {# 日期内容区 #}
-
-                    {% for item in monthItems %}
-                    <div class="item row" dr-date-doc="{{item.date}}">
-                        {# 图 手机图 #}
-                        <div id="timelineTitleImg{{item._id}}" class="imgContainer col-6 ps-0 d-flex d-md-none">                        
-                            <img data-src="{{item.sImg}}" alt="{{item.name}}"  class="lazy img-fluid" alt="{{item.title}} " dr-id-doc="img{{item._id}}"/>
-                        </div>
-
-                        {# 内容&标题预览 #}
-                        <div class="titleContainer col-6 col-md-12">
-                            {# 日期 #}
-                            {# <div class="col-auto date">{{item.dateTimeline}}</div> #}
-                            {# 大标题 #}
-                            <p class="title">{{item.dateTimeline}}<br>{{item.name}}</p>
-                            {# 标签 #}
-                            <div class="tags">
-                                {{listTags(item.tags)}}
-                            </div>
-                            {# 图 手机隐藏纵向图 #}
-                            <div id="timelineTitleImg{{item._id}}" class=" mb-8 d-md-flex d-none">                        
-                                <img data-src="{{item.sImg}}" alt="{{item.name}}"  class="lazy img-fluid d-md-flex d-none" alt="{{item.title}} " dr-id-doc="img{{item._id}}"/>
-                            </div>
-                        </div>
-                    </div>
-
-                    {% endfor %}
-                </div>
-                <script>
-                    //initBSMM("bs-MM-"+"{{month|trim}}");
-                    //function initBSMM(inId){
-                        {# BScroll.use(MouseWheel) #}
-                        {# BScroll.use(Slide) #}
-                        {# this["bs-MM-"+"{{month|trim}}"] = this["bs-MM-"+"{{month|trim}}"] ||  new BetterScroll.createBScroll("[dr-bs-wrapper=mm-"+"{{month|trim}}"+"]", objInitBSMM) #}
-                        //this["bs-MM-"+"{{month|trim}}"].on('scroll', (pos) => {
-                        //    // currentPageIndex = page.pageX
-                        //    console.log(pos.y);
-                        //})                
-                    //}  
-                </script>
-            </div>
-        </div>
-        {% endfor %}
-        {# 最后两个空列占位 #}
-        {# 月份行 手机隐藏#}
-        <div class="container-mm end d-flex flex-column"></div>
-    </div>
-    {# 时间轴控制 #}
-    <script>
-    var $timelineWrapper = document.getElementById('timelineWrapper');
-    let $timelineContent = document.getElementById('timelineContent');
-    Object.defineProperties($timelineContent,{
-        isMobile:{
-            get:()=>{return $timelineContent.clientWidth == $timelineWrapper.clientWidth ;},
-        },
-        paddingTop:{
-            get:()=>($timelineWrapper.getBoundingClientRect().top),
-        },
-        paddingLeft:{
-            get:()=>($timelineWrapper.getBoundingClientRect().left),
-        },
-    })
-
+<script>
     let slideMain = {};
-    
-    {# 月份计算坐标 #}
-    let $listMM=$timelineWrapper.querySelectorAll(".wapper-mm");
-    $listMM.forEach(($bsMM)=>{
-        $bsMM.initProperty=function(){
-            Object.defineProperties($bsMM,{
-                $docNow:{
-                    get:()=>{
-                        let $mmNow=this;
-                        {# 查询当前日期 #}
-                        let topMM=this.isMobile ? slideMain.paddingTop : $mmNow.getBoundingClientRect().top;
-                        let $listDocs=$mmNow.querySelectorAll("[dr-date-doc]");
-                        $mmNow.$docLast=$mmNow._$docNow || false;
-                        $mmNow._$docNow=Array.from($listDocs).find(($doc,idx)=>{
-                            return $doc.getBoundingClientRect().bottom > topMM;
-                        });
-                        if(!$mmNow._$docNow)$mmNow._$docNow=$listDocs[$listDocs.length-1];
-                        return $mmNow._$docNow;
-                    },
-                    configurable:true,
-                },
-                isDateNew:{
-                    get:()=>(this.$docLast != this._$docNow),
-                },
-                strDateNow:{
-                    get:()=>{return this._$docNow ? this.$docNow.getAttribute("dr-date-doc") : false ;},
-                },
-                strDateLast:{
-                    get:()=>{return this.$docLast ? this.$docLast.getAttribute("dr-date-doc") : false ;},
-                },
-                idxMM:{
-                    get:()=>(this.getAttribute("ms-controller")),
-                },
-                objName:{
-                    get:()=>("bs-"+this.idxMM),
-                },
-                objBS:{ get:()=>(that[this.objName]), },
-                $content: { get:()=>( this.objBS.content ) },
-                isMobile:{ get:()=>( this.objBS.wrapper.clientHeight == this.objBS.content.clientHeight ), },
-            })            
+    this.$listBSMM=this.$listBSMM || [];
+    {# 上拉刷新事件，bsMM和slideMain共用 #}
+    this.initTimelinePullDown=function(bsTar){
+        // pulldownRefresh state
+        const PHASE = {
+            moving: {
+                enter: 'enter',
+                leave: 'leave'
+            },
+            fetching: 'fetching',
+            succeed: 'succeed'
         }
-        $bsMM.initProperty();
-    })
+        const ARROW_BOTTOM = '<svg width="16" height="16" viewBox="0 0 512 512"><path fill="currentColor" d="M367.997 338.75l-95.998 95.997V17.503h-32v417.242l-95.996-95.995l-22.627 22.627L256 496l134.624-134.623l-22.627-22.627z"></path></svg>'
+        const ARROW_UP = '<svg width="16" height="16" viewBox="0 0 512 512"><path fill="currentColor" d="M390.624 150.625L256 16L121.376 150.625l22.628 22.627l95.997-95.998v417.982h32V77.257l95.995 95.995l22.628-22.627z"></path></svg>'
 
-    {# 上一个当前月 #}
-    let $mmLast=$listMM[0];
-    let $mmNow=$listMM[0];
+        bsTar.setTipText=function(phase = PHASE.default){
+            const TEXTS_MAP = {
+                'enter': `${ARROW_BOTTOM} 下拉回首页`,
+                'leave': `${ARROW_UP} 松开前往`,
+                'fetching': '准备中...',
+                'succeed': '正在前往'
+            }
+            let $pulldown=bsTar.content.querySelector(".pulldown-tip")
+            if($pulldown)$pulldown.innerHTML = TEXTS_MAP[phase];
+        }
+        bsTar.ePullDown=function(){
+            that.dispatchEvent(new CustomEvent("BS_TIMELINE_PULL_DOWN", {
+                detail:{}
+            }))
+            // tell BetterScroll to finish pull down
+            bsTar.finishPullDown();
+            bsTar.setTipText(PHASE.moving.succeed);
+        }
+
+        bsTar.on('pullingDown', bsTar.ePullDown)
+        // v2.4.0 supported
+        bsTar.on('enterThreshold', () => {
+            bsTar.setTipText(PHASE.moving.enter)
+        })
+        bsTar.on('leaveThreshold', () => {
+            bsTar.setTipText(PHASE.moving.leave)
+        })        
+    }
+    {# 月份计算坐标 #}
+    this.initPropertyMM=function(tar){
+        tar=tar || this;
+        Object.defineProperties(tar,{
+            $docNow:{
+                get:()=>{
+                    let $mmNow=tar;
+                    {# 查询当前日期 #}
+                    let topMM=tar.isMobile ? slideMain.paddingTop : $mmNow.getBoundingClientRect().top;
+                    let $listDocs=$mmNow.querySelectorAll("[dr-date-doc]");
+                    $mmNow.$docLast=$mmNow._$docNow || false;
+                    $mmNow._$docNow=Array.from($listDocs).find(($doc,idx)=>{
+                        return $doc.getBoundingClientRect().bottom > topMM;
+                    });
+                    if(!$mmNow._$docNow)$mmNow._$docNow=$listDocs[$listDocs.length-1];
+                    return $mmNow._$docNow;
+                },
+                configurable:true,
+            },
+            isDateNew:{
+                get:()=>(tar.$docLast != tar._$docNow),
+            },
+            strDateNow:{
+                get:()=>{return tar._$docNow ? tar.$docNow.getAttribute("dr-date-doc") : false ;},
+            },
+            strDateLast:{
+                get:()=>{return tar.$docLast ? tar.$docLast.getAttribute("dr-date-doc") : false ;},
+            },
+            idxMM:{
+                get:()=>(tar.getAttribute("ms-controller")),
+            },
+            objName:{
+                get:()=>("bs-"+tar.idxMM),
+            },
+            objBS:{ get:()=>(that[tar.objName]), },
+            $content: { get:()=>( tar.objBS.content ) },
+            isMobile:{ get:()=>( tar.objBS.wrapper.clientHeight == tar.objBS.content.clientHeight ), },
+        })            
+    }
     {# 初始化每月的bs #}
-    this.resetBSMM=function($bsMM,idx,$listMM){
+    this.resetBSMM=function($bsMM){
         let idxMM=$bsMM.getAttribute("ms-controller");
         let objName="bs-"+idxMM;
         let objInitBSMM={
@@ -190,10 +141,59 @@
                 //that.dispatchEvent(new CustomEvent("BS_TIMELINE_SCROLL_END"));
             })
             {# that[objName].on('pullingDown', that.slideMain.ePullDown)     #}
-            that.slideMain.initPullDown(that[objName]);
+            that.initTimelinePullDown(that[objName]);
         }
         that[objName].refresh();
     }
+    this.initBSMM=function($tar){
+        {# 设置$bsMM的计算属性 #}
+        this.initPropertyMM.call($tar);
+        {# 初始化bsMM #}
+        this.resetBSMM($tar);
+    }
+</script>
+<div id="timelineWrapper" class="d-none bs-wrapper-main">
+    {# 不指定高：手机纵向自适应高，PC在定义高度 #}
+    <div id="timelineContent" class="heightMain-md px-0 d-block d-md-inline-flex w-auto" style="max-width:none;">
+        <div class="pulldown-tip"></div>
+        {# 单页模式 #}
+        {% set infoPagination={page:"timeline",idDOM:"list-timeline",api:"/api/timeline/getList",pageInfo:pageInfo,cateInfo:cateInfo} %}
+        {# 临时设置，确保不输出默认数据，且有posts #}
+        {# {% set posts=[] %} #}
+
+        {# 每月纵向 #}
+        {% for month, colItems in posts|groupby("dateYYMM") %}
+        {% include './compBSTimelineColumn.html' %}
+        {% endfor %}
+        {# 最后两个空列占位 #}
+        {# 月份行 手机隐藏#}
+        <div class="container-mm end d-flex flex-column"></div>
+    </div>
+    {# 时间轴控制 #}
+    <script>
+    var $timelineWrapper = document.getElementById('timelineWrapper');
+    let $timelineContent = document.getElementById('timelineContent');
+    Object.defineProperties($timelineContent,{
+        isMobile:{
+            get:()=>{return $timelineContent.clientWidth == $timelineWrapper.clientWidth ;},
+        },
+        paddingTop:{
+            get:()=>($timelineWrapper.getBoundingClientRect().top),
+        },
+        paddingLeft:{
+            get:()=>($timelineWrapper.getBoundingClientRect().left),
+        },
+    })
+
+
+    
+    let $listMM=$timelineWrapper.querySelectorAll(".wapper-mm");
+
+
+    {# 上一个当前月 #}
+    let $mmLast=$listMM[0];
+    let $mmNow=$listMM[0];
+
     this.resetSlideMain=function(){
         let objInitBSTimeline={
             //specifiedIndexAsContent:1,
@@ -237,15 +237,11 @@
         }
         if( slideMain.destroy )slideMain.destroy();
         {# 根据屏幕初始化功能 #}
-        let objOption={};
+        let objOption={scrollX:false,};//mobile配置
         if(!$timelineContent.isMobile){
             objOption={
                 pullDownRefresh:false,
                 scrollY:false,
-            }
-        }else{
-            objOption={
-                scrollX:false,
             }
         }
         slideMain = new BetterScroll.createBScroll($timelineWrapper, Object.assign({},objInitBSTimeline,objOption));
@@ -286,49 +282,8 @@
         //        slideMain.goToPage(this.header.idxNav,0);
         //    }
         //});
-        {# 上拉刷新事件 #}
-        slideMain.initPullDown=function(bsTar){
-            // pulldownRefresh state
-            const PHASE = {
-                moving: {
-                    enter: 'enter',
-                    leave: 'leave'
-                },
-                fetching: 'fetching',
-                succeed: 'succeed'
-            }
-            const ARROW_BOTTOM = '<svg width="16" height="16" viewBox="0 0 512 512"><path fill="currentColor" d="M367.997 338.75l-95.998 95.997V17.503h-32v417.242l-95.996-95.995l-22.627 22.627L256 496l134.624-134.623l-22.627-22.627z"></path></svg>'
-            const ARROW_UP = '<svg width="16" height="16" viewBox="0 0 512 512"><path fill="currentColor" d="M390.624 150.625L256 16L121.376 150.625l22.628 22.627l95.997-95.998v417.982h32V77.257l95.995 95.995l22.628-22.627z"></path></svg>'
 
-            bsTar.setTipText=function(phase = PHASE.default){
-                const TEXTS_MAP = {
-                    'enter': `${ARROW_BOTTOM} 下拉回首页`,
-                    'leave': `${ARROW_UP} 松开前往`,
-                    'fetching': '准备中...',
-                    'succeed': '正在前往'
-                }
-                let $pulldown=bsTar.content.querySelector(".pulldown-tip")
-                if($pulldown)$pulldown.innerHTML = TEXTS_MAP[phase];
-            }
-            bsTar.ePullDown=function(){
-                that.dispatchEvent(new CustomEvent("BS_TIMELINE_PULL_DOWN", {
-                    detail:{}
-                }))
-                // tell BetterScroll to finish pull down
-                bsTar.finishPullDown();
-                bsTar.setTipText(PHASE.moving.succeed);
-            }
-
-            bsTar.on('pullingDown', bsTar.ePullDown)
-            // v2.4.0 supported
-            bsTar.on('enterThreshold', () => {
-                bsTar.setTipText(PHASE.moving.enter)
-            })
-            bsTar.on('leaveThreshold', () => {
-                bsTar.setTipText(PHASE.moving.leave)
-            })        
-        }
-        if(slideMain.isMobile)slideMain.initPullDown(slideMain);
+        if(slideMain.isMobile)that.initTimelinePullDown(slideMain);
         
         {#  #}
         slideMain.findMMNow=function(){
@@ -431,8 +386,6 @@
             //that.dispatchEvent(new CustomEvent("BS_TIMELINE_SCROLL_END"));
         })
 
-        {# 初始化每月的bs #}
-        $listMM.forEach(this.resetBSMM);
         {# 标记当前月 #}
         slideMain.funFindDateNow();
 

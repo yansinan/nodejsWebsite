@@ -1,0 +1,45 @@
+{# 时间轴列 #}
+        <div class="container-mm d-flex flex-column">
+            {# 月份行 手机隐藏#}
+            <div class="month d-md-flex d-none">
+                {{colItems[0].dateYYMM}}
+            </div>
+            <div id="bsWrapperMM{{month|trim}}" class="wapper-mm wapper-mm-md" style="white-space:normal;" dr-bs-wrapper="mm-{{month|trim}}" ms-controller="{{month|trim}}">
+                {# 纵向滚动组件 #}
+                <div class="d-flex flex-column" >
+                    <div class="pulldown-tip"></div>
+                    {# 日期纵向滚动容器 #}
+                    {# 日期内容区 #}
+
+                    {% for item in colItems %}
+                    <div class="item row" dr-date-doc="{{item.date}}">
+                        {# 图 手机图 #}
+                        <div id="timelineTitleImg{{item._id}}" class="imgContainer col-6 ps-0 d-flex d-md-none">                        
+                            <img data-src="{{item.sImg}}" alt="{{item.name}}"  class="lazy img-fluid" alt="{{item.title}} " dr-id-doc="img{{item._id}}"/>
+                        </div>
+
+                        {# 内容&标题预览 #}
+                        <div class="titleContainer col-6 col-md-12">
+                            {# 日期 #}
+                            {# <div class="col-auto date">{{item.dateTimeline}}</div> #}
+                            {# 大标题 #}
+                            <p class="title">{{item.dateTimeline}}<br>{{item.name}}</p>
+                            {# 标签 #}
+                            <div class="tags">
+                                {{listTags(item.tags)}}
+                            </div>
+                            {# 图 手机隐藏纵向图 #}
+                            <div id="timelineTitleImg{{item._id}}" class=" mb-8 d-md-flex d-none">                        
+                                <img data-src="{{item.sImg}}" alt="{{item.name}}"  class="lazy img-fluid d-md-flex d-none" alt="{{item.title}} " dr-id-doc="img{{item._id}}"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% endfor %}
+                </div>
+                <script>                  
+                    this.$listBSMM.push(document.getElementById("bsWrapperMM{{month|trim}}"));
+                    this.initBSMM(this.$listBSMM[this.$listBSMM.length-1]);
+                </script>
+            </div>
+        </div>
