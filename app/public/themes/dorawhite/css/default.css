@@ -50,7 +50,7 @@ body * {
     margin-right: auto;
     margin-left: auto;
 
-    transition-property: padding-left;
+    transition-property: padding-left,flex-basis;
     transition-duration: .5s;
     padding-left: calc(var(--main-offset-left-mobile,20px) + var(--footer-size-mobile,16px) );
 }
@@ -111,6 +111,7 @@ body.flex #mainCover{
     
     order:20;
     flex:1 1 100%;
+    /* flex-basis: calc(var(--vh, 1vh) * 100 - var(--footer-size-pc,16px)); */
 }
 /* 隐藏占位 */
 body.flex #mainCover div.w-100.heightNav{
@@ -124,6 +125,7 @@ body.flex #mainCover div.bs-wrapper-cover.heightMain{
 body.flex #dr-footer.footerContainer{
     order:30;
     flex:0 0 0px;
+    flex-basis: 0px;
     /* flex:0 0 193.2px; */
 }
 
@@ -132,8 +134,7 @@ body.flex #dr-footer.footerContainer{
     body.flex #dr-footer.footerContainer-md{
         position:inherit!important;
         bottom:inherit!important;
-
-        flex:0 0 var(--footer-size-pc,16px);
+        flex-basis: var(--footer-size-pc,16px);
     }
 }
 

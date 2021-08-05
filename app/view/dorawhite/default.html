@@ -149,8 +149,8 @@
 
                         }
                         {# window.alert('slidePageChanged'); #}
-                        {# setTimeout(window.slideCover.refresh,1000); #}
-                        this.slideCover.refresh();
+                        {# setTimeout(()=>{that.slideCover.refresh.call(that.slideCover)},100); #}
+                        {# this.slideCover.refresh(); #}
                     })
                     
                     {# 监听时间轴下拉事件 #}
