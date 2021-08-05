@@ -11,7 +11,7 @@
 {# {{containerOfList(infoPagination,tempList)}} #}
 <div id="timelineWrapper" class="d-none bs-wrapper-main">
     {# 不指定高：手机纵向自适应高，PC在定义高度  dr-dom-append="{{infoPagination.idDOM}}"#}
-    <div id="timelineContent" class="heightMain-md px-0 d-block d-md-inline-flex w-auto" style="max-width:none;">
+    <div id="timelineContent" class="" style="">
         <div class="pulldown-tip"></div>
         {# 每月纵向 #}
         {# {{tempList | safe}} #}
@@ -26,7 +26,7 @@
             //this.slideMain.goto(e.detail.bsTimeline);
             if(e.detail.bsTimeline == this["vm-"+"{{infoPagination.page}}"].namePage)return;
             this["vm-"+"{{infoPagination.page}}"].namePage=e.detail.bsTimeline;
-            document.getElementById('timelineContent').classList.add(e.detail.bsTimeline);
+            document.getElementById('timelineContent').classList.value = e.detail.bsTimeline;
             {# 完成切换时，更新导航 #}
             this.dispatchEvent(new CustomEvent("NAV_AT", {
                 detail:e.detail,
@@ -81,9 +81,12 @@
                                 vm.$id.append(domToAppend.cloneNode(true));
 
                                 {# 第一次需要初始化 #}
-                                if(!slideMain.refresh)this.resetSlideMain();
-                                slideMain.refresh();
-
+                                {# if(!slideMain.refresh)this.resetSlideMain(); #}
+                                {# slideMain.refresh(); #}
+                                {# 触发事件更新懒加载图片 #}
+                                this.dispatchEvent(new CustomEvent("BS_TIMELINE_DOM_CHANGED", {
+                                    detail:{  }
+                                }))
                                 resolve({msg:"succ",isEnd:vm.totalPage<=vm.current});
                             }else{
                                 reject({msg:"服务器返回错误 ", objData});
