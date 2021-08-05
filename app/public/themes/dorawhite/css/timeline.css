@@ -14,7 +14,13 @@
 }
 /* main 手机自适应高度 */
 #timelineContent {
+  display: block;
+  padding-right: 0!important;
+  padding-left: 0!important;
+  
   max-height: none;
+  max-width:none;
+  width: auto;
   overflow: visible;
   position: relative;
   top:0px;
@@ -100,6 +106,7 @@
   position:relative;
   width:100%;
   overflow:hidden;
+  min-height:5rem;
 }
 #timelineContent .wapper-mm .item img.img-fluid{
   object-fit:cover;
@@ -145,8 +152,10 @@
     height:100%;
   }
   /* PC高度定位有bug */
-  #timelineContent.heightMain-md {
-    top:-26px;
+  #timelineContent {
+    top:-21px;/*-26px*/
+    height:100%;
+    display: inline-flex;
   }
 
 

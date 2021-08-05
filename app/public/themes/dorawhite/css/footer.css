@@ -5,6 +5,7 @@
     transition-property: all;
     transition-duration: 0.5s;
 
+    overflow: hidden;
     z-index:1000;
     
     width:calc(var(--vh, 1vh) * 100)!important;

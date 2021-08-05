@@ -4,6 +4,7 @@
 <head>
     {# <meta name='viewport' content='initial-scale=1, viewport-fit=cover'> #}
     {% header adaptor="ie" %}
+    {# <script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.4.0/dist/lazyload.min.js"></script>   #}
     <script>
         // Set the options globally
         // to make LazyLoad self-initialize
@@ -125,8 +126,6 @@
                             // 创建并分发事件
                             this.dispatchEvent(new CustomEvent("BS_COVER_WILL_LISTARTISTS", {detail:{page,bsMain:"artists"}}))
                         }
-                        console.log("e:slideWillChange",page)
-                        {# this.slideCover.refresh(); #}
                     })
                     //this.slideCover.on('scroll', (position) => {
                     //    this.slideCover.refresh();
@@ -149,8 +148,10 @@
 
                         }
                         {# window.alert('slidePageChanged'); #}
-                        {# setTimeout(()=>{that.slideCover.refresh.call(that.slideCover)},100); #}
-                        {# this.slideCover.refresh(); #}
+                        
+                        this.slideCover.refresh();
+                        let timer=setInterval(()=>{that.slideCover.refresh.call(that.slideCover)},300);
+                        setTimeout(()=>{clearInterval(timer)},1000);
                     })
                     
                     {# 监听时间轴下拉事件 #}
@@ -185,10 +186,7 @@
         {% endblock %} 
         #}
     </div>
-    <script
-    async
-    src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.4.0/dist/lazyload.min.js"
-    ></script>    
+    <script async src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.4.0/dist/lazyload.min.js"></script>
 </body>
 
 </html>
