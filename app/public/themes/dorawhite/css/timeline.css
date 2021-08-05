@@ -54,6 +54,23 @@
   overflow: hidden;
   position: relative;
 }
+/* 唱片列表 */
+#timelineContent .wapper-mm.records .tags.records{
+  display:flex;
+}
+#timelineContent .wapper-mm.records .titleContainer .tags{
+  display:none;
+}
+#timelineContent .wapper-mm.records .imgContainer::after{
+  content:"";
+  display:block;
+  padding-bottom:100%;
+  height:0px;
+}
+#timelineContent .wapper-mm.records .imgContainer img.img-fluid{
+  height:100%;
+  position: absolute;
+}
 
 #timelineContent .wapper-mm .item{
   margin-left: 0;
@@ -79,10 +96,14 @@
 }
 #timelineContent .wapper-mm .item .imgContainer{
   flex:1;
+  position:relative;
+  width:100%;
+  overflow:hidden;
 }
 #timelineContent .wapper-mm .item img.img-fluid{
   object-fit:cover;
   margin: 0px;
+  width:100%;
   /* padding: 0.278rem 0.86rem; */
   transition-property: filter;
   transition-duration: .8s;
@@ -94,7 +115,7 @@
 }
 
 #timelineContent .wapper-mm .item .titleContainer{
-  padding-left: 0px;
+  padding-left: calc(var(--bs-gutter-x) * .5);
   flex: 0 0 6.54rem;
 }
 #timelineContent .wapper-mm .item .title{
@@ -103,6 +124,9 @@
 }
 #timelineContent .wapper-mm .item .tags{
   margin-bottom: 0.86rem;
+}
+#timelineContent .wapper-mm.records .tags.records{
+  display:none;
 }
 /* 
 #timelineContent .wapper-mm .item .list-inline-item{
@@ -141,8 +165,13 @@
   
   }
   #timelineContent .wapper-mm .item .titleContainer{
+    padding-left: 0px;
     /* padding-left: calc(var(--bs-gutter-x) * .5); */
     flex: 0 0 auto;
+  }
+  #timelineContent .wapper-mm.records .titleContainer .title,
+  #timelineContent .wapper-mm.records .titleContainer .tags{
+    display:none;
   }
 }
 

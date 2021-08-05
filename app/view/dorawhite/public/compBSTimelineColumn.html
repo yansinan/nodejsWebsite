@@ -14,7 +14,7 @@
                     {# 日期内容区 #}
 
                     {% for item in colItems %}
-                    <div class="item row" dr-date-doc="{{item.date}}">
+                    <div class="item" dr-date-doc="{{item.date}}">
                         {# 图 手机图 #}
                         <div id="timelineTitleImg{{item._id}}" class="imgContainer col-6 ps-0 d-flex d-md-none">                        
                             <img data-src="{{item.sImg}}" alt="{{item.name}}"  class="lazy img-fluid" alt="{{item.title}} " dr-id-doc="img{{item._id}}"/>
@@ -30,8 +30,11 @@
                             <div class="tags">
                                 {{listTags(item.tags)}}
                             </div>
+                            <div class="tags records">
+                                {{listTags(item.listFormatTags)}}
+                            </div>
                             {# 图 手机隐藏纵向图 #}
-                            <div id="timelineTitleImg{{item._id}}" class=" mb-8 d-md-flex d-none">                        
+                            <div id="timelineTitleImg{{item._id}}" class="imgContainer d-md-flex d-none">                        
                                 <img data-src="{{item.sImg}}" alt="{{item.name}}"  class="lazy img-fluid d-md-flex d-none" alt="{{item.title}} " dr-id-doc="img{{item._id}}"/>
                             </div>
                         </div>
