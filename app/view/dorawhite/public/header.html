@@ -77,7 +77,7 @@
 
     {# 更新导航状态 #}
     this.header={
-        funSetNav:function(strAliasNav="timeline"){
+        funSetNav:function(strAliasNav="news"){
             let listBnNav=document.querySelectorAll("[dr-dom-nav-bn]");
             listBnNav.forEach(bn=>{
                 bn.setAttribute("aria-selected", "false");
@@ -94,6 +94,10 @@
             }else{
             }
         },
+        funFindByURL:function(inURL=false){
+            let idx=this.listNav.findIndex(v=>(v.defaultUrl==inURL));
+            return idx==-1 ? this.listNav[0] : this.listNav[idx];
+        },
         listNav:[
             {% for cate in navigation %} {% if cate.parentId == '0' %}
             {
@@ -104,12 +108,19 @@
             {% endif %} {% endfor %}
         ],
         get strAliasNav(){
-            let path=window.location.pathname.split("/")[1];///artists___KuvrGBz9e
-            let strAliasNav=path.split("__")[0];
+            let path=window.location.pathname.split("/timeline/")[1];///artists___KuvrGBz9e
+            let strAliasNav=path ? path.split("__")[0].split("/")[0] : this.funFindByURL().defaultUrl;
             return strAliasNav;
         },
+        {# 获取前台路由，timeline? #}
+        get strBSMain(){
+            let path=window.location.pathname.split("/index/")[1];
+            path=path.split("/")[0];
+            return path || "artists";
+        },        
         get idxNav(){let idx=this.listNav.findIndex(v=>(v.defaultUrl==this.strAliasNav));return idx==-1?0:idx;},
         get objNav(){return this.listNav[this.idxNav]},
+
     };
 </script>
 {# 导航相关控制&监听 #}
@@ -121,6 +132,7 @@
             var rv = orig.apply(this, arguments);
             var e = new Event(type);
             e.arguments = arguments;
+            e.detail=arguments[0];
             window.dispatchEvent(e);
             return rv;
         };
@@ -135,32 +147,69 @@
 
     function ePopStateHeader(event){
         
-        console.log("window.popstate::",event.type,"strAliasNav=",this.header.strAliasNav);
+        console.info("window.popstate::",event.type,window.history.state,"strAliasNav=",this.header.strAliasNav);
         {# 非首页需要跳转相应页 #}
         if(event.type =="DOMContentLoaded" || event.type =="Load"){
-            {# 导入页显示 #}                
-            this.header.funSetNav("index");
-            //首页则显示SlideCover
-            {# $('.bs-wrapper-cover').show(); #}
-
+            {# 等待sliceCover初始化完成？ #}
+            this.goto(window.location.pathname.split("/index")[1]);
         }else{
-            {# 更新导航状态 #}
-            this.header.funSetNav(this.header.strAliasNav);
-            {# $('.bs-wrapper-cover').hide(); #}
-            
+            {# 返回或者手动=》更新导航状态 #}           
+            if(event.type=="popstate" || event.state){
+                {# 浏览器返回 #}
+                this.goto(window.location.pathname.split("/index")[1]);
+            }else{
+                this.header.funSetNav(this.header.strAliasNav);
+            }
         }
+    }
+    {# 页面切换完成 #}
+    function eNavAt(e){
+        {# history路由 #}
+        let obj={
+            bsMain:e.detail.bsMain,
+            bsTimeline:e.detail.bsTimeline || this.header.strAliasNav || false,
+            detail:false,
+        }
+        Object.defineProperties(obj,{
+            url:{
+                get:()=>("/index/" + obj.bsMain + "/" + ( obj.bsTimeline || this.header.funFindByURL(obj.bsTimeline).defaultUrl) + "/" + (obj.detail?obj.detail+".html" : "")),
+            },
+            title:{
+                get:()=>("{{site.title}}" + "|" + this.header.funFindByURL(obj.bsTimeline).name),
+            }
+        })
+
+        window.history.pushState(obj, obj.title, obj.url);//设置状态
+    }
+    this.addEventListener("NAV_AT",eNavAt);
+
+    {# 统一前台跳转 #}
+    this.goto=function(inURL){
+        inURL="/index"+inURL;
+        let obj={
+            bsMain:inURL.split("/")[2] || "artists",
+            bsTimeline:inURL.split("/")[3] || this.header.funFindByURL().defaultUrl,
+            detail:inURL.split("/")[4] || false,
+        }
+        Object.defineProperties(obj,{
+            url:{
+                get:()=>("index/" + obj.bsMain + "/" + ( obj.bsTimeline || this.header.funFindByURL(obj.bsTimeline).defaultUrl) + "/" + (obj.detail?obj.detail+".html" : "")),
+            },
+            title:{
+                get:()=>("{{site.title}}" + "|" + this.header.funFindByURL(obj.bsTimeline).name),
+            }
+        })
+        this.dispatchEvent(new CustomEvent("NAV_TO", {
+            detail:obj,
+        }))
     }
     const eBnNav=function(strAliasNav){
         let currentPageIndex=this.header.listNav.findIndex(v=>(v.defaultUrl==strAliasNav));
         if(currentPageIndex>=0){
-            {# 先改地址 #}
-            window.history.pushState({}, "{{site.title}}|"+ this.header.listNav[currentPageIndex].name, this.header.listNav[currentPageIndex].url);//设置状态
-            {# 内容页跳转 #}
-            slideMain.goToPage(this.header.idxNav,0);
-            {# 封面收起 #}
-            this.slideCover.goToPage(0,1);
+            this.goto("/timeline/"+ this.header.listNav[currentPageIndex].defaultUrl +"/");
         }
     }
+
 </script>
 
 <input type="hidden" value="{{userInfo._id}}" id="userId">
@@ -333,7 +382,7 @@
     })
     {# 时间轴右上角叉 #}
     function eClickTimelineClose(){
-        this.slideCover.goToPage(0,0);
+        this.goto("/artists/");
     }
 </script>
 

@@ -142,7 +142,8 @@
 <script>
     let $bnArrowTimeline=document.getElementById("bnArrowTimeline");
     function eClickTest(){
-        this.slideCover.goToPage(0,this.slideCover.getCurrentPage().pageY==1?0:1);
+        {# this.slideCover.goToPage(0,this.slideCover.getCurrentPage().pageY==1?0:1); #}
+        this.goto("/timeline/");
     }
     this.addEventListener("BS_COVER_TIMELINE", (page)=>{
         $bnArrowTimeline.classList.add("d-none");

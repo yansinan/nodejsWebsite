@@ -104,22 +104,26 @@
                     
                     })
                     {# 创建自定义事件 #}
-
-
+                    Object.defineProperties(this.slideCover,{
+                        strNow:{
+                            get:()=>(this.slideCover.getCurrentPage().pageY==1?"timeline":"artists"),
+                        },
+                    })
+                    this.slideCover.goto=function(inPage){
+                        let tar= (inPage=="artists" ? 0 : 1);
+                        if(that.slideCover.getCurrentPage().pageY == tar)return;
+                        that.slideCover.goToPage(0,tar);
+                    }
                     {# //初始化slideCover后隐藏Cover，后面再判断是否显示 #}
                     {# $('.bs-wrapper-cover').hide(); #}
                     
-                    this.slideCover.on('slideWillChange', (page) => {
-                        {# 导航更新 #}
-                        this.header.funSetNav(this.header.strAliasNav || "timeline");
-                        //$('.bs-wrapper-cover').hide();                        
-                        
+                    this.slideCover.on('slideWillChange', (page) => {  
                         if(page.pageY==1){
                             // 创建并分发事件
-                            this.dispatchEvent(new CustomEvent("BS_COVER_WILL_TIMELINE", {detail:{page}}))
+                            this.dispatchEvent(new CustomEvent("BS_COVER_WILL_TIMELINE", {detail:{page,bsMain:"timeline"}}))
                         }else{
                             // 创建并分发事件
-                            this.dispatchEvent(new CustomEvent("BS_COVER_WILL_LISTARTISTS", {detail:{page}}))
+                            this.dispatchEvent(new CustomEvent("BS_COVER_WILL_LISTARTISTS", {detail:{page,bsMain:"artists"}}))
                         }
                         console.log("e:slideWillChange",page)
                         {# this.slideCover.refresh(); #}
@@ -133,11 +137,16 @@
                             console.info("去使能");
 
                             // 创建并分发事件
-                            this.dispatchEvent(new CustomEvent("BS_COVER_TIMELINE", {detail:{page}}))
+                            let detail={page,bsMain:this.slideCover.strNow};
+                            this.dispatchEvent(new CustomEvent("BS_COVER_TIMELINE", {detail}))
+                            this.dispatchEvent(new CustomEvent("NAV_AT", {detail}))
                         }else{
                             this.slideCover.enable();
                             // 创建并分发事件
-                            this.dispatchEvent(new CustomEvent("BS_COVER_LISTARTISTS", {detail:{page}}))
+                            let detail={page,bsMain:this.slideCover.strNow};                            
+                            this.dispatchEvent(new CustomEvent("BS_COVER_LISTARTISTS", {detail}))
+                            this.dispatchEvent(new CustomEvent("NAV_AT", {detail}))
+
                         }
                         {# window.alert('slidePageChanged'); #}
                         {# setTimeout(window.slideCover.refresh,1000); #}
@@ -147,7 +156,12 @@
                     {# 监听时间轴下拉事件 #}
                     this.addEventListener("BS_TIMELINE_PULL_DOWN",(e)=>{
                         console.info("BS_TIMELINE_PULL_DOWN=============>");
-                        this.slideCover.goToPage(0,0);
+                        {# this.slideCover.goToPage(0,0); #}
+                        this.goto("/artists/");
+                    })
+                    {# 页面跳转 #}
+                    this.addEventListener("NAV_TO",(e)=>{
+                        this.slideCover.goto(e.detail.bsMain);
                     })
 
                 </script>
