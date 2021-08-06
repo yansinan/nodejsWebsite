@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-08-04 05:26:38 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-04 07:54:06
+ * @Last Modified time: 2021-08-05 08:47:30
  */
 'use strict';
 const { debug } = require('console');
@@ -136,12 +136,16 @@ class ServicePlugin extends Service {
             totalItems:12,
             totalPage:2,
         }
+        Object.assign(pageInfo,{current:0,totalPage:1})
         // 删除不需要的数据
         let resListDateAll=objTimeline.listDateAll;
         delete objTimeline.listDateAll;
         return {pageInfo,objTimeline,listDateAll:resListDateAll};
     }
     // 获取虚拟docs
+    async find(payload){
+        return await this.getTestDocs(false)
+    }
     async getTestDocs(isRandom){
         let {ctx}=this;
         let {pageInfo,objTimeline,listDateAll}=await this.getTestDate(isRandom);

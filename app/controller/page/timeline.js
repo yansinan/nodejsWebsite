@@ -26,29 +26,62 @@ class IndexController extends Controller {
     //}
     // 时间轴伪数据
     async getListTestTimeline(){//about___8hIKx4Ulz
-        const ctx = this.ctx;
+        const {ctx,service} = this;
         let {
-            current,
-            type,
-            typeId,
+            current,//标识当前请求页码
+            type,//读取类型dom
+            typeId,//栏目id,改用cateName
+            cateName,//栏目别名
         } = ctx.query;
-        let {
-            docs,
-            pageInfo,
-            objTimeline
-        } = await ctx.service.timeline.getTestDocs();//await ctx.helper.reqJsonData('timeline/getList', payload);
- 
+        const dictService={
+            news:service.timeline,//service.doc,
+            records:service.record,
+            artists:service.artist,
+            shows:service.show,
+            goods:false,//service.docs,
+            videos:service.video,
+        };
+        let objData={
+            docs:false,
+            pageInfo:false,
+            objTimeline:false,
+        }
+        // 尝试获取栏目信息
+        //let listCates = await service.uploadFiles.cacheJSON(`${(process.cwd() + '/app/public')}/cache/objNavigation.json`,{tar:this,fun:ctx.helper.reqJsonData, params:['contentCategory/getList', payload] },true,true);
+        //let objCate=listCates.find(v=>(v.name=cateName)) || false;
+        // 
+
+        if(!dictService[cateName])objData = await ctx.service.timeline.getTestDocs();//await ctx.helper.reqJsonData('timeline/getList', payload);
+        else {
+            // 从不同service获取数据的列表
+            let files = '_id url name alias sImg date discription imageArr videoArr simpleComments comments state categories isTop listArtists listFormatTags dateRelease catalog listLinks dateYYMM dateYear dateTimeline'
+
+            objData = await dictService[cateName].find(
+                {
+                    filesType:"timeline", 
+                    pageSize: 2000,
+                    isPaging:"1",
+                    isRandom:false,
+                },{
+                    query:{state: '2'},
+                    files:files,
+                    sort:{dateRelease: -1},
+                });
+            // {filesType:"navAvatar", pageSize: 0,isPaging:"0",}
+            // 处理成时间轴格式
+            objData.docs=JSON.parse(JSON.stringify(objData.docs))
+        }
+        // 组合页面信息和数组
+        let resObj = {
+            pageInfo:objData.pageInfo,//对象模板使用时间轴模板                
+        }
+        //最终渲染
+        //这里直接渲染模板?
+        let path="../view/dorawhite/public/compBSTimelineColumn.html";//"../view/dorawhite/2-stage-timeline/listTempTimeline.html";//app/view/dorawhite/2-stage-timeline/listTempTimeline.html
+        
         try {
-            // 组合页面信息和数组
-            let resObj = {
-                // docs : (await this.renderList(ctx, listRes)),
-                pageInfo:Object.assign(pageInfo,{itemTemplate:"timeline",},{current:0,totalPage:1}),//对象模板使用时间轴模板                
-            }
-            //最终渲染
-            //这里直接渲染模板?
-            let path="../view/dorawhite/public/compBSTimelineColumn.html";//"../view/dorawhite/2-stage-timeline/listTempTimeline.html";//app/view/dorawhite/2-stage-timeline/listTempTimeline.html
-            resObj.dom=await ctx.renderView(path,{posts:docs});
-            if(current==1){
+            resObj.dom=await ctx.renderView(path,{posts:objData.docs});
+            if(type.indexOf("script")){
                 resObj.domContainer=await ctx.renderView("../view/dorawhite/js/timeline.html",{});
             }
             // debugger;

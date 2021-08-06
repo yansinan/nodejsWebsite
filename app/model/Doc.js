@@ -145,6 +145,15 @@ const INIT_DOC= app=>{
     schema.virtual('dateYear').get(function () {
         return moment(new Date(this.date)).format("YYYY") + " ";
     });
+    schema.virtual('dateTimeline').get(function () {
+        return moment(this.date).format("MM/DD");
+    });
+    schema.virtual('dateYYMM').get(function () {
+        return moment(this.date).format("YYYYM");
+    });
+    schema.virtual('dateMM').get(function () {
+        return moment(this.date).format("M月");
+    });
     app.model=app.model || {};
     let model=app.model.DocModel || mongoose.model("Doc", schema);
     app.model.DocModel=model;
