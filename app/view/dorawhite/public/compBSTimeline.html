@@ -1,5 +1,5 @@
 {# 时间轴内容区 #}
-{% set infoPagination={page:"news",idDOM:"list-timeline",api:"/api/timeline/getListDOM",pageInfo:pageInfo,cateInfo:cateInfo} %}
+{% set infoPagination={page:"timeline",idDOM:"list-timeline",api:"/api/timeline/getListDOM",pageInfo:pageInfo,cateInfo:cateInfo} %}
 {# 临时设置，确保不输出默认数据，且有posts #}
 {# {% set posts=[] %} #}
 {# 时间轴列表模板：根据url选取不同模板 #}
@@ -18,19 +18,25 @@
         {# 最后两个空列占位:TODO待解决 #}
         {# 月份行 手机隐藏#}
         {# <div class="container-mm end d-flex flex-column"></div> #}
+        <div class="loading"></div>
     </div>
     {# {% include "./pagination.html" %} #}
+    {# {% include '../js/timeline.html' %} #}
     <script>
         {# 页面跳转 #}
         this.addEventListener("NAV_TO",(e)=>{
-            //this.slideMain.goto(e.detail.bsTimeline);
-            if(e.detail.bsTimeline == this["vm-"+"{{infoPagination.page}}"].namePage)return;
-            this["vm-"+"{{infoPagination.page}}"].namePage=e.detail.bsTimeline;
-            document.getElementById('timelineContent').classList.value = e.detail.bsTimeline;
-            {# 完成切换时，更新导航 #}
-            this.dispatchEvent(new CustomEvent("NAV_AT", {
-                detail:e.detail,
-            }))
+            let vm=this["vm-"+"{{infoPagination.page}}"];
+            if(e.detail.bsTimeline == vm.namePage)return;
+            {# 栏目alias,后台据此读取不同栏目 #}
+            vm.namePage=e.detail.bsTimeline;
+            {# vm加载数据 #}
+            vm.init().then(res=>{
+                {# bsTimeline移动到开始 #}
+                that.resetSlideMain();
+                if(that.bsTimeline.scrollTo)that.bsTimeline.scrollTo(0,0,1000);
+                {# 完成切换时，更新导航 #}
+                window.dispatchEvent(new CustomEvent("NAV_AT", { detail:e.detail, }))
+            });
         })
     </script>
     <script>
@@ -38,23 +44,26 @@
         this["vm-"+"{{infoPagination.page}}"] = this["vm-"+"{{infoPagination.page}}"] || avalon.define({
             $id: document.getElementById('timelineContent'),//'{{infoPagination.idDOM}}',
             cateId:"{{infoPagination.cateInfo._id}}",
-            namePage:"{{infoPagination.page}}",
+            namePage:that.header.strAliasNav,//"{{infoPagination.page}}",
             urlApi:"{{infoPagination.api}}",
             current: 1,
             totalPage:{{infoPagination.pageInfo.totalPage}},
             appendDocumentList: [],
             vmPageNation:this["vm-pagenation-"+"{{infoPagination.page}}"] || {},
             {# 初始化数据 #}
-            init:function(){
+            init:async function(){
                 this.current=0;
-                this.getMoreNews();
+                return this.getMoreNews().then(res=>{
+                    this.$id.classList.value = this.namePage;
+                    return Promise.resolve(res);
+                });
             },
             getMoreNews: function () {
                 let vm=this;
                 let next=(this.current<this.totalPage)?(this.current+1):false;
                 return new Promise((resolve, reject) => {
                     if(next){
-                        fetch(vm.urlApi+'?type=dom&typeId=' + vm.cateId + '&current=' + next)
+                        fetch(vm.urlApi+'?type=dom' + (!document.getElementById("scriptTimeline")?'|script':'') + '&typeId=' + vm.cateId + '&cateName='+ vm.namePage +'&current=' + next)
                         .then(function(data){
                             return data.text();
                         }).then(function (data) {
@@ -72,19 +81,31 @@
                                 {# 插入点 ,用querySelectorAll 防止slider复制后内容缺失#}
                                 {# let listDomContainerOfList=document.querySelectorAll("[dr-dom-append="+vm.$id+"]"); #}
                                 {# listDomContainerOfList.forEach(domList=>{domList.append(domToAppend.cloneNode(true))}); #}
+
                                 {# 第一次初始化时,会返回domContainer == $timelineWrapper.script #}
-                                if(objData.data.domContainer){
+                                if(!document.getElementById("scriptTimeline") && objData.data.domContainer){
                                     document.getElementById("timelineWrapper").append(document.createRange().createContextualFragment(objData.data.domContainer));
                                 }
 
-                                {# 插入列内容#}
-                                vm.$id.append(domToAppend.cloneNode(true));
+                                {# 清空并重新加载 #}
+                                if(next==1){
+                                    {# vm.$id.replaceChildren(...(vm.$id.querySelectorAll(".container-mm")),domToAppend.cloneNode(true)); #}
+                                    {# 初始化数组，销毁bsMM #}
+                                    that.$listBSMM.forEach($bs=>{
+                                        $bs.objBS.destroy();
+                                        $bs.parentElement.remove();
+                                    });
+                                    that.dictBSMM={};
+                                    that.$listBSMM=[];
+                                    vm.$id.append(domToAppend.cloneNode(true));{# 插入列内容#}
+                                    {# 第一次需要初始化 #}
+                                    //that.resetSlideMain();
+                                    //that.dispatchEvent(new CustomEvent("BS_TIMELINE_DOM_READY", { detail:{  } }))
 
-                                {# 第一次需要初始化 #}
-                                {# if(!slideMain.refresh)this.resetSlideMain(); #}
-                                {# slideMain.refresh(); #}
+                                }else vm.$id.append(domToAppend.cloneNode(true));{# 插入列内容#}
+                                console.warn("vm.getMoreNew:succ");
                                 {# 触发事件更新懒加载图片 #}
-                                this.dispatchEvent(new CustomEvent("BS_TIMELINE_DOM_CHANGED", {
+                                that.dispatchEvent(new CustomEvent("BS_TIMELINE_DOM_CHANGED", {
                                     detail:{  }
                                 }))
                                 resolve({msg:"succ",isEnd:vm.totalPage<=vm.current});
@@ -99,6 +120,7 @@
                 });                
             }
         })
-        this["vm-"+"{{infoPagination.page}}"].init();
+        that["vm-"+"{{infoPagination.page}}"].init().then(console.info);
+        {# window.addEventListener('DOMContentLoaded', ()=>{that["vm-"+"{{infoPagination.page}}"].init().then(res=>console.warn);}, false); #}
     </script>
 </div>

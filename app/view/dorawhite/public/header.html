@@ -103,7 +103,8 @@
             {
                 defaultUrl:"{{cate.defaultUrl}}",
                 url:"{{cate.url}}",
-                name:"{{cate.name}}"
+                name:"{{cate.name}}",
+                id:"{{cate._id}}",
             },
             {% endif %} {% endfor %}
         ],
@@ -147,10 +148,15 @@
 
     function ePopStateHeader(event){
         
-        console.info("window.popstate::",event.type,window.history.state,"strAliasNav=",this.header.strAliasNav);
+        console.info("history::",event.type,window.history.state,"strAliasNav=",this.header.strAliasNav);
         {# 非首页需要跳转相应页 #}
         if(event.type =="DOMContentLoaded" || event.type =="Load"){
             {# 等待sliceCover初始化完成？ #}
+            //function eTimelineReady(e){
+            //    this.goto(window.location.pathname.split("/index")[1]);
+            //    this.removeEventListener("BS_TIMELINE_DOM_READY",eTimelineReady);
+            //}
+            //this.addEventListener("BS_TIMELINE_DOM_READY",eTimelineReady)
             this.goto(window.location.pathname.split("/index")[1]);
         }else{
             {# 返回或者手动=》更新导航状态 #}           
@@ -183,7 +189,7 @@
     }
     this.addEventListener("NAV_AT",eNavAt);
 
-    {# 统一前台跳转 #}
+    {# 驱动页面切换：所有页内跳转统一按url例如："/timeline/records/xxxxx.html" #}
     this.goto=function(inURL){
         inURL="/index"+inURL;
         let obj={
@@ -199,10 +205,21 @@
                 get:()=>("{{site.title}}" + "|" + this.header.funFindByURL(obj.bsTimeline).name),
             }
         })
+        //let timer=setInterval(()=>{
+        //    if(!this.isInit)return;
+        //    else clearInterval(timer);
+        //    console.warn("=================>NAV_TO");
+        //    this.dispatchEvent(new CustomEvent("NAV_TO", {
+        //        detail:obj,
+        //    }))
+        //},10)
         this.dispatchEvent(new CustomEvent("NAV_TO", {
             detail:obj,
         }))
     }
+    //this.addEventListener("BS_TIMELINE_DOM_READY",(e)=>{
+    //    this.isInit=true;
+    //})
     const eBnNav=function(strAliasNav){
         let currentPageIndex=this.header.listNav.findIndex(v=>(v.defaultUrl==strAliasNav));
         if(currentPageIndex>=0){

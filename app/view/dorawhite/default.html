@@ -19,7 +19,7 @@
         },false);
         {# timeline更新了内容，图片需要懒加载 #}
         this.addEventListener("BS_TIMELINE_DOM_CHANGED",(e)=>{
-            window.lazyLoadInstance.update();
+            if(window.lazyLoadInstance)window.lazyLoadInstance.update();
         })
     </script>
     <!-- 引入组件库 -->
