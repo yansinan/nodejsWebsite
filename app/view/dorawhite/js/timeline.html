@@ -3,7 +3,7 @@
 <script id="scriptTimeline">
     this.bsTimeline = {};
     this.$listBSMM=this.$listBSMM || [];
-    this.dictBSMM=this.dictBSMM || [];
+    //this.dictBSMM=this.dictBSMM || [];
     {# 上拉刷新事件，bsMM和bsTimeline共用 #}
     this.initTimelinePullDown=function(bsTar){
         // pulldownRefresh state
@@ -83,8 +83,9 @@
             //observeDOM: true // 开启 observe-dom 插件
         }
         {# 只初始化一次，防止事件多次触发 #}
-        if(!that.dictBSMM[objName]){
-            that.dictBSMM[objName]=that.dictBSMM[objName] ||  new BetterScroll.createBScroll($bsMM, objInitBSMM);
+        if(!$bsMM.objBS){
+            $bsMM.objBS = new BetterScroll.createBScroll($bsMM, objInitBSMM);
+            //that.dictBSMM[objName]=$bsMM.objBS;
             {# 月份计算坐标 #}
             Object.defineProperties($bsMM,{
                 $docNow:{
@@ -117,7 +118,7 @@
                 objName:{
                     get:()=>("bs-"+$bsMM.idxMM),
                 },
-                objBS:{ get:()=>(that.dictBSMM[$bsMM.objName]), },
+                //objBS:{ get:()=>(that.dictBSMM[$bsMM.objName]), },
                 $content: { get:()=>( $bsMM.objBS.content ) },
                 isMobile:{ get:()=>( $bsMM.objBS.wrapper.clientHeight == $bsMM.objBS.content.clientHeight ), },
             })  
@@ -400,7 +401,8 @@
             let strMMIdx=e.detail.strDateNow.substr(0,7);
             strMMIdx=strMMIdx.split("-")[0]+parseInt(strMMIdx.split("-")[1]);
             console.log("e:timeline:"+e.type,"时间轴月内可以移动",$mmTo.idxMM+"."+that.bsTimeline.strDateNow,"==>",e.detail.strDateNow);
-            that.dictBSMM["bs-"+strMMIdx].scrollToElement($docTo,2000);
+            //that.dictBSMM["bs-"+strMMIdx].scrollToElement($docTo,2000);
+            if($mmTo.objBS)$mmTo.objBS.scrollToElement($docTo,2000);
         }
         return $mmTo;
     }
