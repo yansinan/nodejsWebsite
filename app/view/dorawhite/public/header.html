@@ -111,6 +111,8 @@
         get strAliasNav(){
             let path=window.location.pathname.split("/timeline/")[1];///artists___KuvrGBz9e
             let strAliasNav=path ? path.split("__")[0].split("/")[0] : this.funFindByURL().defaultUrl;
+            if(strAliasNav=="records")document.querySelector("body").classList.value="flex "+strAliasNav;
+            else document.querySelector("body").classList.value="flex";
             return strAliasNav;
         },
         {# 获取前台路由，timeline? #}
@@ -290,7 +292,7 @@
                     <ul>
                         {% for cate in navigation %} {% if cate.parentId == '0' %}
                         <li class="nav-item text-nowrap rounded-pill" role="presentation" dr-dom-nav-bn="{{cate.defaultUrl}}">
-                            <a class="nav-link" style="color: inherit" role="menuitem" tabindex="-1" alt="{{site.altkey}}{{cate.name}}"
+                            <a class="nav-link" style="color: inherit;background-color: inherit;" role="menuitem" tabindex="-1" alt="{{site.altkey}}{{cate.name}}"
                                 href="javascript:void(0)" onclick="eBnNav('{{cate.defaultUrl}}')" name="{{cate.defaultUrl}}">{{cate.name}}</a>
                         </li>
                         {% endif %} {% endfor %}

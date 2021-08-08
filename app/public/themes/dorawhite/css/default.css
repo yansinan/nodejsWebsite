@@ -9,6 +9,7 @@
     --footer-size-pc: 16px;
     --footer-size-open-mobile:54px;
     --footer-size-open-pc:106px;
+
 }
 
 html {
@@ -24,12 +25,24 @@ html {
 
 body * {
     box-sizing: border-box;
-    
 }
-
-
-
-
+body{
+    transition-property: background-color;
+    transition-duration: 1s;
+    background-color: #FFFFFF;
+}
+body.records{
+    background-color: #FF4D3E;
+}
+body.shows{
+    background-color: #cccc00;
+}
+body.shows{
+    background-color: #5400ff;
+}
+body.goods{
+    background-color: #ad49f0;
+}
 @media only screen and (min-width: 768px) {
     html {
         font-size: 225%!important;
