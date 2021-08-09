@@ -14,15 +14,19 @@
                     <div class="bsTimelineBarContent bsTimelineBarContent-md">
                         <div class="left"></div>
                         {# {{timelineBar(objTimeline)}} #}
+                        {% for objTimeline in listDateYear %}
                         {{timelineBarDocs(objTimeline,true)}}
+                        {% endfor %}
                         <div class="blank"></div>
                     </div>
                 </div>
             </div>
             {# 年份 #}
             <div id="timelineYearContainer" class="timelineYearContainer timelineYearContainer-md">
-                {% for year in objTimeline.listIdxYears %}  
-                <div class="timelineYear"><span>{{year.strTitle}}</span></div>
+                {% for objTimeline in listDateYear %}
+                    {% for year in objTimeline.listIdxYears %}  
+                    <div class="timelineYear"><span>{{year.strTitle}}</span></div>
+                    {% endfor %}
                 {% endfor %}
 
                 {# 剩余年份 #}

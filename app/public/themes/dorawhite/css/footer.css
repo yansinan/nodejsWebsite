@@ -5,7 +5,7 @@
     transition-property: all;
     transition-duration: 0.5s;
 
-    overflow: hidden;
+    overflow: visible;
     z-index:1000;
     
     width:calc(var(--vh, 1vh) * 100)!important;
@@ -80,6 +80,9 @@
 /*@import url("/static/themes/dorawhite/css/timelineBar.css");*/
 
 @media (min-width: 768px) {
+    #dr-footer{
+        overflow: hidden;
+    }
     .foot-float .btnRubyEyes-md{
         width: 2rem;
         height: 2rem;

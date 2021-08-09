@@ -42,6 +42,9 @@
   /* background-color: gainsboro; */
   transform :translateY(-100%) translateZ(0);
 }
+#timelineContent .loading{
+  width:calc(100% + 100px);
+}
 /* 占位列2个 */
 #timelineContent .container-mm.end{
   width:50vw;
@@ -106,7 +109,7 @@
   position:relative;
   width:100%;
   overflow:hidden;
-  min-height:5rem;
+  min-height:max(calc(34.7vw - 3rem) , 6rem);
 }
 #timelineContent .wapper-mm .item img.img-fluid{
   object-fit:cover;
@@ -153,7 +156,7 @@
   }
   /* PC高度定位有bug */
   #timelineContent {
-    top:-21px;/*-26px*/
+    /*top:-21px;*//*-26px*/
     height:100%;
     display: inline-flex;
   }

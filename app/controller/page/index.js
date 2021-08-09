@@ -1,3 +1,9 @@
+/*
+ * @Author: dr 
+ * @Date: 2021-08-08 06:31:51 
+ * @Last Modified by: dr
+ * @Last Modified time: 2021-08-08 06:32:22
+ */
 const Controller = require('egg').Controller;
 const _ = require('lodash');
 const shortid = require('shortid');
@@ -27,11 +33,15 @@ class IndexController extends Controller {
         // 获取分类文档列表
         let {
             pageInfo,
-            objTimeline
+            listDateYear
         } = await ctx.service.timeline.getTestDate(true);//await ctx.helper.reqJsonData('timeline/getList', payload);
         // debugger;
         pageData.pageInfo = pageInfo;
-        pageData.objTimeline=objTimeline;
+        listDateYear.forEach(objTimeline=>{
+            // 删除不需要的数据
+            delete objTimeline.listDateAll;
+        })
+        pageData.listDateYear=listDateYear;
 
         //最终渲染
         // 模板的真实路径
