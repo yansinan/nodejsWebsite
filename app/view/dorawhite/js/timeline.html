@@ -94,7 +94,7 @@
                         let $listDocs=$mmNow.querySelectorAll("[dr-date-doc]");
                         $mmNow.$docLast=$mmNow._$docNow || false;
                         $mmNow._$docNow=Array.from($listDocs).find(($doc,idx)=>{
-                            return $doc.getBoundingClientRect().bottom > topMM;
+                            return $doc.getBoundingClientRect().top > topMM;
                         });
                         if(!$mmNow._$docNow)$mmNow._$docNow=$listDocs[$listDocs.length-1];
                         return $mmNow._$docNow;
@@ -126,16 +126,16 @@
                 if($bsMM.classList.contains("now")){
                     that.bsTimeline.$docNow=$bsMM.$docNow;
                     {# 当前月份滚动 && #}{# 日期变化，且用户操作产生的，才触发同步通知 #}
-                    that.bsTimeline.checkEvent($bsMM.isDateNew);
+                    if(!$bsMM.objBS.pending)that.bsTimeline.checkEvent($bsMM.isDateNew);
                 }
             })
             $bsMM.objBS.scroller.animater.hooks.on('end', () => {
                 that.bsTimeline.enable();
-                console.log("时间轴:月份end停止");
+                console.log("月份轴animater.end停止");
             })
             $bsMM.objBS.scroller.hooks.on('scrollEnd', () => {
                 that.bsTimeline.enable();
-                console.log("时间轴:月份scrollEnd停止");
+                console.log("月份轴scrollEnd停止");
                 //that.dispatchEvent(new CustomEvent("BS_TIMELINE_SCROLL_END"));
             })
             {# $bsMM.objBS.on('pullingDown', that.bsTimeline.ePullDown)     #}
@@ -304,7 +304,7 @@
             if(that.bsTimeline.$docNow){
                 that.bsTimeline.$docLast=that.bsTimeline.$docLast || that.bsTimeline.$docNow;
                 if(that.bsTimeline.strDateNow != that.bsTimeline.strDateLast){
-                    console.log("timeline new Date",that.bsTimeline.strDateLast,"==>",that.bsTimeline.strDateNow);
+                    console.info("时间轴.getNewStrDate::timeline new Date",that.bsTimeline.strDateLast,"==>",that.bsTimeline.strDateNow);
                     {# 更新last #}
                     that.bsTimeline.$docLast = that.bsTimeline.$docNow;
                     return that.bsTimeline.strDateNow;
@@ -324,11 +324,12 @@
                 }))
             }
         }
-        that.bsTimeline.on('scroll', (pos) => {
+        that.bsTimeline.eUpdateTimeline=function(pos,isSync=false){
             that.bsTimeline.funFindDateNow();
             {# 日期变化，且用户操作产生的，才触发同步通知 #}
-            that.bsTimeline.checkEvent();
-        })
+            that.bsTimeline.checkEvent(isSync);
+        }
+        that.bsTimeline.on('scroll', that.bsTimeline.eUpdateTimeline);
 
         that.bsTimeline.scroller.animater.hooks.on('end', () => {
             that.bsTimeline.enable();
@@ -344,8 +345,8 @@
         })
 
         {# 标记当前月 #}
-        that.bsTimeline.funFindDateNow();
-
+        that.bsTimeline.funFindDateNow({x:0},true);
+        
     }
 
     this.eDateChange=function(e){
@@ -371,7 +372,8 @@
         if(!$mmTo){
             console.warn("月份超出范围");
             return false;
-        }
+        }        
+        if(!that.bsTimeline.disable)return;
         {# PC:计算横坐标，手机应该是0 #}
         xScrollTimeline = -($mmTo.getBoundingClientRect().left-that.bsTimeline.paddingLeft);
         if(that.bsTimeline.isMobile){
@@ -385,49 +387,57 @@
         }
         {# 滚动timelineMain #}{# 防止循环控制 ,防止两次scrollTo同一个位置#}
         if((that.bsTimeline.strDateNow != e.detail.strDateNow) && ($mmTo.idxMM != that.bsTimeline.idxMMScrollingTo)){
-            that.bsTimeline.disable();
-            console.log("e:timeline:"+e.type,"时间轴按月可以移动",$mmTo.idxMM,"==>",that.bsTimeline.idxMMScrollingTo);
+            console.log("e:时间轴:"+e.type,"月可以移动",that.bsTimeline.idxMMScrollingTo,"==>",$mmTo.idxMM,e.detail.strDateNow,"x,y",xScrollTimeline,yScrollTimeline);
             that.bsTimeline.idxMMScrollingTo=$mmTo.idxMM;
-            that.bsTimeline.scrollBy(xScrollTimeline,yScrollTimeline,500);
+            if(that.bsTimeline.pending)that.bsTimeline.stop();
+            that.bsTimeline.disable();
+            that.bsTimeline.scrollBy(xScrollTimeline,yScrollTimeline,Math.max(500,Math.abs(yScrollTimeline),Math.abs(xScrollTimeline)));
         };
+
+        return $mmTo;
+    }
+    this.eDateChangeFinal=function(e){
+        let $mmTo=this.eDateChange(e);
         {# 滚动月份 #}{# 防止循环控制 #}
-        if($mmTo.strDateNow != e.detail.strDateNow){
+        if(!that.bsTimeline.isMobile && $mmTo.strDateNow != e.detail.strDateNow){
             let $docTo=$mmTo.querySelector("[dr-date-doc='" + e.detail.strDateNow + "']");
             if(!$docTo)return;
             //let yScrollMM=$docTo.getBoundingClientRect().top;
             let strMMIdx=e.detail.strDateNow.substr(0,7);
             strMMIdx=strMMIdx.split("-")[0]+parseInt(strMMIdx.split("-")[1]);
-            console.log("e:timeline:"+e.type,"时间轴月内可以移动",$mmTo.idxMM+"."+that.bsTimeline.strDateNow,"==>",e.detail.strDateNow);
+            console.log("e:时间轴:"+e.type,"可以移动：纵向",$mmTo.idxMM+"."+that.bsTimeline.strDateNow,"==>",e.detail.strDateNow);
             //that.dictBSMM["bs-"+strMMIdx].scrollToElement($docTo,2000);
-            if($mmTo.objBS)$mmTo.objBS.scrollToElement($docTo,2000);
+            if($mmTo.objBS){
+                //if($mmTo.objBS.pending)$mmTo.objBS.stop();
+                //$mmTo.objBS.disable();
+                $mmTo.objBS.scrollToElement($docTo,2000);
+            }
         }
-        return $mmTo;
     }
-
-    this.addEventListener("BS_TIMELINE_BAR_DATE_CHANGE",this.eDateChange);
+    this.addEventListener("BS_TIMELINE_BAR_DATE_CHANGE",this.eDateChangeFinal);
     {# 保留月份滚 #}
-    this.addEventListener("BS_TIMELINE_BAR_DATE_CHANGE_FINAL",this.eDateChange)
+    this.addEventListener("BS_TIMELINE_BAR_DATE_CHANGE_FINAL",this.eDateChangeFinal)
     {# 保留月份滚----end #}
     this.addEventListener("BS_COVER_TIMELINE",that.resetSlideMain)
     this.addEventListener("BS_COVER_LISTARTISTS",()=>{
         //that.bsTimeline.destroy();
     })
 
-    var mutationObserver = new MutationObserver(function (mutations) {
-        let status=window.getComputedStyle($timelineWrapper).getPropertyValue('display');
-        {# //显示时初始化内容 #}
-        if(status!="none"){
-            //let domListBSMM=document.querySelectorAll("[dr-bs-wrapper]");
-            console.log("监听到#timelineWrapper显示，初始化纵向月份");
-        }
-        return;
-    })
+    //var mutationObserver = new MutationObserver(function (mutations) {
+    //    let status=window.getComputedStyle($timelineWrapper).getPropertyValue('display');
+    //    {# //显示时初始化内容 #}
+    //    if(status!="none"){
+    //        //let domListBSMM=document.querySelectorAll("[dr-bs-wrapper]");
+    //        console.log("监听到#timelineWrapper显示，初始化纵向月份");
+    //    }
+    //    return;
+    //})
 
-    mutationObserver.observe($timelineWrapper, {
-        childList: true, // 子节点的变动（新增、删除或者更改）
-        attributes: true, // 属性的变动
-        attributeFilter: ['class', 'style'], // 观察特定属性
-        //characterData: true, // 节点内容或节点文本的变动
-        //subtree: true // 是否将观察器应用于该节点的所有后代节点
-    })
+    //mutationObserver.observe($timelineWrapper, {
+    //    childList: true, // 子节点的变动（新增、删除或者更改）
+    //    attributes: true, // 属性的变动
+    //    attributeFilter: ['class', 'style'], // 观察特定属性
+    //    //characterData: true, // 节点内容或节点文本的变动
+    //    //subtree: true // 是否将观察器应用于该节点的所有后代节点
+    //})
 </script>
