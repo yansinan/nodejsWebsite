@@ -249,21 +249,18 @@
             that.dispatchEvent(new CustomEvent("BS_TIMELINE_BAR_DATE_CHANGE_FINAL", { detail:{ strDateNow:strNowDate, } }))
             that.bsTimelineBarWrapper.$dateTo=false;
         }else if(strNowDate){
-            {# dateTo==false，手滑动动画完成 #}
+            {# 手滑动动画完成 #}
+            this.bsTimelineBarWrapper.enable();
             that.dispatchEvent(new CustomEvent("BS_TIMELINE_BAR_DATE_CHANGE_FINAL", { detail:{ strDateNow:strNowDate, } }))
         }
     })
+    {# scrollEnd被动主动都触发，但手动时只有scrollEnd #}
     this.bsTimelineBarWrapper.scroller.hooks.on("scrollEnd", () => {
-        this.bsTimelineBarWrapper.enable();
         that.bsTimelineBarWrapper.$docNow=that.bsTimelineBarWrapper.findDateNow({x:that.bsTimelineBarWrapper.x,y:that.bsTimelineBarWrapper.y});
-        //console.log("底条scrollEnd停止在:",that.bsTimelineBarWrapper.$docNow.id);
         let strNowDate=that.bsTimelineBarWrapper.$docNow.id.replace("b","");
-        if(that.bsTimelineBarWrapper.$dateTo && that.bsTimelineBarWrapper.$docNow != that.bsTimelineBarWrapper.$dateTo){
-
-        }else if(that.bsTimelineBarWrapper.$docNow == that.bsTimelineBarWrapper.$dateTo){
-
-        }else if(strNowDate){
-            {# dateTo==false，手滑动动画完成 #}
+        if(strNowDate && that.bsTimelineBarWrapper.enabled){
+            {# 手滑动完成 #}
+            console.log("底条scrollEnd手滑:",that.bsTimelineBarWrapper.$docNow.id);
             that.dispatchEvent(new CustomEvent("BS_TIMELINE_BAR_DATE_CHANGE_FINAL", { detail:{ strDateNow:strNowDate, } }))
         }
 
@@ -293,7 +290,6 @@
         let strDateNow=false;
         {# 如果日期没变化，不额外触发，防止循环控制 #}
         if(that.bsTimelineBarWrapper.$docNow)strDateNow=that.bsTimelineBarWrapper.$docNow.id.replace("b","");
-        console.info("e:底条::",e.type,strDateNow,"==>",e.detail.strDateNow);
         if(e.detail.strDateNow == strDateNow)return;
         
         let $dateTo=document.getElementById("b"+e.detail.strDateNow);
@@ -301,6 +297,7 @@
             console.error("e:底条::",e.type,strDateNow,"==>",e.detail.strDateNow,"未找到id：","b"+e.detail.strDateNow);
             return;
         }
+        console.info("e:底条::",e.type,"有效==>scrollToElement",strDateNow,"==>",e.detail.strDateNow);
         that.bsTimelineBarWrapper.$dateTo=$dateTo;
         that.bsTimelineBarWrapper.scrollToElement($dateTo);
     })

@@ -94,7 +94,7 @@
                         let $listDocs=$mmNow.querySelectorAll("[dr-date-doc]");
                         $mmNow.$docLast=$mmNow._$docNow || false;
                         $mmNow._$docNow=Array.from($listDocs).find(($doc,idx)=>{
-                            return $doc.getBoundingClientRect().top > topMM;
+                            return $doc.getBoundingClientRect().top >= topMM;
                         });
                         if(!$mmNow._$docNow)$mmNow._$docNow=$listDocs[$listDocs.length-1];
                         return $mmNow._$docNow;
@@ -105,7 +105,7 @@
                     get:()=>($bsMM.$docLast != $bsMM._$docNow),
                 },
                 strDateNow:{
-                    get:()=>{return $bsMM._$docNow ? $bsMM.$docNow.getAttribute("dr-date-doc") : false ;},
+                    get:()=>{return $bsMM._$docNow ? $bsMM._$docNow.getAttribute("dr-date-doc") : ($bsMM.$docNow ? $bsMM.$docNow.getAttribute("dr-date-doc") : false) ;},
                 },
                 strDateLast:{
                     get:()=>{return $bsMM.$docLast ? $bsMM.$docLast.getAttribute("dr-date-doc") : false ;},
@@ -126,18 +126,20 @@
                 if($bsMM.classList.contains("now")){
                     that.bsTimeline.$docNow=$bsMM.$docNow;
                     {# 当前月份滚动 && #}{# 日期变化，且用户操作产生的，才触发同步通知 #}
-                    if(!$bsMM.objBS.pending)that.bsTimeline.checkEvent($bsMM.isDateNew);
+                    if(!$bsMM.objBS.pending && $bsMM.objBS.enabled && !$bsMM.$docTo)that.bsTimeline.checkEvent($bsMM.isDateNew);
                 }
             })
             $bsMM.objBS.scroller.animater.hooks.on('end', () => {
                 that.bsTimeline.enable();
+                $bsMM.objBS.enable();
+                $bsMM.$docTo=false;
                 console.log("月份轴animater.end停止");
             })
-            $bsMM.objBS.scroller.hooks.on('scrollEnd', () => {
-                that.bsTimeline.enable();
-                console.log("月份轴scrollEnd停止");
-                //that.dispatchEvent(new CustomEvent("BS_TIMELINE_SCROLL_END"));
-            })
+            //$bsMM.objBS.scroller.hooks.on('scrollEnd', () => {
+            //    //that.bsTimeline.enable();
+            //    //console.log("月份轴scrollEnd停止");
+            //    //that.dispatchEvent(new CustomEvent("BS_TIMELINE_SCROLL_END"));
+            //})
             {# $bsMM.objBS.on('pullingDown', that.bsTimeline.ePullDown)     #}
             that.initTimelinePullDown($bsMM.objBS);
         }
@@ -261,7 +263,8 @@
                 {# 移动：横向不移动，宽相等第一个跨出上边的 #}
                 $mmOut=Array.from($listMM).find(($mm,idx)=>{
                     idxNearest = idx;
-                    return $mm.$content.getBoundingClientRect().bottom > that.bsTimeline.paddingTop;
+                    //return $mm.$content.getBoundingClientRect().bottom > that.bsTimeline.paddingTop;
+                    return $mm.$content.getBoundingClientRect().top >= that.bsTimeline.paddingTop;
                 });
             }else{
                 {# PC:第一个跨出左屏幕的 ,同时记录最后一个 x <-pos.x #}
@@ -335,14 +338,13 @@
             that.bsTimeline.enable();
             that.bsTimeline.idxMMScrollingTo=false;
             console.log("时间轴animater.end停止");
-            //that.dispatchEvent(new CustomEvent("BS_TIMELINE_SCROLL_END"));
         })
-        that.bsTimeline.scroller.hooks.on('scrollEnd', () => {
-            that.bsTimeline.enable();
-            that.bsTimeline.idxMMScrollingTo=false;
-            console.log("时间轴scrollEnd停止");
-            //that.dispatchEvent(new CustomEvent("BS_TIMELINE_SCROLL_END"));
-        })
+        //that.bsTimeline.scroller.hooks.on('scrollEnd', () => {
+        //    that.bsTimeline.enable();
+        //    //that.bsTimeline.idxMMScrollingTo=false;
+        //    console.log("时间轴scrollEnd停止");
+        //    //that.dispatchEvent(new CustomEvent("BS_TIMELINE_SCROLL_END"));
+        //})
 
         {# 标记当前月 #}
         that.bsTimeline.funFindDateNow({x:0},true);
@@ -385,6 +387,7 @@
                 return false;                    
             }
         }
+
         {# 滚动timelineMain #}{# 防止循环控制 ,防止两次scrollTo同一个位置#}
         if((that.bsTimeline.strDateNow != e.detail.strDateNow) && ($mmTo.idxMM != that.bsTimeline.idxMMScrollingTo)){
             console.log("e:时间轴:"+e.type,"月可以移动",that.bsTimeline.idxMMScrollingTo,"==>",$mmTo.idxMM,e.detail.strDateNow,"x,y",xScrollTimeline,yScrollTimeline);
@@ -399,22 +402,19 @@
     this.eDateChangeFinal=function(e){
         let $mmTo=this.eDateChange(e);
         {# 滚动月份 #}{# 防止循环控制 #}
+        if(!$mmTo.strDateNow || !e.detail.strDateNow)debugger;//DEBUG：没有$mmTo.$docNow计算过,$mmTo.strDateNow会返回false
         if(!that.bsTimeline.isMobile && $mmTo.strDateNow != e.detail.strDateNow){
-            let $docTo=$mmTo.querySelector("[dr-date-doc='" + e.detail.strDateNow + "']");
-            if(!$docTo)return;
-            //let yScrollMM=$docTo.getBoundingClientRect().top;
-            let strMMIdx=e.detail.strDateNow.substr(0,7);
-            strMMIdx=strMMIdx.split("-")[0]+parseInt(strMMIdx.split("-")[1]);
+            $mmTo.$docTo=$mmTo.querySelector("[dr-date-doc='" + e.detail.strDateNow + "']");
+
             console.log("e:时间轴:"+e.type,"可以移动：纵向",$mmTo.idxMM+"."+that.bsTimeline.strDateNow,"==>",e.detail.strDateNow);
-            //that.dictBSMM["bs-"+strMMIdx].scrollToElement($docTo,2000);
-            if($mmTo.objBS){
-                //if($mmTo.objBS.pending)$mmTo.objBS.stop();
-                //$mmTo.objBS.disable();
-                $mmTo.objBS.scrollToElement($docTo,2000);
+            if($mmTo.objBS && $mmTo.$docTo){
+                if($mmTo.objBS.pending)$mmTo.objBS.stop();
+                $mmTo.objBS.disable();
+                $mmTo.objBS.scrollToElement($mmTo.$docTo,Math.abs($mmTo.$docTo.getBoundingClientRect().top - that.bsTimeline.wrapper.getBoundingClientRect().top));
             }
         }
     }
-    this.addEventListener("BS_TIMELINE_BAR_DATE_CHANGE",this.eDateChangeFinal);
+    this.addEventListener("BS_TIMELINE_BAR_DATE_CHANGE",this.eDateChange);
     {# 保留月份滚 #}
     this.addEventListener("BS_TIMELINE_BAR_DATE_CHANGE_FINAL",this.eDateChangeFinal)
     {# 保留月份滚----end #}
