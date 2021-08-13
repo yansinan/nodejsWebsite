@@ -23,12 +23,16 @@
             </div>
             {# 年份 #}
             <div id="timelineYearContainer" class="timelineYearContainer timelineYearContainer-md">
+                {# 
                 {% for objTimeline in listDateYear %}
                     {% for year in objTimeline.listIdxYears %}  
                     <div class="timelineYear"><span>{{year.strTitle}}</span></div>
                     {% endfor %}
                 {% endfor %}
-
+                 #}
+                {% for year in range(pageInfo.yearNewest,pageInfo.yearTotal,-1) %}
+                <div class="timelineYear"><span>{{year}}</span></div>
+                {% endfor %}
                 {# 剩余年份 #}
                 <div class="barContainer">
                     <div class="bar">

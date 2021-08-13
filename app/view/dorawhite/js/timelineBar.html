@@ -96,6 +96,10 @@
         let strYear=$year.querySelector("span").innerText;
 
         let $yearPos=document.getElementById("timelineBarYear"+strYear);
+        if(!$yearPos){
+            $year.style.opacity=0;
+            return;
+        }
         {# 计算过程 #}
         {# 年坐标在wrapper中的相对x% #}
         let xOffset = that.$footer.isRotated ? ($yearPos.getBoundingClientRect().top - paramTimeline.rectWrapper.top): $yearPos.getBoundingClientRect().left;
@@ -329,5 +333,12 @@
         this.bsTimelineBarWrapper.scrollTo(scrollStartX,0,500);        
     })
 
-
+    {# timeline加载完成 #}
+    this.addEventListener("BS_TIMELINE_DOM_LOADED",(e)=>{
+        let res=e.detail.data.domTimelineBar;
+        let domToAppend = document.createRange().createContextualFragment(e.detail.data.domTimelineBar);
+        this.bsTimelineBarWrapper.content.querySelector(".blank").before(domToAppend.cloneNode(true));{# 插入列内容#}
+        {# 生成年份数字 #}
+        
+    })
 </script>

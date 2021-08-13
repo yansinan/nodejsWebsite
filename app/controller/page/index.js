@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-08-08 06:31:51 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-08 06:32:22
+ * @Last Modified time: 2021-08-13 02:04:04
  */
 const Controller = require('egg').Controller;
 const _ = require('lodash');
@@ -33,8 +33,9 @@ class IndexController extends Controller {
         // 获取分类文档列表
         let {
             pageInfo,
-            listDateYear
-        } = await ctx.service.timeline.getTestDate(true);//await ctx.helper.reqJsonData('timeline/getList', payload);
+            listDateYear,
+            docs
+        } = await ctx.service.timeline.find({isRandom:true});//await ctx.helper.reqJsonData('timeline/getList', payload);
         // debugger;
         pageData.pageInfo = pageInfo;
         listDateYear.forEach(objTimeline=>{
@@ -42,7 +43,9 @@ class IndexController extends Controller {
             delete objTimeline.listDateAll;
         })
         pageData.listDateYear=listDateYear;
-
+        // 时间轴内容
+        pageData.posts=docs;
+        
         //最终渲染
         // 模板的真实路径
         let pathTemplate = "2-stage-timeline" +"/" + "contentTimeline.html";//this.app.config.temp_view_forder + defaultTemp.alias + '/' + "2-stage-timeline" +"/" + "contentList.html";

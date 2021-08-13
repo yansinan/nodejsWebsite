@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2019/11/10 20:30:53 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-12 20:31:21
+ * @Last Modified time: 2021-08-13 04:05:16
  */
 const INIT_DOC= app=>{
     //如果已经初始化过，则直接返回；
@@ -142,6 +142,10 @@ const INIT_DOC= app=>{
     schema.path('updateDate').get(function (v) {
         return moment(v).format("YYYY-MM-DD HH:mm:ss");
     });
+    
+    schema.virtual('title').get(function (v) {
+        return v || this.name;
+    });
     // 年份信息
     schema.virtual('dateYear').get(function () {
         return moment(new Date(this.date)).format("YYYY") + " ";
@@ -155,6 +159,17 @@ const INIT_DOC= app=>{
     schema.virtual('dateMM').get(function () {
         return " "+moment(this.date).format("M月");
     });
+    schema.virtual('dateFull').get(function () {
+        return moment(this.date).format("YYYY-MM-DD");
+    });
+    // date在全年天数的百分比;
+    schema.virtual('percentDateOfYear').get(()=>{        
+        //全年天数;
+        let cntDaysFullYear=Math.abs(moment(this.date).startOf("year").diff(moment(this.date).endOf("year"),"days"));
+        //当前第几天
+        let idxDayOfYear=Math.abs(moment(this.date).diff(moment(this.date).startOf("year"),"days"));
+        return idxDayOfYear/cntDaysFullYear;
+    })
     app.model=app.model || {};
     let model=app.model.DocModel || mongoose.model("Doc", schema);
     app.model.DocModel=model;

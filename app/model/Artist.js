@@ -157,9 +157,9 @@ module.exports =app=>{
             return res;
         });
 
-        schema.virtual('dateTimeline').get(function () {
-            return (this.listDateDur && this.listDateDur[0])?moment(this.listDateDur[0]).format("YYYY-MM-DD") : false;;
-        });
+        //schema.virtual('dateTimeline').get(function () {
+        //    return (this.listDateDur && this.listDateDur[0])?moment(this.listDateDur[0]).format("YYYY-MM-DD") : moment(this.date).format("MM/DD");;
+        //});
         // url地址
         schema.virtual('url').get(function () {
             return `/artist/${this._id}.html`;

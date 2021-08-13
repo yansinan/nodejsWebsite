@@ -24,3 +24,4 @@ app/public/upload
 .config
 .ash_history
 .local
+report.*

@@ -71,9 +71,9 @@ module.exports =app=>{
         schema.path('date').get(function (v) {
             return moment(v).format("YYYY-MM-DD");
         });
-        schema.virtual('dateTimeline').get(function () {
-            return moment(this.dateRelease).format("YYYY-MM-DD");
-        });
+        //schema.virtual('dateTimeline').get(function () {
+        //    return moment(this.dateRelease).format("YYYY-MM-DD");
+        //});
         // url地址
         schema.virtual('url').get(function () {
             return `/record/${this._id}.html`;

@@ -28,7 +28,8 @@ class IndexController extends Controller {
     async getListTestTimeline(){//about___8hIKx4Ulz
         const {ctx,service} = this;
         let {
-            current,//标识当前请求页码
+            //current,//标识当前请求页码
+            yearCurrent,//当前客户端最后年份;
             type,//读取类型dom
             typeId,//栏目id,改用cateName
             cateName,//栏目别名
@@ -62,6 +63,8 @@ class IndexController extends Controller {
                     pageSize: 2000,
                     isPaging:"1",
                     isRandom:false,
+                    lean:false,
+                    yearCurrent,
                 },{
                     query:{state: '2'},
                     files:files,
@@ -81,6 +84,7 @@ class IndexController extends Controller {
         
         try {
             resObj.dom=await ctx.renderView(path,{posts:objData.docs});
+            resObj.domTimelineBar=await ctx.renderView("../view/dorawhite/public/compTimelineBar.html",{listDateYear:objData.listDateYear});
             if(type.indexOf("script")){
                 resObj.domContainer=await ctx.renderView("../view/dorawhite/js/timeline.html",{});
             }
