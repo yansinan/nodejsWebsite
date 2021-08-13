@@ -1,7 +1,8 @@
-/**
- * Created by Dr on 2019/11/10.
- * update by dr on 2019/12/8.
- * 文档类
+/*
+ * @Author: dr 
+ * @Date: 2019/11/10 20:30:53 
+ * @Last Modified by: dr
+ * @Last Modified time: 2021-08-12 20:31:21
  */
 const INIT_DOC= app=>{
     //如果已经初始化过，则直接返回；
@@ -148,11 +149,11 @@ const INIT_DOC= app=>{
     schema.virtual('dateTimeline').get(function () {
         return moment(this.date).format("MM/DD");
     });
-    schema.virtual('dateYYMM').get(function () {
-        return moment(this.date).format("YYYYM");
+    schema.virtual('dateYYYYM').get(function () {
+        return " "+moment(this.date).format("YYYYM");
     });
     schema.virtual('dateMM').get(function () {
-        return moment(this.date).format("M月");
+        return " "+moment(this.date).format("M月");
     });
     app.model=app.model || {};
     let model=app.model.DocModel || mongoose.model("Doc", schema);

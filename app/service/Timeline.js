@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-08-04 05:26:38 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-08 05:41:00
+ * @Last Modified time: 2021-08-12 20:25:31
  */
 'use strict';
 const { debug } = require('console');
@@ -15,8 +15,30 @@ const shortid = require('shortid');
 const fs = require('fs');
 const path = require('path');
 
+const docTemplate={// 生成文档种子
+        
+    _id:'EXxamHvLe',
+    alias:'Click#15 X Rustic平安夜专场正式开票',
+    date:'2021-01-15',
+    dateTimeline:'01-15',
+    dateYear:'2021 ',
+    discription:'我们给这场演出取名“Two Sides，One Man”是的这场演出由Ricky而来但它不仅是一个拼场演出还浓缩了一段跨越十年爱恨交织的旧事12月24日杭州大麦66Live两个Ricky人生中最重要的乐队将在这一天同台他的过去与现在也将在这一天这个舞台上重叠',
+    hasComment:false,
+    hasDespise:false,
+    hasFavorite:false,
+    hasPraised:false,
+    id:'EXxamHvLe',
+    name:'Click#15 X Rustic平安夜专场正式开票',
+    sImg:'/static/upload/images/20210115/1610679221136585273.jpg',
+    strCate:'details',
+    strCateTip:'消息',
+    // tags:(1) [{…}],
+    url:'/details/EXxamHvLe.html',
+    widthTemp:10,
+}
+
 class ServicePlugin extends Service {
-    async getDocDate(yearStart=""){
+    async getDoc(yearStart=""){
         let {ctx,service}=this;
         let query={
             state: '2',
@@ -35,12 +57,16 @@ class ServicePlugin extends Service {
         try{
             let listDate=await service.doc.find(
                 {
-                    filesType:"timelineBar", 
+                    //filesType:"timelineBar", 
                     pageSize: 0,
                     isPaging:"0",
                 },{
                     query,
-                    files:"_id date dateYear dateYYMM name sImg",
+                    files:"_id date dateYear dateYYYYM dateTimeline name alias sImg tags url",
+                    populate:[{
+                        path: 'tags',
+                        select: 'name _id alias comments'
+                    }],
                     sort:{date: -1},
                 });
             return listDate;
@@ -192,68 +218,69 @@ class ServicePlugin extends Service {
     }
     // 获取虚拟docs
     async find(payload){
-        return await this.getTestDocs(false)
+        let listDocs=[];
+        try{
+            listDocs=await this.getDoc(payload.yearStart || new Date());
+            listDocs=await this.getTestDocs(false,listDocs);
+        }catch(e){
+            throw(new Error(e));
+        }
+        return listDocs
     }
-    async getTestDocs(isRandom){
+
+    getTestDoc(date,listImg,listTagsAll){
+        let _id=shortid.generate();
+        let idxSubstring=Math.floor(Math.random()*docTemplate.discription.length)
+        let title=docTemplate.discription.substring(idxSubstring,idxSubstring+10+Math.round(Math.random()*20));
+        
+        // 标签
+        let idxStart=Math.floor(Math.random()*(listTagsAll.length));
+        let idxRange=Math.min(listTagsAll.length-idxStart,3);
+        let idxEnd=idxStart+2+Math.floor(Math.random()*idxRange);
+        let listTags=listTagsAll.slice(idxStart,idxEnd);
+        let docTest={
+            _id:_id,
+            id:_id,
+            alias:title,
+            name:title,
+            sImg:listImg[Math.floor(Math.random()*listImg.length)],
+            date:moment(date).format("YYYY-MM-DD"),
+            dateYear:moment(date).format("YYYY"),
+            //dateYYMM:" "+moment(date).format("YYYYM"),
+            dateYYYYM:" "+moment(date).format("YYYYM"),
+            dateMM:" "+moment(date).format("M月"),
+            dateTimeline:moment(date).format("MM/DD"),
+            tags:listTags,
+        }
+        return docTest;
+    }
+    async getTestDocs(isRandom,listDocs){
         let {ctx}=this;
         let {pageInfo,listDateYear}=await this.getTestDate(isRandom);
 
-        // 生成文档
-        let doc={
-            
-            _id:'EXxamHvLe',
-            alias:'Click#15 X Rustic平安夜专场正式开票',
-            date:'2021-01-15',
-            dateTimeline:'01-15',
-            dateYear:'2021 ',
-            discription:'我们给这场演出取名“Two Sides，One Man”。是的，这场演出由Ricky而来，但它不仅是一个拼场演出，还浓缩了一段跨越十年，爱恨交织的旧事。12月24日，杭州大麦66Live，两个Ricky人生中最重要的乐队将在这一天同台，他的过去与现在也将在这一天，这个舞台上重叠。',
-            hasComment:false,
-            hasDespise:false,
-            hasFavorite:false,
-            hasPraised:false,
-            id:'EXxamHvLe',
-            name:'Click#15 X Rustic平安夜专场正式开票',
-            sImg:'/static/upload/images/20210115/1610679221136585273.jpg',
-            strCate:'details',
-            strCateTip:'消息',
-            // tags:(1) [{…}],
-            url:'/details/EXxamHvLe.html',
-            widthTemp:10,
-        }
+
         let docs=[];
 
         // 随机图片
         let listImg=this.ctx.service.uploadFiles.listUrlImg();
         // 获取所有标签，给docs用
-        let listTagsAll=await ctx.service.contentTag.find({isPaging: '0'});
-        listTagsAll=JSON.parse(JSON.stringify(listTagsAll));
+        //let listTagsAll=await ctx.service.contentTag.find({isPaging: '0'});
+        //listTagsAll=JSON.parse(JSON.stringify(listTagsAll));
+        // 人物（艺术家）列表
+        let listTagsAll= (await this.service.uploadFiles.cacheJSON(`${(process.cwd() + '/app/public')}/cache/listTags.json`,{tar:this,fun:ctx.service.contentTag.find, params:['artist/getList', {pageSize: 0,isPaging:"0",}] },true,true)).docs;
+
         listDateYear.forEach(objTimeline=>{
             for(let i=0 ; i<objTimeline.listIdxDays.length;i++){
-                let _id=shortid.generate();
-                let idxSubstring=Math.floor(Math.random()*doc.discription.length)
-                let title=doc.discription.substring(idxSubstring,idxSubstring+10+Math.round(Math.random()*20));
+                //时间轴日期
                 let date=new Date(objTimeline.listDateAll[i]);
-                
-                // 标签
-                let idxStart=Math.floor(Math.random()*(listTagsAll.length));
-                let idxRange=Math.min(listTagsAll.length-idxStart,3);
-                let idxEnd=idxStart+2+Math.floor(Math.random()*idxRange);
-                let listTags=listTagsAll.slice(idxStart,idxEnd);
-                docs.push(Object.assign({},doc,{
-                    _id:_id,
-                    id:_id,
-                    alias:title,
-                    name:title,
-                    sImg:listImg[Math.floor(Math.random()*listImg.length)],
-                    date:moment(date).format("YYYY-MM-DD"),
-                    dateYear:moment(date).format("YYYY"),
-                    dateTimeline:moment(date).format("MM/DD"),
-                    dateYYMM:" "+moment(date).format("YYYYM"),
-                    dateMM:" "+moment(date).format("M月"),
-                    tags:listTags,
-                }))
+                //按日期找出数据库文档
+                let listDocsFind=listDocs.filter(doc=>(moment(doc.date).isSame(date,"day")));
+                let listDocsToAdd=listDocsFind;
+                //数据库没有则虚拟文档            
+                if(listDocsToAdd.length==0)listDocsToAdd.push(this.getTestDoc(date,listImg,listTagsAll));
+                else console.log(listDocsToAdd,[this.getTestDoc(date,listImg,listTagsAll)],date);
+                docs.push(...listDocsToAdd);
             }
-
         })
 
         return {docs,pageInfo,listDateYear}

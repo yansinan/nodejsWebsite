@@ -1,10 +1,10 @@
 {# 时间轴列 #}
 {% from "./compListTags.html" import listTags %}
-        {% for month, colItems in posts|groupby("dateYYMM") %}
+        {% for month, colItems in posts|groupby("dateYYYYM") %}
         <div class="container-mm d-flex flex-column">
             {# 月份行 手机隐藏#}
             <div class="month d-md-flex d-none">
-                {{colItems[0].dateYYMM}}
+                {{colItems[0].dateMM}}
             </div>
             <div id="bsWrapperMM{{month|trim}}" class="wapper-mm wapper-mm-md" style="white-space:normal;" dr-bs-wrapper="mm-{{month|trim}}" ms-controller="{{month|trim}}">
                 {# 纵向滚动组件 #}
@@ -14,7 +14,7 @@
                     {# 日期内容区 #}
 
                     {% for item in colItems %}
-                    <div class="item" dr-date-doc="{{item.date}}">
+                    <div class="item {{item.doc}}" dr-date-doc="{{item.date}}">
                         {# 图 手机图 #}
                         <div id="timelineTitleImg{{item._id}}" class="imgContainer col-6 ps-0 d-flex d-md-none">                        
                             <img data-src="{{item.sImg}}" alt="{{item.name}}"  class="lazy img-fluid" alt="{{item.title}} " dr-id-doc="img{{item._id}}"/>
