@@ -150,7 +150,7 @@
     transition-property: transform;
     transition-duration: 0.3s;
     flex:0 0 auto;
-    width:var(--width-timeline-bar-wrapper-mobile);
+    width:calc( var(--width-timeline-bar-wrapper-mobile) * var(--width-timeline-bar-year,1));
 }
 #dr-footer.timeline #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar{
     transform: translateY(12px);
@@ -341,7 +341,9 @@
         max-height:var(--footer-size-pc,105px);
     }
     #dr-footer .svgTimelineBar{
-        width:var(--width-timeline-bar-wrapper-pc);
+        /* width:var(--width-timeline-bar-wrapper-pc); */
+        width:calc( var(--width-timeline-bar-wrapper-pc) * var(--width-timeline-bar-year,1));
+
     }
     #dr-footer.timeline.done #bsTimelineBarWrapper .bsTimelineBarContent-md .svgTimelineBar{
         transform: translateY(20px);

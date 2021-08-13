@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-08-04 05:26:38 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-12 20:25:31
+ * @Last Modified time: 2021-08-12 21:01:22
  */
 'use strict';
 const { debug } = require('console');
@@ -83,11 +83,13 @@ class ServicePlugin extends Service {
         
         let timeLast=dateStart ? new Date(dateStart) : new Date().getTime();
         // 起始日期
-        let dateFirst=dateStart ? moment(dateStart).endOf("year").toDate() : new Date(timeLast);
+        let dateFirst=timeLast;//dateStart ? moment(dateStart).endOf("year").toDate() : new Date(timeLast);
         // 起始日期的全年（后面日期只增加季度、年份、长度）
         //let dateFirstYearEnd=moment(dateFirst).add(1,"year").startOf("year").toDate();
         // 终止日期;优先用传入参数，没有自动计算当年元旦；再没有取2019/1/1
         let dateLast=dateEnd ? new Date(dateEnd) : (dateStart ? moment(dateStart).startOf("year").toDate() : new Date("2019/1/1"));//new Date("2018/07/01");
+        //全年天数;
+        let cntDaysFullYear=Math.abs(moment(dateLast).diff(moment(dateStart).endOf("year"),"days"));
         //生成概率:越小越小,初始500
         let factor=8*12;//150;//500;
         // 随机日期间隔（日）
@@ -170,7 +172,7 @@ class ServicePlugin extends Service {
             dateFirst,
             dateLast,
             cntDays,
-            widthPercent:(100/listIdxDays.length).toFixed(1),
+            widthPercent:cntDays/cntDaysFullYear,//不满一年的情况下，天数占365的百分比。//(100/listIdxDays.length).toFixed(1),
             listDateAll,
         }
         return objTimeline;
