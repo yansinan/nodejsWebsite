@@ -63,6 +63,7 @@
         //    that.bsTimeline={};
         //}
         if(that.bsTimeline.refresh){
+            console.debug("bsTimeline::resetSlideMain.刷新refresh");
             that.bsTimeline.refresh();
             return;
         }
@@ -77,7 +78,7 @@
         }
         that.bsTimeline = new BetterScroll.createBScroll($timelineWrapper, Object.assign({},objInitBSTimeline,objOption));
         {# console.warn("高度差？",that.bsTimeline.wrapper.getBoundingClientRect().height,that.bsTimeline.content.getBoundingClientRect().height,) #}
-
+        console.debug("bsTimeline::resetSlideMain.初始化"); 
         Object.defineProperties(that.bsTimeline,{
             $listMM:{
                 get:()=>(that.$listBSMM),//($timelineWrapper.querySelectorAll(".wapper-mm") ),
@@ -114,15 +115,15 @@
                 {# 移动：横向不移动，宽相等第一个跨出上边的 #}
                 $mmOut=Array.from($listMM).find(($mm,idx)=>{
                     idxNearest = idx;
-                    //return $mm.$content.getBoundingClientRect().bottom > that.bsTimeline.paddingTop;
-                    return $mm.$content.getBoundingClientRect().top >= that.bsTimeline.paddingTop;
+                    return $mm.parentElement.getBoundingClientRect().height>0 && $mm.$content.getBoundingClientRect().bottom >= that.bsTimeline.paddingTop;
+                    //return $mm.$content.getBoundingClientRect().top >= that.bsTimeline.paddingTop;
                 });
             }else{
                 {# PC:第一个跨出左屏幕的 ,同时记录最后一个 x <-pos.x #}
                 $mmOut=Array.from($listMM).find(($mm,idx)=>{
                     idxNearest = idx;
                     //return $mm.getBoundingClientRect().right > -pos.x;
-                    return $mm.getBoundingClientRect().left + ($mm.getBoundingClientRect().width*3/4) >= that.bsTimeline.paddingLeft;
+                    return $mm.parentElement.getBoundingClientRect().width>0 && $mm.getBoundingClientRect().left + ($mm.getBoundingClientRect().width*3/4) >= that.bsTimeline.paddingLeft;
                 });
                         
             }
@@ -199,7 +200,6 @@
 
         {# 标记当前月 #}
         that.bsTimeline.funFindDateNow({x:0},true);
-        
     }
 
     this.eDateChange=function(e){
@@ -255,13 +255,15 @@
         {# 滚动月份 #}{# 防止循环控制 #}
         if(!$mmTo.strDateNow || !e.detail.strDateNow)debugger;//DEBUG：没有$mmTo.$docNow计算过,$mmTo.strDateNow会返回false
         if(!that.bsTimeline.isMobile && $mmTo.strDateNow != e.detail.strDateNow){
-            $mmTo.$docTo=$mmTo.querySelector("[dr-date-doc='" + e.detail.strDateNow + "']");
-
-            console.log("e:时间轴:"+e.type,"可以移动：纵向",$mmTo.idxMM+"."+that.bsTimeline.strDateNow,"==>",e.detail.strDateNow);
-            if($mmTo.objBS && $mmTo.$docTo){
+            let $docTo=$mmTo.querySelector("[dr-date-doc='" + e.detail.strDateNow + "']");
+            if($mmTo.objBS && $docTo){
+                console.log("e:时间轴:"+e.type,"可以移动：纵向",$mmTo.idxMM+"."+that.bsTimeline.strDateNow,"==>",e.detail.strDateNow,"最终判断:");
                 if($mmTo.objBS.pending)$mmTo.objBS.stop();
                 $mmTo.objBS.disable();
-                $mmTo.objBS.scrollToElement($mmTo.$docTo,Math.abs($mmTo.$docTo.getBoundingClientRect().top - that.bsTimeline.wrapper.getBoundingClientRect().top));
+                $mmTo.objBS.refresh();
+                $mmTo.$docTo=$docTo;
+                let v=Math.min(8000,Math.abs($docTo.getBoundingClientRect().top - that.bsTimeline.wrapper.getBoundingClientRect().top));
+                $mmTo.objBS.scrollToElement($docTo,v);
             }
         }
     }
@@ -269,7 +271,10 @@
     {# 保留月份滚 #}
     this.addEventListener("BS_TIMELINE_BAR_DATE_CHANGE_FINAL",this.eDateChangeFinal)
     {# 保留月份滚----end #}
-    this.addEventListener("BS_COVER_TIMELINE",that.resetSlideMain)
+    this.addEventListener("BS_COVER_TIMELINE",that.resetSlideMain);
+    this.addEventListener("BS_COVER_TIMELINE_FINAL", ()=>{
+        setTimeout(()=>{that.bsTimeline.eUpdateTimeline({},true)},300);
+    });
     this.addEventListener("BS_COVER_LISTARTISTS",()=>{
         //that.bsTimeline.destroy();
     })
@@ -291,4 +296,38 @@
     //    //characterData: true, // 节点内容或节点文本的变动
     //    //subtree: true // 是否将观察器应用于该节点的所有后代节点
     //})
+    this.addEventListener("NAV_AT",(e)=>{
+        //导航切换时，筛选内容；
+        //let strAliasNav=this.header.strAliasNav;
+        let {bsMain,bsTimeline}=e.detail;
+        //const dictTimeline={
+        //    "records":".Record",
+        //    "news":".Content"
+        //}
+        if(bsMain=="timeline" && bsTimeline){
+            console.info("===>",bsTimeline,e.detail);
+            $timelineContent.querySelectorAll(".container-mm").forEach($mm=>{
+                let $listDoc=$mm.querySelectorAll(".item."+bsTimeline);
+                if($listDoc.length==0){
+                    $mm.classList.remove("show");
+                }else{
+                    $mm.classList.add("show");
+                    //$listDoc=$mm.querySelectorAll(".item");
+                    //$listDoc.forEach($doc=>{
+                    //    if($doc.classList.contains(dictTimeline[bsTimeline].substr(1)))$doc.classList.add("show");
+                    //    else $doc.classList.remove("show");
+                    //})
+                }
+                
+            })
+            {# 循环等待直到that.bsTimeline初始化完成； that.bsTimeline初始化在BS_COVER_TIMELINE#}
+            let timer=setInterval(()=>{
+                if(that.bsTimeline.eUpdateTimeline)setTimeout(()=>{
+                    that.bsTimeline.eUpdateTimeline.call(that.bsTimeline,{},true);                    
+                },300);
+                clearInterval(timer);
+            },300);
+            //that.bsTimeline.refresh();
+        }
+    })
 </script>

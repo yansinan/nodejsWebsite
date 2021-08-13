@@ -4,15 +4,15 @@
     {# 取最新日期为滚动起始位置 #}
     let $rectNewest=$bsTimelineBarWrapper.querySelector(".svgTimelineBar .b-d");
     {# pc #}
-    let scrollStartX=$bsTimelineBarWrapper.getBoundingClientRect().left - $rectNewest.getBoundingClientRect().left;
+    //let scrollStartX=$bsTimelineBarWrapper.getBoundingClientRect().left - $rectNewest.getBoundingClientRect().left;
     {# mobile #}
-    if(that.$footer.isRotated)scrollStartX= $bsTimelineBarWrapper.getBoundingClientRect().top - $rectNewest.getBoundingClientRect().top;
+    //if(that.$footer.isRotated)scrollStartX= $bsTimelineBarWrapper.getBoundingClientRect().top - $rectNewest.getBoundingClientRect().top;
     
     this.bsTimelineBarWrapper = new BetterScroll.createBScroll('#bsTimelineBarWrapper', {
         //specifiedIndexAsContent:1,
         disableMouse: false,
         disableTouch: false,
-        startX:scrollStartX,
+        //startX:scrollStartX,
         scrollX: true,
         scrollY: false,
         //nestedScroll: {
@@ -286,11 +286,7 @@
         that.bsTimelineBarWrapper.disable();
         that.bsTimelineBarWrapper.scrollBy(posX,0,vScroll);
     }
-    {# 开始先移动到最新日期 #}
-    //this.bsTimelineBarWrapper.scrollTo(that.bsTimelineBarWrapper.scrollStartX,0,0);
-    
-    {# 时间轴scroll #}
-    this.addEventListener("BS_MAIN_DATE_CHANGE",(e)=>{
+    this.bsTimelineBarWrapper.eTimelineDateChange=function(e){
         let strDateNow=false;
         {# 如果日期没变化，不额外触发，防止循环控制 #}
         if(that.bsTimelineBarWrapper.$docNow)strDateNow=that.bsTimelineBarWrapper.$docNow.id.replace("b","");
@@ -304,7 +300,14 @@
         console.info("e:底条::",e.type,"有效==>scrollToElement",strDateNow,"==>",e.detail.strDateNow);
         that.bsTimelineBarWrapper.$dateTo=$dateTo;
         that.bsTimelineBarWrapper.scrollToElement($dateTo);
-    })
+    }
+    {# 开始先移动到最新日期 #}
+    //this.bsTimelineBarWrapper.scrollTo(that.bsTimelineBarWrapper.scrollStartX,0,0);
+    
+    {# 时间轴scroll #}
+    this.addEventListener("BS_COVER_TIMELINE_FINAL", (page)=>{
+        this.addEventListener("BS_MAIN_DATE_CHANGE",this.bsTimelineBarWrapper.eTimelineDateChange);
+    });
     {# 到时间轴页时才更新bar坐标 #}
     this.addEventListener("BS_COVER_TIMELINE", (page)=>{
         //updateTimelineBar();
@@ -315,22 +318,34 @@
         //    updateTimelineBar();
         //},1200);
         {# PC #}
-        if(!that.$footer.isRotated)that.bsTimelineBarWrapper.scrollToElement($bsTimelineBarWrapper.querySelectorAll(".b-d")[0]);
-        else {
-            let cnt=0;
-            let timer=setInterval(()=>{
-                //updateTimelineBar.call(that);
-                //$timelineYearContainer.querySelectorAll("#timelineYearContainer .timelineYear").forEach(that.bsTimelineBarWrapper.updateBnYear);
-                that.bsTimelineBarWrapper.updateAllBnYears();
-                cnt++;
-                if(cnt>=3)clearInterval(timer);
-            },300);
-            
-        }
+        //if(!that.$footer.isRotated)that.bsTimelineBarWrapper.scrollToElement($bsTimelineBarWrapper.querySelector(".b-d"));
+        //else {
+        //    let cnt=0;
+        //    let timer=setInterval(()=>{
+        //        //updateTimelineBar.call(that);
+        //        //$timelineYearContainer.querySelectorAll("#timelineYearContainer .timelineYear").forEach(that.bsTimelineBarWrapper.updateBnYear);
+        //        that.bsTimelineBarWrapper.updateAllBnYears();
+        //        cnt++;
+        //        if(cnt>=3)clearInterval(timer);
+        //    },300);
+        //}
+        let cnt=0;
+        let timer=setInterval(()=>{
+            //updateTimelineBar.call(that);
+            //$timelineYearContainer.querySelectorAll("#timelineYearContainer .timelineYear").forEach(that.bsTimelineBarWrapper.updateBnYear);
+            that.bsTimelineBarWrapper.updateAllBnYears();
+            cnt++;
+            if(cnt>=3){
+                clearInterval(timer);
+                
+            }
+        },300);
     })
     this.addEventListener("BS_COVER_LISTARTISTS", (page)=>{
-        //this.bsTimelineBarWrapper.scrollTo(0,0,500);
-        this.bsTimelineBarWrapper.scrollTo(scrollStartX,0,500);        
+        that.bsTimelineBarWrapper.$dateTo=false;
+        this.bsTimelineBarWrapper.scrollTo(0,0,500);
+        this.removeEventListener("BS_MAIN_DATE_CHANGE",this.bsTimelineBarWrapper.eTimelineDateChange);
+        //this.bsTimelineBarWrapper.scrollTo(scrollStartX,0,500);        
     })
 
     {# timeline加载完成 #}

@@ -18,7 +18,7 @@
                 window.lazyLoadInstance = event.detail.instance;
         },false);
         {# timeline更新了内容，图片需要懒加载 #}
-        this.addEventListener("BS_TIMELINE_DOM_CHANGED",(e)=>{
+        this.addEventListener("BS_TIMELINE_DOM_LOADED",(e)=>{
             if(window.lazyLoadInstance)window.lazyLoadInstance.update();
         })
     </script>
@@ -137,7 +137,11 @@
 
                             // 创建并分发事件
                             let detail={page,bsMain:this.slideCover.strNow};
-                            this.dispatchEvent(new CustomEvent("BS_COVER_TIMELINE", {detail}))
+                            this.dispatchEvent(new CustomEvent("BS_COVER_TIMELINE", {detail}));
+                            {# 所有动画、动作完结 #}
+                            setTimeout(()=>{
+                                that.dispatchEvent(new CustomEvent("BS_COVER_TIMELINE_FINAL", {detail}))
+                            },500);
                             this.dispatchEvent(new CustomEvent("NAV_AT", {detail}))
                         }else{
                             this.slideCover.enable();
@@ -153,7 +157,10 @@
                         let timer=setInterval(()=>{that.slideCover.refresh.call(that.slideCover)},300);
                         setTimeout(()=>{clearInterval(timer)},1000);
                     })
-                    
+                    {# slideCover初始化完成 #}
+                    this.dispatchEvent(new CustomEvent("BS_COVER_INIT"),{detail:this.slideCover});
+                </script>
+                <script>
                     {# 监听时间轴下拉事件 #}
                     this.addEventListener("BS_TIMELINE_PULL_DOWN",(e)=>{
                         console.info("BS_TIMELINE_PULL_DOWN=============>");
@@ -171,21 +178,6 @@
         
 
     {% endblock %}
-    {# <div class="mainbody" id="{{pageType}}" style="width:100%;max-width:1199px;"> #}
-    <div class="d-none container-fluid position-absolute w-100 top-0" id="{{pageType}}">
-        <input type="hidden" value="{{site.lang}}" id="siteLang">
-        {# 主框架  #}
-        {# 上下slide #}
-        
-        {# 主框架 --end #}
-        {# 
-        {% block navAvatar %}
-            <div class="col-auto">
-                {{navAvatar(listAvatars,128)}}
-            </div>
-        {% endblock %} 
-        #}
-    </div>
     <script async src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.4.0/dist/lazyload.min.js"></script>
 </body>
 

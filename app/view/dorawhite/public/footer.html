@@ -136,8 +136,11 @@
                 this.$footer.classList.remove("done");
             })
             this.addEventListener("BS_COVER_TIMELINE", (page)=>{
-                setTimeout(()=>{
+                let cnt=0;
+                let timer=setInterval(()=>{
                     document.documentElement.style.setProperty('--top-main-timeline-mobile', this.$footer.paddingNow+"px");
+                    cnt++;
+                    if(cnt>5)clearInterval(timer);
                 },300);
                 this.$footer.classList.add("timeline","done");
                 this.$footer.classList.remove("listArtist");

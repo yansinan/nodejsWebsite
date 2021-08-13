@@ -2,7 +2,7 @@
 #dr-footer .timelineContainer{
     --width-timeline-bar-wrapper:calc();
     --width-timeline-bar-wrapper-pc: calc(100vw - var(--width-timeline-bar-end-pc) );
-    --width-timeline-bar-wrapper-mobile: calc( (var(--vh,1vw) * 100) - (var(--width-footer-bn-mobile) * 2) - var(--width-timeline-bar-end-mobile) );
+    --width-timeline-bar-wrapper-mobile: calc( (var(--vh,1vh) * 100) - (var(--width-footer-bn-mobile) * 2) - var(--width-timeline-bar-end-mobile) );
 
     --width-timeline-bar-year-span-pc:160px;
     --width-timeline-bar-year-span-mobile:40px;
@@ -169,6 +169,13 @@
     height:15px;
     fill:#231F20;
 }
+body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-d.records {
+    opacity: 1;
+    /* fill:red; */
+}
+body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-d:not(.records) {
+    opacity: 0;
+}
 /* 测试用 */
 .svgTimelineBar .b-d.now{
     fill:#ccc!important;
@@ -176,8 +183,10 @@
 
 /* 结尾占位日期空间 */
 #bsTimelineBarWrapper .bsTimelineBarContent .blank{
-    flex:0 0 calc(99.9vw - (var(--top-main-timeline-mobile,0px) - var(--width-footer-bn-mobile,20px) + var(--width-footer-bn-mobile,34px)));
-    min-width: calc(99.9vw - (var(--top-main-timeline-mobile,0px) - var(--width-footer-bn-mobile,20px) + var(--width-footer-bn-mobile,34px)));
+    /* flex:0 0 calc(99.9vw - (var(--top-main-timeline-mobile,0px) - var(--width-footer-bn-mobile,20px) + var(--width-footer-bn-mobile,34px))); */
+    /* min-width: calc(99.9vw - (var(--top-main-timeline-mobile,0px) - var(--width-footer-bn-mobile,20px) + var(--width-footer-bn-mobile,34px))); */
+    flex:0 0 var(--width-timeline-bar-wrapper-mobile);
+    min-width:var(--width-timeline-bar-wrapper-mobile);
     height: 27px;
     border-bottom: 1px dashed #ccc;
 }
@@ -360,7 +369,10 @@
         /* y:20px; */
         width:2.4px;
     }
-
+    #bsTimelineBarWrapper .bsTimelineBarContent .blank{
+        flex:0 0 var(--width-timeline-bar-wrapper-pc);
+        min-width:var(--width-timeline-bar-wrapper-pc);
+    }
     /* 年份 */
     #dr-footer .timelineContainer .timelineYearContainer-md{
         width:0px;
