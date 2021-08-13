@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-08-04 05:26:38 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-13 05:13:06
+ * @Last Modified time: 2021-08-13 11:09:04
  */
 'use strict';
 const { debug } = require('console');
@@ -65,7 +65,7 @@ class ServicePlugin extends Service {
                     lean:false,
                 },{
                     query,
-                    files:"_id date dateYear dateYYYYM dateTimeline percentDateOfYear name alias sImg tags url",
+                    files:"_id date listDateDur dateYear dateYYYYM dateTimeline percentDateOfYear docAlias name nameTimeline alias sImg tags url",
                     populate:[{
                         path: 'tags',
                         select: 'name _id alias comments'
@@ -120,14 +120,14 @@ class ServicePlugin extends Service {
             let idxFindDoc=listDocsOfYear.findIndex(doc=>(moment(doc.date).isAfter(dateTmp,"day")));
             if(idxFindDoc!=-1 && listTmpYearDocs.findIndex(date=>(date.date==moment(listDocsOfYear[idxFindDoc].date).format("YYYY-MM-DD")))==-1){//同时避免listTmpYearDocs日期重复。否则会导致反复加载同日期的所有doc
                 let docFind=listDocsOfYear.splice(idxFindDoc,1)[0];
-                posX=docFind.percentDateOfYear * (cntDays/cntDaysFullYear)
+                posX=Math.abs((cntDays*100/cntDaysFullYear)-docFind.percentDateOfYear).toFixed(3) ;
                 let strDate=moment(docFind.date).format("YYYY-MM-DD");
                 // listIdxDays.push(posX);
                 // listDateAll.push(strDate);
                 listTmpYearDocs.push({
                     posX,
                     date:strDate,
-                    doc:docFind.doc,
+                    doc:docFind.docAlias,
                 });
                 
             }else if(Math.random()<(factor/cntDays) && timeLast>dateTmp){
@@ -327,8 +327,11 @@ class ServicePlugin extends Service {
         let docTest={
             _id:_id,
             id:_id,
+            doc:"Content",
+            docAlias:"news",
             alias:title,
             name:title,
+            nameTimeline:title,
             sImg:listImg[Math.floor(Math.random()*listImg.length)],
             date:moment(date).format("YYYY-MM-DD"),
             dateYear:moment(date).format("YYYY"),

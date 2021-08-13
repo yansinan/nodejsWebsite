@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2019/11/10 20:30:53 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-13 04:05:16
+ * @Last Modified time: 2021-08-13 10:01:01
  */
 const INIT_DOC= app=>{
     //如果已经初始化过，则直接返回；
@@ -163,12 +163,27 @@ const INIT_DOC= app=>{
         return moment(this.date).format("YYYY-MM-DD");
     });
     // date在全年天数的百分比;
-    schema.virtual('percentDateOfYear').get(()=>{        
+    schema.virtual('percentDateOfYear').get(function (){        
         //全年天数;
         let cntDaysFullYear=Math.abs(moment(this.date).startOf("year").diff(moment(this.date).endOf("year"),"days"));
         //当前第几天
-        let idxDayOfYear=Math.abs(moment(this.date).diff(moment(this.date).startOf("year"),"days"));
-        return idxDayOfYear/cntDaysFullYear;
+        let idxDayOfYear=Math.abs(moment(this.date).startOf("year").diff(moment(this.date),"days"));
+        //console.log(this.name || this.title,this.doc,moment(this.date).format("YYYY-MM-DD"),idxDayOfYear,cntDaysFullYear,Math.abs(idxDayOfYear*100/cntDaysFullYear).toFixed(3))
+        return Math.abs(idxDayOfYear*100/cntDaysFullYear).toFixed(3);
+    })
+    // 客户端用的doc别名;
+    schema.virtual('docAlias').get(function (v){        
+        const dictTimeline={
+            "Record":"records",
+            "Content":"news",
+            "Artist":"artists",
+        }
+        return dictTimeline[this.doc || "news"];
+    })
+    // date在全年天数的百分比;
+    schema.virtual('nameTimeline').get(function (v){
+        if(this.doc=="Artist")return this.name + "加入";
+        else return this.name;
     })
     app.model=app.model || {};
     let model=app.model.DocModel || mongoose.model("Doc", schema);
