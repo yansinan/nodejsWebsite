@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-08-04 05:26:38 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-13 11:09:04
+ * @Last Modified time: 2021-08-13 23:00:17
  */
 'use strict';
 const { debug } = require('console');
@@ -127,7 +127,7 @@ class ServicePlugin extends Service {
                 listTmpYearDocs.push({
                     posX,
                     date:strDate,
-                    doc:docFind.docAlias,
+                    docAlias:docFind.docAlias,
                 });
                 
             }else if(Math.random()<(factor/cntDays) && timeLast>dateTmp){

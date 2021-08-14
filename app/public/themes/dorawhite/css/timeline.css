@@ -45,6 +45,10 @@
 #timelineContent .loading{
   width:calc(100% + 100px);
 }
+#timelineContent .container-mm{
+  transition-property: max-width,height,flex-basis;
+  transition-duration: .7s;
+}
 /* 占位列2个 */
 #timelineContent .container-mm.end{
   width:50vw;
@@ -95,7 +99,35 @@
   display: flex;
   flex-wrap: nowrap;
   margin-top: calc(var(--bs-gutter-y) * -1);
+  /* 隐藏动画 */
+  transition-property: max-height,margin-bottom;
+  transition-delay: 0s;
+  transition-duration: .5s;
+  overflow: hidden;
 }
+/* 
+#timelineContent .wapper-mm .item.show{
+  max-height: 30rem;
+}
+#timelineContent .wapper-mm .item:not(.show){
+  max-height: 0px;
+  overflow: hidden;
+  margin-bottom: 0px;
+}
+ */
+#timelineContent.records .wapper-mm .item.records,
+#timelineContent.news .wapper-mm .item.news,
+#timelineContent.news .wapper-mm .item.artists
+{
+  max-height: 60vh;
+}
+#timelineContent.records .wapper-mm .item:not(.records),
+#timelineContent.news .wapper-mm .item:not(.news):not(.artists)
+{
+  max-height: 0px;
+  margin-bottom: 0px;
+}
+
 #timelineContent .wapper-mm .item>* {
   /* flex-shrink: 0; */
   /* width: 100%; */
@@ -160,7 +192,14 @@
     height:100%;
     display: inline-flex;
   }
-
+  #timelineContent .container-mm.show{
+    max-width: 40.7vw;
+    overflow: visible;
+  }
+  #timelineContent .container-mm:not(.show){
+    max-width: 0px;
+    overflow: hidden;
+  }
 
   /* PC内容一屏2个半 */
   #timelineContent .wapper-mm-md{
@@ -172,7 +211,9 @@
     margin-right: calc(var(--bs-gutter-x) * -.5);
     font-size: 0.89rem;
     line-height: 1.16rem;
-  
+
+    transition-delay: .7s;
+    transition-duration: .7s;
   }
   #timelineContent .wapper-mm .item .titleContainer{
     padding-left: 0px;

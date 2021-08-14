@@ -34,7 +34,7 @@
                         <g id="timelineBarYearGroup{{year.strTitle}}" width-year={{year["width-year"]}} width="4px" height="16px" fill="#231F20">
                             {% for doc in year.listIdxDocs %}
                                 {# <rect x="{{idxDays}}%" width="{{objTimeline.widthPercent*0.5}}%" height="16px" fill="#231F20" /> #}
-                                <rect class="b-d {{doc.doc}}" x="{{doc.posX}}%" id="b{{doc.date}}"/>
+                                <rect class="b-d {{doc.docAlias}}" x="{{doc.posX}}%" id="b{{doc.date}}"/>
                             {% endfor %}
                             {# <text x="{{year.x}}%" y="80%" class="display-4" style="text-anchor: middle;">{{year.strTitle}}</text> #}
                             <rect id="timelineBarYear{{year.strTitle}}" x="{{year.x}}%" width="0px"/>

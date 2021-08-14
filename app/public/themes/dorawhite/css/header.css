@@ -328,11 +328,19 @@
   #navHeader #collapseNavbarMobile.navbar-collapse-md{
     display:none!important;
   }
+  #navHeader #collapseNavbarPC.navbar-collapse-md ul{
+    display: flex;
+    transition-property: transform;
+    transition-duration: .3s;
+    transform:translateY(109%);
+  }
   #navHeader.timeline #collapseNavbarPC.navbar-collapse-md ul{
-    animation:slideUpIn .3s ease 0s 1 normal both;
+    /* animation:slideUpIn .3s ease 0s 1 normal both; */
+    transform:translateY(0px);
   }
   #navHeader.listArtist #collapseNavbarPC.navbar-collapse-md ul{
-    animation:slideOut .3s ease 0s 1 normal both;
+    /* animation:slideOut .3s ease 0s 1 normal both; */
+    transform:translateY(109%);
   }
   #navHeader .navbar .navbar-collapse.navbar-collapse-md ul li a
   {
