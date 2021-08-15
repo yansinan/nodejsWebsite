@@ -132,19 +132,19 @@
     max-width: auto;
 }
 #bsTimelineBarWrapper .bsTimelineBarContent .left{
-    transition-property: flex-basis;
-    transition-duration: 0.3s;
+    /* transition-property: flex-basis; */
+    /* transition-duration: 0.3s; */
     flex : 0 0 0px;
+    flex-basis:calc(var(--top-main-timeline-mobile,125px) - var(--width-footer-bn-mobile,20px));
 }
+/* 
 #dr-footer.timeline.done #bsTimelineBarWrapper .bsTimelineBarContent .left{
-    /* flex: 0 0 calc(var(--main-offset-left-mobile,20px) + var(--footer-size-mobile,16px) + 46px); */
     flex-basis:calc(var(--top-main-timeline-mobile,0px) - var(--width-footer-bn-mobile,20px));
 }
 #dr-footer.listArtist.done #bsTimelineBarWrapper .bsTimelineBarContent .left{
-    /* flex: 0 0 calc(var(--main-offset-left-mobile,20px) + var(--footer-size-mobile,16px) + 46px); */
     flex-basis:0px;
 }
-
+*/
 
 .svgTimelineBar{
     transition-property: transform;
@@ -342,7 +342,6 @@ body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-d:no
     }
     #bsTimelineBarWrapper .bsTimelineBarContent-md .left{
         flex-basis: calc(var(--main-offset-left-pc,46px))!important;
-        
     }
     /* PC端，时间轴页时间轴尺寸 */
     #dr-footer.timeline.footerContainer-md #bsTimelineBarWrapper{
