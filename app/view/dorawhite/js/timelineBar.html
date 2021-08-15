@@ -67,7 +67,7 @@
             if(that.$footer.isRotated)isFind=$doc.getBoundingClientRect().top >= that.$footer.paddingNow - 1;
             return isFind;
         })
-        if(!$docNow)debugger;
+        if(!$docNow)throw new Error("底条:没有找到$docNow");
         return $docNow;
     }
     {# 设置class标记，并恢复上一个 #}
@@ -85,7 +85,7 @@
                 return strDate;
             }else return false;
 
-        }else debugger
+        }else throw new Error("底条:没有找到$docNow");
         return false;
     }
     this.bsTimelineBarWrapper.updateBnYear = function($year,idx,$list){
