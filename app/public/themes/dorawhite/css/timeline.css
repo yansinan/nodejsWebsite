@@ -47,7 +47,7 @@
   display:none;
 }
 #timelineContent::after{
-  content:"正在加载中";
+  content:attr(data-str-notice-end);
   bottom:0px;
   transform: translateY(calc(100% + 1rem)) translateZ(0);
 }
@@ -229,7 +229,6 @@
     width:0.5rem;
   }
   #timelineContent::after{
-    content:"正在加载中";
     right:0px;
     transform: translateX(calc(100% + 1rem)) translateZ(0);
   }

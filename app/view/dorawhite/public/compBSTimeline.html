@@ -9,7 +9,7 @@
 {# {{containerOfList(infoPagination,tempList)}} #}
 <div id="timelineWrapper" class="d-none bs-wrapper-main">
     {# 不指定高：手机纵向自适应高，PC在定义高度  dr-dom-append="{{infoPagination.idDOM}}"#}
-    <div id="timelineContent" class="" style="">
+    <div id="timelineContent" class="" style="" data-str-notice-end="正在加载中">
         {% include '../js/timelineMM.html' %}
         <div class="pulldown-tip"></div>
         {# 每月纵向 #}
@@ -66,6 +66,10 @@
                 let next = ( this.yearCurrent > this.yearTotal ) ? this.yearCurrent - 1 : false;
                 return new Promise((resolve, reject) => {
                     if(next){
+                        //that.bsTimeline.content.setAttribute("data-str-notice-end", "没有更多了");
+                        //that.bsTimeline.content.dataset["strNoticeEnd"] = "就这个了";
+
+
                         fetch(vm.urlApi+'?type=dom' + (!document.getElementById("scriptTimeline")?'|script':'') + '&typeId=' + vm.cateId + '&cateName='+ vm.namePage +'&yearCurrent=' + next)
                         .then(function(data){
                             return data.text();
