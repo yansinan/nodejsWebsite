@@ -109,9 +109,9 @@
             {% endif %} {% endfor %}
         ],
         get strAliasNav(){
-            let path=window.location.pathname.split("/timeline/")[1];///artists___KuvrGBz9e
+            let path=window.location.pathname.split("/timeline/")[1] || window.location.pathname.split("/artists/")[1];///artists___KuvrGBz9e
             let strAliasNav=path ? path.split("__")[0].split("/")[0] : this.funFindByURL().defaultUrl;
-            if(strAliasNav=="records")document.querySelector("body").classList.value="flex "+strAliasNav;
+            if(this.strBSMain=="timeline" && strAliasNav=="records")document.querySelector("body").classList.value="flex "+strAliasNav;
             else document.querySelector("body").classList.value="flex";
             return strAliasNav;
         },
@@ -149,7 +149,6 @@
     window.addEventListener('DOMContentLoaded', ePopStateHeader, false);
 
     function ePopStateHeader(event){
-        
         console.info("history::",event.type,window.history.state,"strAliasNav=",this.header.strAliasNav);
         {# 非首页需要跳转相应页 #}
         if(event.type =="DOMContentLoaded" || event.type =="Load"){
@@ -161,7 +160,7 @@
             //this.addEventListener("BS_TIMELINE_DOM_READY",eTimelineReady)
             this.goto(window.location.pathname.split("/index")[1]);
         }else{
-            {# 返回或者手动=》更新导航状态 #}           
+            {# 返回或者手动=》更新导航状态 #}
             if(event.type=="popstate" || event.state){
                 {# 浏览器返回 #}
                 this.goto(window.location.pathname.split("/index")[1]);
@@ -196,7 +195,7 @@
         inURL="/index"+inURL;
         let obj={
             bsMain:inURL.split("/")[2] || "artists",
-            bsTimeline:inURL.split("/")[3] || this.header.funFindByURL().defaultUrl,
+            bsTimeline:inURL.split("/")[3] || this.header.strAliasNav,// || this.header.funFindByURL().defaultUrl,
             detail:inURL.split("/")[4] || false,
         }
         Object.defineProperties(obj,{
@@ -215,8 +214,13 @@
         //        detail:obj,
         //    }))
         //},10)
+        let objOld={
+            bsMain:this.header.strBSMain,
+            bsTimeline:this.header.strAliasNav,
+            detail:false || false,
+        }
         this.dispatchEvent(new CustomEvent("NAV_TO", {
-            detail:obj,
+            detail:{objNew:obj,objOld},
         }))
     }
     //this.addEventListener("BS_TIMELINE_DOM_READY",(e)=>{
@@ -334,7 +338,6 @@
     let $collapseNavbarMobile = document.getElementById('collapseNavbarMobile');
     {# PC顶端Timeline导航 #}
     let $collapseNavbarPC = document.getElementById('collapseNavbarPC');//$headerNav.querySelector("");//
-    let $collapseNavBnGroupPC = $collapseNavbarPC.querySelector(' ul');
     //let bsCollapseNavbarPC = new bootstrap.Collapse($collapseNavbarPC, {
     //    toggle: false,
     //})
@@ -364,6 +367,8 @@
     //    }
     //})
     {# 切换到乐队列表页 #}{# Mobile：隐藏菜单，隐藏中英文， PC：显示中英文，隐藏菜单#}
+    {# let $collapseNavBnGroupPC = $collapseNavbarPC.querySelector(' ul'); #}
+
     this.addEventListener("BS_COVER_WILL_LISTARTISTS", (page)=>{
         $headerContainer.classList.add("listArtist");
         $headerContainer.classList.remove("done","timeline");
@@ -371,7 +376,8 @@
         {# 隐藏居中菜单 #}
         setTimeout(function () {
             {# PC #}
-            $collapseNavBnGroupPC.classList.add("d-none","d-md-none");
+            {# $collapseNavBnGroupPC.classList.add("d-none","d-md-none"); #}
+            
         }, 400);
 
         {# PC #}
@@ -388,8 +394,8 @@
         {# 显示居中菜单 #}
 
         {# PC #}
-        $collapseNavBnGroupPC.classList.remove("d-md-none");
-        $collapseNavBnGroupPC.classList.add("d-md-flex");
+        {# $collapseNavBnGroupPC.classList.remove("d-md-none"); #}
+        {# $collapseNavBnGroupPC.classList.add("d-md-flex"); #}
     })
     this.addEventListener("BS_COVER_TIMELINE", (page)=>{
         $headerContainer.classList.add("timeline","done");

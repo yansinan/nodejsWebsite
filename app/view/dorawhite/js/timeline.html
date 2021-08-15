@@ -69,11 +69,12 @@
         }
 
         {# 根据屏幕初始化功能 #}
-        let objOption={scrollX:false,};//mobile配置
+        let objOption={scrollX:false,startY:1,};//mobile配置
         if(!$timelineContent.isMobile){
             objOption={
                 pullDownRefresh:false,
                 scrollY:false,
+                startX:1,
             }
         }
         that.bsTimeline = new BetterScroll.createBScroll($timelineWrapper, Object.assign({},objInitBSTimeline,objOption));
@@ -271,12 +272,42 @@
     {# 保留月份滚 #}
     this.addEventListener("BS_TIMELINE_BAR_DATE_CHANGE_FINAL",this.eDateChangeFinal)
     {# 保留月份滚----end #}
-    this.addEventListener("BS_COVER_TIMELINE",that.resetSlideMain);
-    this.addEventListener("BS_COVER_TIMELINE_FINAL", ()=>{
-        setTimeout(()=>{that.bsTimeline.eUpdateTimeline({},true)},300);
+    this.addEventListener("BS_COVER_WILL_TIMELINE",that.resetSlideMain);
+    this.addEventListener("BS_COVER_TIMELINE", ()=>{
+        that.bsTimeline.eUpdateTimeline.call(that.bsTimeline,{},true);
     });
-    this.addEventListener("BS_COVER_LISTARTISTS",()=>{
-        //that.bsTimeline.destroy();
+    //this.addEventListener("BS_COVER_LISTARTISTS",()=>{
+    //    //that.bsTimeline.destroy();
+    //})
+    this.addEventListener("NAV_AT",(e)=>{
+        let {bsMain,bsTimeline}=e.detail;
+        //导航切换到timeline时，筛选内容；
+        if(bsMain=="timeline" && bsTimeline){
+            $timelineContent.querySelectorAll(".container-mm").forEach($mm=>{
+                let $listDoc=$mm.querySelectorAll(".item."+bsTimeline);
+                if($listDoc.length==0){
+                    $mm.classList.remove("show");
+                }else{
+                    $mm.classList.add("show");
+                    //$listDoc=$mm.querySelectorAll(".item");
+                    //$listDoc.forEach($doc=>{
+                    //    if($doc.classList.contains(dictTimeline[bsTimeline].substr(1)))$doc.classList.add("show");
+                    //    else $doc.classList.remove("show");
+                    //})
+                }
+                
+            })
+            {# 强制同步timelineBar==>循环等待直到that.bsTimeline初始化完成； that.bsTimeline初始化在BS_COVER_TIMELINE#}
+            function eTransitionEnd(e){
+                if(e.target.classList.contains("container-mm") || (e.target.classList.contains("item"))){
+                    if(that.bsTimeline.eUpdateTimeline)that.bsTimeline.eUpdateTimeline.call(that.bsTimeline,{},true);
+                    else throw new Error("bsTimeline.eUpdateTimeline未定义");                        
+                    console.info("时间轴::eNAV_AT动画结束:已触发timelineBar同步",e)
+                    $timelineContent.removeEventListener("transitionend",eTransitionEnd);
+            }
+            }
+            $timelineContent.addEventListener("transitionend", eTransitionEnd, {capture:false,once:false});
+        }else if(!bsTimeline && bsMain=="timeline")throw new Error("缺少bsTimeline参数(二级栏目未定义)");
     })
 
     //var mutationObserver = new MutationObserver(function (mutations) {
@@ -296,38 +327,4 @@
     //    //characterData: true, // 节点内容或节点文本的变动
     //    //subtree: true // 是否将观察器应用于该节点的所有后代节点
     //})
-    this.addEventListener("NAV_AT",(e)=>{
-        //导航切换时，筛选内容；
-        //let strAliasNav=this.header.strAliasNav;
-        let {bsMain,bsTimeline}=e.detail;
-        //const dictTimeline={
-        //    "records":".Record",
-        //    "news":".Content"
-        //}
-        if(bsMain=="timeline" && bsTimeline){
-            console.info("===>",bsTimeline,e.detail);
-            $timelineContent.querySelectorAll(".container-mm").forEach($mm=>{
-                let $listDoc=$mm.querySelectorAll(".item."+bsTimeline);
-                if($listDoc.length==0){
-                    $mm.classList.remove("show");
-                }else{
-                    $mm.classList.add("show");
-                    //$listDoc=$mm.querySelectorAll(".item");
-                    //$listDoc.forEach($doc=>{
-                    //    if($doc.classList.contains(dictTimeline[bsTimeline].substr(1)))$doc.classList.add("show");
-                    //    else $doc.classList.remove("show");
-                    //})
-                }
-                
-            })
-            {# 循环等待直到that.bsTimeline初始化完成； that.bsTimeline初始化在BS_COVER_TIMELINE#}
-            let timer=setInterval(()=>{
-                if(that.bsTimeline.eUpdateTimeline)setTimeout(()=>{
-                    that.bsTimeline.eUpdateTimeline.call(that.bsTimeline,{},true);                    
-                },300);
-                clearInterval(timer);
-            },300);
-            //that.bsTimeline.refresh();
-        }
-    })
 </script>

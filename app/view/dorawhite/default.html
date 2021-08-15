@@ -112,19 +112,29 @@
                     })
                     this.slideCover.goto=function(inPage){
                         let tar= (inPage=="artists" ? 0 : 1);
-                        if(that.slideCover.getCurrentPage().pageY == tar)return;
-                        that.slideCover.goToPage(0,tar);
+                        {# 如果目标等于当前页，不跳转，但是相同页面也触发事件：为了使bsTimeline保持动作 #}
+                        if(this.getCurrentPage().pageY == tar){
+                            if(inPage!="artists"){
+                                that.dispatchEvent(new CustomEvent("BS_COVER_TIMELINE", {page:this.getCurrentPage(),bsMain:this.strNow}));
+                                that.dispatchEvent(new CustomEvent("BS_COVER_TIMELINE_FINAL", {page:this.getCurrentPage(),bsMain:this.strNow}))
+                            }
+                            return;
+                        }
+                        this.disable();
+                        this.goToPage(0,tar);
                     }
                     {# //初始化slideCover后隐藏Cover，后面再判断是否显示 #}
                     {# $('.bs-wrapper-cover').hide(); #}
                     
-                    this.slideCover.on('slideWillChange', (page) => {  
+                    this.slideCover.on('slideWillChange', (page) => {                        
                         if(page.pageY==1){
                             // 创建并分发事件
-                            this.dispatchEvent(new CustomEvent("BS_COVER_WILL_TIMELINE", {detail:{page,bsMain:"timeline"}}))
+                            this.dispatchEvent(new CustomEvent("BS_COVER_WILL_TIMELINE", {detail:{page,bsMain:"timeline"}}));
+                            if(this.slideCover.enabled)this.goto("/timeline/");
                         }else{
                             // 创建并分发事件
                             this.dispatchEvent(new CustomEvent("BS_COVER_WILL_LISTARTISTS", {detail:{page,bsMain:"artists"}}))
+                            if(this.slideCover.enabled)this.goto("/artists/");
                         }
                     })
                     //this.slideCover.on('scroll', (position) => {
@@ -133,16 +143,17 @@
                     this.slideCover.on('slidePageChanged', (page) => {
                         if(page.pageY==1){
                             this.slideCover.disable();
-                            console.info("去使能");
-
                             // 创建并分发事件
                             let detail={page,bsMain:this.slideCover.strNow};
                             this.dispatchEvent(new CustomEvent("BS_COVER_TIMELINE", {detail}));
-                            {# 所有动画、动作完结 #}
-                            setTimeout(()=>{
-                                that.dispatchEvent(new CustomEvent("BS_COVER_TIMELINE_FINAL", {detail}))
-                            },500);
-                            this.dispatchEvent(new CustomEvent("NAV_AT", {detail}))
+                            {# 所有动画、动作完结 #}{# 如果前往时间轴页，提前添加监听 #}
+                            function eTransitionEnd(e){
+                                if(e.target.tagName=="UL"){
+                                    e.currentTarget.removeEventListener("transitionend", eTransitionEnd);
+                                    that.dispatchEvent(new CustomEvent("BS_COVER_TIMELINE_FINAL", {detail:{page,bsMain:this.strNow}}))
+                                }
+                            }
+                            document.querySelector("#navHeader").addEventListener("transitionend", eTransitionEnd, {capture:false,once:false});                    
                         }else{
                             this.slideCover.enable();
                             // 创建并分发事件
@@ -169,7 +180,7 @@
                     })
                     {# 页面跳转 #}
                     this.addEventListener("NAV_TO",(e)=>{
-                        this.slideCover.goto(e.detail.bsMain);
+                        this.slideCover.goto(e.detail.objNew.bsMain);
                     })
 
                 </script>

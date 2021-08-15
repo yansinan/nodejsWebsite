@@ -25,24 +25,29 @@
         {# 页面跳转 #}
         this.addEventListener("NAV_TO",(e)=>{
             let vm=this["vm-"+"{{infoPagination.page}}"];
-            if(e.detail.bsTimeline == vm.namePage)return;
+            let {objNew,objOld}=e.detail;
+            {# objNew.bsMain=="artists"和timeline无关，不响应;否则会造成监听两次 #}
+            if(objNew.bsMain=="artists")return;
             {# 栏目alias,后台据此读取不同栏目 #}
-            vm.namePage=e.detail.bsTimeline;
+            vm.namePage=e.detail.objNew.bsTimeline;
             {# vm加载数据 #}
-            vm.init().then(console.info);
-            //vm.init().then(res=>{
-            //    {# bsTimeline移动到开始 #}
-            //    that.resetSlideMain();
-            //    if(that.bsTimeline.scrollTo)that.bsTimeline.scrollTo(0,0,1000);
-            //    {# 完成切换时，更新导航 #}
-            //    window.dispatchEvent(new CustomEvent("NAV_AT", { detail:e.detail, }))
+            //vm.getMoreNews().then(res=>{
             //});
+            function eMainToTimelineFinal(e){
+                {# bsTimeline移动到开始 #}
+                {# if(that.bsTimeline.scrollTo)that.bsTimeline.scrollTo(0,0,1000); #}
+                {# 完成切换时，更新导航 #}
+                window.dispatchEvent(new CustomEvent("NAV_AT", { detail:objNew, }));
+            }            
+            that.addEventListener("BS_COVER_TIMELINE_FINAL", eMainToTimelineFinal,{once:true});
+            {# 改变class,控制显示隐藏 #}
+            $timelineContent.classList.value = objNew.bsTimeline;
         })
     </script>
     <script>
         {# 内容显示控制 #}
         this["vm-"+"{{infoPagination.page}}"] = this["vm-"+"{{infoPagination.page}}"] || avalon.define({
-            $id: document.getElementById('timelineContent'),//'{{infoPagination.idDOM}}',
+            $id: $timelineContent,
             cateId:"{{infoPagination.cateInfo._id}}",
             namePage:that.header.strAliasNav,//"{{infoPagination.page}}",
             urlApi:"{{infoPagination.api}}",
@@ -53,7 +58,6 @@
             {# 初始化数据 #}
             init:async function(){
                 return this.getMoreNews().then(res=>{
-                    this.$id.classList.value = this.namePage;
                     return Promise.resolve(res);
                 });
             },
