@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-08-04 05:26:38 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-13 23:00:17
+ * @Last Modified time: 2021-08-16 10:12:18
  */
 'use strict';
 const { debug } = require('console');
@@ -212,9 +212,10 @@ class ServicePlugin extends Service {
         let listDocs=[];
         try{
             // listDocs=await this.getDoc(yearCurrent || new Date());
+            //index过来的!yearCurrent，取所有docs
             if(!yearCurrent)listDocs=(await this.service.uploadFiles.cacheJSON(path.join(strFolderCache,'listDocs.json'),{tar:this,fun:this.getDoc, params:[ yearCurrent || false ] },true,true));
             else listDocs=await this.getDoc(yearCurrent);
-            if(!listDocs[0])throw(new Error("listDocs没有!",listDocs));
+            if(!listDocs[0] && !yearCurrent)throw(new Error("listDocs没有!",listDocs));
         }catch(e){ throw(new Error(e)); }
         // 文档中最新日期;
         let dateStart=yearCurrent ? moment(yearCurrent).endOf("year").format("YYYY-MM-DD") : (listDocs[0].date);
@@ -229,10 +230,10 @@ class ServicePlugin extends Service {
             // 当年第一天
             let dateStartOfYear=moment(dateEndOfYear).startOf("year");
             //检出当年的文档数组
-            let listDocsOfYear=listDocs.filter(doc=>(moment(doc.date).isBetween(dateStartOfYear,dateEndOfYear,"day","[]")));
+            let listDocsOfYear=listDocs.filter(doc=>(moment(doc.date).isBetween(dateStartOfYear,dateEndOfYear,"day","[]"))) || [];
             // 根据文档日期计算虚拟时间
             let objTimeline = that.getTestDateByYear(dateEndOfYear,dateStartOfYear,listDocsOfYear);
-            objTimeline.listDocs=JSON.parse(JSON.stringify(listDocsOfYear.length >=0 ? listDocsOfYear :false));
+            objTimeline.listDocs=JSON.parse(JSON.stringify(listDocsOfYear));
             // 写入缓存目录
             let data = fs.writeFileSync(pathFile, JSON.stringify(objTimeline));
             return objTimeline;
@@ -274,9 +275,13 @@ class ServicePlugin extends Service {
             // totalPage:1,
 
             yearCurrent:parseInt(strYearCurrent),
-            yearTotal:parseInt(moment(listDocs[listDocs.length-1].date).format("YYYY")),
-            yearNewest:parseInt(moment(listDocs[0].date).format("YYYY")),
+            yearTotal: (listDocs[listDocs.length-1] && listDocs[listDocs.length-1].date) ? parseInt(moment(listDocs[listDocs.length-1].date).format("YYYY")) : parseInt(strYearCurrent),
+            //yearNewest:parseInt(moment(listDocs[0].date).format("YYYY")),
         }
+        //if(yearCurrent && listDocs[0] ){
+        //    pageInfo.yearNewest=parseInt(moment(listDocs[0].date).format("YYYY"));
+        //}
+        if(!yearCurrent)pageInfo.yearNewest=parseInt(strYearCurrent);
         console.log(listYear,pageInfo)
         return {pageInfo,listDateYear,listDocs};
     }
@@ -302,7 +307,7 @@ class ServicePlugin extends Service {
                     //时间轴日期
                     let date=moment(objTimeline.listIdxYears[0].listIdxDocs[i].date);
                     //按日期找出数据库文档
-                    let listDocsToAdd=objTimeline.listDocs.filter(doc=>(moment(doc.date).isSame(date,"day")));
+                    let listDocsToAdd=objTimeline.listDocs.filter(doc=>(doc ? moment(doc.date).isSame(date,"day") : false ));
                     //数据库没有则虚拟文档            
                     if(listDocsToAdd.length==0)listDocsToAdd.push(this.getTestDoc(date,listImg,listTagsAll));
                     docs.push(...listDocsToAdd);
