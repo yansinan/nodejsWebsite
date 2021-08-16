@@ -80,11 +80,20 @@
             scrollbar: true,
             //observeDOM: true // 开启 observe-dom 插件
         }
+        {# class按所有doc的栏目，统计并标注类 #}
+        let $listDoc=$bsMM.querySelectorAll(".item");
+        let listClass=[];
+        $listDoc.forEach($doc=>{
+            listClass.push(...$doc.classList.value.split(" "));
+        })
+        listClass=[...(new Set(listClass))];
+        listClass.shift();
+        $bsMM.parentElement.classList.add(...listClass);
         {# 只初始化一次，防止事件多次触发 #}
         if(!$bsMM.objBS){
             $bsMM.objBS = new BetterScroll.createBScroll($bsMM, objInitBSMM);
             {# 月份计算坐标 #}
-            Object.defineProperties($bsMM,{
+            Object.defineProperties.call($bsMM,$bsMM,{
                 $docNow:{
                     get:()=>{
                         let $mmNow=$bsMM;
@@ -112,6 +121,8 @@
                 idxMM:{
                     get:()=>($bsMM.getAttribute("ms-controller")),
                 },
+                strMonth:{ get:()=>($bsMM.idxMM.substr(4,-1)), },
+                strYear:{ get:()=>($bsMM.idxMM.substr(0,4)), },
                 objName:{
                     get:()=>("bs-"+$bsMM.idxMM),
                 },
