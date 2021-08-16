@@ -206,23 +206,23 @@
                 get:()=>("{{site.title}}" + "|" + this.header.funFindByURL(obj.bsTimeline).name),
             }
         })
-        //let timer=setInterval(()=>{
-        //    if(!this.isInit)return;
-        //    else clearInterval(timer);
-        //    console.warn("=================>NAV_TO");
-        //    this.dispatchEvent(new CustomEvent("NAV_TO", {
-        //        detail:obj,
-        //    }))
-        //},10)
-        let objOld={
-            bsMain:this.header.strBSMain,
-            bsTimeline:this.header.strAliasNav,
-            detail:false || false,
-        }
+
+        {# 更新前保存在header.objOld #}
+        this.header.objNavOld=this.header.objNavTo || obj;
+        this.header.objNavTo=obj;
         this.dispatchEvent(new CustomEvent("NAV_TO", {
-            detail:{objNew:obj,objOld},
+            detail:{objNew:this.header.objNavTo,objOld:this.header.objNavOld},
         }))
     }
+
+    {# 在时间轴页，再次导航objNew #}
+    this.addEventListener("BS_COVER_TIMELINE_FINAL",(e)=>{
+        if(this.header.objNavTo.bsMain!="artists" && this.header.objNavTo.bsTimeline){
+            this.dispatchEvent(new CustomEvent("NAV_TO_TIMELINE", {
+                detail:{objNew:this.header.objNavTo,objOld:this.header.objNavOld},
+            }))
+        }else throw new Error("再次导航objNew到时间轴，但是" + toString(this.header.objNavTo));
+    })
     //this.addEventListener("BS_TIMELINE_DOM_READY",(e)=>{
     //    this.isInit=true;
     //})

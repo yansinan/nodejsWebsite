@@ -115,16 +115,20 @@
             if(that.bsTimeline.isMobile){
                 {# 移动：横向不移动，宽相等第一个跨出上边的 #}
                 $mmOut=Array.from($listMM).find(($mm,idx)=>{
+                    let isShow=$mm.parentElement.getBoundingClientRect().height>0;
+                    if(!isShow)return isShow;
                     idxNearest = idx;
-                    return $mm.parentElement.getBoundingClientRect().height>0 && $mm.$content.getBoundingClientRect().bottom >= that.bsTimeline.paddingTop;
+                    return $mm.$content.getBoundingClientRect().bottom >= that.bsTimeline.paddingTop;
                     //return $mm.$content.getBoundingClientRect().top >= that.bsTimeline.paddingTop;
                 });
             }else{
                 {# PC:第一个跨出左屏幕的 ,同时记录最后一个 x <-pos.x #}
                 $mmOut=Array.from($listMM).find(($mm,idx)=>{
+                    let isShow=$mm.parentElement.getBoundingClientRect().width>0;
+                    if(!isShow)return isShow;
                     idxNearest = idx;
                     //return $mm.getBoundingClientRect().right > -pos.x;
-                    return $mm.parentElement.getBoundingClientRect().width>0 && $mm.getBoundingClientRect().left + ($mm.getBoundingClientRect().width*3/4) >= that.bsTimeline.paddingLeft;
+                    return $mm.getBoundingClientRect().left + ($mm.getBoundingClientRect().width*3/4) >= that.bsTimeline.paddingLeft;
                 });
                         
             }
@@ -132,27 +136,34 @@
             if($mmOut){
                 $mmNow=$mmOut;
             }else{
-                $mmNow = $listMM[idxNearest+1] ? $listMM[idxNearest+1] : ($listMM[idxNearest]?$listMM[idxNearest]:false) ;
-                debugger;
+                $mmNow = $listMM[idxNearest+1] || $listMM[idxNearest] || false ;                
             }
-            if(!$mmNow)debugger;
-            else{
+            if($mmNow){
                 {# 是否需要改变class #}
                 if($mmNow!=$mmLast){                
+                    {# 如果当前年份是最后一年，触发End时间 #}
+                    if($listMM[$listMM.length-1] && $mmNow && ($mmNow.strYear==$listMM[$listMM.length-1].strYear)){
+                        {# 触发找到月份事件 #}
+                        that.dispatchEvent(new CustomEvent("BS_MAIN_CONTENT_END"),{detail:{strYear:$mmNow.strYear,$mmNow,$mmEnd:$listMM[$listMM.length-1]}});//,strYear:$mmNow.strYear,strMonth:$mmNow.strMonth
+                    }
                     $mmLast.classList.remove("now");
                     $mmLast=$mmNow;                
                 }
                 $mmNow.classList.add("now");
                 return $mmNow;
             }
-            return false;
+            throw new Error("timeline没有找到对应月份$mmNow");
         }
         {# 查找当前日期，并触发事件 #}
         that.bsTimeline.funFindDateNow=function(){
-            $mmNow=that.bsTimeline.findMMNow();
+            try{
+                $mmNow=that.bsTimeline.findMMNow();
+            }catch(e){
+                throw e;
+            }
             {# 查询当前日期 #}
             if($mmNow)that.bsTimeline.$docNow=$mmNow.$docNow;
-            else debugger;
+            else throw new Error("timeline找到对应月份,但是没有当前日期$docNow");
             return that.bsTimeline.$docNow;
         }
         {# 设置class标记，并恢复上一个 #}
@@ -181,7 +192,11 @@
             }
         }
         that.bsTimeline.eUpdateTimeline=function(pos,isSync=false){
-            that.bsTimeline.funFindDateNow();
+            try{
+                that.bsTimeline.funFindDateNow();
+            }catch(e){
+                console.error(e);
+            }
             {# 日期变化，且用户操作产生的，才触发同步通知 #}
             that.bsTimeline.checkEvent(isSync);
         }
@@ -198,9 +213,39 @@
         //    console.log("时间轴scrollEnd停止");
         //    //that.dispatchEvent(new CustomEvent("BS_TIMELINE_SCROLL_END"));
         //})
-
+        {# 筛选内容，根据动画结束监听，重新计算当前月，并触发同步底条 #}
+        that.bsTimeline.filterMM=function(e){
+            let bsTimeline=e.detail.bsTimeline;
+            //that.bsTimeline.content.querySelectorAll(".container-mm").forEach($mm=>{
+            //    let $listDoc=$mm.querySelectorAll(".item."+bsTimeline);
+            //    if($listDoc.length==0){
+            //        $mm.classList.remove("show");
+            //    }else{
+            //        $mm.classList.add("show");
+            //        //$listDoc=$mm.querySelectorAll(".item");
+            //        //$listDoc.forEach($doc=>{
+            //        //    if($doc.classList.contains(dictTimeline[bsTimeline].substr(1)))$doc.classList.add("show");
+            //        //    else $doc.classList.remove("show");
+            //        //})
+            //    }
+            //})
+            {# 强制同步timelineBar==>循环等待直到that.bsTimeline初始化完成； that.bsTimeline初始化在BS_COVER_TIMELINE#}
+            function eTransitionEnd(e){
+                if(e.target.classList.contains("container-mm") || (e.target.classList.contains("item"))){
+                    if(that.bsTimeline.eUpdateTimeline)that.bsTimeline.eUpdateTimeline.call(that.bsTimeline,{},true);
+                    else throw new Error("bsTimeline.eUpdateTimeline未定义");                        
+                    console.info("时间轴::eNAV_AT动画结束:已触发timelineBar同步",e);
+                    {# that.bsTimeline.refresh(); #}
+                    $timelineContent.removeEventListener("transitionend",eTransitionEnd);
+                }
+            }
+            $timelineContent.addEventListener("transitionend", eTransitionEnd, {capture:false,once:false});
+        }
         {# 标记当前月 #}
         that.bsTimeline.funFindDateNow({x:0},true);
+        {# timeline加载完成 新加载的内容需要筛选；#}
+        this.addEventListener("BS_TIMELINE_DOM_LOADED",that.bsTimeline.filterMM)
+        this.addEventListener("NAV_AT",that.bsTimeline.filterMM);
     }
 
     this.eDateChange=function(e){
@@ -279,36 +324,12 @@
     //this.addEventListener("BS_COVER_LISTARTISTS",()=>{
     //    //that.bsTimeline.destroy();
     //})
-    this.addEventListener("NAV_AT",(e)=>{
-        let {bsMain,bsTimeline}=e.detail;
-        //导航切换到timeline时，筛选内容；
-        if(bsMain=="timeline" && bsTimeline){
-            $timelineContent.querySelectorAll(".container-mm").forEach($mm=>{
-                let $listDoc=$mm.querySelectorAll(".item."+bsTimeline);
-                if($listDoc.length==0){
-                    $mm.classList.remove("show");
-                }else{
-                    $mm.classList.add("show");
-                    //$listDoc=$mm.querySelectorAll(".item");
-                    //$listDoc.forEach($doc=>{
-                    //    if($doc.classList.contains(dictTimeline[bsTimeline].substr(1)))$doc.classList.add("show");
-                    //    else $doc.classList.remove("show");
-                    //})
-                }
-                
-            })
-            {# 强制同步timelineBar==>循环等待直到that.bsTimeline初始化完成； that.bsTimeline初始化在BS_COVER_TIMELINE#}
-            function eTransitionEnd(e){
-                if(e.target.classList.contains("container-mm") || (e.target.classList.contains("item"))){
-                    if(that.bsTimeline.eUpdateTimeline)that.bsTimeline.eUpdateTimeline.call(that.bsTimeline,{},true);
-                    else throw new Error("bsTimeline.eUpdateTimeline未定义");                        
-                    console.info("时间轴::eNAV_AT动画结束:已触发timelineBar同步",e)
-                    $timelineContent.removeEventListener("transitionend",eTransitionEnd);
-            }
-            }
-            $timelineContent.addEventListener("transitionend", eTransitionEnd, {capture:false,once:false});
-        }else if(!bsTimeline && bsMain=="timeline")throw new Error("缺少bsTimeline参数(二级栏目未定义)");
-    })
+    //this.addEventListener("NAV_AT",(e)=>{  {# 这个版本需要 e.detail.bsTimeline #}
+    //    let {bsMain,bsTimeline}=e.detail;
+    //    //导航切换到timeline时，筛选内容；
+    //    if(bsMain=="timeline" && bsTimeline)that.bsTimeline.filterMM(e);
+    //    else if(!bsTimeline && bsMain=="timeline")throw new Error("缺少bsTimeline参数(二级栏目未定义)");
+    //})    
 
     //var mutationObserver = new MutationObserver(function (mutations) {
     //    let status=window.getComputedStyle($timelineWrapper).getPropertyValue('display');

@@ -19,42 +19,19 @@
         {# <div class="container-mm end d-flex flex-column"></div> #}
         <div class="loading"></div>
     </div>
-    {# {% include "./pagination.html" %} #}
     {% include '../js/timeline.html' %}
-    <script>
-        {# 页面跳转 #}
-        this.addEventListener("NAV_TO",(e)=>{
-            let vm=this["vm-"+"{{infoPagination.page}}"];
-            let {objNew,objOld}=e.detail;
-            {# objNew.bsMain=="artists"和timeline无关，不响应;否则会造成监听两次 #}
-            if(objNew.bsMain=="artists")return;
-            {# 栏目alias,后台据此读取不同栏目 #}
-            vm.namePage=e.detail.objNew.bsTimeline;
-            {# vm加载数据 #}
-            //vm.getMoreNews().then(res=>{
-            //});
-            function eMainToTimelineFinal(e){
-                {# bsTimeline移动到开始 #}
-                {# if(that.bsTimeline.scrollTo)that.bsTimeline.scrollTo(0,0,1000); #}
-                {# 完成切换时，更新导航 #}
-                window.dispatchEvent(new CustomEvent("NAV_AT", { detail:objNew, }));
-            }            
-            that.addEventListener("BS_COVER_TIMELINE_FINAL", eMainToTimelineFinal,{once:true});
-            {# 改变class,控制显示隐藏 #}
-            $timelineContent.classList.value = objNew.bsTimeline;
-        })
-    </script>
     <script>
         {# 内容显示控制 #}
         this["vm-"+"{{infoPagination.page}}"] = this["vm-"+"{{infoPagination.page}}"] || avalon.define({
             $id: $timelineContent,
+            $loading: $timelineContent.querySelector(".loading"),
             cateId:"{{infoPagination.cateInfo._id}}",
             namePage:that.header.strAliasNav,//"{{infoPagination.page}}",
             urlApi:"{{infoPagination.api}}",
             appendDocumentList: [],
-            //vmPageNation:this["vm-pagenation-"+"{{infoPagination.page}}"] || {},
             yearCurrent:{{infoPagination.pageInfo.yearCurrent}},
             yearTotal:{{infoPagination.pageInfo.yearTotal}},
+            isLoading:false,
             {# 初始化数据 #}
             init:async function(){
                 return this.getMoreNews().then(res=>{
@@ -62,72 +39,115 @@
                 });
             },
             getMoreNews: function () {
-                let vm=this;
+                if(this.isLoading)return Promise.resolve({msg:"loading",isEnd:this.yearTotal<=this.yearCurrent,current:this.yearCurrent});;
                 let next = ( this.yearCurrent > this.yearTotal ) ? this.yearCurrent - 1 : false;
-                return new Promise((resolve, reject) => {
-                    if(next){
+                if(!next){
+                    that.removeEventListener("BS_MAIN_CONTENT_END",this.getMoreNews);
+                    $timelineContent.dataset["strNoticeEnd"] = "没有更多了";
+                    return Promise.resolve({msg:"succ",isEnd:this.yearTotal<=this.yearCurrent});
+                }else{
+                    let vm=this;
+                    that.removeEventListener("BS_MAIN_CONTENT_END",vm.getMoreNews);
+                    return new Promise((resolve, reject) => {
                         //that.bsTimeline.content.setAttribute("data-str-notice-end", "没有更多了");
                         //that.bsTimeline.content.dataset["strNoticeEnd"] = "就这个了";
-
-
+                        vm.isLoading=true;
+                        $timelineContent.dataset["strNoticeEnd"] = "正在加载";
                         fetch(vm.urlApi+'?type=dom' + (!document.getElementById("scriptTimeline")?'|script':'') + '&typeId=' + vm.cateId + '&cateName='+ vm.namePage +'&yearCurrent=' + next)
                         .then(function(data){
                             return data.text();
                         }).then(function (data) {
+                            vm.isLoading=false;
+                            that.addEventListener("BS_MAIN_CONTENT_END",vm.getMoreNews);
                             // 在这个then里面我们能拿到最终的数据
                             let objData=JSON.parse(data);
                             if(objData.status==200){
-                                {# 按年检索 #}
-                                vm.yearCurrent=objData.data.pageInfo.yearCurrent;
-                                vm.yearTotal=objData.data.pageInfo.yearTotal;
-                                
-                                //if(vm.vmPageNation){
-                                //    vm.vmPageNation.current=vm.current;
-                                //    vm.vmPageNation.totalPage=vm.totalPage;
-                                //}
-                                let strToAppend=objData.data.dom;
-                                let domToAppend = document.createRange().createContextualFragment(strToAppend);
-                                {# 插入点 ,用querySelectorAll 防止slider复制后内容缺失#}
-                                {# let listDomContainerOfList=document.querySelectorAll("[dr-dom-append="+vm.$id+"]"); #}
-                                {# listDomContainerOfList.forEach(domList=>{domList.append(domToAppend.cloneNode(true))}); #}
+                                $timelineContent.dataset["strNoticeEnd"] = "加载完成";
+                                try{
+                                    {# 按年检索 #}
+                                    vm.yearCurrent=objData.data.pageInfo.yearCurrent;
+                                    //vm.yearTotal=objData.data.pageInfo.yearTotal;
+                                    
+                                    let domToAppend = document.createRange().createContextualFragment(objData.data.dom);
 
-                                {# 第一次初始化时,会返回domContainer == $timelineWrapper.script #}
-                                if(!document.getElementById("scriptTimeline") && objData.data.domContainer){
-                                    document.getElementById("timelineWrapper").append(document.createRange().createContextualFragment(objData.data.domContainer));
+                                    {# 第一次初始化时,会返回domContainer == $timelineWrapper.script #}
+                                    //if(!document.getElementById("scriptTimeline") && objData.data.domContainer){
+                                    //    document.getElementById("timelineWrapper").append(document.createRange().createContextualFragment(objData.data.domContainer));
+                                    //}
+
+                                    {# 清空并重新加载 #}
+                                    //if(next==1){
+                                    //    {# vm.$id.replaceChildren(...(vm.$id.querySelectorAll(".container-mm")),domToAppend.cloneNode(true)); #}
+                                    //    {# 初始化数组，销毁bsMM #}
+                                    //    //that.$listBSMM.forEach($bs=>{
+                                    //    //    $bs.objBS.destroy();
+                                    //    //    $bs.parentElement.remove();
+                                    //    //});
+                                    //    //that.$listBSMM=[];
+                                    //    vm.$id.append(domToAppend.cloneNode(true));{# 插入列内容#}
+                                    //    {# 第一次需要初始化 #}
+                                    //    //that.resetSlideMain();
+                                    //    //that.dispatchEvent(new CustomEvent("BS_TIMELINE_DOM_READY", { detail:{  } }))
+                                    //}else vm.$id.append(domToAppend.cloneNode(true));{# 插入列内容#}
+                                    //vm.$id.append(domToAppend.cloneNode(true));{# 插入列内容#}
+                                    vm.$loading.before(domToAppend.cloneNode(true));
+
+                                    //let id = window.requestAnimationFrame(()=>{
+                                    //    window.cancelAnimationFrame(id);
+                                    //});                                    
+                                    {# 触发事件更新懒加载图片 #}
+                                    console.debug("getMoreNews=>appendDOM:done",vm.yearCurrent,vm.yearTotal,vm.namePage);
+                                    objData.bsTimeline=vm.namePage;
+                                    that.dispatchEvent(new CustomEvent("BS_TIMELINE_DOM_LOADED", {
+                                        detail:objData
+                                    }))
+                                    resolve({msg:"succ",isEnd:vm.yearTotal<=vm.yearCurrent});
+                                }catch(e){
+                                    $timelineContent.dataset["strNoticeEnd"] = "加载错误";
+                                    throw new Error("timeline加载更多内容,通信正常，返回结果错误");
+                                    reject({msg:"timeline加载更多内容,通信正常，返回结果错误 ", objData});
                                 }
-
-                                {# 清空并重新加载 #}
-                                //if(next==1){
-                                //    {# vm.$id.replaceChildren(...(vm.$id.querySelectorAll(".container-mm")),domToAppend.cloneNode(true)); #}
-                                //    {# 初始化数组，销毁bsMM #}
-                                //    //that.$listBSMM.forEach($bs=>{
-                                //    //    $bs.objBS.destroy();
-                                //    //    $bs.parentElement.remove();
-                                //    //});
-                                //    //that.$listBSMM=[];
-                                //    vm.$id.append(domToAppend.cloneNode(true));{# 插入列内容#}
-                                //    {# 第一次需要初始化 #}
-                                //    //that.resetSlideMain();
-                                //    //that.dispatchEvent(new CustomEvent("BS_TIMELINE_DOM_READY", { detail:{  } }))
-                                //}else vm.$id.append(domToAppend.cloneNode(true));{# 插入列内容#}
-                                vm.$id.append(domToAppend.cloneNode(true));{# 插入列内容#}
-                                {# 触发事件更新懒加载图片 #}
-                                that.dispatchEvent(new CustomEvent("BS_TIMELINE_DOM_LOADED", {
-                                    detail:objData
-                                }))
-                                resolve({msg:"succ",isEnd:vm.totalPage<=vm.current});
                             }else{
+                                debugger
                                 reject({msg:"服务器返回错误 ", objData});
+                                throw new Error("timeline加载更多内容，服务器通信错误："+objData.status);
                             }
                         })
-                                            
-                    } else {
-                        resolve({msg:"succ",isEnd:vm.totalPage<=vm.current})
-                    }
-                });                
+                    }).then(res=>{
+                        return Promise.resolve(res);
+                    }).catch(err=>{
+                        debugger
+                        return Promise.reject(err);
+                    });               
+                }  
             }
         })
         {# that["vm-"+"{{infoPagination.page}}"].init().then(console.info); #}
         {# window.addEventListener('DOMContentLoaded', ()=>{that["vm-"+"{{infoPagination.page}}"].init().then(res=>console.warn);}, false); #}
+    </script>
+    <script>
+        {# 页面跳转 #}
+        function eNavToTimeline(e){
+            let {objNew,objOld}=e.detail;
+            {# 完成切换时，更新导航 #}
+            window.dispatchEvent(new CustomEvent("NAV_AT", { detail:objNew, }));
+            {# 改变class,控制显示隐藏 #}
+            $timelineContent.classList.value = objNew.bsTimeline;
+        }
+        this.addEventListener("NAV_TO",(e)=>{
+            let vm=this["vm-"+"{{infoPagination.page}}"];
+            let {objNew,objOld}=e.detail;
+            {# objNew.bsMain=="artists"和timeline无关，恢复timeline的栏目筛选;否则会造成监听两次 #}
+            if(objNew.bsMain=="artists"){
+                $timelineContent.classList.value="";
+                that.removeEventListener("NAV_TO_TIMELINE", eNavToTimeline);
+                return;
+            }
+            {# 栏目alias,后台据此读取不同栏目 #}
+            vm.namePage=objNew.bsTimeline;
+            that.addEventListener("NAV_TO_TIMELINE", eNavToTimeline,{once:true});
+        });
+        {# timeline滚动到倒数第二年触发加载更多 #}
+        this.addEventListener("BS_MAIN_CONTENT_END",this["vm-"+"{{infoPagination.page}}"].getMoreNews);
     </script>
 </div>
