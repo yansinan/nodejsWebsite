@@ -42,7 +42,7 @@
                 {# 乐队名列表 #}
                 {# <h1 class="display-1">RUBY</h1> #}
                 <div class="artist artist-md d-flex align-items-center ">
-                    <button class="name btn btn-link" data-dr-url="/artist/{{artist.id}}.html" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight">
+                    <button class="name btn btn-link" data-dr-url="/artist___{{artist.id}}.html" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight">
                         {{artist.name}}
                     </button>
                     <button 
@@ -74,8 +74,6 @@
     </div>
     <script>
         let $offcanvasDetailAll=document.getElementById("offcanvasDetailAll");
-        let $offcanvasLeft=document.getElementById("offcanvasLeft");
-        let $offcanvasRight=document.getElementById("offcanvasRight");
         let $offcanvasDetail=document.getElementById("offcanvasDetail");
         let aOffcanvasBody = avalon.define({
             $id: 'offcanvasDetail',
@@ -83,9 +81,9 @@
             loadingState: false,
         })
         this.addEventListener("OPEN_OFFCANVAS_DETAIL",function(e){
-            let url=e.detail.relatedTarget.attributes["data-dr-url"].value ||  "/about___";
+            let url=e.detail.apiDetail || e.detail.relatedTarget.attributes["data-dr-url"].value ||  "/about___";
             {# 如果是乐队列表详情 #}
-            if(url.indexOf("/artist/")!=-1){
+            if(url.indexOf("/artist___")!=-1){
                 $offcanvasDetailAll.classList.add("artistDetailColor");
             }else{
                 $offcanvasDetailAll.classList.remove("artistDetailColor");
@@ -115,17 +113,6 @@
         this.addEventListener("CLOSE_OFFCANVAS_DETAIL",(e)=>{
 
         });
-        
-        $offcanvasRight.addEventListener('show.bs.offcanvas', function (e) {
-            let bsOffcanvasLeft=bootstrap.Offcanvas.getOrCreateInstance($offcanvasLeft);
-            bsOffcanvasLeft.show();
-            that.dispatchEvent(new CustomEvent("OPEN_OFFCANVAS_DETAIL", {detail:e}))
-        })
-        $offcanvasRight.addEventListener('hide.bs.offcanvas', function (e) {
-            let bsOffcanvasLeft=bootstrap.Offcanvas.getOrCreateInstance($offcanvasLeft);
-            bsOffcanvasLeft.hide();
-            that.dispatchEvent(new CustomEvent("CLOSE_OFFCANVAS_DETAIL",{detail:e}));
-        })
 
     </script>
 </div>
