@@ -81,6 +81,10 @@ module.exports =app=>{
         schema.virtual('listArtists').get(function () {
             return this.listRefs;
         });
+        schema.virtual('nameArtists').get(function () {
+            let listName=this.listRefs.map(v=>(v.name));
+            return listName.join();
+        });
         let model=app.model.Record || Doc.discriminator("Record", schema);
     
         return model

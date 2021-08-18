@@ -4,7 +4,7 @@
         <div class="container-mm d-flex flex-column" dr-debug="{{month|trim}}">
             {# 月份行 手机隐藏#}
             <div class="month d-md-flex d-none">
-                {{colItems[0].dateMM}}{{colItems[0].dateYYYYM}}
+                {{colItems[0].dateMM}}
             </div>
             <div id="bsWrapperMM{{month|trim}}" class="wapper-mm wapper-mm-md" style="white-space:normal;" dr-bs-wrapper="mm-{{month|trim}}" ms-controller="{{month|trim}}">
                 {# 纵向滚动组件 #}
@@ -16,16 +16,16 @@
                     {% for item in colItems %}
                     <div class="item {{item.docAlias if item.docAlias else 'Content'}}" dr-date-doc="{{item.dateFull}}">
                         {# 图 手机图 #}
-                        <div id="timelineTitleImg{{item._id}}" class="imgContainer col-6 ps-0 d-flex d-md-none">                        
+                        <div id="timelineTitleImg{{item._id}}" class="imgContainer">                        
                             <img data-src="{{item.sImg}}" alt="{{item.nameTimeline}}"  class="lazy img-fluid" dr-id-doc="img{{item._id}}"/>
                         </div>
 
                         {# 内容&标题预览 #}
-                        <div class="titleContainer col-6 col-md-12">
+                        <div class="titleContainer">
                             {# 日期 #}
                             {# <div class="col-auto date">{{item.dateTimeline}}</div> #}
                             {# 大标题 #}
-                            <p class="title">{{item.dateTimeline}}<br>{{item.nameTimeline}}</p>
+                            <p class="title">{{item.dateTimeline}}<br><span class="nameArtists">{{item.nameArtists}}<br></span>{{item.nameTimeline}}</p>
                             {# 标签 #}
                             <div class="tags">
                                 {{listTags(item.tags)}}
@@ -34,8 +34,8 @@
                                 {{listTags(item.listFormatTags)}}
                             </div>
                             {# 图 手机隐藏纵向图 #}
-                            <div id="timelineTitleImg{{item._id}}" class="imgContainer d-md-flex d-none">                        
-                                <img data-src="{{item.sImg}}" alt="{{item.nameTimeline}}"  class="lazy img-fluid d-md-flex d-none" dr-id-doc="img{{item._id}}"/>
+                            <div id="timelineTitleImg{{item._id}}" class="imgContainer">                        
+                                <img data-src="{{item.sImg}}" alt="{{item.nameTimeline}}"  class="lazy img-fluid" dr-id-doc="img{{item._id}}"/>
                             </div>
                         </div>
                     </div>

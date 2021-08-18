@@ -20,7 +20,7 @@ module.exports = app => {
 
     // 静态介绍入口
     router.get([
-        "/about___", 
+        //"/about___",
         "/about___.html",
         "/about___:typeId?",
         "/about___:typeId?.html",
