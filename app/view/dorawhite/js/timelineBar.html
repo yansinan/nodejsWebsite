@@ -235,11 +235,12 @@
             that.bsTimelineBarWrapper.enable();
             {# 触发事件 #}
             console.log("底条animater.end停止:修正后:",that.bsTimelineBarWrapper.$docNow.id,that.bsTimelineBarWrapper.calcPosX(that.bsTimelineBarWrapper.$docNow));//,that.bsTimelineBarWrapper.$dateTo.id
-            that.dispatchEvent(new CustomEvent("BS_TIMELINE_BAR_DATE_CHANGE_FINAL", { detail:{ strDateNow:strNowDate, } }))
+            {# that.dispatchEvent(new CustomEvent("BS_TIMELINE_BAR_DATE_CHANGE_FINAL", { detail:{ strDateNow:strNowDate, } })) #}
             that.bsTimelineBarWrapper.$dateTo=false;
         }else if(strNowDate){
             {# 手滑动动画完成 #}
             that.bsTimelineBarWrapper.enable();
+            console.log("底条animater.end停止:手滑:",that.bsTimelineBarWrapper.$docNow.id,that.bsTimelineBarWrapper.calcPosX(that.bsTimelineBarWrapper.$docNow));
             that.dispatchEvent(new CustomEvent("BS_TIMELINE_BAR_DATE_CHANGE_FINAL", { detail:{ strDateNow:strNowDate, } }))
         }
     }

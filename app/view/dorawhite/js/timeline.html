@@ -336,7 +336,7 @@
         let $mmTo=this.eDateChange(e);
         {# 滚动月份 #}{# 防止循环控制 #}
         if(!$mmTo.strDateNow || !e.detail.strDateNow)debugger;//DEBUG：没有$mmTo.$docNow计算过,$mmTo.strDateNow会返回false
-        if(!that.bsTimeline.isMobile && $mmTo.strDateNow != e.detail.strDateNow && !$mmTo.objBS.enabled){
+        if(!that.bsTimeline.isMobile && $mmTo.strDateNow != e.detail.strDateNow){
             let $docTo=$mmTo.querySelector("[dr-date-doc='" + e.detail.strDateNow + "']");
             if($mmTo.objBS && $docTo){
                 console.log("e:时间轴:"+e.type,"可以移动：纵向",$mmTo.idxMM+"."+that.bsTimeline.strDateNow,"==>",e.detail.strDateNow,"最终判断:");
