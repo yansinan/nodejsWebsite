@@ -36,11 +36,11 @@ class IndexController extends Controller {
         } = ctx.query;
         const dictService={
             news:service.timeline,//service.doc,
-            records:service.record,
-            artists:service.artist,
-            shows:service.show,
-            goods:false,//service.docs,
-            videos:service.video,
+            records:service.timeline,//service.record,
+            artists:service.timeline,//service.artist,
+            shows:service.timeline,//service.show,
+            goods:service.timeline,//false,//service.docs,
+            videos:service.timeline,//service.video,
         };
         let objData={
             docs:false,
