@@ -1,4 +1,7 @@
 #offcanvasDetailAll{
+    transition-property: background-color;
+    transition-duration: 1s;
+
     background: white;
     color: black;
     --offsetcanvas-padding-right:0.77rem;
@@ -190,11 +193,14 @@
 }
 
 .artistDetail .headEnd{
-    flex:0 0 5.667rem;
+    flex:0 0 3rem;
     border-bottom: 1px solid #FFFFFF;
     width: 100%;
 }
 @media (min-width: 768px) {
+    .artistDetail .headEnd{
+        flex:0 0 5.667rem;
+    }
     .artistDetail .album{
         flex:0 0 450px;
         height:450px;
@@ -231,7 +237,7 @@
 .artistDetail .records .list{
     width:100%;
     display:grid;
-    grid-template-columns:1fr 1fr;
+    grid-template-columns:1fr;
     /* # 三列，并三等分，用fr做单位，不会产生横向的滚动条 */
     /* #grid-template-columns:1fr 2fr 2fr; */
     /* # 三列，二三列各占五份中的两份 */
@@ -327,4 +333,10 @@
 }
 .artistDetail .news .list a:hover{
     text-decoration: underline;
+}
+
+@media (min-width: 768px) {
+    .artistDetail .records .list{
+        grid-template-columns:1fr 1fr;
+    }  
 }

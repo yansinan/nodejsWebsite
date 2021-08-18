@@ -19,9 +19,12 @@ module.exports = app => {
     router.get("/page/:current.html", controller.page.home.getDataForIndexPage);
 
     // 静态介绍入口
-    router.get("/about___", controller.page.detail.getDataAbout);
-    router.get("/about___:typeId?", controller.page.detail.getDataAbout);
-    router.get("/about___:typeId?.html", controller.page.detail.getDataAbout);
+    router.get([
+        "/about___", 
+        "/about___.html",
+        "/about___:typeId?",
+        "/about___:typeId?.html",
+    ],controller.page.detail.getDataAbout);
 
     // 内容详情入口
     router.get("/details/:id.html", controller.page.home.getDataForContentDetails);

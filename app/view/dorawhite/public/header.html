@@ -155,6 +155,8 @@
         set objNavTo(obj){
             if(!obj.detail)delete obj.detail;
             if(!obj.bsTimeline)delete obj.bsTimeline;
+            {# 更新前保存在header.objOld #}
+            this.objNavOld=Object.assign({},this.objNavTo);
             Object.assign(this._objNavTo,obj);
         },
         get objNavAt(){
@@ -248,12 +250,12 @@
             }else if(e.type=='show.bs.offcanvas' && e.relatedTarget){
                 //bs驱动，监听结果，更新objNavAt,更新地址栏，一次
                 that.addEventListener("OPEN_OFFCANVAS_DETAIL",function(eBS){
-                    let url=eBS.detail.relatedTarget.attributes["data-dr-url"].value ||  "/about___";
+                    let url=eBS.detail.relatedTarget.attributes["data-dr-url"].value ||  "/about___.html";
                     that.header.objNavAt={apiDetail:url};//objNavAt会保存在objNavTo
                 },{once:true});
             }
             bsOffcanvasLeft.show();
-            that.dispatchEvent(new CustomEvent("OPEN_OFFCANVAS_DETAIL", {detail}));          
+            that.dispatchEvent(new CustomEvent("OPEN_OFFCANVAS_DETAIL", {detail}));
         }else{ {# 没有detail.relatedTarget，也没有apiDetail 手动触发bs->show触发的事件 是不需要监听的 #}
             return;
         }
@@ -266,20 +268,28 @@
 
     {# 驱动页面切换：所有页内跳转统一按url例如："/timeline/records/xxxxx.html" #}
     this.goto=function(inURL){
-        inURL="/index"+inURL;
-        let listURL=inURL.split("/");
-        let obj={
-            bsMain:listURL[2] || "artists",
-            bsTimeline:listURL[3] || this.header.strAliasNav,// || this.header.funFindByURL().defaultUrl,
-            detail:listURL[listURL.length-1] || false,
+        {# 如果只传入/aaaaa___xxx.html为单独跳转detail #}
+        if(inURL.split("/").length>2 || (inURL.split("/").length==2 && inURL.indexOf(".html")==-1)){
+            inURL="/index"+inURL;
+            let listURL=inURL.split("/");
+            let bsMain=listURL[2] == "timeline" ? "timeline" : "artists";//不是timeline就是artists;
+            let detail = listURL[listURL.length-1] || "";
+            detail = detail.indexOf(".html") !=-1 ? detail : "";//没有.html则无效;
+            let obj={
+                bsMain,
+                bsTimeline:listURL[3] || this.header.strAliasNav,// || this.header.funFindByURL().defaultUrl,
+                detail,
+            }
+            this.header.objNavTo=obj;
+            this.dispatchEvent(new CustomEvent("NAV_TO", {
+                detail:{objNew:this.header.objNavTo,objOld:this.header.objNavOld},
+            }))
+        }else if(inURL.split("/").length==2 && inURL.indexOf(".html")!=-1){
+            this.header.objNavAt={apiDetail:inURL};            
+        }else{
+            debugger
+            throw new Error("goto(inURL)格式错误:"+inURL);
         }
-        
-        {# 更新前保存在header.objOld #}
-        this.header.objNavOld=this.header.objNavTo || obj;
-        this.header.objNavTo=obj;
-        this.dispatchEvent(new CustomEvent("NAV_TO", {
-            detail:{objNew:this.header.objNavTo,objOld:this.header.objNavOld},
-        }))
         {# 如果有详情，打开详情 #}
         this.toggleDetail(this.header.objNavTo);
     }
@@ -350,7 +360,7 @@
             <div class="navOffset navOffsetLeft navOffsetLeft-md d-flex"></div>
             {# logo&name #}
             <div class="navbar-brand">
-                <a class="d-flex" data-bs-toggle="offcanvas" data-dr-url="/about___" href="#offcanvasRight"><img class="img-fluid" src="{{site.logo}}" alt="{{site.title}}"/></a>
+                <a class="d-flex" data-bs-toggle="offcanvas" data-dr-url="/about___.html" href="#offcanvasRight"><img class="img-fluid" src="{{site.logo}}" alt="{{site.title}}"/></a>
             </div>
             {# 手机缩略菜单 #}
             {# 

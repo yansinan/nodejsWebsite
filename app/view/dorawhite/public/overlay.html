@@ -11,7 +11,7 @@
         <ul class=" flex-fill d-flex flex-column justify-content-start flex-wrap">
             {% for cate in navigation %} {% if cate.parentId == '0' %}
             <li class="menuItem menuItem-md text-nowrap">
-                <a class="" style="color: inherit" tabindex="-1" alt="{{site.altkey}}{{cate.name}}" href="javascript:void(0)" onclick="eBnNav('{{cate.defaultUrl}}')" name="{{cate.defaultUrl}}">{{cate.name}}NEWS</a>
+                <a class="" style="color: inherit" tabindex="-1" alt="{{site.altkey}}{{cate.name}}" onclick="eBnNav('{{cate.defaultUrl}}')" name="{{cate.defaultUrl}}" data-bs-toggle="offcanvas" href="#offcanvasRightMenu" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">{{cate.name}}NEWS</a>
             </li>
             {% endif %} {% endfor %}
         </ul>
@@ -42,7 +42,7 @@
                 {# 乐队名列表 #}
                 {# <h1 class="display-1">RUBY</h1> #}
                 <div class="artist artist-md d-flex align-items-center ">
-                    <button class="name btn btn-link" data-dr-url="/artist___{{artist.id}}.html" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight">
+                    <button class="name btn btn-link" data-dr-url="/artist___{{artist.id}}.html" data-bs-target="#offcanvasRight">
                         {{artist.name}}
                     </button>
                     <button 
@@ -57,6 +57,15 @@
                 {% endfor %}
             {% endfor %}
         </div>
+        <script>
+            let $listBnArtistOffCanvas=document.querySelectorAll("#offcanvasListArtists button.name");
+            function eBnArtist(e){
+                {# e.relatedTarget=e.currentTarget; #}
+                window.goto(e.currentTarget.dataset.drUrl);
+            }
+            $listBnArtistOffCanvas.forEach($bn=>{$bn.onclick=eBnArtist});
+
+        </script>
     </div>
     {# 详细内容页框架 #}
     <div id="offcanvasRight"  class="offcanvas offcanvas-end" tabindex="-1" aria-labelledby="offcanvasRightLabel">
@@ -81,7 +90,7 @@
             loadingState: false,
         })
         this.addEventListener("OPEN_OFFCANVAS_DETAIL",function(e){
-            let url=e.detail.apiDetail || e.detail.relatedTarget.attributes["data-dr-url"].value ||  "/about___";
+            let url=e.detail.apiDetail || e.detail.relatedTarget.attributes["data-dr-url"].value ||  "/about___.html";
             {# 如果是乐队列表详情 #}
             if(url.indexOf("/artist___")!=-1){
                 $offcanvasDetailAll.classList.add("artistDetailColor");
@@ -89,21 +98,19 @@
                 $offcanvasDetailAll.classList.remove("artistDetailColor");
             }
             console.info("event:详情即将打开：",url);
-            let cateId="8hIKx4Ulz";
-            
+            {# let cateId="8hIKx4Ulz"; #}
             aOffcanvasBody.loadingState=true;
             $.ajax({
                 type: 'GET',
-                url,//url: '/about___' + cateId,
+                url,//url: '/about___' + cateId + '.html',
                 success: function (res) {
-                    debugger
                     if (res.status == 200) {
                         aOffcanvasBody.loadingState = false;
                         aOffcanvasBody.dom = res.data.comments || res.data;
                     }
                 },
                 error: function (d) {
-                    console.error('error:', d);
+                    console.error('error:', url,d);
                     debugger;
                     aOffcanvasBody.loadingState = false;
                     aOffcanvasBody.dom = "网络故障，内容获取失败："+d.toString();
@@ -119,7 +126,7 @@
 
 <div class="foot-float back-to-top" id="bnRubyEyes">
     {# <img class="btnRubyEyes glyphicon glyphicon-chevron-up" src=""></i> #}
-    <div class="btnRubyEyes btnRubyEyes-md glyphicon glyphicon-chevron-up" data-bs-toggle="offcanvas" href="#offcanvasRight" data-dr-url="/about___"></div>
+    <div class="btnRubyEyes btnRubyEyes-md glyphicon glyphicon-chevron-up" data-bs-toggle="offcanvas" href="#offcanvasRight" data-dr-url="/about___.html"></div>
 
 </div>
 
