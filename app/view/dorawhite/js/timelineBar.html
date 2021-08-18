@@ -59,15 +59,38 @@
 
     {# 找到当前日期 #}
     this.bsTimelineBarWrapper.findDateNow=function(position){
-        let $listDocs=$bsTimelineBarWrapper.querySelectorAll(".b-d");
-        let $docNow=Array.from($listDocs).find(($doc,idx,$list)=>{
-            //return $doc.x.baseVal.value >= -position.x -1 ;// + ( that.$footer.isRotated ? $bsTimelineBarWrapper.getBoundingClientRect().top : $bsTimelineBarWrapper.getBoundingClientRect().left);//动画导致对齐存在误差，保留1像素
-            //let isFind=$doc.getBoundingClientRect().left >= $bsTimelineBarWrapper.querySelector(".bsTimelineBarContent .left").clientWidth -1;
-            let isFind=$doc.getBoundingClientRect().left >= that.$footer.paddingNow - 1;
-            if(that.$footer.isRotated)isFind=$doc.getBoundingClientRect().top >= that.$footer.paddingNow - 1;
+        let $listYears=$bsTimelineBarWrapper.querySelectorAll(".svgTimelineBar");
+        let $docNow=false;
+        let idxYearNow=Array.from($listYears).findIndex(($year,idx,$list)=>{
+            let isFind=$year.getBoundingClientRect().right >= that.$footer.paddingNow - 1;
+            if(that.$footer.isRotated)isFind=$year.getBoundingClientRect().bottom >= that.$footer.paddingNow - 1;
+            if(isFind){
+                let idxSeason=Array.from($year.querySelectorAll(".groupSeason")).findIndex(($s)=>{
+                    let isFindSeason=$s.getBoundingClientRect().right >= that.$footer.paddingNow - 1;
+                    if(that.$footer.isRotated)isFindSeason=$s.getBoundingClientRect().bottom >= that.$footer.paddingNow - 1;
+                    if(isFindSeason){
+                        let $listDocs=$s.querySelectorAll(".b-d");
+                        let $docFind=Array.from($listDocs).find(($doc,idx,$list)=>{
+                            //return $doc.x.baseVal.value >= -position.x -1 ;// + ( that.$footer.isRotated ? $bsTimelineBarWrapper.getBoundingClientRect().top : $bsTimelineBarWrapper.getBoundingClientRect().left);//动画导致对齐存在误差，保留1像素
+                            //let isFind=$doc.getBoundingClientRect().left >= $bsTimelineBarWrapper.querySelector(".bsTimelineBarContent .left").clientWidth -1;
+                            let isFind=$doc.getBoundingClientRect().left >= that.$footer.paddingNow - 1;
+                            if(that.$footer.isRotated)isFind=$doc.getBoundingClientRect().top >= that.$footer.paddingNow - 1;
+                            return isFind;
+                        })
+                        if($docFind)$docNow=$docFind;
+                        isFindSeason = $docFind ? true :false;
+                    }
+                    return isFindSeason;
+                })
+                isFind = idxSeason != -1? true : false;
+            }
             return isFind;
         })
-        if(!$docNow)throw new Error("底条:没有找到$docNow");
+        let $yearNow=$listYears[idxYearNow];
+        if(!$yearNow)throw new Error("底条:没有找到$yearNow");
+
+        if(!$docNow)throw new Error("底条:没有找到$docNow"+$listYears[idxYearNow].id);
+        
         return $docNow;
     }
     {# 设置class标记，并恢复上一个 #}

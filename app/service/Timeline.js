@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-08-04 05:26:38 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-18 08:36:36
+ * @Last Modified time: 2021-08-18 15:17:03
  */
 'use strict';
 const { debug } = require('console');
@@ -110,7 +110,7 @@ class ServicePlugin extends Service {
         // let listDateAll=[];
         let listIdxYears=[];
         let listIdxSeasons=[];
-        for(let i=0 ;i<cntDays;i++){
+        for(let i=0 ;i<=cntDays;i++){
             // let dateTmp=new Date(dateFirst);
             // dateTmp.setTime(dateTmp.setDate(dateTmp.getDate()-i));
             let dateTmp=moment(dateFirst).subtract(i, 'days').toDate();
@@ -154,38 +154,42 @@ class ServicePlugin extends Service {
                 });
             }
             
-            let m=dateTmp.getMonth()+1;
-
-            let isSeasonEnd=moment(dateTmp).startOf('quarter').isSame(moment(dateTmp),"date");
+            let isSeasonEnd=moment(dateTmp).endOf('quarter').isSame(moment(dateTmp),"date");
+            let isSeasonStart=moment(dateTmp).startOf('quarter').isSame(moment(dateTmp),"date");
             // if(m%3==0 && dateTmp.getDate()==lastDateInMonth && m!=12){
             if(isSeasonEnd){
-                listIdxSeasons.push({x:posX,strTitle:m+"月"});
+                
+            }
+            if(isSeasonStart){
+                listIdxSeasons.push({
+                    x:( (moment(dateFirst).diff(moment(dateTmp).endOf('quarter'),"days") * 100/cntDays)).toFixed(3) ,
+                    strTitle:moment(dateTmp).endOf('quarter').format("M月"),
+                    listIdxDocs:listTmpYearDocs.concat(),
+                });
+                listTmpYearDocs=[];
             }
             let isNewYear=moment(dateTmp).isSame(moment(dateTmp).startOf("year"),"date");
             // 如果最后日期在元旦之前，补加当年元旦
-            let isLastDateBeforeNewYear=(i >= cntDays-1) && moment(dateTmp).isAfter(moment(dateTmp).startOf("year"),"date");
+            let isLastDateBeforeNewYear=(i >= cntDays) && moment(dateTmp).isAfter(moment(dateTmp).startOf("year"),"date");
             if(isNewYear || isLastDateBeforeNewYear){
+                
                 let objDetailYear={
                     x:posX,
                     "width-year":listIdxYears.length==0?posX:posX-listIdxYears[listIdxYears.length-1].x,
                     strTitle:dateTmp.getFullYear(),
-                    listIdxDocs:listTmpYearDocs.concat(),
+                    // listIdxDocs:listTmpYearDocs.concat(),
+                    listIdxDocs:(listIdxSeasons.map(s=>(s.listIdxDocs))).flat(2),
+                    listIdxSeasons,
                 };
-                //listIdxSeasons.push(objDetailYear);
                 listIdxYears.push(objDetailYear);
-                // 添加到日期按年分组
-                // listIdxDaysGroup.findIndex((idx,v)=>{
-                    // if(v.year==dateTmp.getFullYear()+1){
-                        // listIdxDaysGroup[idx].objYear=objDetailYear;
-                    // }
-                // })
-                listTmpYearDocs=[];
+
+                // listTmpYearDocs=[];
                 
             }
         }
         objTimeline={
             //listIdxDays,
-            listIdxSeasons,
+            // listIdxSeasons,
             listIdxYears,
             //dateFirst,
             //dateLast,
@@ -281,7 +285,7 @@ class ServicePlugin extends Service {
         //if(yearCurrent && listDocs[0] ){
         //    pageInfo.yearNewest=parseInt(moment(listDocs[0].date).format("YYYY"));
         //}
-        if(!yearCurrent)pageInfo.yearNewest=parseInt(strYearCurrent);
+        if(!yearCurrent)pageInfo.yearNewest=parseInt(moment(listYear[0]).format("YYYY"));
         console.log(listYear,pageInfo)
         return {pageInfo,listDateYear,listDocs};
     }
