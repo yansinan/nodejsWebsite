@@ -266,12 +266,19 @@
             //    }
             //})
             {# 强制同步timelineBar==>循环等待直到that.bsTimeline初始化完成； that.bsTimeline初始化在BS_COVER_TIMELINE#}
-            function eTransitionEnd(e){
-                if(e.target.classList.contains("container-mm") || (e.target.classList.contains("item"))){
-                    if(that.bsTimeline.eUpdateTimeline)that.bsTimeline.eUpdateTimeline.call(that.bsTimeline,{},true);
-                    else throw new Error("bsTimeline.eUpdateTimeline未定义");                        
-                    console.info("时间轴::eNAV_AT动画结束:已触发timelineBar同步:e.target.classList:",e.target.classList.value);
-                    {# that.bsTimeline.refresh(); #}
+            function eTransitionEnd(eTransition){
+                if(eTransition.target.classList.contains("container-mm") || (eTransition.target.classList.contains("item"))){
+                    //if(that.bsTimeline.eUpdateTimeline)that.bsTimeline.eUpdateTimeline.call(that.bsTimeline,{},true);
+                    //else throw new Error("bsTimeline.eUpdateTimeline未定义");
+                    if(e.type=="NAV_AT"){
+                        that.bsTimeline.scrollTo(1,1,500);
+                        that.bsTimeline.scroller.animater.hooks.once('end', () => {
+                            {# 更新lazyLoad , 有可能筛选后没触发scroll？ #}
+                            that.bsTimeline.$listMMNow
+                            console.log("时间轴animater.end停止:一次性更新lazyLoad");
+                        })
+                    }
+                    console.info("时间轴::eNAV_AT动画结束:已触发timelineBar同步:eTransition.target.classList:",eTransition.target.classList.value);
                     $timelineContent.removeEventListener("transitionend",eTransitionEnd);
                 }
             }
