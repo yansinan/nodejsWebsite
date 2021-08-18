@@ -4,23 +4,23 @@
 <head>
     {# <meta name='viewport' content='initial-scale=1, viewport-fit=cover'> #}
     {% header adaptor="ie" %}
-    {# <script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.4.0/dist/lazyload.min.js"></script>   #}
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.4.0/dist/lazyload.min.js"></script>  
     <script>
-        // Set the options globally
-        // to make LazyLoad self-initialize
-        window.lazyLoadOptions = {
-            threshold:1500,
-            {# use_native: true #}
-        };
-        // Listen to the initialization event
-        // and get the instance of LazyLoad
-        window.addEventListener("LazyLoad::Initialized",(event)=>{
-                window.lazyLoadInstance = event.detail.instance;
-        },false);
+        {# // Set the options globally to make LazyLoad self-initialize #}
+        //window.lazyLoadOptions = {
+        //    threshold:1500,
+        //    cancel_on_exit:false,
+        //    {# use_native: true #}
+        //};
+        //window.lazyLoadInstance = new LazyLoad(window.lazyLoadOptions);
+        {# // Listen to the initialization event and get the instance of LazyLoad #}
+        //window.addEventListener("LazyLoad::Initialized",(event)=>{
+        //        window.lazyLoadInstance = event.detail.instance;
+        //},false);
         {# timeline更新了内容，图片需要懒加载 #}
-        this.addEventListener("BS_TIMELINE_DOM_LOADED",(e)=>{
-            if(window.lazyLoadInstance)window.lazyLoadInstance.update();
-        })
+        //this.addEventListener("BS_TIMELINE_DOM_LOADED",(e)=>{
+        //    //if(window.lazyLoadInstance)window.lazyLoadInstance.update();
+        //})
     </script>
     <!-- 引入组件库 -->
     <!-- Production version -->
@@ -194,7 +194,7 @@
         
 
     {% endblock %}
-    <script async src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.4.0/dist/lazyload.min.js"></script>
+    {# <script async src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.4.0/dist/lazyload.min.js"></script> #}
 </body>
 
 </html>

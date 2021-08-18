@@ -1,7 +1,7 @@
 {# 时间轴列 #}
 {% from "./compListTags.html" import listTags %}
         {% for month, colItems in posts|groupby("dateYYYYM") %}
-        <div class="container-mm d-flex flex-column" dr-debug="{{month|trim}}">
+        <div class="container-mm d-flex flex-column" data-mm="{{colItems[0].dateYYYYM|trim}}">
             {# 月份行 手机隐藏#}
             <div class="month d-md-flex d-none">
                 {{colItems[0].dateMM}}
@@ -35,7 +35,7 @@
                             </div>
                             {# 图 手机隐藏纵向图 #}
                             <div id="timelineTitleImg{{item._id}}" class="imgContainer">                        
-                                <img data-src="{{item.sImg}}" alt="{{item.nameTimeline}}"  class="lazy img-fluid" dr-id-doc="img{{item._id}}"/>
+                                <img data-src="{{item.sImg}}" src="/static/upload/images/defaultlogo.png" width="100%" height="100%" alt="{{item.nameTimeline}}"  class="lazy img-fluid" dr-id-doc="img{{item._id}}"/>
                             </div>
                         </div>
                     </div>
