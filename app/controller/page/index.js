@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-08-08 06:31:51 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-13 02:04:04
+ * @Last Modified time: 2021-08-19 04:24:28
  */
 const Controller = require('egg').Controller;
 const _ = require('lodash');
@@ -38,10 +38,6 @@ class IndexController extends Controller {
         } = await ctx.service.timeline.find({isRandom:true});//await ctx.helper.reqJsonData('timeline/getList', payload);
         // debugger;
         pageData.pageInfo = pageInfo;
-        listDateYear.forEach(objTimeline=>{
-            // 删除不需要的数据
-            delete objTimeline.listDateAll;
-        })
         pageData.listDateYear=listDateYear;
         // 时间轴内容
         pageData.posts=docs;

@@ -1,3 +1,9 @@
+/*
+ * @Author: dr 
+ * @Date: 2019/11/10 
+ * @Last Modified by: dr
+ * @Last Modified time: 2021-08-19 04:25:38
+ */
 /**
  * Created by Dr on 2019/11/10.
  * 文案类,新闻资讯用
@@ -150,10 +156,10 @@ module.exports =app=>{
         //     return v;
         // });
         schema.path('date').get(function (v) {            
-            let res=((this.listDateDur && this.listDateDur[0])?this.listDateDur[0]:false) || v;
+            let res=((this.listDateDur && this.listDateDur[0])?this.listDateDur[0]:false) || v;// Doc.date始终是默认值，this.date会递归出错,v是this.date值,
             return res;
         }).set(function (v) {
-            let res=((this.listDateDur && this.listDateDur[0])?this.listDateDur[0]:false) || v;
+            let res=((this.listDateDur && this.listDateDur[0])?this.listDateDur[0]:false) || v;//v有,是传入值
             return res;
         });
 

@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-08-04 05:26:38 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-19 00:36:37
+ * @Last Modified time: 2021-08-19 04:26:27
  */
 'use strict';
 const { debug } = require('console');
@@ -107,7 +107,6 @@ class ServicePlugin extends Service {
         // let listIdxDaysGroup=[];
         // let lastYear=dateFirst.getFullYear();
         // let listIdxDays=[];
-        // let listDateAll=[];
         let listIdxYears=[];
         let listIdxSeasons=[];
         for(let i=0 ;i<=cntDays;i++){
@@ -129,7 +128,6 @@ class ServicePlugin extends Service {
                         posX=Math.abs((cntDays*100/cntDaysFullYear)-docFind.percentDateOfYear).toFixed(3) ;
                         let strDate=moment(docFind.date).format("YYYY-MM-DD");
                         // listIdxDays.push(posX);
-                        // listDateAll.push(strDate);
                         listTmpYearDocs.push({
                             posX,
                             date:strDate,
@@ -144,7 +142,6 @@ class ServicePlugin extends Service {
                 // let date=timeLast-Math.floor(Math.random()*1000*60*60*24*diffDays);
                 let strDate=moment(dateTmp).format("YYYY-MM-DD");//moment(dateTmp).subtract(Math.floor((Math.random())*diffDays),"days").toDate();
                 // listIdxDays.push(posX);
-                // listDateAll.push(strDate);
                 timeLast=dateTmp.getTime();
                 //// 添加到年份组
                 //let nowYear=date.getFullYear();
@@ -205,7 +202,6 @@ class ServicePlugin extends Service {
             //dateLast,
             //cntDays,
             widthPercent:cntDays/cntDaysFullYear,//不满一年的情况下，天数占365的百分比。//(100/listIdxDays.length).toFixed(1),
-            //listDateAll,
         }
         return objTimeline;
     }
