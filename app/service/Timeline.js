@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-08-04 05:26:38 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-18 15:17:03
+ * @Last Modified time: 2021-08-19 00:36:37
  */
 'use strict';
 const { debug } = require('console');
@@ -117,18 +117,28 @@ class ServicePlugin extends Service {
             let posX=(i*100/cntDays).toFixed(3);
             // let date=timeLast-Math.floor(Math.random()*1000*60*60*24*5);
             //如果当天文档有内容，必增加;
-            let idxFindDoc=listDocsOfYear.findIndex(doc=>(moment(doc.date).isAfter(dateTmp,"day")));
+            let idxFindDoc=listDocsOfYear.findIndex(doc=>(moment(doc.date).isSame(dateTmp,"day")));
+            
             if(idxFindDoc!=-1 && listTmpYearDocs.findIndex(date=>(date.date==moment(listDocsOfYear[idxFindDoc].date).format("YYYY-MM-DD")))==-1){//同时避免listTmpYearDocs日期重复。否则会导致反复加载同日期的所有doc
-                let docFind=listDocsOfYear.splice(idxFindDoc,1)[0];
-                posX=Math.abs((cntDays*100/cntDaysFullYear)-docFind.percentDateOfYear).toFixed(3) ;
-                let strDate=moment(docFind.date).format("YYYY-MM-DD");
-                // listIdxDays.push(posX);
-                // listDateAll.push(strDate);
-                listTmpYearDocs.push({
-                    posX,
-                    date:strDate,
-                    docAlias:docFind.docAlias,
-                });
+                //let listDocFind=[];
+                let cntFind=0;
+                listDocsOfYear.forEach((doc,idx)=>{
+                    if(moment(doc.date).isSame(dateTmp,"day")){
+                        let docFind=doc;
+                        //listDocFind.push(doc);
+                        posX=Math.abs((cntDays*100/cntDaysFullYear)-docFind.percentDateOfYear).toFixed(3) ;
+                        let strDate=moment(docFind.date).format("YYYY-MM-DD");
+                        // listIdxDays.push(posX);
+                        // listDateAll.push(strDate);
+                        listTmpYearDocs.push({
+                            posX,
+                            date:strDate,
+                            docAlias:docFind.docAlias,
+                        });
+                        cntFind++;
+                    }
+                })
+                listDocsOfYear.splice(idxFindDoc,cntFind)
                 
             }else if(Math.random()<(factor/cntDays) && timeLast>dateTmp){
                 // let date=timeLast-Math.floor(Math.random()*1000*60*60*24*diffDays);
@@ -164,7 +174,7 @@ class ServicePlugin extends Service {
                 listIdxSeasons.push({
                     x:( (moment(dateFirst).diff(moment(dateTmp).endOf('quarter'),"days") * 100/cntDays)).toFixed(3) ,
                     strTitle:moment(dateTmp).endOf('quarter').format("M月"),
-                    listIdxDocs:listTmpYearDocs.concat(),
+                    listIdxDocs:[...listTmpYearDocs],//listTmpYearDocs.concat(),
                 });
                 listTmpYearDocs=[];
             }
@@ -178,7 +188,7 @@ class ServicePlugin extends Service {
                     "width-year":listIdxYears.length==0?posX:posX-listIdxYears[listIdxYears.length-1].x,
                     strTitle:dateTmp.getFullYear(),
                     // listIdxDocs:listTmpYearDocs.concat(),
-                    listIdxDocs:(listIdxSeasons.map(s=>(s.listIdxDocs))).flat(2),
+                    //listIdxDocs:(listIdxSeasons.map(s=>(s.listIdxDocs))).flat(2),
                     listIdxSeasons,
                 };
                 listIdxYears.push(objDetailYear);
@@ -307,15 +317,28 @@ class ServicePlugin extends Service {
             let listTagsAll= (await this.service.uploadFiles.cacheJSON(`${(process.cwd() + '/app/public')}/cache/listTags.json`,{tar:this,fun:this.ctx.service.contentTag.find, params:['artist/getList', {pageSize: 0,isPaging:"0",}] },true,true)).docs;
     
             listDateYear.forEach(objTimeline=>{
-                for(let i=0 ; i<objTimeline.listIdxYears[0].listIdxDocs.length;i++){
-                    //时间轴日期
-                    let date=moment(objTimeline.listIdxYears[0].listIdxDocs[i].date);
-                    //按日期找出数据库文档
-                    let listDocsToAdd=objTimeline.listDocs.filter(doc=>(doc ? moment(doc.date).isSame(date,"day") : false ));
-                    //数据库没有则虚拟文档            
-                    if(listDocsToAdd.length==0)listDocsToAdd.push(this.getTestDoc(date,listImg,listTagsAll));
-                    docs.push(...listDocsToAdd);
-                }
+                objTimeline.listIdxYears.forEach(year=>{
+                    year.listIdxSeasons.forEach(season=>{
+                        season.listIdxDocs.forEach(d=>{
+                            //时间轴日期
+                            let date=moment(d.date);
+                            //按日期找出数据库文档
+                            let listDocsToAdd=objTimeline.listDocs.filter(doc=>(doc ? moment(doc.date).isSame(date,"day") : false ));
+                            //数据库没有则虚拟文档            
+                            if(listDocsToAdd.length==0)listDocsToAdd.push(this.getTestDoc(date,listImg,listTagsAll));
+                            docs.push(...listDocsToAdd);
+                        })
+                    })
+                })
+                //for(let i=0 ; i<objTimeline.listIdxYears[0].listIdxDocs.length;i++){
+                //    //时间轴日期
+                //    let date=moment(objTimeline.listIdxYears[0].listIdxDocs[i].date);
+                //    //按日期找出数据库文档
+                //    let listDocsToAdd=objTimeline.listDocs.filter(doc=>(doc ? moment(doc.date).isSame(date,"day") : false ));
+                //    //数据库没有则虚拟文档            
+                //    if(listDocsToAdd.length==0)listDocsToAdd.push(this.getTestDoc(date,listImg,listTagsAll));
+                //    docs.push(...listDocsToAdd);
+                //}
             })
             return {pageInfo,listDateYear,docs};
         }catch(e){
