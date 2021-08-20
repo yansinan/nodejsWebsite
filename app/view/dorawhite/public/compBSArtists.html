@@ -5,8 +5,24 @@
         {# 乐队名列表 #}
         {# <h1 class="display-1">RUBY</h1> #}
         <div class="artist artist-md d-flex align-items-center ">
-            <button class="name btn btn-link" data-dr-url="/artist___{{artist.id}}.html" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight">
-                {{artist.name}}
+            {# <div class="fixed"><div class="sImg"><img src="{{artist.sImg}}" width="0px" data-src="{{artist.sImg}}" alt="{{artist.nameTimeline}}"  class="img-fluid"/></div></div> #}
+             
+            <button 
+                data-bs-toggle="offcanvas" 
+                data-bs-target="#offcanvasRight" 
+                class="name btn btn-link" 
+                data-dr-url="/artist___{{artist.id}}.html">
+            
+
+            
+                <span 
+                    tabindex="0"
+                    data-bs-toggle="tooltip" 
+                    data-bs-html="true" 
+                    data-s-img="{{artist.sImg}}"
+                    title='<img src="{{artist.sImg}}" width="0px" alt="{{artist.nameTimeline}}" class="img-fluid"/>'>
+                    {{artist.name}}
+                </span>
             </button>
             {% if artist.listNotices.length > 0%}
             <button 
@@ -15,13 +31,86 @@
                 data-bs-toggle="tooltip" 
                 data-bs-html="true" 
                 title='{% for doc in artist.listNotices %}<div data-dr-url="{{doc.url}}" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight">{{doc.nameTimeline}}</div>{% endfor %}'>
-                +2
+                +{{artist.listNotices.length}}
             </button>
             {% endif %}
         </div >
         {% endfor %}
         {# 最后一列占宽用 #}
         <div class="artist artist-md d-flex align-items-center"></div>
+        <script>
+        document.getElementById("coverArtistsWrapper").querySelectorAll(".artist").forEach($artist=>{
+            var tooltipTriggerList = [].slice.call(document.getElementById("coverArtistsWrapper").querySelectorAll('#coverArtistsWrapper .artist .name [data-bs-toggle="tooltip"]'))
+            tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+                if(tooltipTriggerEl.tooltip && tooltipTriggerEl.tooltip.dispose)tooltipTriggerEl.tooltip.dispose();
+                let strClass=Math.random()>0.5 ? "sImg verticle" : "sImg";
+                let tooltip = new bootstrap.Tooltip(tooltipTriggerEl,{
+                    //boundary: $coverArtistsWrapper, // or document.querySelector('#boundary')
+                    //container: $coverArtistsWrapper,//tooltipTriggerEl,//$coverArtistsWrapper.querySelector(".bs-content-listArtist"),
+                    //trigger:"hover focus",
+                    trigger:"hover focus",
+                    //parentElement:'start',
+                    customClass:strClass,
+                    offset:[20,0],
+                    popperConfig:{
+                        placement: 'top-start',
+                        modifiers:[
+                            {
+                                name: 'preventOverflow',
+                                options: {
+                                    mainAxis: true, // true by default
+                                    boundary: document.getElementById("coverArtistsWrapper"),
+                                },
+                            },
+                        ]
+                                                                            
+                    }
+                })
+                tooltipTriggerEl.tooltip=tooltip;
+                return tooltip;
+            })
+            {# 读取后读宽度值 #}
+            //$artist.querySelectorAll(".sImg img").forEach($img=>{
+            //    $img.addEventListener("load",(e)=>{
+            //        let $img=e.currentTarget;
+            //        let {naturalWidth,naturalHeight}=$img;
+            //        if(Math.random()>0.5)$img.parentElement.classList.add("verticle");
+            //        $img.parentElement.style.width=naturalWidth + "px";
+            //        $img.classList.add("loaded");
+            //    })
+            //})
+            //function eMouseOver(e){
+            //    debugger;
+            //    let $artist=e.currentTarget;
+            //    //let url=$artist.dataset.urlImg;
+            //    //if(!$artist.$sImg){
+            //    //    let $img=Document.createElement("img");
+            //    //    $img.href=url;
+            //    //    $img.classList.value="listArtistImg";
+            //    //    $artist.append($img);
+            //    //    $artist.$sImg=$img;
+            //    //}
+            //    $artist.addEventListener("onmouseout",eMouseOut);                
+            //}
+            //function eMouseMove(e){
+            //    let $artist=e.currentTarget.parentElement;
+            //    $artist.$sImg = $artist.$sImg || $artist.querySelector(".fixed");
+            //    $artist.$sImg.style.opacity=1;
+            //    let rect=$artist.getBoundingClientRect();
+            //    $artist.$sImg.style.top = "calc( " + rect.top + "px - 0.3rem )";//e.clientY + "px";
+            //    $artist.$sImg.style.left= "calc( " + rect.left + "px)";//e.clientX + "px";
+            //}
+            //function eMouseOut(e){
+            //    let $artist=e.currentTarget.parentElement;
+            //    $artist.$sImg = $artist.$sImg || $artist.querySelector(".fixed");
+            //    $artist.$sImg.style.opacity=0;
+            //}
+            ////$artist.addEventListener("mouseover",eMouseOver);
+            //let $bn=$artist.querySelector("button");
+            //if($bn)$bn.addEventListener("mousemove",eMouseMove);
+            //if($bn)$bn.addEventListener("mouseout",eMouseOut);
+        })
+        </script>
     </div>
     {# 乐手列表 #}
     <script>
@@ -67,14 +156,25 @@
 
         function eInitTooltip(e){
             let eShow=function(e){
-                if(e.target.tooltip){
-                    e.target.tooltip.update()
-                    e.target.tooltip.show();
+                let tooltip=e.target.tooltip
+                if(tooltip){
+                    tooltip.update()
+                    tooltip.show();
+                    tooltip.tip.addEventListener("mouseenter",(e)=>{
+                        e.target.isOnTooltip=true;
+                    });
+                    tooltip.tip.addEventListener("mouseleave",(e)=>{
+                        e.target.isOnTooltip=false;
+                        tooltip.hide();
+                    });
                 }
                 //e.preventDefault();
             }
             let eHide=function(e){
-                if(e.target.tooltip)e.target.tooltip.hide();
+                if(e.target.tooltip){
+                    e.target.tooltip.tip.isOnTooltip=false;
+                    e.target.tooltip.hide();
+                }
             }
             let isIOS=function(){
                 var u = navigator.userAgent, app = navigator.appVersion;
@@ -93,7 +193,7 @@
                 }
                 return false;
             }
-            var tooltipTriggerList = [].slice.call($coverArtistsWrapper.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipTriggerList = [].slice.call($coverArtistsWrapper.querySelectorAll('.noticeCnt[data-bs-toggle="tooltip"]'))
             $coverArtistsWrapper.tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
 
                 if(tooltipTriggerEl.tooltip && tooltipTriggerEl.tooltip.dispose)tooltipTriggerEl.tooltip.dispose();
@@ -127,6 +227,7 @@
                     }
                 })
                 tooltipTriggerEl.tooltip=tooltip;
+                tooltipTriggerEl.parentElement.tooltip=tooltip;
                 tooltipTriggerEl.addEventListener('hidden.bs.tooltip', function (e) {
                     this.classList.remove("now");
                 })
@@ -136,7 +237,11 @@
                 tooltipTriggerEl.addEventListener("touchstart",eShow);
                 tooltipTriggerEl.addEventListener("mouseenter",eShow);
 
-                tooltipTriggerEl.addEventListener("mouseleave",eHide);
+                tooltipTriggerEl.addEventListener("mouseleave",(e)=>{
+                    setTimeout(()=>{
+                        if(!e.target.tooltip.tip.isOnTooltip)eHide(e);
+                    },500);
+                });
                 //tooltipTriggerEl.addEventListener("touchcancel",tooltipTriggerEl.tooltip.show);
                 
                 return tooltip;

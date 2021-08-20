@@ -32,6 +32,7 @@
     min-height:calc(1.5rem*12);
 }
 .listArtists .artist{
+    position: relative;
     display: flex;
     align-items: flex-start;
     max-width:78.26vw;
@@ -47,7 +48,85 @@
     min-height:1.2rem;
     max-height:1.8rem;
     height: fit-content;
+}
+/*
+#coverArtistsWrapper .artist .fixed{
+    position: fixed;
+    bottom: calc(100% + 0.3rem);
+    z-index: 9;
+    pointer-events: none;
+    overflow:visible;
+}
+#coverArtistsWrapper .artist .sImg{
+    position: relative;  
+    display:block;
+    min-width: 390px;
+    max-width:32.4vw;
+    transform:translateY(-100%);
+}
+#coverArtistsWrapper .artist .sImg img{
+    position: absolute;
+    object-fit: cover;
+    width: 100%;
+    height:auto;
+    max-height:100%;
+    opacity: 0;
+    transition-property: opacity,transform;
+    transition-duration: 0.5s;
+    transform: translateY(10%);
 
+}
+#coverArtistsWrapper .artist .sImg.verticle img{
+    height:100%;
+    width:auto;
+}
+#coverArtistsWrapper .artist .sImg img.loaded{
+    opacity: 1;
+    transform: translateY(0%);
+}
+
+#coverArtistsWrapper .artist .sImg::after{
+    content:"";
+    display:block;
+    padding-bottom: calc(9 * 100% / 16);
+    height:0px;
+}
+#coverArtistsWrapper .artist .sImg.verticle::after{
+    padding-bottom: calc(3 * 100% / 2);
+}
+*/
+.tooltip.sImg .tooltip-inner{
+    pointer-events: none;
+    position: relative;  
+    display:block;
+    min-width: 390px;
+    width: max(390px,32.4vw);
+    max-width:32.4vw;
+    text-align: left;
+    border:none;
+    background-color: black;
+}
+.tooltip.sImg .tooltip-inner::after{
+    content:"";
+    display:block;
+    padding-bottom: calc(9 * 100% / 16);
+    height:0px;
+}
+.tooltip.sImg .tooltip-inner img{
+    position: absolute;/*跳出文档，不会扩wrapper*/
+    object-fit: cover;
+    width: 100%;
+    height:auto;
+    max-height:100%;
+}
+.tooltip.sImg.verticle .tooltip-inner::after{
+    padding-bottom: calc(3 * 100% / 2);
+}
+.tooltip.sImg.verticle .tooltip-inner img{
+    height:100%;
+    width:auto;
+    max-width: 100%;
+    object-fit: contain;
 }
 .listArtists .artist .btn:active, 
 .listArtists .artist .btn:focus, 
