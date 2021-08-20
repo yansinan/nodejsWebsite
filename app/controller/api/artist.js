@@ -352,7 +352,36 @@ class APIController extends Controller {
                 searchKeys: ['userName', 'name', 'comments', 'discription'],
                 files: this.getListFields(filesType)
             });
-
+            // 乐队推荐&置顶消息
+            let listIdArtists=listRes.map(v=>(v.id));
+            let listDocNotice = await ctx.service.doc.find(
+                {
+                    //filesType:"timelineBar", 
+                    pageSize: 0,
+                    isPaging:"0",
+                    lean:false,
+                },{
+                    query:{
+                        listRefs: {"$in" : listIdArtists },
+                        $or:[{isTop:1},{roofPlacement: "1"}],
+                        //roofPlacement: "1",
+                    },
+                    files:"_id date listDateDur dateTimeline name nameTimeline alias nameArtists sImg url listRefs",
+                    populate:[{
+                        path: '',
+                        select: ''
+                    }],
+                    sort:{date: -1,roofPlacement: -1,},
+                    searchKeys:['listRefs',"roofPlacement"]
+                });
+            listRes.forEach(artist=>{
+                artist.listNotices=listDocNotice.filter(doc=>{
+                    let docFind=doc.listRefs.find(v=>(v==artist.id));
+                    if(docFind)doc=JSON.parse(JSON.stringify(doc));                    
+                    return docFind;
+                });
+                artist.listNotices=artist.listNotices.splice(0,Math.min(artist.listNotices.length,2));
+            })
             let listTmpRes = await this.renderList(userInfo._id, listRes.docs || listRes);
             // 为了适配isPaging=0 && pageSize=0全部列表的结果是数组的情况；
             if(listRes.docs)listRes.docs=listTmpRes;

@@ -8,14 +8,16 @@
             <button class="name btn btn-link" data-dr-url="/artist___{{artist.id}}.html" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight">
                 {{artist.name}}
             </button>
+            {% if artist.listNotices.length > 0%}
             <button 
                 tabindex="0"
                 class="noticeCnt d-flex flex-shrink-0 justify-content-center border border-1 border-dark rounded-circle" 
                 data-bs-toggle="tooltip" 
                 data-bs-html="true" 
-                title="<div>演出回顾|重庆巡回{{artist.name}}</div><div>专辑发布|永无宁日RURBUR-Evening Sitdown Vision</div>">
+                title='{% for doc in artist.listNotices %}<div data-dr-url="{{doc.url}}" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight">{{doc.nameTimeline}}</div>{% endfor %}'>
                 +2
             </button>
+            {% endif %}
         </div >
         {% endfor %}
         {# 最后一列占宽用 #}
