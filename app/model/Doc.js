@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2019/11/10 20:30:53 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-13 10:01:01
+ * @Last Modified time: 2021-08-19 23:16:19
  */
 const INIT_DOC= app=>{
     //如果已经初始化过，则直接返回；
@@ -143,8 +143,8 @@ const INIT_DOC= app=>{
         return moment(v).format("YYYY-MM-DD HH:mm:ss");
     });
     
-    schema.virtual('title').get(function (v) {
-        return v || this.name;
+    schema.virtual('title').get(function () {
+        return this.name;
     });
     // 年份信息
     schema.virtual('dateYear').get(function () {
@@ -180,10 +180,9 @@ const INIT_DOC= app=>{
         }
         return dictTimeline[this.doc || "news"];
     })
-    // date在全年天数的百分比;
-    schema.virtual('nameTimeline').get(function (v){
-        if(this.doc=="Artist")return this.name + "加入";
-        else return this.name;
+    // 时间轴标题
+    schema.virtual('nameTimeline').get(function (){
+        return this.name;
     })
     app.model=app.model || {};
     let model=app.model.DocModel || mongoose.model("Doc", schema);

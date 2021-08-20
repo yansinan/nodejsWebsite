@@ -26,47 +26,29 @@ class APIController extends Controller {
         } = this;
         let targetId=inArtist._id;
         try {
-
-            let listRecords=(await ctx.service.record.find(ctx.query, {
-                sort: {dateRelease: -1},
-                query: {state: '2',listArtists:targetId},
-                searchKeys: ['sImg', 'name', 'dateRelease', 'listFormatTags'],
-                files: "sImg name dateRelease url dateTimeline"
-            })).docs;
-            
-            let listContent=(await ctx.service.content.find(ctx.query, {
+           let listTimeline=(await ctx.service.doc.find({
+                pageSize: 0,
+                isPaging:"0",
+                lean:false,
+            }, {
                 sort: {date: -1},
-                query: {state: '2',tags:targetId},
+                query: {state: '2',listRefs:targetId},
                 searchKeys: ['sImg', 'title', 'date'],
-                files: "sImg title date url"
-            })).docs;
-            let listShow=(await ctx.service.show.find(ctx.query, {
-                sort: {dateStart: -1},
-                query: {state: '2',listArtists:targetId},
-                searchKeys: ['sImg', 'title', 'dateStart'],
-                files: "sImg name title listDateDur dateStart url "
-            })).docs;
-            // 合并
-            let listTimeline=[...listRecords,...listContent || [],...listShow || []];
+                files: "sImg name date url nameTimeline"
+            }));            
             listTimeline.push({
-                name:"加入赤瞳",
+                name:inArtist.nameTimeline,
                 dateTimeline:inArtist.dateStart,
                 url:inArtist.url,
             })
-            // 排序
-            listTimeline=listTimeline.sort((a,b)=>{
-                let timeA=new Date(a.dateTimeline || a.dateRelease || a.dateStart || a.date);
-                let timeB=new Date(b.dateTimeline || b.dateRelease || b.dateStart || b.date);
-                return timeB.getTime()-timeA.getTime();
-            })
-            
             return listTimeline.map(v=>{
-                let source=v.url.split("/")[1];//artist,show,record,detail
-                let strDefault=source == "record"?"发布：":"";
+                //let source=v.url.split("/")[1];//artist,show,record,detail
+                //let strDefault=source == "record"?"发布：":"";
+                let strDefault=v.nameTimeline || v.name;
                 return {
-                    name: strDefault + ( v.sTitle || v.alias || v.title || v.name),
-                    dateTimeline: moment(new Date(v.dateTimeline || v.dateRelease || v.dateStart || v.date)).format("MM-DD"),
-                    dateYear:moment(new Date(v.dateTimeline || v.dateRelease || v.dateStart || v.date)).format("YYYY"),
+                    name: strDefault,
+                    dateTimeline: moment(new Date(v.date)).format("MM-DD"),
+                    dateYear:moment(new Date(v.date)).format("YYYY"),
                     url:v.url,
                 }
             })

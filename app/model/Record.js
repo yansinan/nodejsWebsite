@@ -68,9 +68,6 @@ module.exports =app=>{
         //     }
         //     return v;
         // });
-        schema.path('date').get(function (v) {
-            return moment(v).format("YYYY-MM-DD");
-        });
         //schema.virtual('dateTimeline').get(function () {
         //    return moment(this.dateRelease).format("YYYY-MM-DD");
         //});
@@ -78,6 +75,9 @@ module.exports =app=>{
         schema.virtual('url').get(function () {
             return `/record/${this._id}.html`;
         });
+        schema.virtual('nameTimeline').get(function (){
+            return "专辑《"+this.name + "》发布";
+        })
         schema.virtual('listArtists').get(function () {
             return this.listRefs;
         });

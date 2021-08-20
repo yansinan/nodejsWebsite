@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2019/11/10 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-19 04:25:38
+ * @Last Modified time: 2021-08-19 23:15:45
  */
 /**
  * Created by Dr on 2019/11/10.
@@ -170,6 +170,9 @@ module.exports =app=>{
         schema.virtual('url').get(function () {
             return `/artist/${this._id}.html`;
         });
+        schema.virtual('nameTimeline').get(function (){
+            return this.name + "签约赤瞳音乐";
+        })
         // listImages补齐sImg
         schema.path("listImages").get(function(v){
             // 补充sImg到listImages
