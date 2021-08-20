@@ -49,52 +49,7 @@
     max-height:1.8rem;
     height: fit-content;
 }
-/*
-#coverArtistsWrapper .artist .fixed{
-    position: fixed;
-    bottom: calc(100% + 0.3rem);
-    z-index: 9;
-    pointer-events: none;
-    overflow:visible;
-}
-#coverArtistsWrapper .artist .sImg{
-    position: relative;  
-    display:block;
-    min-width: 390px;
-    max-width:32.4vw;
-    transform:translateY(-100%);
-}
-#coverArtistsWrapper .artist .sImg img{
-    position: absolute;
-    object-fit: cover;
-    width: 100%;
-    height:auto;
-    max-height:100%;
-    opacity: 0;
-    transition-property: opacity,transform;
-    transition-duration: 0.5s;
-    transform: translateY(10%);
 
-}
-#coverArtistsWrapper .artist .sImg.verticle img{
-    height:100%;
-    width:auto;
-}
-#coverArtistsWrapper .artist .sImg img.loaded{
-    opacity: 1;
-    transform: translateY(0%);
-}
-
-#coverArtistsWrapper .artist .sImg::after{
-    content:"";
-    display:block;
-    padding-bottom: calc(9 * 100% / 16);
-    height:0px;
-}
-#coverArtistsWrapper .artist .sImg.verticle::after{
-    padding-bottom: calc(3 * 100% / 2);
-}
-*/
 .tooltip.sImg .tooltip-inner{
     pointer-events: none;
     position: relative;  
