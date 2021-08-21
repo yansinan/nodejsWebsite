@@ -49,7 +49,7 @@
     max-height:1.8rem;
     height: fit-content;
 }
-
+/* PC乐队图提示 */
 .tooltip.sImg .tooltip-inner{
     pointer-events: none;
     position: relative;  
@@ -59,7 +59,7 @@
     max-width:32.4vw;
     text-align: left;
     border:none;
-    background-color: black;
+    background-color: transparent;
 }
 .tooltip.sImg .tooltip-inner::after{
     content:"";
@@ -68,12 +68,25 @@
     height:0px;
 }
 .tooltip.sImg .tooltip-inner img{
+    background-color: black;
+    display:block;
     position: absolute;/*跳出文档，不会扩wrapper*/
     object-fit: cover;
     width: 100%;
     height:auto;
     max-height:100%;
 }
+/**/
+.tooltip.sImg .tooltip-inner img{
+    transition-property: filter,opacity;
+    transition-duration: .4s;
+    /* transition-delay: 1s; */
+    filter:saturate(0.4) hue-rotate(45deg) brightness(4) opacity(.3);  
+}
+.tooltip.sImg.show .tooltip-inner img.loaded{
+    filter:saturate(1) hue-rotate(0deg) brightness(1) opacity(1);
+}
+
 .tooltip.sImg.verticle .tooltip-inner::after{
     padding-bottom: calc(3 * 100% / 2);
 }
@@ -83,6 +96,7 @@
     max-width: 100%;
     object-fit: contain;
 }
+
 .listArtists .artist .btn:active, 
 .listArtists .artist .btn:focus, 
 .listArtists .artist .btn:active:focus, 
@@ -110,6 +124,7 @@
     text-decoration: underline;
     line-height: 1rem;
 }
+
 .listArtists .artist .name:not(:hover) {
     text-decoration: none;
 }
@@ -168,7 +183,13 @@
     text-align: left;
     border-bottom:1px solid black;
     padding:0.42rem;
-    
+    cursor: pointer;
+}
+.tooltip .tooltip-inner div:not(:hover) {
+    text-decoration: none;
+}
+.tooltip .tooltip-inner div:hover{
+    text-decoration: underline;
 }
 .tooltip .tooltip-inner div::before{
     content:"";

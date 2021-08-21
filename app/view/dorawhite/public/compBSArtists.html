@@ -8,19 +8,14 @@
             {# <div class="fixed"><div class="sImg"><img src="{{artist.sImg}}" width="0px" data-src="{{artist.sImg}}" alt="{{artist.nameTimeline}}"  class="img-fluid"/></div></div> #}
              
             <button 
-                data-bs-toggle="offcanvas" 
-                data-bs-target="#offcanvasRight" 
                 class="name btn btn-link" 
                 data-dr-url="/artist___{{artist.id}}.html">
-            
-
-            
                 <span 
                     tabindex="0"
                     data-bs-toggle="tooltip" 
                     data-bs-html="true" 
                     data-s-img="{{artist.sImg}}"
-                    title='<img src="{{artist.sImg}}" width="0px" alt="{{artist.nameTimeline}}" class="img-fluid"/>'>
+                    title=' '>
                     {{artist.name}}
                 </span>
             </button>
@@ -30,26 +25,25 @@
                 class="noticeCnt d-flex flex-shrink-0 justify-content-center border border-1 border-dark rounded-circle" 
                 data-bs-toggle="tooltip" 
                 data-bs-html="true" 
-                title='{% for doc in artist.listNotices %}<div data-dr-url="{{doc.url}}" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight">{{doc.nameTimeline}}</div>{% endfor %}'>
+                title=' '>
                 +{{artist.listNotices.length}}
             </button>
+            {% for doc in artist.listNotices %}<div class="notice d-none" data-dr-url="{{doc.url}}">{{doc.nameTimeline}}</div>{% endfor %}
             {% endif %}
+            <img src="{{artist.sImg}}" width="0px" alt="{{artist.nameTimeline}}" class="sImg img-fluid"/>
         </div >
         {% endfor %}
         {# 最后一列占宽用 #}
         <div class="artist artist-md d-flex align-items-center"></div>
         <script>
         document.getElementById("coverArtistsWrapper").querySelectorAll(".artist").forEach($artist=>{
-            var tooltipTriggerList = [].slice.call(document.getElementById("coverArtistsWrapper").querySelectorAll('#coverArtistsWrapper .artist .name [data-bs-toggle="tooltip"]'))
-            tooltipTriggerList.forEach(function (tooltipTriggerEl) {
-                if(tooltipTriggerEl.tooltip && tooltipTriggerEl.tooltip.dispose)tooltipTriggerEl.tooltip.dispose();
+            var $listNameArtists = $artist.querySelectorAll('.name [data-bs-toggle="tooltip"]');
+            if(!$listNameArtists)return;
+            $listNameArtists.forEach(function ($nameArtist) {
+                if($nameArtist.tooltip && $nameArtist.tooltip.dispose)$nameArtist.tooltip.dispose();
                 let strClass=Math.random()>0.5 ? "sImg verticle" : "sImg";
-                let tooltip = new bootstrap.Tooltip(tooltipTriggerEl,{
-                    //boundary: $coverArtistsWrapper, // or document.querySelector('#boundary')
-                    //container: $coverArtistsWrapper,//tooltipTriggerEl,//$coverArtistsWrapper.querySelector(".bs-content-listArtist"),
-                    //trigger:"hover focus",
-                    trigger:"hover focus",
-                    //parentElement:'start',
+                let tooltip = new bootstrap.Tooltip($nameArtist,{
+                    trigger:"manual",
                     customClass:strClass,
                     offset:[20,0],
                     popperConfig:{
@@ -62,13 +56,60 @@
                                     boundary: document.getElementById("coverArtistsWrapper"),
                                 },
                             },
-                        ]
-                                                                            
+                        ]                                           
                     }
                 })
-                tooltipTriggerEl.tooltip=tooltip;
+                tooltip.$sImg=$artist.querySelector(".sImg");
+                $nameArtist.tooltip=tooltip;
+                $nameArtist.addEventListener('shown.bs.tooltip', function (e) {
+                    console.log("sImg:","show.bs.tooltip");
+                    let tooltip=e.target.tooltip;
+                    if(tooltip && tooltip.$sImg){
+                        let $inner=tooltip.tip.querySelector(".tooltip-inner");
+                        let $dom=tooltip.$sImg.cloneNode(true);
+                        //let $dom=new Image();
+                        //$dom.src=tooltip.$sImg.src;
+                        $inner.append($dom);
+                        $dom.decode().then(() => {
+                            $dom.classList.add("loaded");
+                        }).catch((encodingError) => {
+                        // Do something with the error.
+                        })
+                        //function eLoad(e){
+                        //    let $sImg=e.currentTarget;
+                        //    $inner.append($sImg);
+                        //    $sImg.classList.add("loaded");
+                        //}
+                        //if($dom.complete)eLoad({currentTarget:$dom})
+                        //else $dom.addEventListener("load",eLoad)
+                    }
+                })
+                $nameArtist.addEventListener("mousemove",(e)=>{
+                    let tooltip=e.target.tooltip
+                    if(tooltip && !tooltip.tip.classList.contains("show")){
+                        tooltip.tip.classList.add("show");
+                    }
+                });
+                $nameArtist.addEventListener("mouseenter",(e)=>{
+                    let tooltip=e.target.tooltip
+                    if(tooltip){
+                        tooltip.show();
+                    }
+                });
+
+                $nameArtist.addEventListener("mouseleave",(e)=>{
+                    let tooltip=e.target.tooltip
+                    if(tooltip)tooltip.hide();
+                });
                 return tooltip;
             })
+
+            {# 乐队名按钮 #}
+            function eBnArtist(e){
+                window.goto(e.currentTarget.dataset.drUrl);
+            }
+            let $bnArtist=$artist.querySelector("button.name");
+            if($bnArtist)$bnArtist.addEventListener("click",eBnArtist)
         })
         </script>
     </div>
@@ -116,6 +157,7 @@
 
         function eInitTooltip(e){
             let eShow=function(e){
+                let $artist=e.currentTarget.parentElement;
                 let tooltip=e.target.tooltip
                 if(tooltip){
                     tooltip.update()
@@ -127,6 +169,17 @@
                         e.target.isOnTooltip=false;
                         tooltip.hide();
                     });
+                    let $inner=tooltip.tip.querySelector(".tooltip-inner");
+                    
+                    $artist.querySelectorAll(".notice").forEach($notice=>{
+                        let $dom=$notice.cloneNode(true);
+                        $dom.classList.remove("d-none");
+                        $dom.addEventListener("click",(e)=>{
+                            window.goto(e.currentTarget.dataset.drUrl);
+                            tooltip.hide();
+                        })
+                        $inner.append($dom);
+                    })
                 }
                 //e.preventDefault();
             }
@@ -189,10 +242,11 @@
                 tooltipTriggerEl.tooltip=tooltip;
                 tooltipTriggerEl.parentElement.tooltip=tooltip;
                 tooltipTriggerEl.addEventListener('hidden.bs.tooltip', function (e) {
-                    this.classList.remove("now");
+                    this.classList.remove("now");                    
                 })
                 tooltipTriggerEl.addEventListener('show.bs.tooltip', function (e) {
                     this.classList.add("now");
+                    console.log("notice::show.bs.tooltip")
                 })
                 tooltipTriggerEl.addEventListener("touchstart",eShow);
                 tooltipTriggerEl.addEventListener("mouseenter",eShow);
