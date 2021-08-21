@@ -327,8 +327,6 @@
     });
     {# 到时间轴页时才更新bar坐标 #}
     this.addEventListener("BS_COVER_TIMELINE", (page)=>{
-
-
         let cnt=0;
         let timer=setInterval(()=>{
             that.bsTimelineBarWrapper.updateAllBnYears();
@@ -363,5 +361,16 @@
         let domToAppend = document.createRange().createContextualFragment(e.detail.data.domTimelineBar);
         this.bsTimelineBarWrapper.content.querySelector(".blank").before(domToAppend.cloneNode(true));{# 插入列内容#}
         this.bsTimelineBarWrapper.refresh();
+    })
+
+    {# timeline切换栏目 #}
+    this.addEventListener("BS_TIMELINE_NAV_AT",(e)=>{
+        let bsTimeline=e.detail.bsTimeline;
+        if(bsTimeline=="records"){
+            let $listSVG=$bsTimelineBarWrapper.querySelectorAll(".svgTimelineBar");
+            $bsTimelineBarWrapper.style.setProperty('--scale-timeline-bar-svg', 1/($listSVG.length+1));            
+        }else{
+            $bsTimelineBarWrapper.style.setProperty('--scale-timeline-bar-svg', "1"); 
+        }
     })
 </script>

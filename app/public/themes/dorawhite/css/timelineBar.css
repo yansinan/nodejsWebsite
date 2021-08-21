@@ -147,10 +147,10 @@
 */
 
 .svgTimelineBar{
-    transition-property: transform;
+    transition-property: transform,width;
     transition-duration: 0.3s;
     flex:0 0 auto;
-    width:calc( var(--width-timeline-bar-wrapper-mobile) * var(--width-timeline-bar-year,1));
+    width:calc( var(--width-timeline-bar-wrapper-mobile) * var(--width-timeline-bar-year,1) * var(--scale-timeline-bar-svg,1));
 }
 #dr-footer.timeline #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar{
     transform: translateY(12px);
@@ -350,7 +350,7 @@ body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-d:no
     }
     #dr-footer .svgTimelineBar{
         /* width:var(--width-timeline-bar-wrapper-pc); */
-        width:calc( var(--width-timeline-bar-wrapper-pc) * var(--width-timeline-bar-year,1));
+        width:calc( var(--width-timeline-bar-wrapper-pc) * var(--width-timeline-bar-year,1) * var(--scale-timeline-bar-svg,1));
 
     }
     #dr-footer.timeline.done #bsTimelineBarWrapper .bsTimelineBarContent-md .svgTimelineBar{

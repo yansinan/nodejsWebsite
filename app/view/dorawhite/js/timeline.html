@@ -271,6 +271,8 @@
                     //if(that.bsTimeline.eUpdateTimeline)that.bsTimeline.eUpdateTimeline.call(that.bsTimeline,{},true);
                     //else throw new Error("bsTimeline.eUpdateTimeline未定义");
                     if(e.type=="NAV_AT"){
+                        {# 通知时间轴bar缩放 #}
+                        that.dispatchEvent(new CustomEvent("BS_TIMELINE_NAV_AT",{detail:e.detail}));
                         that.bsTimeline.scrollTo(1,1,500);
                         that.bsTimeline.scroller.animater.hooks.once('end', () => {
                             {# 更新lazyLoad , 有可能筛选后没触发scroll？ #}
