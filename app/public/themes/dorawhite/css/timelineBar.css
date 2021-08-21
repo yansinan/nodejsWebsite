@@ -147,7 +147,7 @@
 */
 
 .svgTimelineBar{
-    transition-property: transform,width;
+    transition-property: transform;
     transition-duration: 0.3s;
     flex:0 0 auto;
     width:calc( var(--width-timeline-bar-wrapper-mobile) * var(--width-timeline-bar-year,1) * var(--scale-timeline-bar-svg,1));
@@ -157,6 +157,9 @@
 }
 #dr-footer.listArtist.done #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar{
     transform: translateY(0px);
+}
+#bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s.b-y {
+    opacity: 1!important;
 }
 #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s {
     y:calc(31px - 12px);
@@ -174,6 +177,9 @@ body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-d.re
     /* fill:red; */
 }
 body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-d:not(.records) {
+    opacity: 0;
+}
+body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s {
     opacity: 0;
 }
 /* 测试用 */
@@ -349,6 +355,9 @@ body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-d:no
         max-height:var(--footer-size-pc,105px);
     }
     #dr-footer .svgTimelineBar{
+        transition-property: transform,width;
+        transition-duration: 0.3s;
+    
         /* width:var(--width-timeline-bar-wrapper-pc); */
         width:calc( var(--width-timeline-bar-wrapper-pc) * var(--width-timeline-bar-year,1) * var(--scale-timeline-bar-svg,1));
 

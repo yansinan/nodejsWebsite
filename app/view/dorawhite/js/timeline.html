@@ -105,7 +105,7 @@
                             };                        
                         });
                     }catch(e){
-                        console.warn("查找当前县市区$mm",cntMMNow,"个,中途退出",e.type,)
+                        console.debug("查找当前县市区$mm",cntMMNow,"个,中途退出",e.type,)
                     }
 
                     return $listMMNow;
@@ -207,7 +207,7 @@
             if(that.bsTimeline.$docNow){
                 that.bsTimeline.$docLast=that.bsTimeline.$docLast || that.bsTimeline.$docNow;
                 if(that.bsTimeline.strDateNow != that.bsTimeline.strDateLast){
-                    console.info("时间轴.getNewStrDate::timeline new Date",that.bsTimeline.strDateLast,"==>",that.bsTimeline.strDateNow);
+                    //console.debug("时间轴.getNewStrDate::timeline new Date",that.bsTimeline.strDateLast,"==>",that.bsTimeline.strDateNow);
                     {# 更新last #}
                     that.bsTimeline.$docLast = that.bsTimeline.$docNow;
                     return that.bsTimeline.strDateNow;
@@ -225,7 +225,9 @@
                         strDateNow:that.bsTimeline.strDateNow,
                     }
                 }))
+                return true
             }
+            return false;
         }
         that.bsTimeline.eUpdateTimeline=function(pos,isSync=false){
             try{
@@ -234,7 +236,7 @@
                 console.error(e);
             }
             {# 日期变化，且用户操作产生的，才触发同步通知 #}
-            that.bsTimeline.checkEvent(isSync);
+            return that.bsTimeline.checkEvent(isSync);
         }
         that.bsTimeline.on('scroll', that.bsTimeline.eUpdateTimeline);
 
@@ -252,35 +254,25 @@
         {# 筛选内容，根据动画结束监听，重新计算当前月，并触发同步底条 #}
         that.bsTimeline.filterMM=function(e){
             let bsTimeline=e.detail.bsTimeline;
-            //that.bsTimeline.content.querySelectorAll(".container-mm").forEach($mm=>{
-            //    let $listDoc=$mm.querySelectorAll(".item."+bsTimeline);
-            //    if($listDoc.length==0){
-            //        $mm.classList.remove("show");
-            //    }else{
-            //        $mm.classList.add("show");
-            //        //$listDoc=$mm.querySelectorAll(".item");
-            //        //$listDoc.forEach($doc=>{
-            //        //    if($doc.classList.contains(dictTimeline[bsTimeline].substr(1)))$doc.classList.add("show");
-            //        //    else $doc.classList.remove("show");
-            //        //})
-            //    }
-            //})
-            {# 强制同步timelineBar==>循环等待直到that.bsTimeline初始化完成； that.bsTimeline初始化在BS_COVER_TIMELINE#}
+            {# 移动端没动画 #}
+            if(that.bsTimeline.isMobile)return;
+            {# PC等月份缩小动画结束：强制同步timelineBar==>循环等待直到that.bsTimeline初始化完成； that.bsTimeline初始化在BS_COVER_TIMELINE#}
             function eTransitionEnd(eTransition){
                 if(eTransition.target.classList.contains("container-mm") || (eTransition.target.classList.contains("item"))){
                     //if(that.bsTimeline.eUpdateTimeline)that.bsTimeline.eUpdateTimeline.call(that.bsTimeline,{},true);
                     //else throw new Error("bsTimeline.eUpdateTimeline未定义");
                     if(e.type=="NAV_AT"){
                         {# 通知时间轴bar缩放 #}
-                        that.dispatchEvent(new CustomEvent("BS_TIMELINE_NAV_AT",{detail:e.detail}));
-                        that.bsTimeline.scrollTo(1,1,500);
+                        //that.dispatchEvent(new CustomEvent("BS_TIMELINE_NAV_AT",{detail:e.detail}));
                         that.bsTimeline.scroller.animater.hooks.once('end', () => {
+                            if(that.bsTimeline.eUpdateTimeline)that.bsTimeline.eUpdateTimeline.call(that.bsTimeline,{},true);//触发同步底条
                             {# 更新lazyLoad , 有可能筛选后没触发scroll？ #}
                             that.bsTimeline.$listMMNow
-                            console.log("时间轴animater.end停止:一次性更新lazyLoad");
+                            console.debug("时间轴::animater.end停止:一次性更新lazyLoad");
                         })
+                        that.bsTimeline.scrollTo(1,1,0);
                     }
-                    console.info("时间轴::eNAV_AT动画结束:已触发timelineBar同步:eTransition.target.classList:",eTransition.target.classList.value);
+                    console.debug("时间轴::eNAV_AT动画结束:已触发timelineBar同步:eTransition.target.classList:",eTransition.target.classList.value);
                     $timelineContent.removeEventListener("transitionend",eTransitionEnd);
                 }
             }
@@ -314,7 +306,7 @@
         let $mmTo=$timelineContent.querySelector("[dr-bs-wrapper='mm-"+strMMIdx+"']");
 
         if(!$mmTo){
-            console.warn("月份超出范围");
+            console.error("月份超出范围");
             return false;
         }        
         if(!that.bsTimeline.disable)return;
@@ -325,7 +317,7 @@
             let $dateTo=$mmTo.querySelector("[dr-date-doc='" + e.detail.strDateNow + "']");
             if($dateTo)yScrollTimeline = -($dateTo.getBoundingClientRect().top-that.bsTimeline.paddingTop);
             else {
-                console.warn("日期超出月份");
+                console.error("日期超出月份");
                 return false;                    
             }
         }
@@ -363,19 +355,16 @@
     this.addEventListener("BS_TIMELINE_BAR_DATE_CHANGE_FINAL",this.eDateChangeFinal)
     {# 保留月份滚----end #}
     this.addEventListener("BS_COVER_WILL_TIMELINE",that.resetSlideMain);
-    this.addEventListener("BS_COVER_TIMELINE", ()=>{
-        that.bsTimeline.eUpdateTimeline.call(that.bsTimeline,{},true);
+    this.addEventListener("NAV_AT", (e)=>{//BS_COVER_TIMELINE
+        let bsTimeline=e.detail.bsTimeline;
+        {# 通知底条，根据栏目判断是否缩放 #}
+        that.dispatchEvent(new CustomEvent("BS_TIMELINE_NAV_AT",{detail:e.detail}));
+        {# 移动端：时间轴没动画，直接同步 #}
+        if(that.bsTimeline.isMobile){
+            let isDispatched=that.bsTimeline.eUpdateTimeline.call(that.bsTimeline,{},true);
+            console.debug("时间轴：强制同步=@NAV_AT=>",e.detail,isDispatched);
+        }
     });
-    //this.addEventListener("BS_COVER_LISTARTISTS",()=>{
-    //    //that.bsTimeline.destroy();
-    //})
-    //this.addEventListener("NAV_AT",(e)=>{  {# 这个版本需要 e.detail.bsTimeline #}
-    //    let {bsMain,bsTimeline}=e.detail;
-    //    //导航切换到timeline时，筛选内容；
-    //    if(bsMain=="timeline" && bsTimeline)that.bsTimeline.filterMM(e);
-    //    else if(!bsTimeline && bsMain=="timeline")throw new Error("缺少bsTimeline参数(二级栏目未定义)");
-    //})    
-
     //var mutationObserver = new MutationObserver(function (mutations) {
     //    let status=window.getComputedStyle($timelineWrapper).getPropertyValue('display');
     //    {# //显示时初始化内容 #}

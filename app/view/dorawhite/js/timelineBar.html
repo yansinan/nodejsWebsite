@@ -87,7 +87,7 @@
             return isFind;
         })
         let $yearNow=$listYears[idxYearNow];
-        if(!$yearNow)throw new Error("底条:没有找到$yearNow");
+        if(!$yearNow)throw new Error("底条:没有找到$yearNow:x="+that.bsTimelineBarWrapper.x+";y="+that.bsTimelineBarWrapper.y);
 
         if(!$docNow)throw new Error("底条:没有找到$docNow"+$listYears[idxYearNow].id);
         
@@ -305,7 +305,7 @@
         {# 如果日期没变化，不额外触发，防止循环控制 #}
         if(that.bsTimelineBarWrapper.$docNow)strDateNow=that.bsTimelineBarWrapper.$docNow.id.replace("b","");
         if(e.detail.strDateNow == strDateNow){
-            console.info("e:底条::",e.type,"无效==>",strDateNow,"==>",e.detail.strDateNow,"忽略:同当前日期");
+            console.warn("e:底条::",e.type,"无效==>",strDateNow,"==>",e.detail.strDateNow,"忽略:同当前日期");
             return;
         }
         
@@ -314,9 +314,24 @@
             throw new Error("e:底条::",e.type,"无效==>",strDateNow,"==>",e.detail.strDateNow,"未找到id：","b"+e.detail.strDateNow);
             return;
         }
-        console.info("e:底条::",e.type,"有效==>scrollToElement",strDateNow,"==>",e.detail.strDateNow);
+        console.warn("e:底条::",e.type,"有效==>scrollToElement",strDateNow,"==>",e.detail.strDateNow);
         that.bsTimelineBarWrapper.$dateTo=$dateTo;
         that.bsTimelineBarWrapper.scrollToElement($dateTo);
+    }
+    this.bsTimelineBarWrapper.offAll=function(){
+        that.bsTimelineBarWrapper.$dateTo=false;
+        if(that.bsTimelineBarWrapper.pending)that.bsTimelineBarWrapper.stop();
+        that.bsTimelineBarWrapper.off('scroll', that.bsTimelineBarWrapper.updateTimelineBar);
+        that.bsTimelineBarWrapper.scroller.animater.hooks.off('end', that.bsTimelineBarWrapper.eAnimaterEnd)
+        that.bsTimelineBarWrapper.scroller.hooks.off("scrollEnd", that.bsTimelineBarWrapper.eScrollEnd)
+        {# 清除$dateNow #}
+        that.bsTimelineBarWrapper.$docNow=false;
+    }
+    this.bsTimelineBarWrapper.onAll=function(){
+        that.bsTimelineBarWrapper.on('scroll', that.bsTimelineBarWrapper.updateTimelineBar);
+        that.bsTimelineBarWrapper.scroller.animater.hooks.on('end', that.bsTimelineBarWrapper.eAnimaterEnd)
+        {# scrollEnd被动主动都触发，但手动时只有scrollEnd #}
+        that.bsTimelineBarWrapper.scroller.hooks.on("scrollEnd", that.bsTimelineBarWrapper.eScrollEnd);
     }
     {# 开始先移动到最新日期 #}
     //this.bsTimelineBarWrapper.scrollTo(that.bsTimelineBarWrapper.scrollStartX,0,0);
@@ -337,21 +352,11 @@
         },300);
     })
     this.addEventListener("BS_COVER_TIMELINE_FINAL", (page)=>{
-        this.bsTimelineBarWrapper.on('scroll', that.bsTimelineBarWrapper.updateTimelineBar);
-        this.bsTimelineBarWrapper.scroller.animater.hooks.on('end', that.bsTimelineBarWrapper.eAnimaterEnd)
-        {# scrollEnd被动主动都触发，但手动时只有scrollEnd #}
-        this.bsTimelineBarWrapper.scroller.hooks.on("scrollEnd", that.bsTimelineBarWrapper.eScrollEnd)
-
+        that.bsTimelineBarWrapper.onAll()
     })
     this.addEventListener("BS_COVER_LISTARTISTS", (page)=>{
         this.removeEventListener("BS_MAIN_DATE_CHANGE",this.bsTimelineBarWrapper.eTimelineDateChange);
-        that.bsTimelineBarWrapper.$dateTo=false;
-        if(that.bsTimelineBarWrapper.pending)that.bsTimelineBarWrapper.stop();
-        that.bsTimelineBarWrapper.off('scroll', that.bsTimelineBarWrapper.updateTimelineBar);
-        that.bsTimelineBarWrapper.scroller.animater.hooks.off('end', that.bsTimelineBarWrapper.eAnimaterEnd)
-        that.bsTimelineBarWrapper.scroller.hooks.off("scrollEnd", that.bsTimelineBarWrapper.eScrollEnd)
-        {# 清除$dateNow #}
-        that.bsTimelineBarWrapper.$docNow=false;
+        that.bsTimelineBarWrapper.offAll();
         that.bsTimelineBarWrapper.scrollTo(that.bsTimelineBarWrapper.scrollStartX,0,500);
     })
 
@@ -361,14 +366,32 @@
         let domToAppend = document.createRange().createContextualFragment(e.detail.data.domTimelineBar);
         this.bsTimelineBarWrapper.content.querySelector(".blank").before(domToAppend.cloneNode(true));{# 插入列内容#}
         this.bsTimelineBarWrapper.refresh();
+        that.bsTimelineBarWrapper.updateAllBnYears();
     })
 
     {# timeline切换栏目 #}
     this.addEventListener("BS_TIMELINE_NAV_AT",(e)=>{
         let bsTimeline=e.detail.bsTimeline;
         if(bsTimeline=="records"){
+            that.bsTimelineBarWrapper.offAll();
+            function eTransitionEnd(eTransition){
+                if(eTransition.target.classList.contains("svgTimelineBar")){
+                    that.bsTimelineBarWrapper.disable();
+                    that.bsTimelineBarWrapper.scrollTo(0,0,0);
+                    that.bsTimelineBarWrapper.onAll();
+                    that.bsTimelineBarWrapper.enable();
+                    that.bsTimelineBarWrapper.refresh();
+                    that.bsTimelineBarWrapper.updateAllBnYears();
+                    console.info("底条::eBS_TIMELINE_NAV_AT=>svgTimelineBar动画结束:底条已移动到0,0,:");
+                    $bsTimelineBarWrapper.removeEventListener("transitionend",eTransitionEnd);
+                }
+            }
+            {# PC端有动画 移动端没有动画，直接跳转 #}
+            if(!that.bsTimelineBarWrapper.isRotated)$bsTimelineBarWrapper.addEventListener("transitionend", eTransitionEnd, {capture:false,once:false});
+            else eTransitionEnd(eTransition);
+            {# 缩放 #}
             let $listSVG=$bsTimelineBarWrapper.querySelectorAll(".svgTimelineBar");
-            $bsTimelineBarWrapper.style.setProperty('--scale-timeline-bar-svg', 1/($listSVG.length+1));            
+            $bsTimelineBarWrapper.style.setProperty('--scale-timeline-bar-svg', 1/($listSVG.length+1));
         }else{
             $bsTimelineBarWrapper.style.setProperty('--scale-timeline-bar-svg', "1"); 
         }

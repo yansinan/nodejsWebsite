@@ -109,10 +109,6 @@
   display: flex;
   flex-wrap: nowrap;
   margin-top: calc(var(--bs-gutter-y) * -1);
-  /* 隐藏动画 */
-  transition-property: max-height,margin-bottom;
-  transition-delay: 0s;
-  transition-duration: .5s;
   overflow: hidden;
 }
 /* 
@@ -288,8 +284,15 @@
     font-size: calc(32 * 1rem / 36);
     line-height: calc(42 * 1rem / 36);
 
+    /* 隐藏动画 */
+    /* 
+    transition-property: max-height,margin-bottom;
+    transition-delay: 0s;
+    transition-duration: .5s;
+
     transition-delay: .7s;
     transition-duration: .7s;
+     */
   }
   #timelineContent .wapper-mm .item .titleContainer{
     padding-left: 0px;
