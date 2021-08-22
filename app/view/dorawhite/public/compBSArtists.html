@@ -9,7 +9,7 @@
              
             <button 
                 class="name btn btn-link" 
-                data-dr-url="/artist___{{artist.id}}.html">
+                data-dr-url="{{artist.url}}">
                 <span 
                     tabindex="0"
                     data-bs-toggle="tooltip" 
@@ -28,7 +28,7 @@
                 title=' '>
                 +{{artist.listNotices.length}}
             </button>
-            {% for doc in artist.listNotices %}<div class="notice d-none" data-dr-url="/doc___{{doc.id}}.html">{{doc.nameTimeline}}</div>{% endfor %}
+            {% for doc in artist.listNotices %}<div class="notice d-none" data-dr-url="{{doc.url}}">{{doc.nameTimeline}}</div>{% endfor %}
             {% endif %}
             <img src="{{artist.sImg}}" width="0px" alt="{{artist.nameTimeline}}" class="sImg img-fluid"/>
         </div >

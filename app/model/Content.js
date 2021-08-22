@@ -138,7 +138,7 @@ module.exports = app => {
     });
 
     ContentSchema.virtual('url').get(function () {
-        return `/details/${this._id}.html`;
+        return `/doc___${this._id}.html`;
     });
     // 为了和doc同步;
     ContentSchema.path('stitle').get(function (v) {

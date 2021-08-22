@@ -73,7 +73,7 @@ module.exports =app=>{
         //});
         // url地址
         schema.virtual('url').get(function () {
-            return `/record/${this._id}.html`;
+            return `/record___${this._id}.html`;
         });
         schema.virtual('nameTimeline').get(function (){
             return "专辑《"+this.name + "》发布";
