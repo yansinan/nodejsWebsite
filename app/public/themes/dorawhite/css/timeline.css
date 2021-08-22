@@ -14,10 +14,42 @@
 }
 /* main 手机自适应高度 */
 #timelineContent {
+  display: block;
+  padding-right: 0!important;
+  padding-left: 0!important;
+  
   max-height: none;
+  max-width:none;
+  width: auto;
   overflow: visible;
   position: relative;
   top:0px;
+}
+#timelineContent::before,
+#timelineContent::after{
+  content:"没有更多了";
+  overflow: visible;
+  position :absolute;
+  transform: translateY(calc(-100% - 1rem)) translateZ(0);
+  height:2rem;
+  width:100%;
+  font-size: 0.5rem;
+  color :#ccc;
+  white-space: normal;
+  line-height: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+#timelineContent::before{
+  display:none;
+}
+#timelineContent::after{
+  content:attr(data-str-notice-end);
+  bottom:0px;
+  transform: translateY(calc(100% + 1rem)) translateZ(0);
 }
 #timelineContent .pulldown-tip{
   position :absolute;
@@ -35,6 +67,13 @@
   color :#ccc;
   /* background-color: gainsboro; */
   transform :translateY(-100%) translateZ(0);
+}
+#timelineContent .loading{
+  display: none;
+}
+#timelineContent .container-mm{
+  transition-property: max-width,height,flex-basis;
+  transition-duration: .7s;
 }
 /* 占位列2个 */
 #timelineContent .container-mm.end{
@@ -55,20 +94,46 @@
   position: relative;
 }
 
+
 #timelineContent .wapper-mm .item{
   margin-left: 0;
   margin-right: 0rem;
   margin-bottom: 0.77rem;
-  font-size: 0.69rem;/*18px*/
-  line-height: 0.76rem;/*20px*/
+  font-size: 1rem;/*18px*/
+  line-height:calc(30 * 1rem / 26);
   font-family: NHaasGroteskTXPro-Rg, NHaasGroteskTXPro;
+  position: relative;
   /* 摘自row */
   --bs-gutter-x: 1.5rem;
   /* --bs-gutter-y: 0; */
   display: flex;
   flex-wrap: nowrap;
   margin-top: calc(var(--bs-gutter-y) * -1);
+  overflow: hidden;
 }
+/* 
+#timelineContent .wapper-mm .item.show{
+  max-height: 30rem;
+}
+#timelineContent .wapper-mm .item:not(.show){
+  max-height: 0px;
+  overflow: hidden;
+  margin-bottom: 0px;
+}
+ */
+#timelineContent.records .wapper-mm .item.records,
+#timelineContent.news .wapper-mm .item.news,
+#timelineContent.news .wapper-mm .item.artists
+{
+  max-height: 60vh;
+}
+#timelineContent.records .wapper-mm .item:not(.records),
+#timelineContent.news .wapper-mm .item:not(.news,.artists)
+{
+  max-height: 0px;
+  margin-bottom: 0px;
+}
+
 #timelineContent .wapper-mm .item>* {
   /* flex-shrink: 0; */
   /* width: 100%; */
@@ -78,32 +143,84 @@
   margin-top: var(--bs-gutter-y);
 }
 #timelineContent .wapper-mm .item .imgContainer{
+  display:none;
   flex:1;
+  position:relative;
+  width:100%;
+  overflow:hidden;
+  min-height:max(calc(34.7vw - 3rem) , 6rem);
 }
 #timelineContent .wapper-mm .item img.img-fluid{
+  display:block;
   object-fit:cover;
   margin: 0px;
+  width:100%;
   /* padding: 0.278rem 0.86rem; */
   transition-property: filter;
   transition-duration: .8s;
-  transition-delay: 0.3s;
+  /* transition-delay: 0.5s; */
   filter:saturate(0.4) hue-rotate(45deg) brightness(4) opacity(0);
 }
-#timelineContent .wapper-mm .item img.entered{
+#timelineContent .wapper-mm .item img.loaded.entered{
   filter:saturate(1) hue-rotate(0deg) brightness(1) opacity(4);
 }
 
 #timelineContent .wapper-mm .item .titleContainer{
-  padding-left: 0px;
-  flex: 0 0 6.54rem;
+  padding-left: calc(var(--bs-gutter-x) * .5);
+  padding-left:0px;
+  flex:0 1 100%;
 }
+
 #timelineContent .wapper-mm .item .title{
   margin-bottom: 0.61rem;
   padding-left: 0px;
 }
+#timelineContent .wapper-mm .item .title .nameArtists{
+  display:none;
+}
 #timelineContent .wapper-mm .item .tags{
   margin-bottom: 0.86rem;
 }
+#timelineContent.news .wapper-mm .item .titleContainer .imgContainer{
+  display:flex;
+}
+/* 唱片列表 */
+#timelineContent.records .wapper-mm .item .imgContainer{
+  display:flex;
+  margin-right: calc(var(--bs-gutter-x) * .5);
+}
+#timelineContent.records .wapper-mm .item .titleContainer{
+  flex: 0 0 6.54rem;
+  font-size:calc(18 * 1rem / 26);
+}
+#timelineContent.records .wapper-mm .item .title .nameArtists{
+  display:block;
+}
+#timelineContent.records .wapper-mm .item .titleContainer .imgContainer{
+  display:none;
+}
+#timelineContent.records .titleContainer .tags{
+  display:none;
+}
+#timelineContent.records .titleContainer .tags.records{
+  display:flex;
+}
+#timelineContent.records .titleContainer .tags.records .list-inline-item{
+  border:1px solid black!important;
+  border-radius: 0px!important;
+}
+#timelineContent.records .imgContainer::after{
+  content:"";
+  display:block;
+  padding-bottom:100%;
+  height:0px;
+}
+#timelineContent.records .imgContainer img.img-fluid{
+  height:100%;
+  position: absolute;
+}
+
+/* 
 #timelineContent .wapper-mm .item .list-inline-item{
   font-size: 0.444rem;
   margin: 0px;
@@ -111,7 +228,7 @@
   padding: 0.05rem 0.5rem;
   line-height: 0.6rem;
 }
-
+ */
 
 @media (min-width: 768px) {
   .heightNav{
@@ -122,11 +239,40 @@
     height:100%;
   }
   /* PC高度定位有bug */
-  #timelineContent.heightMain-md {
-    top:-26px;
+  #timelineContent {
+    /*top:-21px;*//*-26px*/
+    height:100%;
+    display: inline-flex;
   }
-
-
+  /* #timelineContent .container-mm.show{ */
+  #timelineContent.records .container-mm.records,
+  #timelineContent.news .container-mm.artists,
+  #timelineContent.news .container-mm.news,
+  #timelineContent.videos .container-mm.videos,
+  #timelineContent.shows .container-mm.shows,
+  #timelineContent.goods .container-mm.goods{
+    max-width: 40.7vw;
+    overflow: visible;
+  }
+  #timelineContent .container-mm:not(.show){
+    max-width: 0px;
+    overflow: hidden;
+  }
+  #timelineContent::before,
+  #timelineContent::after{
+    transform: translateX(calc(-100% - 1rem)) translateZ(0);
+    height:100%;
+    width:0.5rem;
+  }
+  #timelineContent::after{
+    right:0px;
+    transform: translateX(calc(100% + 1rem)) translateZ(0);
+  }
+  #timelineContent .loading{
+    display:block;
+    flex: 0 0 calc(100vw - (40.7vw));
+    min-width: calc(100vw - (40.7vw));
+  }
   /* PC内容一屏2个半 */
   #timelineContent .wapper-mm-md{
     width:34.7vw;
@@ -135,13 +281,56 @@
   #timelineContent .wapper-mm-md .item{
     margin-bottom: 1.42rem;
     margin-right: calc(var(--bs-gutter-x) * -.5);
-    font-size: 0.89rem;
-    line-height: 1.16rem;
-  
+    font-size: calc(32 * 1rem / 36);
+    line-height: calc(42 * 1rem / 36);
+
+    /* 隐藏动画 */
+    /* 
+    transition-property: max-height,margin-bottom;
+    transition-delay: 0s;
+    transition-duration: .5s;
+
+    transition-delay: .7s;
+    transition-duration: .7s;
+     */
   }
   #timelineContent .wapper-mm .item .titleContainer{
+    padding-left: 0px;
     /* padding-left: calc(var(--bs-gutter-x) * .5); */
-    flex: 0 0 auto;
+    flex: 1 0 auto;
+  }
+  #timelineContent.records .wapper-mm .item .titleContainer{
+    color: white;
+    font-size: calc(32 * 1rem / 36);
+    background-color: #000000;
+    opacity: .0;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    /* flex: 0 0 100%; */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    /* padding-bottom: calc(41 * 100% / 403); */
+    padding-left: 6%;
+    padding-right: 6%;
+    transition-property: opacity;
+    transition-duration: .5s;
+  }
+  #timelineContent.records .wapper-mm .item:hover .titleContainer:hover {
+    opacity: .8;
+  }
+  /*
+  #timelineContent.records .titleContainer .title,
+  #timelineContent.records .titleContainer .tags{
+    display:none;
+  }
+  */
+  #timelineContent.records .tags.records{
+    display:flex;
+  }
+  #timelineContent.records .titleContainer .tags.records .list-inline-item{
+    border:1px solid white!important;
   }
 }
 

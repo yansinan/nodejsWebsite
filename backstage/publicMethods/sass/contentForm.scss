@@ -54,7 +54,14 @@
         }
       }
     }
+    // 选择框
+    .el-autocomplete{
+      width:100%;
+    }
 
+    .el-select {
+      width: 100%;
+    }
     // 文本框label
     // .el-input-group__prepend{
     //   background-color: transparent;

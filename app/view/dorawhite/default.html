@@ -4,35 +4,41 @@
 <head>
     {# <meta name='viewport' content='initial-scale=1, viewport-fit=cover'> #}
     {% header adaptor="ie" %}
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.4.0/dist/lazyload.min.js"></script>  
     <script>
-        // Set the options globally
-        // to make LazyLoad self-initialize
-        window.lazyLoadOptions = {
-            threshold:800,
-            {# use_native: true #}
-        };
-        // Listen to the initialization event
-        // and get the instance of LazyLoad
-        window.addEventListener("LazyLoad::Initialized",(event)=>{
-                window.lazyLoadInstance = event.detail.instance;
-        },false);
+        {# // Set the options globally to make LazyLoad self-initialize #}
+        //window.lazyLoadOptions = {
+        //    threshold:1500,
+        //    cancel_on_exit:false,
+        //    {# use_native: true #}
+        //};
+        //window.lazyLoadInstance = new LazyLoad(window.lazyLoadOptions);
+        {# // Listen to the initialization event and get the instance of LazyLoad #}
+        //window.addEventListener("LazyLoad::Initialized",(event)=>{
+        //        window.lazyLoadInstance = event.detail.instance;
+        //},false);
+        {# timeline更新了内容，图片需要懒加载 #}
+        //this.addEventListener("BS_TIMELINE_DOM_LOADED",(e)=>{
+        //    //if(window.lazyLoadInstance)window.lazyLoadInstance.update();
+        //})
     </script>
     <!-- 引入组件库 -->
     <!-- Production version -->
     {# <script src="https://unpkg.com/@popperjs/core@2"></script> #}
     {# <script src="https://cdn.bootcdn.net/ajax/libs/popper.js/2.6.0/umd/popper.min.js"></script> #}
     {# <script src="https://unpkg.com/better-scroll@latest/dist/better-scroll.js"></script> #}
-    {# betterScroll #}
-    {% plugin name="popper twitter-bootstrap font-awesome betterScroll" %}
+    {#  font-awesome #}
+    {% plugin name="popper twitter-bootstrap betterScroll" %}
     {% endplugin %}
     {# 模块 #}
-    {% from "./public/compNavAvatar.html" import navAvatar %}
-    {% from "./public/compContainerList.html" import containerOfList %}
+    {# {% from "./public/compNavAvatar.html" import navAvatar %} #}
+    {# {% from "./public/compContainerList.html" import containerOfList %} #}
     {% from "./public/compListTags.html" import listTags %}
     {% from "./public/compTimelineBar.html" import timelineBar %}
     {% from "./public/compTimelineBar.html" import timelineBarDocs %}
     <!-- 二次开发静态资源 -->
-    {% assets 'default.css header.css footer.css timelineBar.css artist.css dora.front.js white.css avatar.css timeline.css utils.css' %}
+    {#  dora.front.js avatar.css  white.css #}
+    {% assets 'default.css detail.css header.css footer.css timelineBar.css artist.css timeline.css utils.css' %}
     {% endassets %}
 
     {% endheader %}
@@ -55,14 +61,13 @@
     {% block footer %}
         {% include "./public/footer.html" %}
     {% endblock %}
-    {# mainpage大红标题 scroll#}
 
     {% block cover %}
         <div id="mainCover" class="paddingCoverTop paddingCoverTop-md">
             {# <div class="w-100 heightNav"></div> #}
             {# scroll #}
             <div id="coverWrapper" class="bs-wrapper-cover heightMain">
-                <div class="bs-content-cover bg-transparent text-dark">
+                <div id="bsMainContent"class="bs-content-cover bg-transparent text-dark">
                     {# 空容器 #}
                     {# <div class="d-none bg-transparent"></div> #}
                     {# 横滚乐队名 #}
@@ -100,25 +105,50 @@
                     
                     })
                     {# 创建自定义事件 #}
-
-
+                    Object.defineProperties(this.slideCover,{
+                        strNow:{
+                            get:()=>(this.slideCover.getCurrentPage().pageY==1?"timeline":"artists"),
+                        },
+                    })
+                    this.slideCover.goto=function(inPage){
+                        let tar= (inPage=="artists" ? 0 : 1);
+                        {# 如果目标等于当前页，不跳转，但是相同页面也触发事件：为了使bsTimeline保持动作 #}
+                        let page=that.slideCover.getCurrentPage();
+                        if( page.pageY == tar){
+                            if(inPage!="artists"){
+                                that.dispatchEvent(new CustomEvent("BS_COVER_TIMELINE", {page:this.getCurrentPage(),bsMain:this.strNow}));
+                                that.dispatchEvent(new CustomEvent("BS_COVER_TIMELINE_FINAL", {page:this.getCurrentPage(),bsMain:this.strNow}));
+                            }
+                            return;
+                        }
+                        {# 手动slide不重复触发 #}
+                        this.disable();
+                        this.stop();
+                        this.goToPage(0,tar);
+                    }
                     {# //初始化slideCover后隐藏Cover，后面再判断是否显示 #}
                     {# $('.bs-wrapper-cover').hide(); #}
                     
-                    this.slideCover.on('slideWillChange', (page) => {
-                        {# 导航更新 #}
-                        this.header.funSetNav(this.header.strAliasNav || "timeline");
-                        //$('.bs-wrapper-cover').hide();                        
-                        
+                    this.slideCover.on('slideWillChange', (page) => {                        
                         if(page.pageY==1){
                             // 创建并分发事件
-                            this.dispatchEvent(new CustomEvent("BS_COVER_WILL_TIMELINE", {detail:{page}}))
+                            this.dispatchEvent(new CustomEvent("BS_COVER_WILL_TIMELINE", {detail:{page,bsMain:"timeline"}}));                            
+                            if(that.slideCover.enabled)that.goto("/timeline/");{# 手动拖拽需要执行一遍goto #}
+                            {# 所有动画、动作完结 #}{# 如果前往时间轴页，提前添加监听;否则已经到第二页，导航动画可能已结束 #}
+                            function eTransitionEnd(e){
+                                if(e.target.tagName=="UL"){
+                                    e.currentTarget.removeEventListener("transitionend", eTransitionEnd);
+                                    //that.header.objNavTo.bsMain=this.strNow;
+                                    //detail={page,objNew:that.header.objNavTo,objOld:that.header.objNavOld};
+                                    that.dispatchEvent(new CustomEvent("BS_COVER_TIMELINE_FINAL", {detail:{page,bsMain:that.slideCover.strNow}}));
+                                }
+                            }
+                            document.querySelector("#navHeader").addEventListener("transitionend", eTransitionEnd, {capture:false,once:false});                    
                         }else{
                             // 创建并分发事件
-                            this.dispatchEvent(new CustomEvent("BS_COVER_WILL_LISTARTISTS", {detail:{page}}))
+                            this.dispatchEvent(new CustomEvent("BS_COVER_WILL_LISTARTISTS", {detail:{page,bsMain:"artists"}}))
+                            if(that.slideCover.enabled)that.goto("/artists/");{# 手动拖拽需要执行一遍goto #}
                         }
-                        console.log("e:slideWillChange",page)
-                        {# this.slideCover.refresh(); #}
                     })
                     //this.slideCover.on('scroll', (position) => {
                     //    this.slideCover.refresh();
@@ -126,24 +156,36 @@
                     this.slideCover.on('slidePageChanged', (page) => {
                         if(page.pageY==1){
                             this.slideCover.disable();
-                            console.info("去使能");
-
                             // 创建并分发事件
-                            this.dispatchEvent(new CustomEvent("BS_COVER_TIMELINE", {detail:{page}}))
+                            let detail={page,bsMain:this.slideCover.strNow};
+                            this.dispatchEvent(new CustomEvent("BS_COVER_TIMELINE", {detail}));
                         }else{
                             this.slideCover.enable();
                             // 创建并分发事件
-                            this.dispatchEvent(new CustomEvent("BS_COVER_LISTARTISTS", {detail:{page}}))
+                            let detail={page,bsMain:this.slideCover.strNow};                            
+                            this.dispatchEvent(new CustomEvent("BS_COVER_LISTARTISTS", {detail}))
+                            this.dispatchEvent(new CustomEvent("NAV_AT", {detail}))
+
                         }
                         {# window.alert('slidePageChanged'); #}
-                        {# setTimeout(window.slideCover.refresh,1000); #}
+                        
                         this.slideCover.refresh();
+                        let timer=setInterval(()=>{that.slideCover.refresh.call(that.slideCover)},300);
+                        setTimeout(()=>{clearInterval(timer)},1000);
                     })
-                    
+                    {# slideCover初始化完成 #}
+                    this.dispatchEvent(new CustomEvent("BS_COVER_INIT"),{detail:this.slideCover});
+                </script>
+                <script>
                     {# 监听时间轴下拉事件 #}
                     this.addEventListener("BS_TIMELINE_PULL_DOWN",(e)=>{
                         console.info("BS_TIMELINE_PULL_DOWN=============>");
-                        this.slideCover.goToPage(0,0);
+                        {# this.slideCover.goToPage(0,0); #}
+                        this.goto("/artists/");
+                    })
+                    {# 页面跳转 #}
+                    this.addEventListener("NAV_TO",(e)=>{
+                        this.slideCover.goto(e.detail.objNew.bsMain);
                     })
 
                 </script>
@@ -152,25 +194,7 @@
         
 
     {% endblock %}
-    {# <div class="mainbody" id="{{pageType}}" style="width:100%;max-width:1199px;"> #}
-    <div class="d-none container-fluid position-absolute w-100 top-0" id="{{pageType}}">
-        <input type="hidden" value="{{site.lang}}" id="siteLang">
-        {# 主框架  #}
-        {# 上下slide #}
-        
-        {# 主框架 --end #}
-        {# 
-        {% block navAvatar %}
-            <div class="col-auto">
-                {{navAvatar(listAvatars,128)}}
-            </div>
-        {% endblock %} 
-        #}
-    </div>
-    <script
-    async
-    src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.4.0/dist/lazyload.min.js"
-    ></script>    
+    {# <script async src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.4.0/dist/lazyload.min.js"></script> #}
 </body>
 
 </html>

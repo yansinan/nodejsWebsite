@@ -1,20 +1,155 @@
 <!--尾部模板-->
 {# <footer id="dr-footer" class="position-absolute bg-transparent bottom-0 vw-100" style="z-index:1000;"> #}
 <footer id="dr-footer" class="footerContainer footerContainer-md border-top border-dark">
-    {% block footerUp %}{% endblock %}
-{# 
-    <div class="container">
-        <ul>
-            <li>赤瞳音乐&nbsp;
-                RubyEyes {{site.version}}
-                </a>&nbsp;Copyright (c) 2021 &nbsp;
-                <a href="http://www.beian.miit.gov.cn/" rel="nofollow" target="_blank">
-                    {{site.configs.registrationNo}}
-                </a> 
-                All Rights Reserved
-                <a href="/sitemap.html" target="_blank">{{__('lc_sitemap')}}</a>
-            </li>
-        </ul>
-    </div>
- #}
+    {% block footerUp %}
+        <div class="timelineContainer">
+            <div class="timelineBn prev">
+                <div class="bnArrow"></div>
+            </div>
+            <div id="scrollbarTimeLine" class="scrollBar" style="">
+                <div></div>
+            </div>
+            <div class="timelineMain">
+                <div id="bsTimelineBarWrapper" class="timelineBar d-flex"> 
+                    <div class="bsTimelineBarContent bsTimelineBarContent-md">
+                        <div class="left"></div>
+                        {# {{timelineBar(objTimeline)}} #}
+                        {% for objTimeline in listDateYear %}
+                        {{timelineBarDocs(objTimeline,true)}}
+                        {% endfor %}
+                        <div class="blank"></div>
+                    </div>
+                </div>
+            </div>
+            {# 年份 #}
+            <div id="timelineYearContainer" class="timelineYearContainer timelineYearContainer-md">
+                {# 
+                {% for objTimeline in listDateYear %}
+                    {% for year in objTimeline.listIdxYears %}  
+                    <div class="timelineYear"><span>{{year.strTitle}}</span></div>
+                    {% endfor %}
+                {% endfor %}
+                 #}
+                {% for year in range(pageInfo.yearNewest,pageInfo.yearTotal,-1) %}
+                <div class="timelineYear"><span>{{year}}</span></div>
+                {% endfor %}
+                {# 剩余年份 #}
+                <div class="barContainer">
+                    <div class="bar">
+                        <div id="svgNextYear" class="year">
+                            {# <div class="b-d b-y-m" x="-4.5rem" width="4.5rem"/></div> #}
+                            <div class="line"></div>
+                            <div class="line"></div>
+                            <div class="line"></div>
+                            <div class="line"></div>
+                        </div>
+                        <div class="year more">
+                            {# <div class="b-d b-y-m" x="-4.5rem" width="4.5rem"/></div> #}
+                            <div class="line"></div>
+                            <div class="line line-md"></div>
+                            <div class="line line-md"></div>
+                            <div class="line end">
+                                <div class="line"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                            </div>
+                        </div>
+                        <div class="year line"></div>
+                    </div>
+            </div>
+            </div>
+            <div class="timelineBn next">
+                <div class="bnArrow"></div>
+            </div>
+        </div>
+        <script>
+            {# 时间轴上拉动画 #}
+            Object.defineProperties(this,{
+                $footer:{
+                    get:()=>{this._$footer = this._$footer || document.getElementById("dr-footer");return this._$footer;},
+                }
+            })
+            this.$footer.init=function(){
+                function getTranslate(node,sty){//获取transform值
+                    var translates=document.defaultView.getComputedStyle(node,null).transform.substring(7);
+                    var result = translates.match(/\(([^)]*)\)/);// 正则()内容
+                    var matrix=result?result[1].split(','):translates.split(',');
+                    if(sty=="x" || sty==undefined){
+                        return matrix.length>6?parseFloat(matrix[12]):parseFloat(matrix[4]);
+                    }else if(sty=="y"){
+                        return matrix.length>6?parseFloat(matrix[13]):parseFloat(matrix[5]);
+                    }else if(sty=="z"){
+                        return matrix.length>6?parseFloat(matrix[14]):0;
+                    }else if(sty=="rotate"){
+                        return matrix.length>6?getRotate([parseFloat(matrix[0]),parseFloat(matrix[1]),parseFloat(matrix[4]),parseFloat(matrix[5])]):getRotate(matrix);
+                    }
+                }
+                function getRotate(matrix){
+                    var aa=Math.round(180*Math.asin(matrix[0])/ Math.PI);
+                    var bb=Math.round(180*Math.acos(matrix[1])/ Math.PI);
+                    var cc=Math.round(180*Math.asin(matrix[2])/ Math.PI);
+                    var dd=Math.round(180*Math.acos(matrix[3])/ Math.PI);
+                    var deg=0;
+                    if(aa==bb||-aa==bb){
+                        deg=dd;
+                    }else if(-aa+bb==180){
+                        deg=180+cc;
+                    }else if(aa+bb==180){
+                        deg=360-cc||360-dd;
+                    }
+                    return deg>=360?0:deg;
+                
+                }
+                Object.defineProperties(this,{
+                    {# 判断是否经过旋转 #}
+                    isRotated: { get:()=>( getTranslate(this,"rotate")==90 ) },
+                    {# footer左缩进,对齐内容页 #}
+                    paddingNow: { 
+                        get:()=>{
+                            let $coverWrapper=document.getElementById("coverWrapper");
+                            if(!$coverWrapper)return 0;
+                            else return this.isRotated ? $coverWrapper.getBoundingClientRect().top : $coverWrapper.getBoundingClientRect().left;
+                        } 
+                    },
+                })
+                this.$svgTimelineBar=document.getElementById("svgTimelineBar");
+                
+
+
+
+            }
+            {# footer初始化 #}
+            this.$footer.init();
+
+
+            // 添加一个适当的事件监听器
+            this.addEventListener("BS_COVER_WILL_LISTARTISTS", (page)=>{
+                document.documentElement.style.setProperty('--footer-size-mobile', "16px");
+                document.documentElement.style.setProperty('--footer-size-pc', "16px");
+                this.$footer.classList.add("listArtist");
+                this.$footer.classList.remove("done");
+            })
+            this.addEventListener("BS_COVER_WILL_TIMELINE", (page)=>{
+                document.documentElement.style.setProperty('--footer-size-mobile', "54px");
+                document.documentElement.style.setProperty('--footer-size-pc', "106px");
+                this.$footer.classList.add("timeline");
+                this.$footer.classList.remove("done");
+            })
+            this.addEventListener("BS_COVER_TIMELINE", (page)=>{
+                let cnt=0;
+                let timer=setInterval(()=>{
+                    document.documentElement.style.setProperty('--top-main-timeline-mobile', this.$footer.paddingNow+"px");
+                    cnt++;
+                    if(cnt>5)clearInterval(timer);
+                },300);
+                this.$footer.classList.add("timeline","done");
+                this.$footer.classList.remove("listArtist");
+            })
+            this.addEventListener("BS_COVER_LISTARTISTS", (page)=>{
+                this.$footer.classList.add("listArtist","done");
+                this.$footer.classList.remove("timeline");
+            })
+        </script>
+        {% include "../js/timelineBar.html" %}
+    {% endblock %}
 </footer>

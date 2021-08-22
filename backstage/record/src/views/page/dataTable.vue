@@ -25,11 +25,11 @@
       </el-table-column>
       <!-- 名称 -->
       <el-table-column prop="name" :label="$t('docs.name')" min-width="350" show-overflow-tooltip>
-        <el-row :gutter="20" slot-scope="scope">
+        <el-row :gutter="20" slot-scope="scope" :style="scope.row.state!=2 ? 'filter: opacity(0.5) grayscale(1);' : ''">
           <el-col :span="12">
             <el-avatar :src="scope.row.sImg" fit="cover" :size="128"  shape="square" @click="eLink('/'+nameMod+'/'+scope.row._id+'.html')" />
           </el-col>
-          <el-col :span="12" style="text-align:left">
+          <el-col :span="12" style="text-align:left;min-width:128px;">
             <el-button type="text" size="large" @click="editContentInfo(scope.$index, dataList)">{{scope.row.name}}  <i class="el-icon-edit" /></el-button>
             <div class="containerTag">
               <el-tag size="mini" type="success" v-for="artist in scope.row.listRefs" :key="artist._id">{{artist.name}}</el-tag>

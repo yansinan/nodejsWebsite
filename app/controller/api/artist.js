@@ -26,47 +26,29 @@ class APIController extends Controller {
         } = this;
         let targetId=inArtist._id;
         try {
-
-            let listRecords=(await ctx.service.record.find(ctx.query, {
-                sort: {dateRelease: -1},
-                query: {state: '2',listArtists:targetId},
-                searchKeys: ['sImg', 'name', 'dateRelease', 'listFormatTags'],
-                files: "sImg name dateRelease url dateTimeline"
-            })).docs;
-            
-            let listContent=(await ctx.service.content.find(ctx.query, {
+           let listTimeline=(await ctx.service.doc.find({
+                pageSize: 0,
+                isPaging:"0",
+                lean:false,
+            }, {
                 sort: {date: -1},
-                query: {state: '2',tags:targetId},
+                query: {state: '2',listRefs:targetId},
                 searchKeys: ['sImg', 'title', 'date'],
-                files: "sImg title date url"
-            })).docs;
-            let listShow=(await ctx.service.show.find(ctx.query, {
-                sort: {dateStart: -1},
-                query: {state: '2',listArtists:targetId},
-                searchKeys: ['sImg', 'title', 'dateStart'],
-                files: "sImg name title listDateDur dateStart url "
-            })).docs;
-            // 合并
-            let listTimeline=[...listRecords,...listContent || [],...listShow || []];
+                files: "sImg name date url nameTimeline"
+            }));            
             listTimeline.push({
-                name:"加入赤瞳",
+                name:inArtist.nameTimeline,
                 dateTimeline:inArtist.dateStart,
                 url:inArtist.url,
             })
-            // 排序
-            listTimeline=listTimeline.sort((a,b)=>{
-                let timeA=new Date(a.dateTimeline || a.dateRelease || a.dateStart || a.date);
-                let timeB=new Date(b.dateTimeline || b.dateRelease || b.dateStart || b.date);
-                return timeB.getTime()-timeA.getTime();
-            })
-            
             return listTimeline.map(v=>{
-                let source=v.url.split("/")[1];//artist,show,record,detail
-                let strDefault=source == "record"?"发布：":"";
+                //let source=v.url.split("/")[1];//artist,show,record,detail
+                //let strDefault=source == "record"?"发布：":"";
+                let strDefault=v.nameTimeline || v.name;
                 return {
-                    name: strDefault + ( v.sTitle || v.alias || v.title || v.name),
-                    dateTimeline: moment(new Date(v.dateTimeline || v.dateRelease || v.dateStart || v.date)).format("MM-DD"),
-                    dateYear:moment(new Date(v.dateTimeline || v.dateRelease || v.dateStart || v.date)).format("YYYY"),
+                    name: strDefault,
+                    dateTimeline: moment(new Date(v.date)).format("MM-DD"),
+                    dateYear:moment(new Date(v.date)).format("YYYY"),
                     url:v.url,
                 }
             })
@@ -92,7 +74,7 @@ class APIController extends Controller {
         } else if (type == 'navAvatar') {
             files = '_id url name alias sImg roofPlacement isTop '
         } else {
-            files = '_id url name alias sImg date discription clickNum roofPlacement type appShowType imageArr videoArr duration simpleComments comments videoImg state dismissReason categories isTop from listHotMusics listLinks listMembers listDateDur dateStart dateEnd dateYear'
+            files = '_id url name firstLetter letters alias sImg date discription clickNum roofPlacement type appShowType imageArr videoArr duration simpleComments comments videoImg state dismissReason categories isTop from listHotMusics listLinks listMembers listDateDur listVideos listImages dateStart dateEnd dateYear'
         }
         // console.log('--files----', files)
         return files;
@@ -302,15 +284,19 @@ class APIController extends Controller {
             let service=ctx.service[SERVICE_NAME];
 
             let queryObj = {
-                    // state: '2'
+                    state: '2'
                 },
                 sortObj = {
-                    date: -1
+                    letters:-1,
+                    firstLetter:-1,
+                    date: -1,
                 };
 
 
             if (ctx.query.pageType == 'index') {
                 sortObj = {
+                    letters:-1,
+                    firstLetter:-1,
                     roofPlacement: -1,
                     date: -1
                 };
@@ -366,7 +352,36 @@ class APIController extends Controller {
                 searchKeys: ['userName', 'name', 'comments', 'discription'],
                 files: this.getListFields(filesType)
             });
-
+            // 乐队推荐&置顶消息
+            let listIdArtists=listRes.map(v=>(v.id));
+            let listDocNotice = await ctx.service.doc.find(
+                {
+                    //filesType:"timelineBar", 
+                    pageSize: 0,
+                    isPaging:"0",
+                    lean:false,
+                },{
+                    query:{
+                        listRefs: {"$in" : listIdArtists },
+                        $or:[{isTop:1},{roofPlacement: "1"}],
+                        //roofPlacement: "1",
+                    },
+                    files:"_id date listDateDur dateTimeline name nameTimeline alias nameArtists sImg url listRefs",
+                    populate:[{
+                        path: '',
+                        select: ''
+                    }],
+                    sort:{date: -1,roofPlacement: -1,},
+                    searchKeys:['listRefs',"roofPlacement"]
+                });
+            listRes.forEach(artist=>{
+                artist.listNotices=listDocNotice.filter(doc=>{
+                    let docFind=doc.listRefs.find(v=>(v==artist.id));
+                    if(docFind)doc=JSON.parse(JSON.stringify(doc));                    
+                    return docFind;
+                });
+                artist.listNotices=artist.listNotices.splice(0,Math.min(artist.listNotices.length,2));
+            })
             let listTmpRes = await this.renderList(userInfo._id, listRes.docs || listRes);
             // 为了适配isPaging=0 && pageSize=0全部列表的结果是数组的情况；
             if(listRes.docs)listRes.docs=listTmpRes;
@@ -508,7 +523,7 @@ class APIController extends Controller {
 
             let queryObj = {
                 _id: targetId,
-                state: '2',
+                //state: '2',
                 //uAuthor: {
                 //    $ne: null
                 //}
@@ -528,12 +543,20 @@ class APIController extends Controller {
             renderContent = await this.renderList(userInfo._id, renderContent);
             // 获取唱片
             // ctx.query.idArtist=targetId;
-            renderContent[0].objDocsRecords=await ctx.service.record.find(ctx.query, {
+            renderContent[0].objDocsRecords=await ctx.service.record.find({isPaging:false,pageSize:0,},{
                 sort: {dateRelease: -1},
-                query: {state: '2',listArtists:targetId},
-                searchKeys: ['sImg', 'name', 'dateRelease', 'listFormatTags'],
+                query:{                    
+                    listRefs:targetId,
+                    state: '2'
+                },
                 files: "sImg name listFormatTags date"
             });
+            //await ctx.service.record.find(ctx.query, {
+            //    sort: {dateRelease: -1},
+            //    query: {state: '2',listArtists:targetId},
+            //    searchKeys: ['sImg', 'name', 'dateRelease', 'listFormatTags'],
+            //    files: "sImg name listFormatTags date"
+            //});
             // 获取时间线:演出，唱片，新闻，视频，加入
             renderContent[0].listTimeline= await this.getListTimeline(renderContent[0]);
 

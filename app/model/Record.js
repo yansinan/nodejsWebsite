@@ -68,18 +68,22 @@ module.exports =app=>{
         //     }
         //     return v;
         // });
-        schema.path('date').get(function (v) {
-            return moment(v).format("YYYY-MM-DD");
-        });
-        schema.virtual('dateTimeline').get(function () {
-            return moment(this.dateRelease).format("YYYY-MM-DD");
-        });
+        //schema.virtual('dateTimeline').get(function () {
+        //    return moment(this.dateRelease).format("YYYY-MM-DD");
+        //});
         // url地址
         schema.virtual('url').get(function () {
             return `/record/${this._id}.html`;
         });
+        schema.virtual('nameTimeline').get(function (){
+            return "专辑《"+this.name + "》发布";
+        })
         schema.virtual('listArtists').get(function () {
             return this.listRefs;
+        });
+        schema.virtual('nameArtists').get(function () {
+            let listName=this.listRefs.map(v=>(v.name));
+            return listName.join();
         });
         let model=app.model.Record || Doc.discriminator("Record", schema);
     

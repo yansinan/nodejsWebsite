@@ -5,6 +5,7 @@
     transition-property: all;
     transition-duration: 0.5s;
 
+    overflow: visible;
     z-index:1000;
     
     width:calc(var(--vh, 1vh) * 100)!important;
@@ -47,6 +48,15 @@
     overflow: visible;
 }
 .foot-float.back-to-top{
+    background-color: #fff;
+    position: fixed;
+    bottom: 150px;
+    border-radius: 20px;
+    cursor: pointer;
+    -webkit-transition: .3s;
+    transition: .3s;
+    /* box-shadow: 0 0 6px rgb(0 0 0 / 12%); */
+    
     z-index: 1001;
     width: min-content;
     height: min-content;
@@ -58,6 +68,7 @@
     box-shadow: none;
     border: none;
     overflow: visible;
+
 }
 .foot-float .btnRubyEyes{
     width: 2.3rem;
@@ -69,6 +80,9 @@
 /*@import url("/static/themes/dorawhite/css/timelineBar.css");*/
 
 @media (min-width: 768px) {
+    #dr-footer{
+        overflow: hidden;
+    }
     .foot-float .btnRubyEyes-md{
         width: 2rem;
         height: 2rem;

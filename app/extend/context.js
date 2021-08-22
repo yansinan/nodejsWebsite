@@ -265,7 +265,8 @@ module.exports = {
         let ctx = this;
         let payload = ctx.params;
         let pageData = {
-            pageType: ctx.pageType || inPageType,
+            pageType: ctx.pageType || inPageType || "index",
+            staticforder: 'dorawhite' ,
         };
 
         // console.log('--payload--', payload)
@@ -273,27 +274,29 @@ module.exports = {
 
         // let targetTempPage = ctx.tempPage;
         // 获取当前模板信息
-        let defaultTemp = await ctx.helper.reqJsonData('contentTemplate/getDefaultTempInfo');
-
-        // 获取用户信息
-        if (ctx.session.logined) {
-            pageData.userInfo = ctx.session.user;
-            pageData.logined = ctx.session.logined;
-        }
+        //let defaultTemp = await ctx.helper.reqJsonData('contentTemplate/getDefaultTempInfo');
+        let defaultTemp = await this.service.uploadFiles.cacheJSON(`${(process.cwd() + '/app/public')}/cache/objDefaultTemp.json`,{tar:this,fun:ctx.helper.reqJsonData, params:['contentTemplate/getDefaultTempInfo'] },true,true);
         // 静态目录
         if (!_.isEmpty(defaultTemp)) {
             pageData.staticforder = defaultTemp.alias;
         } else {
             throw new Error(ctx.__('validate_error_params'));
         }
-
+        // 获取用户信息
+        if (ctx.session.logined) {
+            pageData.userInfo = ctx.session.user;
+            pageData.logined = ctx.session.logined;
+        }
         // 所有页面都需要的基础数据
-        pageData.navigation = await ctx.helper.reqJsonData('contentCategory/getList', payload);
-        pageData.site = await this.getSiteInfo();
+        // pageData.navigation = await ctx.helper.reqJsonData('contentCategory/getList', payload);
+        pageData.navigation = await this.service.uploadFiles.cacheJSON(`${(process.cwd() + '/app/public')}/cache/objNavigation.json`,{tar:this,fun:ctx.helper.reqJsonData, params:['contentCategory/getList', payload] },true,true);
+
+        // pageData.site = await this.getSiteInfo();
+        pageData.site = await this.service.uploadFiles.cacheJSON(`${(process.cwd() + '/app/public')}/cache/objSite.json`,{tar:this,fun:this.getSiteInfo, params:[] },true,true);
         pageData.staticRootPath = this.app.config.static.prefix;
         pageData.staticThemePath = this.app.config.static.prefix + '/themes/' + defaultTemp.alias;
-        // 人物（艺术家）列表
-        pageData.listAvatars = (await ctx.helper.reqJsonData('artist/getList', {filesType:"navAvatar", pageSize: 0,isPaging:"0",})).docs;
+        //// 人物（艺术家）列表
+        //pageData.listArtists = (await ctx.helper.reqJsonData('artist/getList', {filesType:"navAvatar", pageSize: 0,isPaging:"0",})).docs;
         
         // 针对分类页和内容详情页动态添加meta
         // let defaultTempItems = defaultTemp.items;

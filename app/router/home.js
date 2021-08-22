@@ -14,14 +14,23 @@ module.exports = app => {
 
     // 测试新的复杂滚动首页
     router.get(["/test", ], controller.page.index.getTestPage);
-    router.get(["/", "/zh-CN", "/zh-TW", "/en"], controller.page.index.getDataForIndexPage);
+    router.get(["/", "/index/*" ,"/zh-CN", "/zh-TW", "/en"], controller.page.index.getDataForIndexPage);
 
     router.get("/page/:current.html", controller.page.home.getDataForIndexPage);
+
+    // 静态介绍入口
+    router.get([
+        //"/about___",
+        "/about___.html",
+        "/about___:typeId?",
+        "/about___:typeId?.html",
+    ],controller.page.detail.getDataAbout);
 
     // 内容详情入口
     router.get("/details/:id.html", controller.page.home.getDataForContentDetails);
     // 艺术家详情
-    router.get("/artist/:id.html", controller.page.home.getDataForArtistDetails);
+    router.get("/artist___:id.html", controller.page.detail.getDataForArtistDetails);
+    router.get("/:service?___:id.html", controller.page.detail.getDataForDocDetails);
     //检索艺术家的专辑
     router.get("/record/artist/:idArtist", controller.api.record.list);
     // 专辑详情

@@ -1,25 +1,117 @@
 {# 横滚乐队名 #}
 <div id="coverArtistsWrapper" class="d-none bs-wrapper-listArtist paddingTop paddingTop-md">                        
-    <div class="bs-content-listArtist">
-        {% for artist in listArtists %}
+    <div class="bs-content-listArtist listArtists">
+        {% for artist in listArtists|sort(false,false,"letters") %}
         {# 乐队名列表 #}
         {# <h1 class="display-1">RUBY</h1> #}
         <div class="artist artist-md d-flex align-items-center ">
-            <a href="{{artist.url}} " target="_blank ">
-                {{artist.name}}
-            </a>
+            {# <div class="fixed"><div class="sImg"><img src="{{artist.sImg}}" width="0px" data-src="{{artist.sImg}}" alt="{{artist.nameTimeline}}"  class="img-fluid"/></div></div> #}
+             
+            <button 
+                class="name btn btn-link" 
+                data-dr-url="/artist___{{artist.id}}.html">
+                <span 
+                    tabindex="0"
+                    data-bs-toggle="tooltip" 
+                    data-bs-html="true" 
+                    data-s-img="{{artist.sImg}}"
+                    title=' '>
+                    {{artist.name}}
+                </span>
+            </button>
+            {% if artist.listNotices.length > 0%}
             <button 
                 tabindex="0"
                 class="noticeCnt d-flex flex-shrink-0 justify-content-center border border-1 border-dark rounded-circle" 
                 data-bs-toggle="tooltip" 
                 data-bs-html="true" 
-                title="<div>演出回顾|重庆巡回{{artist.name}}</div><div>专辑发布|永无宁日RURBUR-Evening Sitdown Vision</div>">
-                +2
+                title=' '>
+                +{{artist.listNotices.length}}
             </button>
+            {% for doc in artist.listNotices %}<div class="notice d-none" data-dr-url="/doc___{{doc.id}}.html">{{doc.nameTimeline}}</div>{% endfor %}
+            {% endif %}
+            <img src="{{artist.sImg}}" width="0px" alt="{{artist.nameTimeline}}" class="sImg img-fluid"/>
         </div >
         {% endfor %}
         {# 最后一列占宽用 #}
         <div class="artist artist-md d-flex align-items-center"></div>
+        <script>
+        document.getElementById("coverArtistsWrapper").querySelectorAll(".artist").forEach($artist=>{
+            var $listNameArtists = $artist.querySelectorAll('.name [data-bs-toggle="tooltip"]');
+            if(!$listNameArtists)return;
+            $listNameArtists.forEach(function ($nameArtist) {
+                if($nameArtist.tooltip && $nameArtist.tooltip.dispose)$nameArtist.tooltip.dispose();
+                let strClass=Math.random()>0.5 ? "sImg verticle" : "sImg";
+                let tooltip = new bootstrap.Tooltip($nameArtist,{
+                    trigger:"manual",
+                    customClass:strClass,
+                    offset:[20,0],
+                    popperConfig:{
+                        placement: 'top-start',
+                        modifiers:[
+                            {
+                                name: 'preventOverflow',
+                                options: {
+                                    mainAxis: true, // true by default
+                                    boundary: document.getElementById("coverArtistsWrapper"),
+                                },
+                            },
+                        ]                                           
+                    }
+                })
+                tooltip.$sImg=$artist.querySelector(".sImg");
+                $nameArtist.tooltip=tooltip;
+                $nameArtist.addEventListener('shown.bs.tooltip', function (e) {
+                    console.log("sImg:","show.bs.tooltip");
+                    let tooltip=e.target.tooltip;
+                    if(tooltip && tooltip.$sImg){
+                        let $inner=tooltip.tip.querySelector(".tooltip-inner");
+                        let $dom=tooltip.$sImg.cloneNode(true);
+                        //let $dom=new Image();
+                        //$dom.src=tooltip.$sImg.src;
+                        $inner.append($dom);
+                        $dom.decode().then(() => {
+                            $dom.classList.add("loaded");
+                        }).catch((encodingError) => {
+                        // Do something with the error.
+                        })
+                        //function eLoad(e){
+                        //    let $sImg=e.currentTarget;
+                        //    $inner.append($sImg);
+                        //    $sImg.classList.add("loaded");
+                        //}
+                        //if($dom.complete)eLoad({currentTarget:$dom})
+                        //else $dom.addEventListener("load",eLoad)
+                    }
+                })
+                $nameArtist.addEventListener("mousemove",(e)=>{
+                    let tooltip=e.target.tooltip
+                    if(tooltip && !tooltip.tip.classList.contains("show")){
+                        tooltip.tip.classList.add("show");
+                    }
+                });
+                $nameArtist.addEventListener("mouseenter",(e)=>{
+                    let tooltip=e.target.tooltip
+                    if(tooltip){
+                        tooltip.show();
+                    }
+                });
+
+                $nameArtist.addEventListener("mouseleave",(e)=>{
+                    let tooltip=e.target.tooltip
+                    if(tooltip)tooltip.hide();
+                });
+                return tooltip;
+            })
+
+            {# 乐队名按钮 #}
+            function eBnArtist(e){
+                window.goto(e.currentTarget.dataset.drUrl);
+            }
+            let $bnArtist=$artist.querySelector("button.name");
+            if($bnArtist)$bnArtist.addEventListener("click",eBnArtist)
+        })
+        </script>
     </div>
     {# 乐手列表 #}
     <script>
@@ -31,7 +123,7 @@
             disableTouch: false,
             mouseWheel: true,
             scrollX: true,
-            startX:-1,
+            //startX:-1,
             scrollY: false,
             //nestedScroll: {
             //    groupId: 'cover-scrollY'
@@ -47,6 +139,8 @@
             bounce: true,
             //stopPropagation: true,
             click:true,
+            //tap:"tap",
+            //preventDefaultException:{ tagName: /^(INPUT|TEXTAREA|BUTTON|SELECT|AUDIO|A)$/},
             probeType: 3,
             observeDOM: true ,// 开启 observe-dom 插件
         })
@@ -61,85 +155,9 @@
 
 
 
-        function eInitTooltip(e){
-            let eShow=function(e){
-                if(e.target.tooltip){
-                    e.target.tooltip.update()
-                    e.target.tooltip.show();
-                }
-                //e.preventDefault();
-            }
-            let eHide=function(e){
-                if(e.target.tooltip)e.target.tooltip.hide();
-            }
-            let isIOS=function(){
-                var u = navigator.userAgent, app = navigator.appVersion;
-                var isXiaomi = u.indexOf('XiaoMi') > -1; // 小米手机
-                var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1; // 其它安卓
-                var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); // ios
-                if (isAndroid) {
-                    {# alert("Android系统"); #}
-                }else if (isIOS) {
-                    if(isXiaomi) {
-                        {# alert("您的浏览器标识为iPhone，请前往设置：“设置”->“高级设置”->“浏览器标识=默认”"); #}
-                    }else {
-                        {# alert("ios系统"); #}
-                        return isIOS
-                    }
-                }
-                return false;
-            }
-            var tooltipTriggerList = [].slice.call($coverArtistsWrapper.querySelectorAll('[data-bs-toggle="tooltip"]'))
-            $coverArtistsWrapper.tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
 
-                if(tooltipTriggerEl.tooltip && tooltipTriggerEl.tooltip.dispose)tooltipTriggerEl.tooltip.dispose();
-                let tooltip = new bootstrap.Tooltip(tooltipTriggerEl,{
-                    //boundary: $coverArtistsWrapper, // or document.querySelector('#boundary')
-                    //container: $coverArtistsWrapper,//tooltipTriggerEl,//$coverArtistsWrapper.querySelector(".bs-content-listArtist"),
-                    //trigger:"hover focus",
-                    trigger:"manual",
-                    popperConfig:{
-                        modifiers:[
-                            {
-                                name: 'offset',
-                                options: {
-                                    offset:({ placement, reference, popper }) => {
-                                        if (isIOS()) {
-                                            return [];//[-35, -50];
-                                        } else {
-                                            return [];
-                                        }
-                                    },
-                                }
-                            },{
-                                name: 'preventOverflow',
-                                options: {
-                                    mainAxis: true, // true by default
-                                    boundary: $coverArtistsWrapper,
-                                },
-                            },
-                        ]
-                                                                            
-                    }
-                })
-                tooltipTriggerEl.tooltip=tooltip;
-                tooltipTriggerEl.addEventListener('hidden.bs.tooltip', function (e) {
-                    this.classList.remove("now");
-                })
-                tooltipTriggerEl.addEventListener('show.bs.tooltip', function (e) {
-                    this.classList.add("now");
-                })
-                tooltipTriggerEl.addEventListener("touchstart",eShow);
-                tooltipTriggerEl.addEventListener("mouseenter",eShow);
-
-                tooltipTriggerEl.addEventListener("mouseleave",eHide);
-                //tooltipTriggerEl.addEventListener("touchcancel",tooltipTriggerEl.tooltip.show);
-                
-                return tooltip;
-            })
-        }
         {# this.addEventListener("BS_COVER_LISTARTISTS",eInitTooltip); #}
-        eInitTooltip();
+        eInitTooltip($coverArtistsWrapper,"top-start",$coverArtistsWrapper);
         //slideListArtist.on("scroll",()=>{
         //    if(!$coverArtistsWrapper.tooltipList)return;
         //    $coverArtistsWrapper.tooltipList.forEach((tooltip)=>{

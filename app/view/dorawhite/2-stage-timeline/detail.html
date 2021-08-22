@@ -1,0 +1,44 @@
+{% from "../public/compListTags.html" import tag as domTag %}
+{% from "../public/compListTags.html" import listTags as listTags %}
+{% from "../public/compAvatar.html" import avatar %}
+<div class="detail font-normal">
+    {# 乐队名 #}
+    <div class="name">{{post.name}} {{post.alias}}</div>
+    {# 乐队图 #}
+    <div class="album scrollerSnap">
+        <img src="{{post.sImg}}" alt="{{image.name}}"/>
+    </div>
+    {# 标签 #}
+    {{ listTags(post.tags) }}
+    {# 介绍 #}
+    <article class="">
+        {{post.comments | safe}}
+    </article>
+    {# 友链 #}
+    {% if post.listLinks.length>0%}
+    <ol class="breadcrumb">
+        {% for link in post.listLinks %}
+        <li class="breadcrumb-item"><a href="#">{{link.name}}</a></li>
+        {% endfor %}
+    </ol>
+    {% endif %}
+    <div class="headEnd"></div>
+
+    {# 时间轴 #}
+    {% if post.listRefs.length>0%}
+    <div class="block title news">
+        <div class="list">      
+            {% for item in post.listRefs %}
+            {# {%if post.listTimeline[loop.first]  or itme.dateYear!=post.listTimeline[loop.revindex0].dateYear %} #}
+            {# <div class="year">{{ item.dateYear}}</div> #}
+            {# {% endif %} #}
+            <a class="item">
+                {# <span class="date" >{{ item.dateTimeline}}</span> #}
+                {{ item.name }}
+            </a>                            
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}    
+
+</div>

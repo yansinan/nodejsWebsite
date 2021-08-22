@@ -20,7 +20,14 @@
             </slot>
             <!-- 副标题 -->
             <el-form-item prop="alias">
-              <el-input v-model="formState.formData.alias" maxlength="50" show-word-limit><template slot="suffix">{{$t(nameMod + '.nameAlias')}}</template></el-input>
+              <el-autocomplete 
+                v-model="formState.formData.alias" 
+                maxlength="50" 
+                show-word-limit 
+                :placeholder="getPinYin(formState.formData.name)" 
+                :fetch-suggestions="suggestAlias"
+                ><template slot="suffix">{{$t(nameMod + '.nameAlias')}}</template>
+              </el-autocomplete>
             </el-form-item>
 
             <slot name="leftMiddle"></slot>
@@ -128,11 +135,13 @@
 @import "@root/publicMethods/sass/contentForm.scss";
 </style>
 <script>
-    import '@/set-public-path'
-    import VueUeditorWrap from "vue-ueditor-wrap";
-    import {methods,initData,components,data,props,computed} from "@root/publicMethods/vue/contentForm";
+  import '@/set-public-path'
+  import VueUeditorWrap from "vue-ueditor-wrap";
+  import {methods,initData,components,data,props,computed} from "@root/publicMethods/vue/contentForm";
 
-    import _ from "lodash";
+  import _ from "lodash";
+  // 别名的拼音
+  import {getPinYin} from "@root/publicMethods/modPinYin";
     // v-model nameMod
   export default {
     props: {
@@ -251,6 +260,10 @@
             //触发
             if(this.value && this.value.formData) this.$emit('input',this.value);
             
+        },
+        "formState.formData.name"(nV,oV){
+            // 别名为空，自动填充拼音
+            // if(this.formState.formData.alias=="")this.formState.formData.alias=getPinYin(this.formState.formData.name);
         }
     },
     computed: {
@@ -259,6 +272,12 @@
     },
     methods: {
         // ...methods,
+        getPinYin:getPinYin,
+        suggestAlias(queryString, cb) {
+          var results = [ {"value":getPinYin(this.formState.formData.name)} ];
+          // 调用 callback 返回建议列表的数据
+          cb(results);
+        },
         backToList:methods.backToList,
         updateKeywords:methods.updateKeywords,
         editorReady:methods.editorReady,

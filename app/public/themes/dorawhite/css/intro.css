@@ -1,20 +1,6 @@
 /* base factor 16/37.5px=0.427   2.34 */  
 /* header详情弹出层 */
-.offcanvas-end{
-    width:100vw;
-}
-.offcanvas-header{
-    padding: 0.77rem 0.77rem;
-}
-.offcanvas-header .btn-close{
-    padding: .214rem .214rem;
-    margin-top: -.214rem;
-    margin-right: -.214rem;
-    margin-bottom: -.214rem;
-}
-.offcanvas-body{
-    padding: 0.77rem 0.77rem;
-}  
+
 
 .section {
     /* width: 10.054rem; */
@@ -24,10 +10,10 @@
     font-size: 0;
   }
 .section span{
-    font-size: 0.64rem;
+    font-size: calc(24 * 1rem / 26);
     /* font-family: PingFangSC-Regular; */
     color: rgba(0, 0, 0, 1);
-    line-height: 0.88rem;
+    line-height: calc(33 * 1rem / 26);
 }
 .section .foot {
     z-index: 9;
@@ -35,35 +21,15 @@
     display: block;
     overflow-wrap: break-word;
     color: rgba(155, 155, 155, 0.8);
-    font-size: 0.615rem;
+    font-size: calc(16 * 1rem / 26);
     letter-spacing: 0.02181817963719368px;
-    line-height: 0.587rem;
+    line-height: 1.27rem;
     text-align: center;
     margin-top: 0.854rem;
 }
 
 @media (min-width: 768px) {
-/* header详情弹出层 */
-    .offcanvas-end{
-        width:65vw;
-    }
-    .offcanvas-header{
-        justify-content:flex-end;
-        padding: 0.427rem 0.427rem;
-    }
-    .offcanvas-header .icon-arrow.left{
-        display: none;
-    }
-    .offcanvas-header .btn-close{
-        padding: .214rem .214rem;
-        margin-top: -.214rem;
-        margin-right: -.214rem;
-        margin-bottom: -.214rem;
-    }
-    .offcanvas-body{
-        padding: 0.427rem 0.427rem;
-        padding-right: 3.67rem;
-    }  
+
 
     .section span{
         font-size: 0.667rem;

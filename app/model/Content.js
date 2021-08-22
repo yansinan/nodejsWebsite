@@ -129,7 +129,7 @@ module.exports = app => {
     });
 
     ContentSchema.path('date').get(function (v) {
-        return moment(v).format("YYYY-MM-DD HH:mm:ss");
+        return moment(v).format("YYYY-MM-DD");
     });
     ContentSchema.path('updateDate').get(function (v) {
         return moment(v).format("YYYY-MM-DD HH:mm:ss");
@@ -137,6 +137,15 @@ module.exports = app => {
 
     ContentSchema.virtual('url').get(function () {
         return `/details/${this._id}.html`;
+    });
+    // 为了和doc同步;
+    ContentSchema.virtual('name').get(function (v) {
+        return this.title;
+    }).set((v)=>{
+        this.name=v;
+    });
+    ContentSchema.virtual('alias').get(function (v) {
+        return this.stitle;
     });
     let model=app.model.Content || Doc.discriminator("Content", ContentSchema);
     // app.model.Artist=model;

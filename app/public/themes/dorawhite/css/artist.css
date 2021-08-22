@@ -31,7 +31,8 @@
     max-height:100%;
     min-height:calc(1.5rem*12);
 }
-#coverArtistsWrapper .artist{
+.listArtists .artist{
+    position: relative;
     display: flex;
     align-items: flex-start;
     max-width:78.26vw;
@@ -43,22 +44,91 @@
     /* height:calc(min(1.8rem,(100%/12))); */
     /* height:1.8rem; */
     flex:0 0 1.5rem;
+    
     min-height:1.2rem;
     max-height:1.8rem;
+    height: fit-content;
 }
-#coverArtistsWrapper .artist a{
+/* PC乐队图提示 */
+.tooltip.sImg .tooltip-inner{
+    pointer-events: none;
+    position: relative;  
+    display:block;
+    min-width: 390px;
+    width: max(390px,32.4vw);
+    max-width:32.4vw;
+    text-align: left;
+    border:none;
+    background-color: transparent;
+}
+.tooltip.sImg .tooltip-inner::after{
+    content:"";
+    display:block;
+    padding-bottom: calc(9 * 100% / 16);
+    height:0px;
+}
+.tooltip.sImg .tooltip-inner img{
+    background-color: black;
+    display:block;
+    position: absolute;/*跳出文档，不会扩wrapper*/
+    object-fit: cover;
+    width: 100%;
+    height:auto;
+    max-height:100%;
+}
+/**/
+.tooltip.sImg .tooltip-inner img{
+    transition-property: filter,opacity;
+    transition-duration: .4s;
+    /* transition-delay: 1s; */
+    filter:saturate(0.4) hue-rotate(45deg) brightness(4) opacity(.3);  
+}
+.tooltip.sImg.show .tooltip-inner img.loaded{
+    filter:saturate(1) hue-rotate(0deg) brightness(1) opacity(1);
+}
+
+.tooltip.sImg.verticle .tooltip-inner::after{
+    padding-bottom: calc(3 * 100% / 2);
+}
+.tooltip.sImg.verticle .tooltip-inner img{
+    height:100%;
+    width:auto;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+.listArtists .artist .btn:active, 
+.listArtists .artist .btn:focus, 
+.listArtists .artist .btn:active:focus, 
+.listArtists .artist .btn.active:focus,
+.listArtists .artist .btn.focus, 
+.listArtists .artist .btn:active.focus, 
+.listArtists .artist .btn.active.focus {
+	outline: none;
+    /* box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%); */
+    box-shadow: none;
+}
+.listArtists .artist button.name{
+    text-align: left;
+    padding: 0;
+    -webkit-appearance: none;
+}
+.listArtists .artist .name{
     
     /* font-size: 0.693rem; */
     font-size: 1rem;
     /* line-height: 0.8rem; */
     /* line-height: 1.15rem; */
-    color: rgba(0, 0, 0, 1);
+    /* color: rgba(0, 0, 0, 1); */
+    color: inherit;
     text-decoration: underline;
+    line-height: 1rem;
 }
-#coverArtistsWrapper .artist a:not(:hover) {
+
+.listArtists .artist .name:not(:hover) {
     text-decoration: none;
 }
-#coverArtistsWrapper .noticeCnt{
+.listArtists .noticeCnt{
     /* font-size:0.373rem; */
     /* font-size: 0.426rem; */
     font-size: 0.48rem;
@@ -75,14 +145,14 @@
     color:black;
     -webkit-appearance:none;
 }
-#coverArtistsWrapper .noticeCnt.now{
+.listArtists .noticeCnt.now{
     filter: invert(100%);
 }
 .tooltip{
     /* filter: invert(100%); */
     /* padding:.4rem .4rem; */
     /* border: 1px solid red; */
-    padding-right: .4rem;    
+    /* padding-right: .4rem;     */
 }
 .tooltip.show{
     opacity: 1;
@@ -103,7 +173,8 @@
     writing-mode: horizontal-tb;
     /* max-width:13.85rem; */
     max-width:13rem;
-    width:13rem;
+    width:auto;
+    min-width:10rem;
 }
 .tooltip .tooltip-inner div{
     display:flex;
@@ -112,7 +183,13 @@
     text-align: left;
     border-bottom:1px solid black;
     padding:0.42rem;
-    
+    cursor: pointer;
+}
+.tooltip .tooltip-inner div:not(:hover) {
+    text-decoration: none;
+}
+.tooltip .tooltip-inner div:hover{
+    text-decoration: underline;
 }
 .tooltip .tooltip-inner div::before{
     content:"";
@@ -128,7 +205,7 @@
     #coverArtistsWrapper.paddingTop-md{
         padding-top: 15px;
     }
-    #coverArtistsWrapper .artist-md{
+    .listArtists .artist-md{
         /* height:calc(100%/15); */
         /* PC宽415+52 */
         min-width:32.4vw;
@@ -136,9 +213,17 @@
         /* width:32.4vw; */
         /* padding-bottom: 6px; */
         height:1.2rem;
+        height: fit-content;
+        margin-right: 1rem;
+        flex: 0 0 1.5rem;
+        min-height: fit-content;
+        max-height: none;
+        padding-bottom: 0.5rem;
+
     }
     body .tooltip .tooltip-inner{
-        max-width:10rem;
-        width:10rem;
+        max-width: 20rem;
+        font-size: calc(24 * 1rem /36);
+        min-width: 10rem;
     }
 }

@@ -1,7 +1,8 @@
-/**
- * Created by Dr on 2019/11/10.
- * update by dr on 2019/12/8.
- * 文档类
+/*
+ * @Author: dr 
+ * @Date: 2019/11/10 20:30:53 
+ * @Last Modified by: dr
+ * @Last Modified time: 2021-08-19 23:16:19
  */
 const INIT_DOC= app=>{
     //如果已经初始化过，则直接返回；
@@ -141,10 +142,48 @@ const INIT_DOC= app=>{
     schema.path('updateDate').get(function (v) {
         return moment(v).format("YYYY-MM-DD HH:mm:ss");
     });
+    
+    schema.virtual('title').get(function () {
+        return this.name;
+    });
     // 年份信息
     schema.virtual('dateYear').get(function () {
         return moment(new Date(this.date)).format("YYYY") + " ";
     });
+    schema.virtual('dateTimeline').get(function () {
+        return moment(this.date).format("MM/DD");
+    });
+    schema.virtual('dateYYYYM').get(function () {
+        return " "+moment(this.date).format("YYYYM");
+    });
+    schema.virtual('dateMM').get(function () {
+        return " "+moment(this.date).format("M月");
+    });
+    schema.virtual('dateFull').get(function () {
+        return moment(this.date).format("YYYY-MM-DD");
+    });
+    // date在全年天数的百分比;
+    schema.virtual('percentDateOfYear').get(function (){        
+        //全年天数;
+        let cntDaysFullYear=Math.abs(moment(this.date).startOf("year").diff(moment(this.date).endOf("year"),"days"));
+        //当前第几天
+        let idxDayOfYear=Math.abs(moment(this.date).startOf("year").diff(moment(this.date),"days"));
+        //console.log(this.name || this.title,this.doc,moment(this.date).format("YYYY-MM-DD"),idxDayOfYear,cntDaysFullYear,Math.abs(idxDayOfYear*100/cntDaysFullYear).toFixed(3))
+        return Math.abs(idxDayOfYear*100/cntDaysFullYear).toFixed(3);
+    })
+    // 客户端用的doc别名;
+    schema.virtual('docAlias').get(function (v){        
+        const dictTimeline={
+            "Record":"records",
+            "Content":"news",
+            "Artist":"artists",
+        }
+        return dictTimeline[this.doc || "news"];
+    })
+    // 时间轴标题
+    schema.virtual('nameTimeline').get(function (){
+        return this.name;
+    })
     app.model=app.model || {};
     let model=app.model.DocModel || mongoose.model("Doc", schema);
     app.model.DocModel=model;

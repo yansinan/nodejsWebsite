@@ -26,8 +26,8 @@
       <!-- 名称 -->
       <el-table-column prop="name" :label="$t('docs.name')" min-width="250" show-overflow-tooltip>
         <template slot-scope="scope">
-          <el-avatar :src="scope.row.sImg" fit="cover" size="large"  @click="eLink('/'+nameMod+'/'+scope.row._id+'.html')" />
-          <el-button type="text" size="large" @click="editContentInfo(scope.$index, dataList)">{{scope.row.name}}  <i class="el-icon-edit" /></el-button>
+          <el-avatar :src="scope.row.sImg" fit="cover" size="large"  @click="eLink('/'+nameMod+'/'+scope.row._id+'.html')" :style="scope.row.state!=2 ? 'filter: opacity(0.5) grayscale(1);' : ''"/>
+          <el-button type="text" size="large" @click="editContentInfo(scope.$index, dataList)" :style="scope.row.state!=2 ? 'filter: opacity(0.5) grayscale(1);' : ''">{{scope.row.name}}  <i class="el-icon-edit" /></el-button>
           <!-- <div v-else class="col-name hide" ><el-avatar :src="scope.row.sImg" :fit="cover"/>{{scope.row.name}}</div> -->
         </template>
       </el-table-column>

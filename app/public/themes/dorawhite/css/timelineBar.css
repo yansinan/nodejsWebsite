@@ -1,8 +1,13 @@
 
 #dr-footer .timelineContainer{
-    --width-timeline-bar-wrapper:82.3%;
+    --width-timeline-bar-wrapper:calc();
+    --width-timeline-bar-wrapper-pc: calc(100vw - var(--width-timeline-bar-end-pc) );
+    --width-timeline-bar-wrapper-mobile: calc( (var(--vh,1vh) * 100) - (var(--width-footer-bn-mobile) * 2) - var(--width-timeline-bar-end-mobile) );
+
     --width-timeline-bar-year-span-pc:160px;
     --width-timeline-bar-year-span-mobile:40px;
+    --width-timeline-bar-end-pc:calc(var(--width-timeline-bar-year-span-pc) * 3 / 2);
+    --width-timeline-bar-end-mobile:calc( (var(--width-timeline-bar-year-span-mobile) * 2));
     --width-footer-bn-mobile:34px;
     --width-footer-bn-pc:40px;
     /* --width-timeline-bar-year-bn-pc:160px; */
@@ -123,53 +128,71 @@
     justify-content: flex-start;
     align-items: flex-start;
     flex-wrap: nowrap;
+    overflow: visible;
+    max-width: auto;
 }
 #bsTimelineBarWrapper .bsTimelineBarContent .left{
-    transition-property: flex-basis;
-    transition-duration: 0.3s;
+    /* transition-property: flex-basis; */
+    /* transition-duration: 0.3s; */
     flex : 0 0 0px;
+    flex-basis:calc(var(--top-main-timeline-mobile,125px) - var(--width-footer-bn-mobile,20px));
 }
+/* 
 #dr-footer.timeline.done #bsTimelineBarWrapper .bsTimelineBarContent .left{
-    /* flex: 0 0 calc(var(--main-offset-left-mobile,20px) + var(--footer-size-mobile,16px) + 46px); */
     flex-basis:calc(var(--top-main-timeline-mobile,0px) - var(--width-footer-bn-mobile,20px));
 }
 #dr-footer.listArtist.done #bsTimelineBarWrapper .bsTimelineBarContent .left{
-    /* flex: 0 0 calc(var(--main-offset-left-mobile,20px) + var(--footer-size-mobile,16px) + 46px); */
     flex-basis:0px;
 }
+*/
 
-
-#svgTimelineBar{
+.svgTimelineBar{
     transition-property: transform;
     transition-duration: 0.3s;
     flex:0 0 auto;
+    width:calc( var(--width-timeline-bar-wrapper-mobile) * var(--width-timeline-bar-year,1) * var(--scale-timeline-bar-svg,1));
 }
-#dr-footer.timeline #bsTimelineBarWrapper .bsTimelineBarContent #svgTimelineBar{
+#dr-footer.timeline #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar{
     transform: translateY(12px);
 }
-#dr-footer.listArtist.done #bsTimelineBarWrapper .bsTimelineBarContent #svgTimelineBar{
+#dr-footer.listArtist.done #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar{
     transform: translateY(0px);
 }
-#bsTimelineBarWrapper .bsTimelineBarContent #svgTimelineBar .b-s {
+#bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s.b-y {
+    opacity: 1!important;
+}
+#bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s {
     y:calc(31px - 12px);
     width:2px;
     height:10px;
     fill: #000;
 }
-#bsTimelineBarWrapper .bsTimelineBarContent #svgTimelineBar .b-d {
+#bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-d {
     width:3px;
     height:15px;
     fill:#231F20;
 }
+body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-d.records {
+    opacity: 1;
+    /* fill:red; */
+}
+body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-d:not(.records) {
+    opacity: 0;
+}
+body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s {
+    opacity: 0;
+}
 /* 测试用 */
-#svgTimelineBar .b-d.now{
+.svgTimelineBar .b-d.now{
     fill:#ccc!important;
 }
 
 /* 结尾占位日期空间 */
 #bsTimelineBarWrapper .bsTimelineBarContent .blank{
-    flex:0 0 calc(99.9vw - (var(--top-main-timeline-mobile,0px) - var(--width-footer-bn-mobile,20px) + var(--width-footer-bn-mobile,34px)));
-    min-width: calc(99.9vw - (var(--top-main-timeline-mobile,0px) - var(--width-footer-bn-mobile,20px) + var(--width-footer-bn-mobile,34px)));
+    /* flex:0 0 calc(99.9vw - (var(--top-main-timeline-mobile,0px) - var(--width-footer-bn-mobile,20px) + var(--width-footer-bn-mobile,34px))); */
+    /* min-width: calc(99.9vw - (var(--top-main-timeline-mobile,0px) - var(--width-footer-bn-mobile,20px) + var(--width-footer-bn-mobile,34px))); */
+    flex:0 0 var(--width-timeline-bar-wrapper-mobile);
+    min-width:var(--width-timeline-bar-wrapper-mobile);
     height: 27px;
     border-bottom: 1px dashed #ccc;
 }
@@ -226,7 +249,7 @@
     /* display: flex; */
     /* justify-content: stretch; */
     /* flex-wrap: nowrap; */
-    transform: translate(calc( -1 * (var(--width-timeline-bar-year-span-mobile) * 2) - 0px),calc(12px));
+    transform: translate(calc( -1 * var(--width-timeline-bar-end-mobile) - 0px),calc(12px));
 }
 #dr-footer .timelineContainer .timelineYearContainer .barContainer .bar{
     transition-property: transform,opacity;
@@ -242,7 +265,8 @@
     align-items: flex-start;
     flex-wrap: wrap;
     background-color: white;
-    width: calc( (var(--width-timeline-bar-year-span-mobile) * 2));
+    /* width: calc( (var(--width-timeline-bar-year-span-mobile) * 2)); */
+    width:var(--width-timeline-bar-end-mobile);
 
     /* transform:translateY(15px); */
     opacity: 0;
@@ -324,29 +348,39 @@
     }
     #bsTimelineBarWrapper .bsTimelineBarContent-md .left{
         flex-basis: calc(var(--main-offset-left-pc,46px))!important;
-        
     }
     /* PC端，时间轴页时间轴尺寸 */
     #dr-footer.timeline.footerContainer-md #bsTimelineBarWrapper{
         height:var(--footer-size-pc,105px);
         max-height:var(--footer-size-pc,105px);
     }
-    #dr-footer.timeline.done #bsTimelineBarWrapper .bsTimelineBarContent-md #svgTimelineBar{
+    #dr-footer .svgTimelineBar{
+        transition-property: transform,width;
+        transition-duration: 0.3s;
+    
+        /* width:var(--width-timeline-bar-wrapper-pc); */
+        width:calc( var(--width-timeline-bar-wrapper-pc) * var(--width-timeline-bar-year,1) * var(--scale-timeline-bar-svg,1));
+
+    }
+    #dr-footer.timeline.done #bsTimelineBarWrapper .bsTimelineBarContent-md .svgTimelineBar{
         transform: translateY(20px);
     }
-    #dr-footer.listArtist #bsTimelineBarWrapper .bsTimelineBarContent-md #svgTimelineBar{
+    #dr-footer.listArtist #bsTimelineBarWrapper .bsTimelineBarContent-md .svgTimelineBar{
         transform: translateY(0px);
     }
-    #bsTimelineBarWrapper .bsTimelineBarContent-md #svgTimelineBar .b-s {
+    #bsTimelineBarWrapper .bsTimelineBarContent-md .svgTimelineBar .b-s {
         y:calc(37px - 20px);
         width:1px;
         height:18px;
     }
-    #bsTimelineBarWrapper .bsTimelineBarContent-md #svgTimelineBar .b-d {
+    #bsTimelineBarWrapper .bsTimelineBarContent-md .svgTimelineBar .b-d {
         /* y:20px; */
         width:2.4px;
     }
-
+    #bsTimelineBarWrapper .bsTimelineBarContent .blank{
+        flex:0 0 var(--width-timeline-bar-wrapper-pc);
+        min-width:var(--width-timeline-bar-wrapper-pc);
+    }
     /* 年份 */
     #dr-footer .timelineContainer .timelineYearContainer-md{
         width:0px;
@@ -365,11 +399,12 @@
     }
     /* 多余年份bar */
     #dr-footer .timelineContainer .timelineYearContainer-md .barContainer{
-        transform: translate(calc( -1 * (var(--width-timeline-bar-year-span-pc) * 3 / 2)),20px);
+        transform: translate(calc( -1 * var(--width-timeline-bar-end-pc)),20px);
     }
     #dr-footer .timelineContainer .timelineYearContainer-md .barContainer .bar{
         height:35px;
-        width: calc( (var(--width-timeline-bar-year-span-pc) * 3 / 2));
+        /* width: calc( (var(--width-timeline-bar-year-span-pc) * 3 / 2)); */
+        width:var(--width-timeline-bar-end-pc);
     }    
     #dr-footer .timelineContainer .timelineYearContainer-md .year{
         flex:0 0 var(--width-timeline-bar-year-span-pc);

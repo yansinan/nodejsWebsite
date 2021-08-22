@@ -1,3 +1,101 @@
+{# 乐队浮窗新消息提示tooltip #}
+<script>
+    function eInitTooltip($container,placement="top-end",$boundary=false){
+        let eShow=function(e){
+            let $artist=e.currentTarget.parentElement;
+            let tooltip=e.target.tooltip
+            if(tooltip){
+                tooltip.update()
+                tooltip.show();
+                tooltip.tip.addEventListener("mouseenter",(e)=>{
+                    e.target.isOnTooltip=true;
+                });
+                tooltip.tip.addEventListener("mouseleave",(e)=>{
+                    e.target.isOnTooltip=false;
+                    tooltip.hide();
+                });
+                let $inner=tooltip.tip.querySelector(".tooltip-inner");
+                
+                $artist.querySelectorAll(".notice").forEach($notice=>{
+                    let $dom=$notice.cloneNode(true);
+                    $dom.classList.remove("d-none");
+                    $dom.addEventListener("click",(e)=>{
+                        window.goto(e.currentTarget.dataset.drUrl);
+                        tooltip.hide();
+                    })
+                    $inner.append($dom);
+                })
+            }
+            //e.preventDefault();
+        }
+        let eHide=function(e){
+            if(e.target.tooltip){
+                e.target.tooltip.tip.isOnTooltip=false;
+                e.target.tooltip.hide();
+            }
+        }
+        let isIOS=function(){
+            var u = navigator.userAgent, app = navigator.appVersion;
+            var isXiaomi = u.indexOf('XiaoMi') > -1; // 小米手机
+            var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1; // 其它安卓
+            var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); // ios
+            if (isAndroid) {
+                {# alert("Android系统"); #}
+            }else if (isIOS) {
+                if(isXiaomi) {
+                    {# alert("您的浏览器标识为iPhone，请前往设置：“设置”->“高级设置”->“浏览器标识=默认”"); #}
+                }else {
+                    {# alert("ios系统"); #}
+                    return isIOS
+                }
+            }
+            return false;
+        }
+        var tooltipTriggerList = [].slice.call($container.querySelectorAll('.noticeCnt[data-bs-toggle="tooltip"]'))
+        $container.tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            if(tooltipTriggerEl.tooltip && tooltipTriggerEl.tooltip.dispose)tooltipTriggerEl.tooltip.dispose();
+            let tooltip = new bootstrap.Tooltip(tooltipTriggerEl,{
+                //boundary: $container, // or document.querySelector('#boundary')
+                //container: $container,//tooltipTriggerEl,//$container.querySelector(".bs-content-listArtist"),
+                //trigger:"hover focus",
+                trigger:"manual",
+                popperConfig:{
+                    placement,
+                    modifiers:[
+                        {
+                            name: 'preventOverflow',
+                            options: {
+                                mainAxis: true, // true by default
+                                boundary: $boundary || $container,
+                            },
+                        },
+                    ]
+                                                                        
+                }
+            })
+            tooltipTriggerEl.tooltip=tooltip;
+            tooltipTriggerEl.parentElement.tooltip=tooltip;
+            tooltipTriggerEl.addEventListener('hidden.bs.tooltip', function (e) {
+                this.classList.remove("now");                    
+            })
+            tooltipTriggerEl.addEventListener('show.bs.tooltip', function (e) {
+                this.classList.add("now");
+                console.log("notice::show.bs.tooltip")
+            })
+            tooltipTriggerEl.addEventListener("touchstart",eShow);
+            tooltipTriggerEl.addEventListener("mouseenter",eShow);
+
+            tooltipTriggerEl.addEventListener("mouseleave",(e)=>{
+                setTimeout(()=>{
+                    if(!e.target.tooltip.tip.isOnTooltip)eHide(e);
+                },500);
+            });
+            //tooltipTriggerEl.addEventListener("touchcancel",tooltipTriggerEl.tooltip.show);
+            
+            return tooltip;
+        })
+    }
+</script>
 {# 侧边导航菜单 #}
 <div id="offcanvasRightMenu" class="offcanvas offcanvas-end offcanvasRightMenu-md" tabindex="-1" aria-labelledby="offcanvasRightMenuLabel">
     <div class="offcanvas-header">
@@ -11,7 +109,7 @@
         <ul class=" flex-fill d-flex flex-column justify-content-start flex-wrap">
             {% for cate in navigation %} {% if cate.parentId == '0' %}
             <li class="menuItem menuItem-md text-nowrap">
-                <a class="" style="color: inherit" tabindex="-1" alt="{{site.altkey}}{{cate.name}}" href="javascript:void(0)" onclick="eBnNav('{{cate.defaultUrl}}')" name="{{cate.defaultUrl}}">{{cate.name}}NEWS</a>
+                <a class="" style="color: inherit" tabindex="-1" alt="{{site.altkey}}{{cate.name}}" onclick="eBnNav('{{cate.defaultUrl}}')" name="{{cate.defaultUrl}}" data-bs-toggle="offcanvas" href="#offcanvasRightMenu" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">{{cate.name}}NEWS</a>
             </li>
             {% endif %} {% endfor %}
         </ul>
@@ -28,55 +126,113 @@
     </div>
 </div>
 
+<div id="offcanvasDetailAll" class="">
+    {# 详细内容页左侧列表 #}
+    <div id="offcanvasLeft"  class="offcanvas offcanvas-start" tabindex="-1" aria-labelledby="offcanvasRightLabel">
+        {# <div class="offcanvas-header"> #}
+            {# <div class="icon-arrow left flex-column" data-bs-dismiss="offcanvas"></div> #}
+            {# <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button> #}
+        {# </div> #}
+        <div id="offcanvasListArtists" class="offcanvas-body listArtists">
+            {% for letter,artistItems in listArtists|sort(false,false,"letters")|groupby("firstLetter") %}
+                <div class="firstLetter">{{letter}}</div>
+                {% for artist in artistItems %}
+                {# 乐队名列表 #}
+                {# <h1 class="display-1">RUBY</h1> #}
+                <div class="artist artist-md d-flex align-items-center ">
+                    <button class="name btn btn-link" data-dr-url="/artist___{{artist.id}}.html" data-bs-target="#offcanvasRight">
+                        {{artist.name}}
+                    </button>
+                    {% if artist.listNotices.length > 0%}
+                    <button 
+                        tabindex="0"
+                        class="noticeCnt d-flex flex-shrink-0 justify-content-center border border-1 border-dark rounded-circle" 
+                        data-bs-toggle="tooltip" 
+                        data-bs-html="true" 
+                        title=' '>
+                        +{{artist.listNotices.length}}
+                    </button>
+                    {% for doc in artist.listNotices %}<div class="notice d-none" data-dr-url="/doc___{{doc.id}}.html">{{doc.nameTimeline}}</div>{% endfor %}
+                    {% endif %}
 
-{# 详细内容页框架 #}
-<div id="offcanvasRight"  class="offcanvas offcanvas-end" tabindex="-1"aria-labelledby="offcanvasRightLabel">
-  <div class="offcanvas-header">
-    {# <h5 id="offcanvasRightLabel">Offcanvas right</h5> #}
-    <div class="icon-arrow left flex-column" data-bs-dismiss="offcanvas"></div>
-    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-  </div>
-  <div class="offcanvas-body">
-    <link href="/static/themes/dorawhite/css/intro.css" rel="stylesheet">
-    <div class="section section-md">
-        <span>赤瞳音乐&nbsp;RUBY&nbsp;EYES&nbsp;RECORDS
-            <br />
-            <br />
-        </span>
-        <span>
-        赤曈音乐（Ruby&nbsp;Eyes&nbsp;Records），为原创唱片公司太合麦田所创立之分支厂牌，隶属太合音乐集团。旨在面向新一代阅听人，出品体系完整、制作精良的音乐作品，并通过有效合理的推广方式呈现给更为广泛的受众群体。自2015年成立以来，赤瞳音乐以专业、用心的服务态度，与年轻态、浪漫化的美学品味，迅速崛起并驰名于华语独立音乐市场。
-        </span>
-        <span>
-            <br />
-            <br />
-        </span>
-        <span>
-        厂牌签约中国大陆与台湾、香港地区乐队与音乐人，达40余组，其中包括刺猬、昏鸦等两岸三地知名乐队；每年发行专辑数量保持在15张以上，并持续增加；投资、运作乐队巡回演出年均两百余站；联合太合音乐集团旗下的演出服务平台——秀动（ShowStart），于广州、深圳、成都、西安等主要音乐市场，举办赤瞳厂牌Showcase。
-        <span>
-            <br />
-            <br />
-        </span>
-        <span>
-        除了持续提供与优化上述服务内容，我们还将积极推动赤瞳厂牌主题活动在两岸三地各大中城市落地，打造全新的音乐节品牌，系统地推出版权经营管理与乐队周边商品开发服务，投资与服务跨领域艺术项目，并针对欧美独立音乐市场进行音乐内容的推广。
-        </span>
-        <span>
-            <br />
-            <br />
-        </span>
-        <span>
-        我们将戮力以敏锐之眼探索优秀的音乐作品，以赤诚之心服务有创造力的音乐人。
-        </span>
-        <span class="foot">
-        赤瞳音乐&nbsp;RUBY&nbsp;EYES&nbsp;MUSIC&nbsp;©
-        </span>
+                </div >
+                {% endfor %}
+            {% endfor %}
+        </div>
+        <script>
+            let $listBnArtistOffCanvas=document.querySelectorAll("#offcanvasListArtists button.name");
+            function eBnArtist(e){
+                {# e.relatedTarget=e.currentTarget; #}
+                window.goto(e.currentTarget.dataset.drUrl);
+            }
+            $listBnArtistOffCanvas.forEach($bn=>{$bn.onclick=eBnArtist});
+
+            eInitTooltip(document.getElementById("offcanvasListArtists"),"top-end",document);
+        </script>
     </div>
-  </div>
-</div>
+    {# 详细内容页框架 #}
+    <div id="offcanvasRight"  class="offcanvas offcanvas-end" tabindex="-1" aria-labelledby="offcanvasRightLabel">
+        <div class="offcanvas-header">
+            {# <h5 id="offcanvasRightLabel">Offcanvas right</h5> #}
+            <div class="icon-arrow left flex-column" data-bs-dismiss="offcanvas"></div>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div id="offcanvasDetail" class="offcanvas-body" ms-controller="offcanvasDetail">
+            <div :visible="!@loadingState" ms-html="@dom" class="position-relative"></div>
+            <div :visible="@loadingState" class="loading w-100 justify-content-center align-items-center ">
+                <i class="fa fa-spin fa-spinner"></i>
+            </div>
+        </div>
+    </div>
+    <script>
+        let $offcanvasDetailAll=document.getElementById("offcanvasDetailAll");
+        let $offcanvasDetail=document.getElementById("offcanvasDetail");
+        let aOffcanvasBody = avalon.define({
+            $id: 'offcanvasDetail',
+            dom: "",
+            loadingState: false,
+        })
+        this.addEventListener("OPEN_OFFCANVAS_DETAIL",function(e){
+            let url=e.detail.apiDetail || e.detail.relatedTarget.attributes["data-dr-url"].value ||  "/about___.html";
+            {# 如果是乐队列表详情 #}
+            if(url.indexOf("/artist___")!=-1){
+                $offcanvasDetailAll.classList.add("artistDetailColor");
+            }else{
+                $offcanvasDetailAll.classList.remove("artistDetailColor");
+            }
+            console.info("event:详情即将打开：",url);
+            {# let cateId="8hIKx4Ulz"; #}
+            aOffcanvasBody.loadingState=true;
+            function error(d) {
+                console.error('error:', url,d);
+                aOffcanvasBody.loadingState = false;
+                aOffcanvasBody.dom = d.msg? d.msg : "网络故障，内容获取失败：" + d.toString();
+                debugger;
+            }
+            $.ajax({
+                type: 'GET',
+                url,//url: '/about___' + cateId + '.html',
+                success: function (res) {
+                    if (res.status == 200) {
+                        aOffcanvasBody.loadingState = false;
+                        aOffcanvasBody.dom = res.data.comments || res.data;
+                    }else{
+                        error({msg:"服务器连接成功；返回错误:status=="+res.status,res,url})
+                    }
+                },
+                error,
+            })
+        });
+        this.addEventListener("CLOSE_OFFCANVAS_DETAIL",(e)=>{
 
+        });
+
+    </script>
+</div>
 
 <div class="foot-float back-to-top" id="bnRubyEyes">
     {# <img class="btnRubyEyes glyphicon glyphicon-chevron-up" src=""></i> #}
-    <div class="btnRubyEyes btnRubyEyes-md glyphicon glyphicon-chevron-up" data-bs-toggle="offcanvas" href="#offcanvasRight"></div>
+    <div class="btnRubyEyes btnRubyEyes-md glyphicon glyphicon-chevron-up" data-bs-toggle="offcanvas" href="#offcanvasRight" data-dr-url="/about___.html"></div>
 
 </div>
 
@@ -86,7 +242,8 @@
 <script>
     let $bnArrowTimeline=document.getElementById("bnArrowTimeline");
     function eClickTest(){
-        this.slideCover.goToPage(0,this.slideCover.getCurrentPage().pageY==1?0:1);
+        {# this.slideCover.goToPage(0,this.slideCover.getCurrentPage().pageY==1?0:1); #}
+        this.goto("/timeline/");
     }
     this.addEventListener("BS_COVER_TIMELINE", (page)=>{
         $bnArrowTimeline.classList.add("d-none");
