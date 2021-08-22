@@ -30,6 +30,7 @@ module.exports = app => {
     router.get("/details/:id.html", controller.page.home.getDataForContentDetails);
     // 艺术家详情
     router.get("/artist___:id.html", controller.page.detail.getDataForArtistDetails);
+    router.get("/:service?___:id.html", controller.page.detail.getDataForDocDetails);
     //检索艺术家的专辑
     router.get("/record/artist/:idArtist", controller.api.record.list);
     // 专辑详情

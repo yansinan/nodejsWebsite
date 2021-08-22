@@ -98,29 +98,34 @@
     } 
 }
 
-
-/* artistDetail */
-.artistDetail.font-normal{
+.detail.font-normal{
     font-size:0.667rem;
     line-height: 0.917rem;
     font-family: PingFangSC-Regular, PingFang SC;
     font-weight: 400;
-    color:white;
+    color:black;
 }
-.artistDetail{
+.detail{
     display:flex;
     flex-direction: column;
     align-items: flex-start;
     
+    /* background-color: white; */
+}
+/* artistDetail */
+.detail.artist.font-normal{
+    color:white;
+}
+.detail.artist{
     background-color: black;
 }
-.artistDetail .name{
+.detail.artist .name{
     flex: 0 0 3rem;    
     display:flex;
     align-items: flex-start;
 }
 
-.artistDetail .album{
+.detail.artist .album{
     flex:0 0 400px;
     max-height:450px;
     height:400px;
@@ -133,7 +138,7 @@
     /* overflow: visible; */
 }
 /* scroll-snap测试 */
-.artistDetail .album.scrollerSnap{
+.detail.artist .album.scrollerSnap{
     display:flex;
     flex-wrap: nowrap;
     /* width: calc(100% + var(--offsetcanvas-padding-right,0.77rem)); */
@@ -148,7 +153,7 @@
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
 }
-.artistDetail .album img{
+.detail.artist .album img{
     scroll-snap-align: center;
     scroll-snap-stop: normal;
     /* scroll-margin-left: 20px; */
@@ -157,7 +162,7 @@
     flex: 0 0 min(800px,100%,calc( var(--offsetcanvas-right) - var(--offsetcanvas-padding) - var(--offsetcanvas-padding-right,0.77rem) - 1rem));
     flex: auto;
 }
-.artistDetail .album img{
+.detail.artist .album img{
     object-fit:cover;
     /* 手机竖屏高充满，宽自动 */
     width: auto;
@@ -166,20 +171,20 @@
     max-height: 100%;
 }
 /* 标签 */
-.artistDetail .list-inline{
+.detail.artist .list-inline{
     line-height: 0px;
     margin-top: 2.28rem;
     margin-bottom:1.75rem;
 }
 
-.artistDetail article{
+.detail.artist article{
 
 }
-.artistDetail article p{
+.detail.artist article p{
     margin-block: 0px;
     margin-bottom: 0rem;
 }
-.artistDetail ol{
+.detail.artist ol{
     margin-top:1.444rem;
     /* margin-bottom:5.667rem; */
 
@@ -192,21 +197,21 @@
     -webkit-background-clip: text;
 }
 
-.artistDetail .headEnd{
+.detail.artist .headEnd{
     flex:0 0 3rem;
     border-bottom: 1px solid #FFFFFF;
     width: 100%;
 }
 @media (min-width: 768px) {
-    .artistDetail .headEnd{
+    .detail.artist .headEnd{
         flex:0 0 5.667rem;
     }
-    .artistDetail .album{
+    .detail.artist .album{
         flex:0 0 450px;
         height:450px;
     
     }
-    .artistDetail .album img{
+    .detail.artist .album img{
         scroll-snap-align: start;
         object-fit:contain;
         /* width: 100%; */
@@ -216,13 +221,13 @@
     }    
 }
 
-.artistDetail .block{
+.detail.artist .block{
     display:flex;
     flex-direction: column;
     align-items: flex-start;
     width:100%;
 }
-.artistDetail .block.title::before{
+.detail.artist .block.title::before{
     content:"专辑";
     width:100%;
     flex:1;
@@ -231,10 +236,10 @@
     margin-top:1.528rem;
     margin-bottom:1.528rem;
 }
-.artistDetail .block.title.records::before{
+.detail.artist .block.title.records::before{
     content:"专辑";
 }
-.artistDetail .records .list{
+.detail.artist .records .list{
     width:100%;
     display:grid;
     grid-template-columns:1fr;
@@ -246,23 +251,23 @@
     grid-auto-rows:minmax(100px,auto);
     /* # 自动改变div高度 */
 }
-.artistDetail .records .list .item{
+.detail.artist .records .list .item{
     /* flex:0 1 calc(50% - 2.94%); */
     background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.8) 100%);
     border: 1px solid #979797;
 }
-.artistDetail .records .list .item img{
+.detail.artist .records .list .item img{
     object-fit:cover;
     width: 100%;
     height:auto;
     /* max-height: 400px; */
 }
 
-.artistDetail .block.title.videos::before{
+.detail.artist .block.title.videos::before{
     content:"影像";
 }
 
-.artistDetail .videos .list{
+.detail.artist .videos .list{
     width:79.8%;
     display:grid;
     grid-template-columns:1fr;
@@ -274,17 +279,17 @@
     grid-auto-rows:minmax(100px,auto);
     /* # 自动改变div高度 */
 }
-.artistDetail .videos .list .item{
+.detail.artist .videos .list .item{
     background: rgba(0, 0, 0, 0.75);
     position: relative;
 }
-.artistDetail .videos .list .item img{
+.detail.artist .videos .list .item img{
     object-fit:cover;
     width: 100%;
     height:auto;
     /* max-height: 400px; */
 }
-.artistDetail .videos .list .item span{
+.detail.artist .videos .list .item span{
     position: absolute;
     left: 20px;
     bottom: 20px;
@@ -292,11 +297,11 @@
 }
 
 /* 新闻动态 */
-.artistDetail .block.title.news::before{
+.detail.artist .block.title.news::before{
     content:"时间线";
 }
 
-.artistDetail .news .list{
+.detail.artist .news .list{
     width:79.8%;
     display:grid;
     grid-template-columns:1fr;
@@ -308,16 +313,16 @@
     grid-auto-rows:minmax(1rem,auto);
     /* # 自动改变div高度 */
 }
-.artistDetail .news .list .year{
+.detail.artist .news .list .year{
     
 }
-.artistDetail .news .list .item{
+.detail.artist .news .list .item{
     position: relative;
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
 }
-.artistDetail .news .list .item::before{
+.detail.artist .news .list .item::before{
     content:"";
     background: url(/static/themes/images/bnArrowLine.svg) center/0.55rem auto no-repeat ;
     height: 0.55rem;
@@ -327,16 +332,16 @@
     transform: rotate(-90deg);
     filter: invert(1);
 }
-.artistDetail .news .list a{
+.detail.artist .news .list a{
     color:white;
     text-decoration: none;
 }
-.artistDetail .news .list a:hover{
+.detail.artist .news .list a:hover{
     text-decoration: underline;
 }
 
 @media (min-width: 768px) {
-    .artistDetail .records .list{
+    .detail.artist .records .list{
         grid-template-columns:1fr 1fr;
     }  
 }

@@ -28,7 +28,7 @@
                 title=' '>
                 +{{artist.listNotices.length}}
             </button>
-            {% for doc in artist.listNotices %}<div class="notice d-none" data-dr-url="/doc___{{doc.url}}.html">{{doc.nameTimeline}}</div>{% endfor %}
+            {% for doc in artist.listNotices %}<div class="notice d-none" data-dr-url="/doc___{{doc.id}}.html">{{doc.nameTimeline}}</div>{% endfor %}
             {% endif %}
             <img src="{{artist.sImg}}" width="0px" alt="{{artist.nameTimeline}}" class="sImg img-fluid"/>
         </div >

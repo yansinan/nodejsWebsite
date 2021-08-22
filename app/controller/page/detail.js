@@ -104,6 +104,47 @@ class IndexController extends Controller {
             ctx.redirect("/");
         }
     }
+
+    // 通用文档详情
+    async getDataForDocDetails() {
+        const {ctx,service} = this;
+        let contentId = ctx.params.id;
+        let serviceName=ctx.params.service;
+        if (contentId) {
+            if (!shortid.isValid(contentId) || !ctx.service[serviceName]) {
+                ctx.redirect("/");
+            } else {
+                // 挂载钩子
+                await this.app.hooks(ctx, 'messageBoard', {
+                    contentId
+                });
+                // ctx.pageType = "artist"
+                // 获取通用页面信息
+                //let {pageData,defaultTemp}=await ctx.getInitPageData("artist");//
+                let pageData={};
+                //数据提取、修改标题；需要根据post信息修改内容：pageData.post,pageData.site,pageData.ogData,ctx.tempPage
+                pageData.post = await ctx.service[serviceName].item(ctx, {
+                    query : {_id:contentId},
+                    populate : [],
+                    files : null
+                })
+                if (!_.isEmpty(pageData.post)) {
+                    ctx.tempPage="../view/dorawhite/2-stage-timeline/detail.html";//"../view/dorawhite/2-stage-timeline/listTempTimeline.html";//app/view/dorawhite/2-stage-timeline/listTempTimeline.html
+                    //ctx.tempPage=fs.existsSync(ctx.tempPage)?ctx.tempPage:"../view/dorawhite/2-stage-default/detail.html";
+                } else {
+                    throw new Error(ctx.__('label_page_no_power_content'));
+                }
+                //最终渲染
+                // ctx.tempPage=pageData.staticforder + '/' + ctx.tempPage;
+
+                let dom=await ctx.renderView(ctx.tempPage, pageData);
+                ctx.helper.renderSuccess(ctx,{data:dom});
+            }
+        } else {
+            ctx.redirect("/");
+        }
+    }
+    
 }
 
 module.exports = IndexController;

@@ -152,7 +152,7 @@
                         title=' '>
                         +{{artist.listNotices.length}}
                     </button>
-                    {% for doc in artist.listNotices %}<div class="notice d-none" data-dr-url="/doc___{{doc.url}}.html">{{doc.nameTimeline}}</div>{% endfor %}
+                    {% for doc in artist.listNotices %}<div class="notice d-none" data-dr-url="/doc___{{doc.id}}.html">{{doc.nameTimeline}}</div>{% endfor %}
                     {% endif %}
 
                 </div >
@@ -203,6 +203,12 @@
             console.info("event:详情即将打开：",url);
             {# let cateId="8hIKx4Ulz"; #}
             aOffcanvasBody.loadingState=true;
+            function error(d) {
+                console.error('error:', url,d);
+                aOffcanvasBody.loadingState = false;
+                aOffcanvasBody.dom = d.msg? d.msg : "网络故障，内容获取失败：" + d.toString();
+                debugger;
+            }
             $.ajax({
                 type: 'GET',
                 url,//url: '/about___' + cateId + '.html',
@@ -210,14 +216,11 @@
                     if (res.status == 200) {
                         aOffcanvasBody.loadingState = false;
                         aOffcanvasBody.dom = res.data.comments || res.data;
+                    }else{
+                        error({msg:"服务器连接成功；返回错误:status=="+res.status,res,url})
                     }
                 },
-                error: function (d) {
-                    console.error('error:', url,d);
-                    debugger;
-                    aOffcanvasBody.loadingState = false;
-                    aOffcanvasBody.dom = "网络故障，内容获取失败："+d.toString();
-                }
+                error,
             })
         });
         this.addEventListener("CLOSE_OFFCANVAS_DETAIL",(e)=>{
