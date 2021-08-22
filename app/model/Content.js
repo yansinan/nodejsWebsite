@@ -16,6 +16,8 @@ module.exports = app => {
             type: String,
             'default': shortid.generate
         },
+        name: String,//JSON
+        alias: String,//别名多语言用
         title: String,
         stitle: String,
         type: {
@@ -139,14 +141,32 @@ module.exports = app => {
         return `/details/${this._id}.html`;
     });
     // 为了和doc同步;
-    ContentSchema.virtual('name').get(function (v) {
-        return this.title;
+    ContentSchema.path('stitle').get(function (v) {
+        return v;
+    }).set((v)=>{
+        this.alias=v;
+        //this.stitle=v;
+        return v;
+    });
+    ContentSchema.path('title').get(function (v) {
+        return v;
     }).set((v)=>{
         this.name=v;
+        //this.title=v;
+        return v;
     });
-    ContentSchema.virtual('alias').get(function (v) {
-        return this.stitle;
+    ContentSchema.path('name').get(function (v) {
+        return v || this.title;
     });
+    ContentSchema.path('alias').get(function (v) {
+        return v || this.stitle;
+    });
+    // 时间轴标题
+    ContentSchema.virtual('nameTimeline').get(function (){
+        return this.name || this.title;
+    })
+
+
     let model=app.model.Content || Doc.discriminator("Content", ContentSchema);
     // app.model.Artist=model;
 

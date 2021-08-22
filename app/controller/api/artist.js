@@ -18,6 +18,29 @@ const moment = require("moment");
 const SERVICE_NAME=__filename.slice(__dirname.length + 1, -3);
 
 class APIController extends Controller {
+    // 找到乐队对应的标签
+    async findIdTags(inListArtists){
+        const {
+            ctx,
+            app
+        } = this;
+        //let payload = inArtist.name;
+        //let fields = {
+        //    query : {},
+        //    searchKeys : ['name'],
+        //    populate : [],
+        //    files : null
+        //};
+        //fields=Object.assign(fields,ctx.request.body || {});
+        //let contentTagList = await ctx.service.contentTag.find(payload, fields);
+        let listNameArtists=inListArtists.map(v=>(v.name));
+        let tag=await ctx.service.contentTag.item(ctx, {
+            query: {
+                name: listNameArtists
+            }
+        })
+        return _.isEmpty(tag)?[]:[tag._id];
+    }
     // 时间线：// 获取时间线:演出，唱片，新闻，视频，加入
     async getListTimeline(inArtist){
         const {
@@ -26,16 +49,34 @@ class APIController extends Controller {
         } = this;
         let targetId=inArtist._id;
         try {
-           let listTimeline=(await ctx.service.doc.find({
+            let listIdTags=await this.findIdTags([inArtist]);
+            let listTimeline=(await ctx.service.doc.find({
                 pageSize: 0,
                 isPaging:"0",
                 lean:false,
             }, {
                 sort: {date: -1},
-                query: {state: '2',listRefs:targetId},
-                searchKeys: ['sImg', 'title', 'date'],
-                files: "sImg name date url nameTimeline"
-            }));            
+                query: {                    
+                    state: '2',
+                    //$or:[
+                    //    {listRefs:targetId},
+                    //    {tags: {"$elemMatch":{name:[inArtist.name]}}},
+                    //    //{["tags.name"]:inArtist.name},
+                    //],
+                    $or:[
+                        {tags: {"$in" : listIdTags }},
+                        {listRefs: {"$in" : [targetId] }},
+                    ],
+
+                },
+                searchKeys: ['listRefs','sImg', 'title', 'date',"tags"],
+                //populate:[{
+                //    path: 'tags',
+                //    select: 'name url _id'
+                //},],
+                populate:[],
+                files: "sImg name title date url nameTimeline tags"
+            }));
             listTimeline.push({
                 name:inArtist.nameTimeline,
                 dateTimeline:inArtist.dateStart,
@@ -354,6 +395,9 @@ class APIController extends Controller {
             });
             // 乐队推荐&置顶消息
             let listIdArtists=listRes.map(v=>(v.id));
+            let listNameArtists=listRes.map(v=>(v.name));
+            let listIdTags=await this.findIdTags(listNameArtists);
+
             let listDocNotice = await ctx.service.doc.find(
                 {
                     //filesType:"timelineBar", 
@@ -362,22 +406,27 @@ class APIController extends Controller {
                     lean:false,
                 },{
                     query:{
-                        listRefs: {"$in" : listIdArtists },
+                        $or:[
+                            // {tags: {"$elemMatch":{name:listNameArtists}}},
+                            {tags: {$in:listIdTags}},
+                            {listRefs: {"$in" : listIdArtists }},
+                        ],
                         $or:[{isTop:1},{roofPlacement: "1"}],
-                        //roofPlacement: "1",
                     },
-                    files:"_id date listDateDur dateTimeline name nameTimeline alias nameArtists sImg url listRefs",
+                    files:"_id date listDateDur dateTimeline name title nameTimeline alias tags nameArtists sImg url listRefs",
                     populate:[{
-                        path: '',
-                        select: ''
-                    }],
+                        path: 'tags',
+                        select: 'name url'
+                    },],
                     sort:{date: -1,roofPlacement: -1,},
                     searchKeys:['listRefs',"roofPlacement"]
                 });
             listRes.forEach(artist=>{
                 artist.listNotices=listDocNotice.filter(doc=>{
-                    let docFind=doc.listRefs.find(v=>(v==artist.id));
-                    if(docFind)doc=JSON.parse(JSON.stringify(doc));                    
+                    let isRef=doc.listRefs.find(v=>(v==artist._id || v._id==artist._id));
+                    let isTag=doc.tags.find(v=>(v.name==artist.name));
+                    let docFind= isRef || isTag;
+                    if(docFind)doc=JSON.parse(JSON.stringify(doc));
                     return docFind;
                 });
                 artist.listNotices=artist.listNotices.splice(0,Math.min(artist.listNotices.length,2));
