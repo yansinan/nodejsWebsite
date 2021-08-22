@@ -129,10 +129,11 @@
         {# 页面跳转 #}
         function eNavToTimeline(e){
             let {objNew,objOld}=e.detail;
-            {# 完成切换时，更新导航 #}
-            window.dispatchEvent(new CustomEvent("NAV_AT", { detail:objNew, }));
             {# 改变class,控制显示隐藏 #}
             $timelineContent.classList.value = objNew.bsTimeline;
+            {# 完成切换时，更新导航 #}
+            console.log("compBSTimeline::eNavToTimeline,触发NAV_AT");
+            window.dispatchEvent(new CustomEvent("NAV_AT", { detail:objNew, }));
         }
         this.addEventListener("NAV_TO",(e)=>{
             let vm=this["vm-"+"{{infoPagination.page}}"];
