@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-24 13:20:49 
  * @Last Modified by: dr
- * @Last Modified time: 2021-02-04 21:04:30
+ * @Last Modified time: 2021-08-23 06:42:18
  */
 
 'use strict';
@@ -53,7 +53,17 @@ class ServicePlugin extends Service {
         populate = [],
         files = null
     } = {}) {
-
+        //let {
+        //    current,
+        //    pageSize,
+        //    searchkey,
+        //    isPaging,
+        //    skip,
+        //    lean
+        //} = payload;
+        payload.pageSize = Number(payload.pageSize) || 30;
+        // isPaging = isPaging == '0' ? false : true;
+        
         let listdata = _list(this.model, payload, {
             files: files,
             query: query,
