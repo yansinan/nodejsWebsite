@@ -88,9 +88,8 @@
 
 <script>
 import '@/set-public-path'
-import VueUeditorWrap from "vue-ueditor-wrap";
 import { initEvent } from "@root/publicMethods/events";
-import {methods,initData,data,props} from "@root/publicMethods/vue/contentForm";
+import {methods,initData,components,data,props,computed} from "@root/publicMethods/vue/contentForm";
 
 import _ from "lodash";
 import { mapGetters, mapActions,createNamespacedHelpers} from "vuex";
@@ -98,7 +97,7 @@ const mod = createNamespacedHelpers(nameMod)////模块,含mapGetters, mapActions
 
 export default {
   props: {
-    groups: Array
+    ...props,
   },
   data() {
     return {
@@ -192,10 +191,7 @@ export default {
     };
   },
   components: {
-    VueUeditorWrap,
-    ListURL: () => import('@root/publicMethods/vue/ListURL.vue'),
-    Cropper: () => import('@root/publicMethods/vue/Cropper.vue'),
-    SelectIds: () => import('@root/publicMethods/vue/SelectIds.vue'),
+    ...components,
   },
   methods: {
       ...methods,
