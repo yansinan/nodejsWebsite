@@ -181,15 +181,11 @@
 }
 #timelineContent .wapper-mm .item .title a{
   color: inherit;
-  text-decoration: none;
   cursor: pointer;
 }
-#timelineContent .wapper-mm .item .title a:hover{
-  text-decoration: underline;  
-}
+
 #timelineContent .wapper-mm .item .title a.fake{
-  text-decoration: none;
-  cursor:help;
+  cursor:default;
 }
 #timelineContent .wapper-mm .item .tags{
   margin-bottom: 0.86rem;

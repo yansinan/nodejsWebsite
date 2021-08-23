@@ -25,7 +25,7 @@
                             {# 日期 #}
                             {# <div class="col-auto date">{{item.dateTimeline}}</div> #}
                             {# 大标题 #}
-                            <p class="title">{{item.dateTimeline}}<br><span class="nameArtists">{{item.nameArtists}}<br></span><a class="{{item.docAlias if item.url else 'fake'}}" onclick="window.goto('{{item.url}}')">{{item.nameTimeline}}</a></p>
+                            <p class="title">{{item.dateTimeline}}<br><span class="nameArtists">{{item.nameArtists}}<br></span><a class="{{item.docAlias+' hoverUnderline' if item.url else 'fake'}}" onclick="window.goto('{{item.url}}')">{{item.nameTimeline}}</a></p>
                             {# 标签 #}
                             <div class="tags">
                                 {{listTags(item.tags)}}

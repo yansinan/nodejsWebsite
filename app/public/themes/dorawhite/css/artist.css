@@ -121,13 +121,9 @@
     /* line-height: 1.15rem; */
     /* color: rgba(0, 0, 0, 1); */
     color: inherit;
-    text-decoration: underline;
     line-height: 1rem;
 }
 
-.listArtists .artist .name:not(:hover) {
-    text-decoration: none;
-}
 .listArtists .noticeCnt{
     /* font-size:0.373rem; */
     /* font-size: 0.426rem; */
@@ -185,12 +181,7 @@
     padding:0.42rem;
     cursor: pointer;
 }
-.tooltip .tooltip-inner div:not(:hover) {
-    text-decoration: none;
-}
-.tooltip .tooltip-inner div:hover{
-    text-decoration: underline;
-}
+
 .tooltip .tooltip-inner div::before{
     content:"";
     flex: 0 0 20px;

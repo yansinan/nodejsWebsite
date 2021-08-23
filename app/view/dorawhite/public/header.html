@@ -374,8 +374,8 @@
                 <div id="collapseNavbarPC" class="d-none d-md-flex navbar-collapse navbar-collapse-md">
                     <ul>
                         {% for cate in navigation %} {% if cate.parentId == '0' %}
-                        <li class="nav-item text-nowrap rounded-pill" role="presentation" dr-dom-nav-bn="{{cate.defaultUrl}}">
-                            <a class="nav-link" style="color: inherit;background-color: inherit;" role="menuitem" tabindex="-1" alt="{{site.altkey}}{{cate.name}}"
+                        <li class="nav-item text-nowrap rounded-pill hoverUnderline" role="presentation" dr-dom-nav-bn="{{cate.defaultUrl}}">
+                            <a class="nav-link" style="" role="menuitem" tabindex="-1" alt="{{site.altkey}}{{cate.name}}"
                                 href="javascript:void(0)" onclick="eBnNav('{{cate.defaultUrl}}')" name="{{cate.defaultUrl}}">{{cate.name}}</a>
                         </li>
                         {% endif %} {% endfor %}
@@ -397,8 +397,8 @@
     <div id="collapseNavbarMobile" class="navbar-collapse navbar-collapse-md">
         <ul>
             {% for cate in navigation %} {% if cate.parentId == '0' %}
-            <li class="nav-item text-nowrap rounded-pill" role="presentation" dr-dom-nav-bn="{{cate.defaultUrl}}">
-                <a class="nav-link" style="color: inherit" role="menuitem" tabindex="-1" alt="{{site.altkey}}{{cate.name}}"
+            <li class="nav-item text-nowrap rounded-pill hoverUnderline" role="presentation" dr-dom-nav-bn="{{cate.defaultUrl}}">
+                <a class="nav-link" role="menuitem" tabindex="-1" alt="{{site.altkey}}{{cate.name}}"
                     href="javascript:void(0)" onclick="eBnNav('{{cate.defaultUrl}}')" name="{{cate.defaultUrl}}">{{cate.name}}</a>
             </li>
             {% endif %} {% endfor %}
