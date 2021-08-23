@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2019/11/10 20:30:53 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-23 06:24:51
+ * @Last Modified time: 2021-08-23 08:55:50
  */
 const INIT_DOC= app=>{
     //如果已经初始化过，则直接返回；
@@ -181,13 +181,14 @@ const INIT_DOC= app=>{
         return Math.abs(idxDayOfYear*100/cntDaysFullYear).toFixed(3);
     })
     // 客户端用的doc别名;
-    schema.virtual('docAlias').get(function (v){        
-        const dictTimeline={
-            "Record":"records",
-            "Content":"news",
-            "Artist":"artists",
-        }
-        return dictTimeline[this.doc || "news"];
+    schema.virtual('docAlias').get(function (v){
+        return this.doc.toLowerCase()+"s";      
+        //const dictTimeline={
+        //    "Record":"records",
+        //    "Content":"news",
+        //    "Artist":"artists",
+        //}
+        //return dictTimeline[this.doc || "news"];
     })
     // 时间轴标题
     schema.virtual('nameTimeline').get(function (){

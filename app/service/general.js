@@ -1,8 +1,8 @@
 /*
  * @Author: doramart 
  * @Date: 2019-06-21 11:14:02 
- * @Last Modified by: doramart
- * @Last Modified time: 2020-05-05 22:16:02
+ * @Last Modified by: dr
+ * @Last Modified time: 2021-08-23 08:29:48
  */
 
 
@@ -59,7 +59,7 @@ exports._list = async (Model, payload, {
     let docs = [];
     let count = 0;
     query = query || {};
-    current = current || 1, pageSize = Number(pageSize) || 10;
+    current = current || 1, pageSize = Number(pageSize) || 30;
     isPaging = isPaging == '0' ? false : true;
     lean = lean == '1' ? true : false;
     let skipNum = skip ? skip : ((Number(current)) - 1) * Number(pageSize);

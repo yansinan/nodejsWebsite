@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-24 13:20:49 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-23 06:42:18
+ * @Last Modified time: 2021-08-23 08:54:17
  */
 
 'use strict';
@@ -60,10 +60,11 @@ class ServicePlugin extends Service {
         //    isPaging,
         //    skip,
         //    lean
-        //} = payload;
-        payload.pageSize = Number(payload.pageSize) || 30;
+        //} = payload;    
+        // pageSize==0,说明要读全部；pageSize未定义，默认改取30
+        // if(payload.pageSize!=0)payload.pageSize = Number(payload.pageSize) || 30;
         // isPaging = isPaging == '0' ? false : true;
-        
+
         let listdata = _list(this.model, payload, {
             files: files,
             query: query,

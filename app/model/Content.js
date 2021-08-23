@@ -165,7 +165,10 @@ module.exports = app => {
     ContentSchema.virtual('nameTimeline').get(function (){
         return this.name || this.title;
     })
-
+    // 客户端用的doc别名;
+    ContentSchema.virtual('docAlias').get(function (v){
+        return "news";
+    })
 
     let model=app.model.Content || Doc.discriminator("Content", ContentSchema);
     // app.model.Artist=model;
