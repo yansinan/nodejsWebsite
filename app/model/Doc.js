@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2019/11/10 20:30:53 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-23 06:10:47
+ * @Last Modified time: 2021-08-23 06:24:51
  */
 const INIT_DOC= app=>{
     //如果已经初始化过，则直接返回；
@@ -25,6 +25,7 @@ const INIT_DOC= app=>{
     var shortid = require('shortid');
     // var User = require('./User');
     const _ = require('lodash');
+    let {getPinYin} = require("../utils/modPinYin");
     
     let optionsSchema={
         discriminatorKey:"doc",
