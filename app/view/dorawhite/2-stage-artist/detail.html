@@ -8,7 +8,7 @@
 
 <div class="detail artist font-normal">
     {# 乐队名 #}
-    <div class="name">{{post.name}} {{post.alias}}</div>
+    <div class="name">{{post.name}} {{post.alias if post.name!=post.alias else ""}}</div>
     {# 乐队图 #}
     <div class="album scrollerSnap">
         {% for image in post.listImages %}
@@ -17,14 +17,14 @@
     </div>
     {# 标签 #}
     {# 风格 #}
+    {% if post.tags.length>0 and post.tags[0]%}
     <ul class="list-inline">
-        {% if post.tags.length>0%}
-            {% for tag in post.tags %}
-                {{ domTag(tag.name+"   "+tag.alias,tag.url) }}
-            {% endfor %}
-        {% endif %}
-        {{ domTag(post.from,post.url) }}
+        {% for tag in post.tags %}
+            {{ domTag(tag.name+"   "+tag.alias,tag.url)  if tag else ""}}
+        {% endfor %}
+        {{ domTag(post.from,post.url) if post.from!=""}}
     </ul>
+    {% endif %}
     {# 介绍 #}
     <article class="">
         {{post.comments | safe}}
@@ -45,7 +45,7 @@
         <div class="list">      
             {% for item in post.objDocsRecords %}
                 {# 乐队详情页 #}
-                <a href="{{item.url}} " target="_blank " class="item"><img src="{{item.sImg}} " class="img-fluid" alt="{{item.title}} " /></a>
+                <a onclick="window.goto('{{item.url}}')" class="item"><img src="{{item.sImg}} " class="img-fluid" alt="{{item.title}} " /></a>
             {% endfor %} 
         </div>
     </div>
@@ -72,7 +72,7 @@
             {# {%if post.listTimeline[loop.first]  or itme.dateYear!=post.listTimeline[loop.revindex0].dateYear %} #}
             {# <div class="year">{{ item.dateYear}}</div> #}
             {# {% endif %} #}
-            <a class="item">
+            <a class="item" onclick="window.goto('{{item.url}}')">
                 {# <span class="date" >{{ item.dateTimeline}}</span> #}
                 {{ item.name }}
             </a>                            

@@ -72,7 +72,7 @@ module.exports =app=>{
         // });
         // url地址
         schema.virtual('url').get(function () {
-            return `/show/${this._id}.html`;
+            return `/show___${this._id}.html`;
         });
         // 演出标题
         schema.virtual('title').get(function () {

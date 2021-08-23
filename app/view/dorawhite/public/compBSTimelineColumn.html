@@ -16,7 +16,7 @@
                     {% for item in colItems %}
                     <div class="item {{item.docAlias if item.docAlias else 'Content'}}" dr-date-doc="{{item.dateFull}}">
                         {# 图 手机图 #}
-                        <div id="timelineTitleImg{{item._id}}" class="imgContainer">                        
+                        <div id="timelineTitleImg{{item._id}}" class="imgContainer" onclick="window.goto('{{item.url}}')">                        
                             <img data-src="{{item.sImg}}" alt="{{item.nameTimeline}}"  class="lazy img-fluid" dr-id-doc="img{{item._id}}"/>
                         </div>
 
@@ -25,7 +25,7 @@
                             {# 日期 #}
                             {# <div class="col-auto date">{{item.dateTimeline}}</div> #}
                             {# 大标题 #}
-                            <p class="title">{{item.dateTimeline}}<br><span class="nameArtists">{{item.nameArtists}}<br></span>{{item.nameTimeline}}</p>
+                            <p class="title">{{item.dateTimeline}}<br><span class="nameArtists">{{item.nameArtists}}<br></span><a class="{{item.docAlias if item.url else 'fake'}}" onclick="window.goto('{{item.url}}')">{{item.nameTimeline}}</a></p>
                             {# 标签 #}
                             <div class="tags">
                                 {{listTags(item.tags)}}
@@ -34,7 +34,7 @@
                                 {{listTags(item.listFormatTags)}}
                             </div>
                             {# 图 手机隐藏纵向图 #}
-                            <div id="timelineTitleImg{{item._id}}" class="imgContainer">                        
+                            <div id="timelineTitleImg{{item._id}}" class="imgContainer" onclick="window.goto('{{item.url}}')">                        
                                 <img data-src="{{item.sImg}}" src="/static/upload/images/defaultlogo.png" width="100%" height="100%" alt="{{item.nameTimeline}}"  class="lazy img-fluid" dr-id-doc="img{{item._id}}"/>
                             </div>
                         </div>

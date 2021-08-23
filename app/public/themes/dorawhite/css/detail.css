@@ -112,6 +112,13 @@
     
     /* background-color: white; */
 }
+.detail article{
+    max-width: 100%;
+}
+.detail article img{
+    max-width: 100%;
+    object-fit: contain;
+}
 /* artistDetail */
 .detail.artist.font-normal{
     color:white;
@@ -255,6 +262,7 @@
     /* flex:0 1 calc(50% - 2.94%); */
     background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.8) 100%);
     border: 1px solid #979797;
+    cursor: pointer;
 }
 .detail.artist .records .list .item img{
     object-fit:cover;
@@ -316,13 +324,13 @@
 .detail.artist .news .list .year{
     
 }
-.detail.artist .news .list .item{
+.detail .news .list .item{
     position: relative;
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
 }
-.detail.artist .news .list .item::before{
+.detail .news .list .item::before{
     content:"";
     background: url(/static/themes/images/bnArrowLine.svg) center/0.55rem auto no-repeat ;
     height: 0.55rem;
@@ -332,11 +340,12 @@
     transform: rotate(-90deg);
     filter: invert(1);
 }
-.detail.artist .news .list a{
+.detail .news .list a{
     color:white;
     text-decoration: none;
+    cursor: pointer;
 }
-.detail.artist .news .list a:hover{
+.detail .news .list a:hover{
     text-decoration: underline;
 }
 

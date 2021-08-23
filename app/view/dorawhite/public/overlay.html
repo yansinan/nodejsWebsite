@@ -140,7 +140,7 @@
                 {# 乐队名列表 #}
                 {# <h1 class="display-1">RUBY</h1> #}
                 <div class="artist artist-md d-flex align-items-center ">
-                    <button class="name btn btn-link" data-dr-url="/artist___{{artist.id}}.html" data-bs-target="#offcanvasRight">
+                    <button class="name btn btn-link" data-dr-url="{{artist.url}}" data-bs-target="#offcanvasRight">
                         {{artist.name}}
                     </button>
                     {% if artist.listNotices.length > 0%}
@@ -152,7 +152,7 @@
                         title=' '>
                         +{{artist.listNotices.length}}
                     </button>
-                    {% for doc in artist.listNotices %}<div class="notice d-none" data-dr-url="/doc___{{doc.id}}.html">{{doc.nameTimeline}}</div>{% endfor %}
+                    {% for doc in artist.listNotices %}<div class="notice d-none" data-dr-url="{{doc.url}}">{{doc.nameTimeline}}</div>{% endfor %}
                     {% endif %}
 
                 </div >

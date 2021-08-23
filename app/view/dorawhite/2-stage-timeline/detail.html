@@ -3,7 +3,7 @@
 {% from "../public/compAvatar.html" import avatar %}
 <div class="detail font-normal">
     {# 乐队名 #}
-    <div class="name">{{post.name}} {{post.alias}}</div>
+    <div class="name">{{post.name}} {{post.alias if post.name!=post.alias else ""}}</div>
     {# 乐队图 #}
     <div class="album scrollerSnap">
         <img src="{{post.sImg}}" alt="{{image.name}}"/>
@@ -32,7 +32,7 @@
             {# {%if post.listTimeline[loop.first]  or itme.dateYear!=post.listTimeline[loop.revindex0].dateYear %} #}
             {# <div class="year">{{ item.dateYear}}</div> #}
             {# {% endif %} #}
-            <a class="item">
+            <a class="item"  onclick="window.goto('{{item.url}}')">
                 {# <span class="date" >{{ item.dateTimeline}}</span> #}
                 {{ item.name }}
             </a>                            
