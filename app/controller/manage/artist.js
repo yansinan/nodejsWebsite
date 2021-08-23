@@ -96,9 +96,32 @@ class APIController extends BaseController {
         }
         return newTagArr
     }
+    // 继承自service.doc在create和update中使用;
     async funGetData(fields){
         const {ctx}=this;
         let formObj=await super.funGetData(fields);
+        // 检查&创建tags里的乐队名;
+        let tagFind = await ctx.service.contentTag.item(ctx, {
+            query: {
+                name: fields.name,
+            }
+        });
+        if(!tagFind){//没有同名标签则创建
+            let tagNew = await ctx.service.contentTag.create({
+                name: fields.name,
+                alias: fields.alias,
+                comments: "乐队标签",
+            });
+        }else if(shortid.isValid(fields._id) && (tagFind.alias!=fields.alias || _.isEmpty(tagFind.objRef) || tagFind.objRef.id!=fields._id)){
+            let tagUpdate=await ctx.service.contentTag.update(ctx, tagFind._id,{
+                alias: fields.alias,
+                comments: "乐队标签",
+                objRef:{
+                    id:fields._id,
+                    doc:fields.doc,
+                },
+            });
+        }
 
         //TODO 20201213: 检查乐队成员的有效性
         let newListMember= await this.renderListMembers(fields.listMembers);

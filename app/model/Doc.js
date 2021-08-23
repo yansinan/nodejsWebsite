@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2019/11/10 20:30:53 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-23 05:14:06
+ * @Last Modified time: 2021-08-23 06:10:47
  */
 const INIT_DOC= app=>{
     //如果已经初始化过，则直接返回；
@@ -154,7 +154,6 @@ const INIT_DOC= app=>{
     schema.virtual('title').get(function () {
         return this.name;
     });
-
     // 年份信息
     schema.virtual('dateYear').get(function () {
         return moment(new Date(this.date)).format("YYYY") + " ";
