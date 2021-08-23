@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2019/11/10 20:30:53 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-19 23:16:19
+ * @Last Modified time: 2021-08-23 05:14:06
  */
 const INIT_DOC= app=>{
     //如果已经初始化过，则直接返回；
@@ -24,6 +24,7 @@ const INIT_DOC= app=>{
     
     var shortid = require('shortid');
     // var User = require('./User');
+    const _ = require('lodash');
     
     let optionsSchema={
         discriminatorKey:"doc",
@@ -136,16 +137,24 @@ const INIT_DOC= app=>{
     // }),set(function(v){
     //     this.listRefs
     // });
+    schema.path('alias').get(function (v) {
+        return _.isEmpty(v) ? getPinYin(this.name) : v;
+    });
     schema.path('date').get(function (v) {
         return moment(v).format("YYYY-MM-DD");
     });
     schema.path('updateDate').get(function (v) {
         return moment(v).format("YYYY-MM-DD HH:mm:ss");
     });
-    
+    schema.path('tags').get(function (v) {
+        return v.filter(v=>(!_.isEmpty(v)));
+    }).set(function(v){
+        return v.filter(v=>(!_.isEmpty(v)));
+    });
     schema.virtual('title').get(function () {
         return this.name;
     });
+
     // 年份信息
     schema.virtual('dateYear').get(function () {
         return moment(new Date(this.date)).format("YYYY") + " ";

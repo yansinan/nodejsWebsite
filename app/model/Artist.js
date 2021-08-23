@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2019/11/10 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-22 01:11:37
+ * @Last Modified time: 2021-08-23 04:55:23
  */
 /**
  * Created by Dr on 2019/11/10.
@@ -185,7 +185,7 @@ module.exports =app=>{
                 };
                 if(v){
                     let isInList=v.find((img)=>(img.url == artist.sImg));
-                    if(!isInList)v.push(objImage)
+                    if(!isInList)v.unshift(objImage)
                 }else{                        
                     v = [objImage];
                 }
