@@ -112,6 +112,13 @@
     
     /* background-color: white; */
 }
+.detail article{
+    max-width: 100%;
+}
+.detail article img{
+    max-width: 100%;
+    object-fit: contain;
+}
 /* artistDetail */
 .detail.artist.font-normal{
     color:white;
