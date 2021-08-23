@@ -17,7 +17,7 @@
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page.sync="pageInfo.current"
-          :page-sizes="[10, 30, 50]"
+          :page-sizes="[10, 30, 50, 100]"
           :page-size="pageInfo.pageSize"
           layout="sizes, prev, pager, next"
           :total="pageInfo.totalItems"
@@ -40,7 +40,7 @@ export default {
     nameMod: String
   },
   methods: {
-    renderPageList(current = 1, pageSize = 10) {
+    renderPageList(current = 1, pageSize = 30) {
       let searchkey = this.pageInfo ? this.pageInfo.searchkey : "";
       let state = this.pageInfo ? this.pageInfo.state : "";
       let user = this.pageInfo ? this.pageInfo.user : "";
@@ -63,7 +63,7 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
-      let pageSize = this.pageInfo ? this.pageInfo.pageSize : 10;
+      let pageSize = this.pageInfo ? this.pageInfo.pageSize : 30;
       this.renderPageList(val, pageSize);
     }
   },

@@ -20,7 +20,7 @@
 import '@/set-public-path'
 import DataTable from "./dataTable.vue";
 import TopBar from "@root/publicMethods/vue/TopBar.vue";
-import Pagination from "../common/Pagination.vue";
+import Pagination from "@root/publicMethods/vue/Pagination.vue";
 import { mapGetters, mapActions,createNamespacedHelpers} from "vuex";
 import { initEvent } from "@root/publicMethods/events";
 const mod = createNamespacedHelpers(nameMod)////模块,含mapGetters, mapActions等

@@ -49,7 +49,6 @@
 
 <script>
 import '@/set-public-path'
-import VueUeditorWrap from "vue-ueditor-wrap";
 import { initEvent } from "@root/publicMethods/events";
 import {methods,initData,components,data,props,computed} from "@root/publicMethods/vue/contentForm";
 
