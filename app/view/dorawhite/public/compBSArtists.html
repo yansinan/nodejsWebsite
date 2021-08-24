@@ -145,18 +145,8 @@
             observeDOM: true ,// 开启 observe-dom 插件
         })
 
-        {# slideListArtist.refresh(); #}
-
-        slideListArtist.on('contentChanged', (newContent) => {
-            slideListArtist.refresh();
-            window.alert("beforeScrollStart");
-        })
         {# slideListArtist.on('beforeScrollStart', slideListArtist.refresh) #}
 
-
-
-
-        {# this.addEventListener("BS_COVER_LISTARTISTS",eInitTooltip); #}
         eInitTooltip($coverArtistsWrapper,"top-start",$coverArtistsWrapper);
         //slideListArtist.on("scroll",()=>{
         //    if(!$coverArtistsWrapper.tooltipList)return;
@@ -166,21 +156,19 @@
         //        }
         //    });
         //})
-        slideListArtist.on('scrollStart', () => {
+        slideListArtist.hideTootip=function(){
             if(!$coverArtistsWrapper.tooltipList)return;
             $coverArtistsWrapper.tooltipList.forEach((tooltip)=>{
                 if(tooltip && tooltip.tip && !tooltip.tip.hidden){
                     tooltip.hide();
                 }
             });
-
-        })
+        }
+        slideListArtist.on('scrollStart', slideListArtist.hideTootip);
         $coverArtistsWrapper.addEventListener("click",(e)=>{
-            if(e.isTrusted || !$coverArtistsWrapper.tooltipList)return;
-            $coverArtistsWrapper.tooltipList.forEach((tooltip)=>{
-                tooltip.hide();
-            })
-            //$coverArtistsWrapper.querySelector(".noticeCnt.now").classList.remove("now")
+            if(e.isTrusted)return;
+            slideListArtist.hideTootip(e);
         },false)
+        this.addEventListener("NAV_TO",slideListArtist.hideTootip);
     </script>  
 </div>

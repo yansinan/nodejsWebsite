@@ -391,7 +391,7 @@
             else eTransitionEnd(eTransition);
             {# 缩放 #}
             let $listSVG=$bsTimelineBarWrapper.querySelectorAll(".svgTimelineBar");
-            $bsTimelineBarWrapper.style.setProperty('--scale-timeline-bar-svg', 1/($listSVG.length+1));
+            $bsTimelineBarWrapper.style.setProperty('--scale-timeline-bar-svg', Math.max(1/($listSVG.length+1),1/5));
         }else{
             $bsTimelineBarWrapper.style.setProperty('--scale-timeline-bar-svg', "1"); 
         }

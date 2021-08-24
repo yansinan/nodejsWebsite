@@ -272,7 +272,7 @@
         {# 筛选内容，根据动画结束监听，重新计算当前月，并触发同步底条 #}
         that.bsTimeline.filterMM=function(e){
             let bsTimeline=e.detail.bsTimeline;
-            {# 移动端没动画 #}
+            {# 移动端没动画 时间轴没动画，在NAV_AT直接同步#}
             if(that.bsTimeline.isMobile)return;
             {# PC等月份缩小动画结束：强制同步timelineBar==>循环等待直到that.bsTimeline初始化完成； that.bsTimeline初始化在BS_COVER_TIMELINE#}
             function eTransitionEnd(eTransition){
@@ -379,8 +379,11 @@
         that.dispatchEvent(new CustomEvent("BS_TIMELINE_NAV_AT",{detail:e.detail}));
         {# 移动端：时间轴没动画，直接同步 #}
         if(that.bsTimeline.isMobile){
+            that.bsTimeline.scrollTo(1,1,0);
             let isDispatched=that.bsTimeline.eUpdateTimeline.call(that.bsTimeline,{},true);
-            console.debug("时间轴：强制同步=@NAV_AT=>",e.detail,isDispatched);
+            {# 更新lazyLoad , 有可能筛选后没触发scroll？ #}
+            that.bsTimeline.$listMMNow
+            console.debug("《移动端》时间轴：强制同步=@NAV_AT=>",e.detail,isDispatched);
         }
     });
     //var mutationObserver = new MutationObserver(function (mutations) {
