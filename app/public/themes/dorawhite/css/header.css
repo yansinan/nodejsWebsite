@@ -158,16 +158,22 @@
     background-color: transparent;
     color: black;
     border:1px solid black;
+    cursor:pointer;
   }
   #navHeader .navbar-collapse ul li.now
   {
     background: black;
     color: white;
+    text-decoration: none;
+    cursor:default;
   }
   #navHeader .navbar-collapse ul li a
   {
+    background-color: inherit;
+    color: inherit;
     font-size: 0.5rem;
-
+    cursor: inherit;
+    text-decoration: inherit;
     margin: 0px;
     padding: 0.131rem 0.616rem;
     line-height: 0.6rem;

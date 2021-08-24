@@ -165,3 +165,12 @@ ul li {
     width:0px;
 }
 */
+
+
+/* 通用交互效果 */
+.hoverUnderline:not(:hover){
+    text-decoration: none;
+}
+.hoverUnderline:hover{
+    text-decoration: underline;
+}

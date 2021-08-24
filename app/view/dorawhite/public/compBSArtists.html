@@ -8,7 +8,7 @@
             {# <div class="fixed"><div class="sImg"><img src="{{artist.sImg}}" width="0px" data-src="{{artist.sImg}}" alt="{{artist.nameTimeline}}"  class="img-fluid"/></div></div> #}
              
             <button 
-                class="name btn btn-link" 
+                class="name btn btn-link hoverUnderline" 
                 data-dr-url="{{artist.url}}">
                 <span 
                     tabindex="0"
@@ -28,7 +28,7 @@
                 title=' '>
                 +{{artist.listNotices.length}}
             </button>
-            {% for doc in artist.listNotices %}<div class="notice d-none" data-dr-url="{{doc.url}}">{{doc.nameTimeline}}</div>{% endfor %}
+            {% for doc in artist.listNotices %}<div class="notice hoverUnderline d-none" data-dr-url="{{doc.url}}">{{doc.nameTimeline}}</div>{% endfor %}
             {% endif %}
             <img src="{{artist.sImg}}" width="0px" alt="{{artist.nameTimeline}}" class="sImg img-fluid"/>
         </div >

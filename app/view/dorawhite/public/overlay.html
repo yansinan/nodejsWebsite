@@ -109,7 +109,7 @@
         <ul class=" flex-fill d-flex flex-column justify-content-start flex-wrap">
             {% for cate in navigation %} {% if cate.parentId == '0' %}
             <li class="menuItem menuItem-md text-nowrap">
-                <a class="" style="color: inherit" tabindex="-1" alt="{{site.altkey}}{{cate.name}}" onclick="eBnNav('{{cate.defaultUrl}}')" name="{{cate.defaultUrl}}" data-bs-toggle="offcanvas" href="#offcanvasRightMenu" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">{{cate.name}}NEWS</a>
+                <a class=" hoverUnderline" style="color: inherit" tabindex="-1" alt="{{site.altkey}}{{cate.name}}" onclick="eBnNav('{{cate.defaultUrl}}')" name="{{cate.defaultUrl}}" data-bs-toggle="offcanvas" href="#offcanvasRightMenu" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">{{cate.name}}NEWS</a>
             </li>
             {% endif %} {% endfor %}
         </ul>
@@ -140,7 +140,7 @@
                 {# 乐队名列表 #}
                 {# <h1 class="display-1">RUBY</h1> #}
                 <div class="artist artist-md d-flex align-items-center ">
-                    <button class="name btn btn-link" data-dr-url="{{artist.url}}" data-bs-target="#offcanvasRight">
+                    <button class="name hoverUnderline btn btn-link" data-dr-url="{{artist.url}}" data-bs-target="#offcanvasRight">
                         {{artist.name}}
                     </button>
                     {% if artist.listNotices.length > 0%}
@@ -152,7 +152,7 @@
                         title=' '>
                         +{{artist.listNotices.length}}
                     </button>
-                    {% for doc in artist.listNotices %}<div class="notice d-none" data-dr-url="{{doc.url}}">{{doc.nameTimeline}}</div>{% endfor %}
+                    {% for doc in artist.listNotices %}<div class="notice hoverUnderline d-none" data-dr-url="{{doc.url}}">{{doc.nameTimeline}}</div>{% endfor %}
                     {% endif %}
 
                 </div >
