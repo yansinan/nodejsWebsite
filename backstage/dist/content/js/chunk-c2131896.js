@@ -1,4 +1,4 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([["vendors~addContent"],{"0675":function(A,e,t){var n=t("0cb2");A.exports=function(A,e,t){for(var r in e)t&&A[r]?A[r]=e[r]:n(A,r,e[r]);return A}},"072e":function(A,e,t){
+(window.webpackJsonp=window.webpackJsonp||[]).push([["chunk-c2131896"],{"0675":function(A,e,t){var n=t("0cb2");A.exports=function(A,e,t){for(var r in e)t&&A[r]?A[r]=e[r]:n(A,r,e[r]);return A}},"072e":function(A,e,t){
 /*!
  * html2canvas 1.0.0-rc.7 <https://html2canvas.hertzen.com>
  * Copyright (c) 2020 Niklas von Hertzen <https://hertzen.com>

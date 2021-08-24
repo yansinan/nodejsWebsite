@@ -12,9 +12,8 @@
         <el-avatar :src="dialogState.formData.sImg" fit="cover"/>{{dialogState.formData.name}}的{{label}}
     </div>
       <el-divider content-position="left">已保存的视频</el-divider>
-      <el-row :gutter="40">
-        <!-- <el-form :model="listObjURL" ref="formUpdate" status-icon inline-message="true" label-width="0px" @validate="eValidate"> -->
-          <el-col v-for="(domain, index) in listObjURL" :key="domain.idURL" :md="8" style="margin-bottom:40px;">
+      <div class="listGrid local">
+          <div v-for="(domain, index) in listObjURL" :key="domain.idURL">
             <el-card :body-style="{ padding: '0px' }" shadow="hover" v-loading="domain.isLoading">
               <!-- <el-form-item style=""
                 :prop="'['+index+'].link'"
@@ -36,14 +35,12 @@
               </div>
               <!-- </el-form-item> -->
             </el-card>
-          </el-col>
-        <!-- </el-form> -->
-
-      </el-row>
+          </div>
+      </div>
       <!-- 网易云抓取 -->
       <el-divider content-position="left">网易云音乐数据</el-divider>
-      <el-row :gutter="40">
-          <el-col v-for="(domain, index) in listNCM" :key="domain.idURL" :md="8" style="margin-bottom:40px;">
+      <div class="listGrid">
+          <div v-for="(domain, index) in listNCM" :key="domain.idURL">
             <el-card :body-style="{ padding: '0px' }" shadow="hover" v-loading="domain.isLoading">
                 <el-input v-model="domain.link" disabled>
                   <img slot="prepend" v-if="domain.icon" :src="domain.icon" class="img-circle" style="width:32px">
@@ -58,10 +55,9 @@
                 </el-tooltip>
               </div>
             </el-card>
-          </el-col>
-        <!-- </el-form> -->
+          </div>
         <!-- 新增 -->
-        <el-col :md="8" style="height:100%">
+        <div style="height:100%">
           <el-card :body-style="{ padding: '0px' }" shadow="hover">
             <div>
               <!-- <span style="font-size: 18px;">添加视频链接</span> -->
@@ -84,9 +80,9 @@
             </div>
             <div style="font-size: 18px;padding: 18px 20px;">{{strNoticeListNCM?strNoticeListNCM:'可使用网易云音乐MV链接'}}</div>
           </el-card>
-        </el-col>
+        </div>
         <!--  -->
-      </el-row>
+      </div>
       
       <span slot="footer" class="dialog-footer">
           <el-button v-if="dialogState.formData.idNCM" type="warning" @click="eBnSyncNCM">读取网易云音乐</el-button>
@@ -106,6 +102,17 @@
   font-size: 18px;
   padding: 18px 20px;
 }
+.listGrid{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: auto;
+  grid-gap: 1rem;
+  margin: 0rem 1rem;
+}
+.listGrid.local{
+  margin-bottom:4rem;
+}
+
 </style>
 <script>
   import { updateOne } from "@root/publicMethods/apiGeneral";
@@ -258,7 +265,7 @@
       // },
       // 弹窗关闭
       handleClose(e){
-          if(typeof this["onComplete"] === "function")this["onComplete"]();
+          this.$emit('complete',this.listObjURL);
           this.dialogState.isShow=false;
           // 清空数据
           this.dialogState.formData={};

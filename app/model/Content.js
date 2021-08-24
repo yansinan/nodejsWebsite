@@ -2,7 +2,7 @@
  * Created by Administrator on 2015/4/15.
  * 管理员用户组对象
  */
-module.exports = app => {
+ module.exports = app => {
     const mongoose = app.mongoose
     var Schema = mongoose.Schema;
     var moment = require('moment')
@@ -16,6 +16,8 @@ module.exports = app => {
             type: String,
             'default': shortid.generate
         },
+        name: String,//JSON
+        alias: String,//别名多语言用
         title: String,
         stitle: String,
         type: {
@@ -129,15 +131,45 @@ module.exports = app => {
     });
 
     ContentSchema.path('date').get(function (v) {
-        return moment(v).format("YYYY-MM-DD HH:mm:ss");
+        return moment(v).format("YYYY-MM-DD");
     });
     ContentSchema.path('updateDate').get(function (v) {
         return moment(v).format("YYYY-MM-DD HH:mm:ss");
     });
 
     ContentSchema.virtual('url').get(function () {
-        return `/details/${this._id}.html`;
+        return `/doc___${this._id}.html`;
     });
+    // 为了和doc同步;
+    ContentSchema.path('stitle').get(function (v) {
+        return v;
+    }).set((v)=>{
+        this.alias=v;
+        //this.stitle=v;
+        return v;
+    });
+    ContentSchema.path('title').get(function (v) {
+        return v;
+    }).set((v)=>{
+        this.name=v;
+        //this.title=v;
+        return v;
+    });
+    ContentSchema.path('name').get(function (v) {
+        return v || this.title;
+    });
+    ContentSchema.path('alias').get(function (v) {
+        return v || this.stitle;
+    });
+    // 时间轴标题
+    ContentSchema.virtual('nameTimeline').get(function (){
+        return this.name || this.title;
+    })
+    // 客户端用的doc别名;
+    ContentSchema.virtual('docAlias').get(function (v){
+        return "news";
+    })
+
     let model=app.model.Content || Doc.discriminator("Content", ContentSchema);
     // app.model.Artist=model;
 
