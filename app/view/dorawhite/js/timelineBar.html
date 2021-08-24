@@ -115,14 +115,16 @@
         let paramTimeline=that.bsTimelineBarWrapper.paramTimeline;
         let strYear=$year.querySelector("span").innerText;
 
-        let $yearPos=document.getElementById("timelineBarYear"+strYear);
+        {# let $yearPos=document.getElementById("timelineBarYear"+strYear); #}
+        {# 计算过程  年坐标在wrapper中的相对x% #}
+        {# let xOffset = that.$footer.isRotated ? ($yearPos.getBoundingClientRect().top - paramTimeline.rectWrapper.top): $yearPos.getBoundingClientRect().left; #}
+        let $yearPos=document.getElementById("svgTimelineBar"+strYear);
         if(!$yearPos){
             $year.style.opacity=0;
             return;
         }
-        {# 计算过程 #}
-        {# 年坐标在wrapper中的相对x% #}
-        let xOffset = that.$footer.isRotated ? ($yearPos.getBoundingClientRect().top - paramTimeline.rectWrapper.top): $yearPos.getBoundingClientRect().left;
+        let xOffset = that.$footer.isRotated ? ($yearPos.getBoundingClientRect().bottom - paramTimeline.rectWrapper.top): $yearPos.getBoundingClientRect().right;
+
         let xTo=(paramTimeline.start+Math.round(xOffset));//$year.style.left-xOffset;
         
         {# z-index #}
@@ -391,7 +393,7 @@
             else eTransitionEnd(eTransition);
             {# 缩放 #}
             let $listSVG=$bsTimelineBarWrapper.querySelectorAll(".svgTimelineBar");
-            $bsTimelineBarWrapper.style.setProperty('--scale-timeline-bar-svg', Math.max(1/($listSVG.length+1),1/5));
+            $bsTimelineBarWrapper.style.setProperty('--scale-timeline-bar-svg', Math.max(1/($listSVG.length+1),1/4));
         }else{
             $bsTimelineBarWrapper.style.setProperty('--scale-timeline-bar-svg', "1"); 
         }
