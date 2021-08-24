@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-08-04 05:26:38 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-24 07:41:27
+ * @Last Modified time: 2021-08-24 09:33:18
  */
 'use strict';
 const { debug } = require('console');
@@ -49,8 +49,8 @@ class ServicePlugin extends Service {
         let dateRange={};
         if(yearStart){
             // 取最近两年数据
-            dateRange.dateEnd=moment(yearStart).subtract(1, 'year').startOf("year").toDate();
-            dateRange.dateStart=moment(yearStart).subtract(2, 'year').startOf("year").toDate();
+            dateRange.dateEnd=moment(yearStart).endOf("year").toDate();
+            dateRange.dateStart=moment(yearStart).subtract(2, 'year').endOf("year").toDate();
             query.date= {
                 "$gte": new Date(dateRange.dateStart),
                 "$lte": new Date(dateRange.dateEnd)
