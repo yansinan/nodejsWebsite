@@ -134,6 +134,9 @@
                 $bsMM.objBS.refresh();
                 {# $bsMM.objBS.enabled(); #}
             })
+            $bsMM.objBS.on('mousewheelStart', (e)=>{
+                $bsMM.objBS.refresh();
+            })            
             $bsMM.objBS.on("scroll",(pos)=>{//this===MutationObserver
                 
                 if($bsMM.classList.contains("now")){

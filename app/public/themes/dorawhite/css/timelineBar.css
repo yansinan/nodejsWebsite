@@ -130,6 +130,10 @@
     flex-wrap: nowrap;
     overflow: visible;
     max-width: auto;
+    cursor: grab;
+}
+#bsTimelineBarWrapper .bsTimelineBarContent:active{
+    cursor:grabbing;
 }
 #bsTimelineBarWrapper .bsTimelineBarContent .left{
     /* transition-property: flex-basis; */

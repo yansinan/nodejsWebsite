@@ -78,7 +78,10 @@ body.goods{
     /* flex-direction: column; */
     min-height: 100%;
     flex:1 1 100%;
-    
+    cursor: grab;
+}
+#mainCover .bs-wrapper-cover .bs-content-cover:active{
+    cursor:grabbing;
 }
 
 
