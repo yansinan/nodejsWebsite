@@ -96,7 +96,8 @@
                             let rectMM=$mm.getBoundingClientRect();
                             let isNow = rectMM.width>0 && rectMM.height>0;
                             if(isNow){ {# 如果没显示，直接跳过，并且不算end,继续后续的检索 #}
-                                isEnd = isEnd || (that.bsTimeline.isMobile? rectMM.top > rectWrapper.bottom :rectMM.left > rectWrapper.right);
+                                isEnd = isEnd || (that.bsTimeline.isMobile? rectMM.top > rectWrapper.bottom :rectMM.left > rectWrapper.right); {# 非0列，是否超出显示区 #}
+                                $listMMNow.push($mm);
                                 if(isEnd)throw new Event($mm.dataset.mm);
                                 isNow = isNow && (that.bsTimeline.isMobile ? (rectMM.bottom >= rectWrapper.top && rectMM.top <= rectWrapper.bottom) : (rectMM.right>=rectWrapper.left && rectMM.left <= rectWrapper.right));
                                 if(isNow){
@@ -175,10 +176,20 @@
                 }
                 {# 是否需要改变class #}
                 if($mmNow!=$mmLast){                
+                    {# 最后一个有宽度的月份，取strYear，也触发End时间 #}
+                    $listMM.reverse();
+                    let $mmLastShow=$listMM.find($mm=>{
+                        let r=$mm.parentElement.getBoundingClientRect();
+                        return r.width>0 && r.height>0
+                    });
+                    $listMM.reverse();
+                    $mmLastShow=$mmLastShow || $listMM[$listMM.length-1] || false;
                     {# 如果当前年份是最后一年，触发End时间 #}
-                    if($listMM[$listMM.length-1] && $mmNow && ($mmNow.strYear==$listMM[$listMM.length-1].strYear)){
-                        {# 触发找到月份事件 #}
-                        that.dispatchEvent(new CustomEvent("BS_MAIN_CONTENT_END"),{detail:{strYear:$mmNow.strYear,$mmNow,$mmEnd:$listMM[$listMM.length-1]}});//,strYear:$mmNow.strYear,strMonth:$mmNow.strMonth
+                    let isMMNowEndYear=$mmLastShow && $mmNow && (parseInt($mmNow.strYear)<=parseInt($mmLastShow.strYear)+1);
+                    {# 触发找到月份事件 #}
+                    if(isMMNowEndYear){
+                        console.debug("时间轴:当前$mmNow:",$mmNow.strYear,",是最后一个有宽度列同年,",$mmLastShow.strYear,"，继续加载isMMNowEndYear:",isMMNowEndYear,"；目前最后年份:",$listMM[$listMM.length-1].strYear);
+                        that.dispatchEvent(new CustomEvent("BS_MAIN_CONTENT_END"),{detail:{strYear:$listMM[$listMM.length-1].strYear,$mmNow,$mmEnd:$listMM[$listMM.length-1]}});//,strYear:$mmNow.strYear,strMonth:$mmNow.strMonth
                     }
                     if($mmLast){
                         $mmLast.classList.remove("now");
@@ -241,7 +252,8 @@
             return that.bsTimeline.checkEvent(isSync);
         }
         {# 防止动画中不能拖动，体验差 #}
-        that.bsTimeline.on('beforeScrollStart', (e)=>{
+        that.bsTimeline.scroller.actionsHandler.hooks.on('beforeStart', (e)=>{
+            if(that.bsTimeline.pending)that.bsTimeline.stop()
             that.bsTimeline.enable();
         })
         that.bsTimeline.on('scroll', that.bsTimeline.eUpdateTimeline);

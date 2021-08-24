@@ -273,7 +273,7 @@
   #timelineContent .container-mm{
     transition-property: max-width,transform;
     transition-duration: .5s,1s;
-    transition-delay: 0s,calc( 0s + (var(--idx-mm,0) * 0.2s));
+    transition-delay: 0s,min(1s,calc( 0s + (var(--idx-mm,0) * 0.2s)));
   }
   #timelineContent .container-mm,
   #timelineContent.records .container-mm:not(.records),

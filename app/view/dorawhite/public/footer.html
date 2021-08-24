@@ -30,7 +30,7 @@
                     {% endfor %}
                 {% endfor %}
                  #}
-                {% for year in range(pageInfo.yearNewest,pageInfo.yearTotal,-1) %}
+                {% for year in range(pageInfo.yearNewest,pageInfo.yearTotal-1,-1) %}
                 <div class="timelineYear"><span>{{year}}</span></div>
                 {% endfor %}
                 {# 剩余年份 #}
