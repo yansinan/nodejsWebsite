@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-08-04 05:26:38 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-23 08:46:52
+ * @Last Modified time: 2021-08-24 05:41:04
  */
 'use strict';
 const { debug } = require('console');
@@ -123,19 +123,19 @@ class ServicePlugin extends Service {
                 let cntFind=0;
                 listDocsOfYear.forEach((doc,idx)=>{
                     if(moment(doc.date).isSame(dateTmp,"day")){
-                        let docFind=doc;
-                        //listDocFind.push(doc);
-                        posX=Math.abs((cntDays*100/cntDaysFullYear)-docFind.percentDateOfYear).toFixed(3) ;
-                        let strDate=moment(docFind.date).format("YYYY-MM-DD");
-                        // listIdxDays.push(posX);
-                        listTmpYearDocs.push({
-                            posX,
-                            date:strDate,
-                            docAlias:docFind.docAlias,
-                        });
                         cntFind++;
                     }
                 })
+                let docFind=listDocsOfYear[idxFindDoc];
+                //listDocFind.push(doc);
+                posX=Math.abs((cntDays*100/cntDaysFullYear)-docFind.percentDateOfYear).toFixed(3) ;
+                let strDate=moment(docFind.date).format("YYYY-MM-DD");
+                // listIdxDays.push(posX);
+                listTmpYearDocs.push({
+                    posX,
+                    date:strDate,
+                    docAlias:docFind.docAlias,
+                });
                 listDocsOfYear.splice(idxFindDoc,cntFind)
                 
             }else if(Math.random()<(factor/cntDays) && timeLast>dateTmp){

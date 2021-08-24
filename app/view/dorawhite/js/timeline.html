@@ -44,11 +44,11 @@
                 left: true,
                 right: true
             },
-            mouseWheel: {
-                speed: 50,
-                invert: false,
-                easeTime: 100
-            },
+            //mouseWheel: {
+            //    speed: 200,
+            //    invert: false,
+            //    easeTime: 500
+            //},
             pullDownRefresh: {
                 threshold: 60,
                 stop: 40
@@ -238,6 +238,10 @@
             {# 日期变化，且用户操作产生的，才触发同步通知 #}
             return that.bsTimeline.checkEvent(isSync);
         }
+        {# 防止动画中不能拖动，体验差 #}
+        that.bsTimeline.on('beforeScrollStart', (e)=>{
+            that.bsTimeline.enable();
+        })
         that.bsTimeline.on('scroll', that.bsTimeline.eUpdateTimeline);
 
         that.bsTimeline.scroller.animater.hooks.on('end', () => {

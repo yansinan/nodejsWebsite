@@ -123,12 +123,18 @@
  */
 #timelineContent.records .wapper-mm .item.records,
 #timelineContent.news .wapper-mm .item.news,
-#timelineContent.news .wapper-mm .item.artists
+#timelineContent.news .wapper-mm .item.artists,
+#timelineContent.shows .wapper-mm .item.shows,
+#timelineContent.goods .wapper-mm .item.goods,
+#timelineContent.videos .wapper-mm .item.videos
 {
   max-height: 60vh;
 }
 #timelineContent.records .wapper-mm .item:not(.records),
-#timelineContent.news .wapper-mm .item:not(.news,.artists)
+#timelineContent.news .wapper-mm .item:not(.news,.artists),
+#timelineContent.shows .wapper-mm .item:not(.shows),
+#timelineContent.goods .wapper-mm .item:not(.goods),
+#timelineContent.videos .wapper-mm .item:not(.videos)
 {
   max-height: 0px;
   margin-bottom: 0px;
@@ -190,6 +196,9 @@
 #timelineContent .wapper-mm .item .tags{
   margin-bottom: 0.86rem;
 }
+#timelineContent.shows .wapper-mm .item .titleContainer .imgContainer,
+#timelineContent.videos .wapper-mm .item .titleContainer .imgContainer,
+#timelineContent.goods .wapper-mm .item .titleContainer .imgContainer,
 #timelineContent.news .wapper-mm .item .titleContainer .imgContainer{
   display:flex;
 }
@@ -263,7 +272,12 @@
     max-width: 40.7vw;
     overflow: visible;
   }
-  #timelineContent .container-mm:not(.show){
+  #timelineContent .container-mm,
+  #timelineContent.records .container-mm:not(.records),
+  #timelineContent.news .container-mm:not(.news,.artists),
+  #timelineContent.shows .container-mm:not(.shows),
+  #timelineContent.goods .container-mm:not(.goods),
+  #timelineContent.videos .container-mm:not(.videos){
     max-width: 0px;
     overflow: hidden;
   }
