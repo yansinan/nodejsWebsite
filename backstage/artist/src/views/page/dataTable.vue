@@ -90,11 +90,11 @@
       :on-complete="getList" />
     <DialogURL @complete="getList" :nameMod="nameMod" :label="$t('artist.listHotMusics')" :dialogState="dialogStateMusic" />
     <DialogURL @complete="getList" :nameMod="nameMod" :label="$t('artist.listLinks')" :dialogState="dialogStateLink" />
-    <ListVideos :on-complete="getList" :nameMod="nameMod" :label="$t('artist.listVideos')" :dialogState="dialogStateVideos" />
+    <ListVideos @complete="getList" :nameMod="nameMod" :label="$t('artist.listVideos')" :dialogState="dialogStateVideos" />
     <Record 
       :label="$t('artist.listRecords')"
       :dialogState="dialogStateRecord"
-      :on-complete="getList" />
+      @complete="getList" />
   </div>
 </template>
 <style lang="scss">

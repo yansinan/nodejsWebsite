@@ -12,9 +12,10 @@
         <el-avatar :src="dialogState.formData.sImg" fit="cover"/>{{dialogState.formData.name}}的{{label}}
     </div>
 
-      <el-row :gutter="40">
-          <el-col v-for="(domain, index) in listRecords" :key="domain.idAlbumNCM" :md="6" style="margin-bottom:40px;">
-            <el-card :body-style="{ padding: '0px' ,filter: domain.state!=2 ? 'grayscale(1) opacity(0.5)' : ''}" shadow="hover" v-loading="domain.isLoading">
+      <el-divider content-position="left">已保存的专辑</el-divider>
+      <div class="listGrid local">
+          <div  v-for="(domain, index) in listRecords" :key="domain.idAlbumNCM">
+            <el-card :body-style="{ padding: '0px' }" shadow="hover" v-loading="domain.isLoading">
               <el-image :span="24" :src="domain.sImg" :fit="contain" crossOrigin="Anonymous" />
               <div class="titleVideo" style="">
                 <span v-if="domain.name">{{domain.name}}</span>
@@ -23,12 +24,12 @@
                 </el-tooltip>
               </div>
             </el-card>
-          </el-col>
-      </el-row>
+          </div>
+      </div>
       <!-- 网易云抓取 -->
       <el-divider content-position="left">网易云音乐数据</el-divider>
-      <el-row :gutter="40">
-          <el-col v-for="(domain, index) in listRecordsNCM" :key="domain.idAlbumNCM" :md="6" style="margin-bottom:40px;">
+      <div class="listGrid">
+          <div v-for="(domain, index) in listRecordsNCM" :key="domain.idAlbumNCM">
             <el-card :body-style="{ padding: '0px' }" shadow="hover" v-loading="domain.isLoading">
               <el-image :span="24" :src="domain.sImg" :fit="contain" @load="eImgLoaded" v-loading="!domain.isFitted" crossOrigin="Anonymous" />
               <div class="titleVideo" style="">
@@ -38,8 +39,8 @@
                 </el-tooltip>
               </div>
             </el-card>
-          </el-col>
-      </el-row>      
+          </div>
+      </div>      
       <span slot="footer" class="dialog-footer">
         <el-button @click="handleClose">关 闭</el-button>
       </span>
@@ -55,6 +56,17 @@
   justify-content: space-between;
   font-size: 18px;
   padding: 18px 20px;
+}
+
+.listGrid{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: auto;
+  grid-gap: 1rem;
+  margin: 0rem 1rem;
+}
+.listGrid.local{
+  margin-bottom:4rem;
 }
 </style>
 <script>
@@ -166,12 +178,12 @@
       eDialogOpen(e){
         let that=this;
         this.getListRecords().then(resListRecord=>{
-          console.log(resListRecord);
-          if(resListRecord.status==200 && resListRecord.data){
+          console.log("数据库内专辑信息",resListRecord);
+          if(resListRecord.status==200 && resListRecord.data && resListRecord.data.length>0){
             that.listRecords=resListRecord.data;
-            // 读取NCM并去重
-            return that.eBnSyncNCM(e)
           }
+          // 读取NCM并去重
+          return this.eBnSyncNCM(e)
         }).then(res=>{
             
         }).catch(e=>{
@@ -182,7 +194,7 @@
 
       // 弹窗关闭
       handleClose(e){
-          if(typeof this["onComplete"] === "function")this["onComplete"]();
+          this.$emit('complete',this.listRecords);
           this.dialogState.isShow=false;
           // 清空数据
           this.dialogState.formData={};
@@ -287,9 +299,7 @@
       },
       // 跳转唱片编辑页
       eEditRecord(objRecord){
-        debugger
         this.$router.push(this.$root.adminBasePath + "/record/edit/"+objRecord._id);
-        
       },
 
       // 图片读取完成，开始裁切、缩小

@@ -2,7 +2,7 @@
  * Created by Administrator on 2015/4/15.
  * 管理员用户组对象
  */
-module.exports = app => {
+ module.exports = app => {
     const mongoose = app.mongoose
     var Schema = mongoose.Schema;
     var moment = require('moment')
@@ -165,7 +165,10 @@ module.exports = app => {
     ContentSchema.virtual('nameTimeline').get(function (){
         return this.name || this.title;
     })
-
+    // 客户端用的doc别名;
+    ContentSchema.virtual('docAlias').get(function (v){
+        return "news";
+    })
 
     let model=app.model.Content || Doc.discriminator("Content", ContentSchema);
     // app.model.Artist=model;

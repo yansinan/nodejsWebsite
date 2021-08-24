@@ -7,6 +7,9 @@
     position: relative;
     display: flex;
     justify-content: center;
+    .dr-datatable {
+      max-width: 80vw;
+    }
   }
 
   .hideSidebar {
@@ -22,6 +25,9 @@
 
     .main-container {
       margin-left: 0px;
+      .dr-datatable {
+        max-width: 100vw;
+      }
     }
 
   }

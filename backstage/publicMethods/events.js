@@ -32,10 +32,10 @@ export function initEvent(that) {
   }
 
   // 修改移动端标记
-  //const {
-  //  body
-  //} = document
-  //const WIDTH = 992
-  //const rect = body.getBoundingClientRect();
-  //that.device = (rect.width - 1 < WIDTH ? 'mobile' : 'desktop');
+  const {
+    body
+  } = document
+  const WIDTH = 992
+  const rect = body.getBoundingClientRect();
+  that.device = (rect.width - 1 < WIDTH ? 'mobile' : 'desktop');
 }
