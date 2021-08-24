@@ -111,7 +111,7 @@
         get strAliasNav(){
             let path=window.location.pathname.split("/timeline/")[1] || window.location.pathname.split("/artists/")[1];///artists___KuvrGBz9e
             let strAliasNav=path ? path.split("__")[0].split("/")[0] : this.funFindByURL().defaultUrl;
-            if(this.strBSMain=="timeline" && strAliasNav=="records")document.querySelector("body").classList.value="flex "+strAliasNav;
+            if(this.strBSMain=="timeline" && typeof strAliasNav === "string")document.querySelector("body").classList.value="flex "+strAliasNav;
             else document.querySelector("body").classList.value="flex";
             return strAliasNav;
         },

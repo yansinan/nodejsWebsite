@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-08-04 05:26:38 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-24 05:41:04
+ * @Last Modified time: 2021-08-24 07:41:27
  */
 'use strict';
 const { debug } = require('console');
@@ -121,8 +121,10 @@ class ServicePlugin extends Service {
             if(idxFindDoc!=-1 && listTmpYearDocs.findIndex(date=>(date.date==moment(listDocsOfYear[idxFindDoc].date).format("YYYY-MM-DD")))==-1){//同时避免listTmpYearDocs日期重复。否则会导致反复加载同日期的所有doc
                 //let listDocFind=[];
                 let cntFind=0;
+                let listDocAlias=[]
                 listDocsOfYear.forEach((doc,idx)=>{
                     if(moment(doc.date).isSame(dateTmp,"day")){
+                        listDocAlias.push(doc.docAlias)
                         cntFind++;
                     }
                 })
@@ -131,10 +133,12 @@ class ServicePlugin extends Service {
                 posX=Math.abs((cntDays*100/cntDaysFullYear)-docFind.percentDateOfYear).toFixed(3) ;
                 let strDate=moment(docFind.date).format("YYYY-MM-DD");
                 // listIdxDays.push(posX);
+                // 去重
+                listDocAlias=[...(new Set(listDocAlias))];
                 listTmpYearDocs.push({
                     posX,
                     date:strDate,
-                    docAlias:docFind.docAlias,
+                    docAlias:listDocAlias.length>0?listDocAlias.join(" "):docFind.docAlias,
                 });
                 listDocsOfYear.splice(idxFindDoc,cntFind)
                 

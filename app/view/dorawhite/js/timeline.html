@@ -92,17 +92,19 @@
                     let rectWrapper=that.bsTimeline.wrapper.getBoundingClientRect();
                     try{
                         $list.forEach($mm=>{
-                            let rectMM=$mm.getBoundingClientRect();
                             let isEnd= (cntMMNow > 3) ? true : false ;
-                            isEnd = isEnd || (that.bsTimeline.isMobile? rectMM.top > rectWrapper.bottom :rectMM.left > rectWrapper.right);
-                            if(isEnd)throw new Event($mm.dataset.mm);
+                            let rectMM=$mm.getBoundingClientRect();
                             let isNow = rectMM.width>0 && rectMM.height>0;
-                            isNow = isNow && (that.bsTimeline.isMobile ? (rectMM.bottom >= rectWrapper.top && rectMM.top <= rectWrapper.bottom) : (rectMM.right>=rectWrapper.left && rectMM.left <= rectWrapper.right));
-                            if(isNow){
-                                cntMMNow++;
-                                $mm.lazyLoad = new LazyLoad({ container:$mm, });
-                                $mm.classList.add("loaded");
-                            };                        
+                            if(isNow){ {# 如果没显示，直接跳过，并且不算end,继续后续的检索 #}
+                                isEnd = isEnd || (that.bsTimeline.isMobile? rectMM.top > rectWrapper.bottom :rectMM.left > rectWrapper.right);
+                                if(isEnd)throw new Event($mm.dataset.mm);
+                                isNow = isNow && (that.bsTimeline.isMobile ? (rectMM.bottom >= rectWrapper.top && rectMM.top <= rectWrapper.bottom) : (rectMM.right>=rectWrapper.left && rectMM.left <= rectWrapper.right));
+                                if(isNow){
+                                    cntMMNow++;
+                                    $mm.lazyLoad = new LazyLoad({ container:$mm, threshold:300,});
+                                    $mm.classList.add("loaded");
+                                };     
+                            }                   
                         });
                     }catch(e){
                         console.debug("查找当前县市区$mm",cntMMNow,"个,中途退出",e.type,)
@@ -262,7 +264,7 @@
             if(that.bsTimeline.isMobile)return;
             {# PC等月份缩小动画结束：强制同步timelineBar==>循环等待直到that.bsTimeline初始化完成； that.bsTimeline初始化在BS_COVER_TIMELINE#}
             function eTransitionEnd(eTransition){
-                if(eTransition.target.classList.contains("container-mm") || (eTransition.target.classList.contains("item"))){
+                if(eTransition.target.classList.contains("container-mm",bsTimeline?bsTimeline:"")  && eTransition.propertyName=="transform"|| (eTransition.target.classList.contains("item"))){
                     //if(that.bsTimeline.eUpdateTimeline)that.bsTimeline.eUpdateTimeline.call(that.bsTimeline,{},true);
                     //else throw new Error("bsTimeline.eUpdateTimeline未定义");
                     if(e.type=="NAV_AT"){
@@ -270,13 +272,13 @@
                         //that.dispatchEvent(new CustomEvent("BS_TIMELINE_NAV_AT",{detail:e.detail}));
                         that.bsTimeline.scroller.animater.hooks.once('end', () => {
                             if(that.bsTimeline.eUpdateTimeline)that.bsTimeline.eUpdateTimeline.call(that.bsTimeline,{},true);//触发同步底条
-                            {# 更新lazyLoad , 有可能筛选后没触发scroll？ #}
-                            that.bsTimeline.$listMMNow
-                            console.debug("时间轴::animater.end停止:一次性更新lazyLoad");
                         })
+                        console.debug("时间轴::eNAV_AT动画结束:已触发timelineBar同步:eTransition.target:",eTransition.target.dataset.mm,eTransition.target.classList);
                         that.bsTimeline.scrollTo(1,1,0);
                     }
-                    console.debug("时间轴::eNAV_AT动画结束:已触发timelineBar同步:eTransition.target.classList:",eTransition.target.classList.value);
+                    {# 更新lazyLoad , 有可能筛选后没触发scroll？ #}
+                    that.bsTimeline.$listMMNow
+                    console.debug("时间轴::animater.end停止:一次性更新lazyLoad",eTransition.target.dataset.mm,eTransition.target.classList);
                     $timelineContent.removeEventListener("transitionend",eTransitionEnd);
                 }
             }

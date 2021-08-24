@@ -71,10 +71,6 @@
 #timelineContent .loading{
   display: none;
 }
-#timelineContent .container-mm{
-  transition-property: max-width,height,flex-basis;
-  transition-duration: .7s;
-}
 /* 占位列2个 */
 #timelineContent .container-mm.end{
   width:50vw;
@@ -262,6 +258,7 @@
     height:100%;
     display: inline-flex;
   }
+  
   /* #timelineContent .container-mm.show{ */
   #timelineContent.records .container-mm.records,
   #timelineContent.news .container-mm.artists,
@@ -271,15 +268,22 @@
   #timelineContent.goods .container-mm.goods{
     max-width: 40.7vw;
     overflow: visible;
+    transform: translateY(0%);
+  }
+  #timelineContent .container-mm{
+    transition-property: max-width,transform;
+    transition-duration: .5s,1s;
+    transition-delay: 0s,calc( 0s + (var(--idx-mm,0) * 0.2s));
   }
   #timelineContent .container-mm,
   #timelineContent.records .container-mm:not(.records),
   #timelineContent.news .container-mm:not(.news,.artists),
   #timelineContent.shows .container-mm:not(.shows),
   #timelineContent.goods .container-mm:not(.goods),
-  #timelineContent.videos .container-mm:not(.videos){
+  #timelineContent.videos .container-mm:not(.videos){    
     max-width: 0px;
     overflow: hidden;
+    transform: translateY(-150%);
   }
   #timelineContent::before,
   #timelineContent::after{
