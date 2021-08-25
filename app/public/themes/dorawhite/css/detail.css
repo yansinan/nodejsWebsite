@@ -119,6 +119,22 @@
     max-width: 100%;
     object-fit: contain;
 }
+.detail .list{
+    /* # 行间距，列间距都设为1rem */
+    display:grid;
+    grid-template-columns:1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    /* # 三列，并三等分，用fr做单位，不会产生横向的滚动条 */
+    grid-auto-rows:0px;
+    /* # 自动改变div高度 */
+
+    transition-property: max-height;
+    transition-duration: .5s;
+    overflow: hidden;
+}
+.detail .list.showAll{
+    grid-auto-rows:minmax(100px,auto);
+}
 .detail .more{
     width:calc(180 * 1rem / 36);
     height:calc(60 * 1rem / 36);
@@ -261,20 +277,13 @@
 }
 .detail.artist .records .list{
     width:100%;
-    display:grid;
-    grid-template-columns:1fr;
-    /* # 三列，并三等分，用fr做单位，不会产生横向的滚动条 */
-    /* #grid-template-columns:1fr 2fr 2fr; */
-    /* # 三列，二三列各占五份中的两份 */
-    grid-gap:3.47vw;
-    /* # 行间距，列间距都设为1rem */
-    grid-auto-rows:minmax(100px,auto);
-    /* # 自动改变div高度 */
+    grid-template-rows: 1fr 1fr 1fr;
 }
 .detail.artist .records .list .item{
     /* flex:0 1 calc(50% - 2.94%); */
     background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.8) 100%);
     border: 1px solid #979797;
+    margin-bottom: 3.47vw;
     cursor: pointer;
 }
 .detail.artist .records .list .item img{
@@ -290,19 +299,12 @@
 
 .detail.artist .videos .list{
     width:79.8%;
-    display:grid;
-    grid-template-columns:1fr;
-    /* # 三列，并三等分，用fr做单位，不会产生横向的滚动条 */
-    /* #grid-template-columns:1fr 2fr 2fr; */
-    /* # 三列，二三列各占五份中的两份 */
-    grid-gap:0.833rem;
-    /* # 行间距，列间距都设为1rem */
-    grid-auto-rows:minmax(100px,auto);
-    /* # 自动改变div高度 */
+    grid-template-rows: 1fr 1fr 1fr;
 }
 .detail.artist .videos .list .item{
     background: rgba(0, 0, 0, 0.75);
     position: relative;
+    margin-bottom:0.833rem;
 }
 .detail.artist .videos .list .item img{
     object-fit:cover;
@@ -362,5 +364,7 @@
 @media (min-width: 768px) {
     .detail.artist .records .list{
         grid-template-columns:1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        grid-column-gap:3.47vw;
     }  
 }

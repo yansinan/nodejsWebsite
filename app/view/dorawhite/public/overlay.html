@@ -216,6 +216,8 @@
                     if (res.status == 200) {
                         aOffcanvasBody.loadingState = false;
                         aOffcanvasBody.dom = res.data.comments || res.data;
+                        {# 详情页更多按钮 #}
+                        $offcanvasDetail.querySelectorAll("div.more").forEach($bn=>{$bn.addEventListener("click",$offcanvasDetail.eBnMore)});
                     }else{
                         error({msg:"服务器连接成功；返回错误:status=="+res.status,res,url})
                     }
@@ -228,6 +230,18 @@
         });
 
     </script>
+    {# 详情页更多按钮 #}
+    <script type="text/javascript">
+        $offcanvasDetail.eBnMore=function(e){
+            let classTar=e.currentTarget.dataset.drTarget;
+            if(!classTar)throw new Error("更多按钮：没有data-dr-target属性");
+            let $tar=e.currentTarget.parentElement.querySelector("."+classTar+" .list");
+            $tar.classList.add("showAll");
+            e.currentTarget.classList.add("d-none");
+        }
+        
+    </script>
+
 </div>
 
 <div class="foot-float back-to-top" id="bnRubyEyes">
