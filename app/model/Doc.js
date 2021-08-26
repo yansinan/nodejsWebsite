@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2019/11/10 20:30:53 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-23 08:55:50
+ * @Last Modified time: 2021-08-26 06:26:13
  */
 const INIT_DOC= app=>{
     //如果已经初始化过，则直接返回；
@@ -45,8 +45,16 @@ const INIT_DOC= app=>{
             type: String,
             'default': shortid.generate
         },
-        name: String,//JSON
-        alias: String,//别名多语言用
+        name: {
+            type:String,
+            select:true,
+            alias:"title",
+        },
+        alias: {
+            type:String,
+            select:true,
+            alias:"stitle",
+        },//别名多语言用
         type: {
             type: String,
             default: "1"
@@ -152,9 +160,20 @@ const INIT_DOC= app=>{
     }).set(function(v){
         return v.filter(v=>(!_.isEmpty(v)));
     });
-    schema.virtual('title').get(function () {
-        return this.name;
-    });
+    //schema.virtual('title').get(function () {
+    //    return this.name;
+    //})
+    //schema.virtual('title').set(function(v){
+    //    debugger;
+    //    this.name=v;
+    //});
+    //schema.virtual('stitle').get(function (){
+    //    return this.alias;
+    //})
+    //schema.virtual('stitle').set(function(v){
+    //    this.alias=v;
+    //});
+
     // 年份信息
     schema.virtual('dateYear').get(function () {
         return moment(new Date(this.date)).format("YYYY") + " ";

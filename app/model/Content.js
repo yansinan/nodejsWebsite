@@ -16,10 +16,10 @@
             type: String,
             'default': shortid.generate
         },
-        name: String,//JSON
-        alias: String,//别名多语言用
-        title: String,
-        stitle: String,
+        //name: String,//JSON
+        //alias: String,//别名多语言用
+        //title: String,
+        //stitle: String,
         type: {
             type: String,
             default: "1"
@@ -140,27 +140,40 @@
     ContentSchema.virtual('url').get(function () {
         return `/doc___${this._id}.html`;
     });
-    // 为了和doc同步;
-    ContentSchema.path('stitle').get(function (v) {
-        return v;
-    }).set((v)=>{
-        this.alias=v;
-        //this.stitle=v;
-        return v;
-    });
-    ContentSchema.path('title').get(function (v) {
-        return v;
-    }).set((v)=>{
-        this.name=v;
-        //this.title=v;
-        return v;
-    });
-    ContentSchema.path('name').get(function (v) {
-        return v || this.title;
-    });
-    ContentSchema.path('alias').get(function (v) {
-        return v || this.stitle;
-    });
+    //// 为了和doc同步;
+    //ContentSchema.path('stitle').get(function (v) {
+    //    return v;
+    //}).set((v)=>{
+    //    this.alias=v;
+    //    //this.stitle=v;
+    //    return v;
+    //});
+    //ContentSchema.path('title').get(function (v) {
+    //    return v;
+    //}).set((v)=>{
+    //    this.name=v;
+    //    //this.title=v;
+    //    return v;
+    //});
+    //ContentSchema.path('name').get(function (v) {
+    //    return v || this.title;
+    //});
+    //ContentSchema.path('alias').get(function (v) {
+    //    return v || this.stitle;
+    //});
+    //ContentSchema.virtual('title').get(function () {
+    //    return this.name;
+    //})
+    //ContentSchema.virtual('title').set(function(v){
+    //    debugger;
+    //    this.name=v;
+    //});
+    //ContentSchema.virtual('stitle').get(function (){
+    //    return this.alias;
+    //})
+    //ContentSchema.virtual('stitle').set(function(v){
+    //    this.alias=v;
+    //});
     // 时间轴标题
     ContentSchema.virtual('nameTimeline').get(function (){
         return this.name || this.title;
