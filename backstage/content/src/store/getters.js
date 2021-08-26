@@ -10,5 +10,6 @@ const getters = {
   contentCoverList: state => state.content.contentCoverList,
   draftContentDialog: state => state.content.draftContentDialog,
   draftContentList: state => state.content.draftContentList,
+  getterDataMembers:state => state.content.dataMembers,  
 }
 export default getters

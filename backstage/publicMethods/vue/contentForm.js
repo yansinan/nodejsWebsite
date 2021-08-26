@@ -5,6 +5,10 @@ import {
     // regUserList,
 } from "../apiGeneral";
 import '@/set-public-path'
+import {
+    showFullScreenLoading,
+    tryHideFullScreenLoading
+} from "@root/publicMethods/axiosLoading";
 
 export let props={
     groups: Array
@@ -17,6 +21,8 @@ export let data={
       { value: "2", label: "发布" , color:"#67C23A"},//{ value: "2", label: "审核通过" },
       // { value: "3", label: "审核不通过" }
     ],
+    sidebarOpened: true,
+    device: "desktop",
 }
 
 import VueUeditorWrap from "vue-ueditor-wrap";
@@ -235,6 +241,55 @@ export let methods={
             }
         });
     },
+
+    // 上传Word相关
+    funForWordUpload:{
+        handleWordRemove(file, fileList) {
+            console.log(file, fileList);
+        },
+        handleWordPreview(file) {
+            console.log(file);
+        },
+        handleWordExceed(files, fileList) {
+            this.$message.warning(
+                `当前限制选择 1 个文件，本次选择了 ${
+                files.length
+                } 个文件，共选择了 ${files.length + fileList.length} 个文件`
+            );
+        },
+        beforeWordRemove(file, fileList) {
+        // return this.$confirm(`确定移除 ${file.name}？`);
+        },
+        uploadWordSuccess(res, file) {
+            tryHideFullScreenLoading();
+            this.wordFileUrl = res.data ? res.data : "";
+            debugger;
+            // this.ueditorObj.setContent(res.data);
+            this.formState.formData.comments=res.data;
+            this.$message({
+                message: "恭喜，导入成功！",
+                type: "success"
+            });
+        },
+        beforeWordUpload(file) {
+            // 20210408增加粗略判断，避免不能识别
+            const isDocx = file.type.indexOf("officedocument") || file.name.indexOf(".doc") || file.name.indexOf(".docx") > 0 ? true : false;
+            const isLt5M = file.size / 1024 / 1024 < 5;
+            if (!isDocx) {
+                this.$message.error("只能上传docx,doc格式！");
+            }
+            if (!isLt5M) {
+                this.$message.error(
+                this.$t("validate.limitUploadImgSize", { size: 5 })
+                );
+            }
+            if (isDocx && isLt5M) {
+                showFullScreenLoading();
+            }
+            return isDocx && isLt5M;
+        },        
+    },
+
 }
 
 export let computed= {

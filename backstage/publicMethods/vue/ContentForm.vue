@@ -30,7 +30,9 @@
               </el-autocomplete>
             </el-form-item>
 
-            <slot name="leftMiddle"></slot>
+            <slot name="leftMiddle">
+
+            </slot>
             <!-- 标签 -->
             <SelectIds :label="this.$t(nameMod+'.tags')" @change="eChangeTag" :listIds="formState.formData.tags" :nameMode="nameMod" :initTag="createTag" />
 
@@ -254,17 +256,21 @@
         // SelectIds: () => import('@root/publicMethods/vue/SelectIds.vue'),
     },
     watch: {
-        formState(oV,nV){            
+        formState(nV,oV){            
             let that=this;
-            Object.assign(this.value,this.formState);
+            Object.assign(this.value,nV);
             //触发
             if(this.value && this.value.formData) this.$emit('input',this.value);
             
         },
-        "formState.formData.name"(nV,oV){
-            // 别名为空，自动填充拼音
-            // if(this.formState.formData.alias=="")this.formState.formData.alias=getPinYin(this.formState.formData.name);
-        }
+        //"formState.formData.name"(nV,oV){
+        //    // 别名为空，自动填充拼音
+        //    // if(this.formState.formData.alias=="")this.formState.formData.alias=getPinYin(this.formState.formData.name);
+        //},
+        //"formState.formData.alias"(nV,oV){
+        //    // 别名为空，自动填充拼音
+        //    // if(this.formState.formData.alias=="")this.formState.formData.alias=getPinYin(this.formState.formData.name);
+        //}
     },
     computed: {
         ...computed,

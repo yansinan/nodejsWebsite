@@ -2,6 +2,12 @@ export default {
   topBar: {
     keywords: "请输入关键字",
   },
+  content:{
+    tags: "标签",
+    listArtists:"相关乐队",
+    name:"主标题",
+    nameAlias:"副标题",
+  },
   contents: {
     categories: "类别",
     tags: "标签",

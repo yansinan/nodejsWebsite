@@ -71,6 +71,11 @@ const state = {
     pageInfo: {},
     docs: [],
   },
+  dataArtists:{
+    pageInfo:{},
+    docs:[],
+  }
+
 };
 
 const mutations = {
@@ -102,6 +107,10 @@ const mutations = {
         simpleComments: "",
         commentNum: 0,
         likeNum: 0,
+        // 20210826加为了适配ContentForm.vue
+        name:"",
+        alias:"",
+
       },
       formState.formData
     );
@@ -148,6 +157,10 @@ const mutations = {
   [types.CONTENT_DRAFTLIST](state, draftList) {
     state.draftContentList = draftList;
   },
+  FIND_ARTIST_BY_NAME(state,dataList){
+    state.dataArtists=dataList;
+  },
+
 };
 
 const actions = {
@@ -258,6 +271,16 @@ const actions = {
       commit(types.CONTENT_DRAFTLIST, result.data);
     });
   },
+  // 获取艺人列表
+  getArtistsList({
+    commit
+  }, params = { pageSize : 200, }) {
+    list(params,"artist").then((result) => {
+      commit("FIND_ARTIST_BY_NAME", result.data)
+    }).catch(error=>{
+      console.log("xxxx.store.xxxx.actions.getList获取失败:fail",error);
+    })
+  },  
 };
 
 export default {

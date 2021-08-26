@@ -149,14 +149,19 @@ export default {
                             type: "success"
                         });
                         Object.assign(that.objRes,res.data);
+                        that.objRes.name=that.objRes.name || that.objRes.title;
                         // 副标题默认用主标题，便于编辑
-                        that.objRes.stitle=res.data.title;
+                        that.objRes.alias=res.data.name || res.data.title;
+                        that.objRes.stitle=that.objRes.alias;
+                        that.objRes.discription=res.data.name || res.data.title;
                         // 先缓存下面要canvas的图
                         // that.$set(that.objRes,"comments","");
                         that.listSrcImgWX=res.data.listSrcImg;
                         that.objRes.listSrcImg=res.data.listSrcImg.map(src=>{
                             return src.replace("https://mmbiz.qpic.cn","/getWXImg");//http://wx.z-core.cn:8791/
                         })
+                        // 默认选择第一张图做sImg
+                        that.$set(that.objRes,"sImg",that.objRes.listSrcImg[0]);
 
                         that.isDialog=true;
                     }else{
