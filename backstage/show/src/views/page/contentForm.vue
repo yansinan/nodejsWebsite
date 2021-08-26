@@ -2,7 +2,7 @@
   <div :class="classObj" class="dr-contentForm">
     <div class="main-container">
         <!--  @submit="eFormSubmit" -->
-        <ContentForm :nameMod="nameMod" v-model="formState">
+        <ContentForm :nameMod="nameMod" v-model="formState" ref="contentForm">
           <template v-slot:top>
             <el-form-item v-if="!formState.edit" :label="'公众号文章链接'">
               <LinkWX v-model="formState.formData" />
@@ -88,6 +88,17 @@ export default {
     eChangeArtist(e){
       this.formState.formData.listRefs=e.listIds;
       this.updateKeywords(e.listObjDiff,e.strAction=="delete");
+      // 更新tags
+      let listAllTags=this.listAllTags;//this.contentTagList;      
+      if(listAllTags){
+        this.formState.formData.listRefs.forEach(idArtist=>{
+          let idTagFind=listAllTags.find(tag=>(tag.objRef && tag.objRef.id==idArtist));
+          if(idTagFind){
+            let idTagHave=this.formState.formData.tags.find(id=>(id==idTagFind._id))
+            if(!idTagHave)this.formState.formData.tags.push(idTagFind._id);
+          }
+        })
+      }
     },
 
     // 热门歌曲列表变化
@@ -117,6 +128,9 @@ export default {
       formState: state => state.formState,
       dataArtists:state => state.dataArtists,
     }),//模块的state
+    listAllTags(){
+      return this.$refs.contentForm.listAllTags || [];
+    },
   },
   mounted() {
     initEvent(this);

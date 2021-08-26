@@ -110,7 +110,7 @@ const mutations = {
         // 20210826加为了适配ContentForm.vue
         name:"",
         alias:"",
-
+        listRefs:[],
       },
       formState.formData
     );

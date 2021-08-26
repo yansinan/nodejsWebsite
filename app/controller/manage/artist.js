@@ -107,15 +107,24 @@ class APIController extends BaseController {
             }
         });
         if(!tagFind){//没有同名标签则创建
-            let tagNew = await ctx.service.contentTag.create({
+            let tagAdd={
                 name: fields.name,
                 alias: fields.alias,
                 comments: "乐队标签",
-            });
+            }
+            if(shortid.isValid(fields._id)){
+                tagAdd.objRef={
+                    id:fields._id,
+                    doc:"artist",
+                };
+                tagAdd.listRefs=[fields._id];
+            }
+            let tagNew = await ctx.service.contentTag.create(tagAdd);
         }else if(shortid.isValid(fields._id) && (tagFind.alias!=fields.alias || _.isEmpty(tagFind.objRef) || tagFind.objRef.id!=fields._id)){
             let tagUpdate=await ctx.service.contentTag.update(ctx, tagFind._id,{
                 alias: fields.alias,
                 comments: "乐队标签",
+                listRefs:[fields._id],
                 objRef:{
                     id:fields._id,
                     doc:fields.doc,

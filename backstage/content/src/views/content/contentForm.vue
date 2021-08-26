@@ -137,6 +137,8 @@ export default {
     // SelectIds变化::listRefs;
     eChangeArtist(e){
       this.formState.formData.listRefs=e.listIds;
+
+      this.updateKeywords(e.listObjDiff,e.strAction=="delete");
       // 更新tags
       let listAllTags=this.listAllTags;//this.contentTagList;      
       if(listAllTags){
@@ -148,7 +150,6 @@ export default {
           }
         })
       }
-      this.updateKeywords(e.listObjDiff,e.strAction=="delete");
     },
 
     //submitForm(formName, type = "") {
@@ -224,7 +225,7 @@ export default {
     ]),
     listAllTags(){
       return this.$refs.contentForm.listAllTags || [];
-    }
+    },
   },
   watch:{
     "contentCategoryList.docs"(nV,oV){

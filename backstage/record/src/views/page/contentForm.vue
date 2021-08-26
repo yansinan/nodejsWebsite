@@ -1,7 +1,7 @@
 <template>
   <div :class="classObj" class="dr-contentForm">
     <div class="main-container">
-      <ContentForm :nameMod="nameMod" v-model="formState">
+      <ContentForm :nameMod="nameMod" v-model="formState" ref="contentForm">
         <template v-slot:leftTop>
           <!-- 专辑名 -->
           <el-form-item prop="name">
@@ -175,6 +175,17 @@ export default {
     eChangeArtist(e){
       this.formState.formData.listRefs=e.listIds;
       this.updateKeywords(e.listObjDiff,e.strAction=="delete");
+      // 更新tags
+      let listAllTags=this.listAllTags;//this.contentTagList;      
+      if(listAllTags){
+        this.formState.formData.listRefs.forEach(idArtist=>{
+          let idTagFind=listAllTags.find(tag=>(tag.objRef && tag.objRef.id==idArtist));
+          if(idTagFind){
+            let idTagHave=this.formState.formData.tags.find(id=>(id==idTagFind._id))
+            if(!idTagHave)this.formState.formData.tags.push(idTagFind._id);
+          }
+        })
+      }
     },
     // SelectIds变化::Tags;
     // {
@@ -182,10 +193,10 @@ export default {
     //     listIds:listIds,
     //     strAction:(isAdd?"add":"delete")
     // }
-    eChangeTag(e){
-      this.formState.formData.tags=e.listIds;
-      this.updateKeywords(e.listObjDiff,e.strAction=="delete");
-    },
+    //eChangeTag(e){
+    //  this.formState.formData.tags=e.listIds;
+    //  this.updateKeywords(e.listObjDiff,e.strAction=="delete");
+    //},
 
   },
   computed: {
@@ -197,6 +208,9 @@ export default {
     ...mod.mapState({
       formState: state => state.formState,
     }),//模块的state
+    listAllTags(){
+      return this.$refs.contentForm.listAllTags || [];
+    },
   },
   mounted() {
     initEvent(this);
