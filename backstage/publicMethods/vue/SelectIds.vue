@@ -7,8 +7,6 @@
         filterable
         allow-create
         default-first-option
-        remote
-        :remote-method="findTags"
         :loading="userLoading"
         :placeholder="$t('validate.selectNull', {label: this.label})"
         @change="eChangeTags"
@@ -18,10 +16,16 @@
         :key="item._id"
         :label="item.name"
         :value="item._id"
+        :disabled="item.isHide"
         ></el-option>        
     </el-select>
     <div class="el-select-suffix el-input--small el-input__suffix"><span class=" el-input__suffix-inner">{{label}}</span></div>
 </el-form-item> 
+<!-- 
+        :filter-method="filterTags"
+        remote
+        :remote-method="findTags"
+ -->
 </template>
 <style lang="scss">
     .el-select{
@@ -89,6 +93,11 @@
         listAllTags:[],
       };
     },
+    //computed:{
+    //    listFilterTags(){
+    //        return listAllTags.filter(v=>(!v.isHide));
+    //    }
+    //},
     watch: {
         listIds(newV,oldV) {
             newV=newV || [];
@@ -210,6 +219,8 @@
                     if(resList.length>0){
                         // 去重合并
                         that.listAllTags=[...new Set(that.listAllTags.concat(resList))];
+                        // 触发事件，传出所有tags数组
+                        that.$emit("loaded",{listAllTags:that.listAllTags});
                     }else if(strToSearch && resList.length==0){//检索，但是没找到数据，则认为是输入一半，或者没找到，不用处理。等用户进一步操作
 
                     }
@@ -225,7 +236,12 @@
                 this.userLoading = false;
             });
         },
-
+        //filterTags(str="filterAll"){
+        //    this.listAllTags.forEach(v=>{
+        //        if(str!="filterAll" && (v.name).toLowerCase().indexOf(str.toLowerCase())==-1)v.isHide=true;
+        //        else v.isHide=false;
+        //    })
+        //},
         // 强制清理未能找到的string
         clearListIdTags(){
             //检查 是否有没在列表里的值e=[idTag1,idTag2...text]

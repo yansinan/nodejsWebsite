@@ -34,7 +34,7 @@
 
             </slot>
             <!-- 标签 -->
-            <SelectIds :label="this.$t(nameMod+'.tags')" @change="eChangeTag" :listIds="formState.formData.tags" :nameMode="nameMod" :initTag="createTag" />
+            <SelectIds :label="this.$t(nameMod+'.tags')" @change="eChangeTag" @loaded="eLoadedAllTags" :listIds="formState.formData.tags" :nameMode="nameMod" :initTag="createTag" />
 
             <el-form-item prop="discription">
               <el-input type="textarea" v-model="formState.formData.discription" maxlength="300" show-word-limit :autosize="{minRows: 4, maxRows: 10 }"></el-input>
@@ -321,6 +321,11 @@
             this.formState.formData.tags=e.listIds;
             this.updateKeywords(e.listObjDiff,e.strAction=="delete");
         },
+        // 读取了listAllTags
+        eLoadedAllTags(e){
+          this.listAllTags=e.listAllTags;
+          this.$emit("loaded",{listAllTags:this.listAllTags});
+        }
     },
     mounted() {
         // initData(this);

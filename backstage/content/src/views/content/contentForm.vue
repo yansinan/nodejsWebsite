@@ -2,7 +2,7 @@
   <div :class="classObj" class="dr-contentForm">
     <div class="main-container">
         <!--  @submit="eFormSubmit" -->
-        <ContentForm :nameMod="nameMod" v-model="formState">
+        <ContentForm :nameMod="nameMod" v-model="formState" ref="contentForm">
           <template v-slot:top>
             <el-form-item v-if="!formState.edit" :label="'公众号文章链接'">
               <LinkWX v-model="formState.formData" />
@@ -138,12 +138,13 @@ export default {
     eChangeArtist(e){
       this.formState.formData.listRefs=e.listIds;
       // 更新tags
-      if(this.contentTagList){
+      let listAllTags=this.listAllTags;//this.contentTagList;      
+      if(listAllTags){
         this.formState.formData.listRefs.forEach(idArtist=>{
-          let idTagFind=this.contentTagList.find(tag=>(tag.objRef && tag.objRef.id==idArtist));
-          let idTagHave=this.formState.formData.tags.find(id=>(id==idTagFind._id))
-          if(idTagFind && !idTagHave){
-            this.formState.formData.tags.push(idTagFind._id);
+          let idTagFind=listAllTags.find(tag=>(tag.objRef && tag.objRef.id==idArtist));
+          if(idTagFind){
+            let idTagHave=this.formState.formData.tags.find(id=>(id==idTagFind._id))
+            if(!idTagHave)this.formState.formData.tags.push(idTagFind._id);
           }
         })
       }
@@ -216,11 +217,14 @@ export default {
       dataArtists:state => state.dataArtists,
     }),//模块的state
     ...mapGetters([
-      "contentTagList",
+      //"contentTagList",
       "contentCategoryList",
       "adminUserInfo",
       //"contentCoverDialog"
     ]),
+    listAllTags(){
+      return this.$refs.contentForm.listAllTags || [];
+    }
   },
   watch:{
     "contentCategoryList.docs"(nV,oV){
@@ -242,9 +246,9 @@ export default {
     this.$store.dispatch("adminUser/getUserInfo");
     //this.$store.dispatch("contentCategory/getContentCategoryList");
     // 给artist检索标签用;
-    this.$store.dispatch("contentTag/getContentTagList", {
-      pageSize: 0,isPaging:"0",
-    });
+    //this.$store.dispatch("contentTag/getContentTagList", {
+    //  pageSize: 0,isPaging:"0",
+    //});
     initData(this);
     //// 针对手动页面刷新
     //let _this = this;
