@@ -218,6 +218,13 @@
                         aOffcanvasBody.dom = res.data.comments || res.data;
                         {# 详情页更多按钮 #}
                         $offcanvasDetail.querySelectorAll("div.more").forEach($bn=>{$bn.addEventListener("click",$offcanvasDetail.eBnMore)});
+                        $offcanvasDetail.querySelectorAll("img").forEach($img=>{
+                            $img.classList.add("lazy");
+                            if($img.dataset.src)$img.dataset.src=$img.dataset.src.replace("https://mmbiz.qpic.cn","/getWXImg");
+                            $img.src="";//$img.dataset.src.replace("https://mmbiz.qpic.cn","/getWXImg");
+                            $offcanvasDetail.lazyLoad = $offcanvasDetail.lazyLoad || new LazyLoad({ container: $offcanvasDetail, threshold:500,});
+                            $offcanvasDetail.lazyLoad.update();
+                        })
                     }else{
                         error({msg:"服务器连接成功；返回错误:status=="+res.status,res,url})
                     }

@@ -39,13 +39,5 @@
             {% endfor %}
         </div>
     </div>
-    {% endif %}    
-    <script>
-        document.getElementById("offcanvasDetail").querySelectorAll("img").forEach($img=>{
-            $img.classList.add("lazy");
-            if($img.dataset.src)$img.dataset.src=$img.dataset.src.replace("https://mmbiz.qpic.cn","/getWXImg");
-            $img.src="";//$img.dataset.src.replace("https://mmbiz.qpic.cn","/getWXImg");
-            document.getElementById("offcanvasDetail").lazyLoad = new LazyLoad({ container: document.getElementById("offcanvasDetail"), threshold:500,});
-        })
-    </script>
+    {% endif %}
 </div>
