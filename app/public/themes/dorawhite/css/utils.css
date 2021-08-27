@@ -193,9 +193,9 @@ ul li {
     display:block;
     position: absolute;
     z-index: 1;
-    padding-bottom: max(2rem,12%);
+    padding-bottom: min(2rem,12%);
     box-sizing: content-box;
-    width: max(2rem,12%);
+    width: min(2rem,12%);
     border-radius: 50%;
     border-width: max(1px,0.03rem);
     border-style: solid;
@@ -228,7 +228,7 @@ ul li {
 .videoWrapper img{
     transition: filter;
     transition-duration: .5s;
-    filter: brightness(.65);
+    filter: brightness(.45);
 }
 .videoWrapper span.title{
     position: absolute;
