@@ -189,6 +189,7 @@
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
 }
+/* scrollsnap用 */
 .detail.artist .album img{
     scroll-snap-align: center;
     scroll-snap-stop: normal;
@@ -198,6 +199,7 @@
     flex: 0 0 min(800px,100%,calc( var(--offsetcanvas-right) - var(--offsetcanvas-padding) - var(--offsetcanvas-padding-right,0.77rem) - 1rem));
     flex: auto;
 }
+
 .detail.artist .album img{
     display:block;
     object-fit:cover;
@@ -208,6 +210,7 @@
     max-height: 100%;
     cursor:zoom-in;
 }
+
 /* 标签 */
 .detail.artist .list-inline{
     line-height: 0px;

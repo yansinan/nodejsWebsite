@@ -12,7 +12,7 @@
     {# 乐队图 #}
     <div class="album scrollerSnap">
         {% for image in post.listImages %}
-        <img src="{{image.url}}" alt="{{image.name}}" height="100%" data-bs-toggle="modal" data-bs-target="#modalImagePreview"  data-dr-url="{{image.url}}"/>
+        <img src="{{image.url}}" height="100%" data-bs-toggle="modal" data-bs-target="#modalImagePreview"  data-dr-url="{{image.url}}"/>
         {% endfor %}
     </div>
     {# 标签 #}
