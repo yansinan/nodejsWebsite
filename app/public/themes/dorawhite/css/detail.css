@@ -303,7 +303,6 @@
 }
 .detail.artist .videos .list .item{
     background: rgba(0, 0, 0, 0.75);
-    position: relative;
     margin-bottom:0.833rem;
 }
 .detail.artist .videos .list .item img{
@@ -311,13 +310,6 @@
     width: 100%;
     height:auto;
     /* max-height: 400px; */
-}
-.detail.artist .videos .list .item span{
-    position: absolute;
-    left: 20px;
-    bottom: 20px;
-    width:calc(100% - 40px);
-    text-decoration: inherit;
 }
 
 /* 新闻动态 */

@@ -174,3 +174,66 @@ ul li {
 .hoverUnderline:hover{
     text-decoration: underline;
 }
+
+
+/* 通用视频播放按钮 */
+.videoWrapper{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+.videoWrapper:hover::before{
+    border-color: rgba(255, 255, 255, 0.6);
+}
+.videoWrapper:active::before,
+.videoWrapper::before{
+    content:"";
+    display:block;
+    position: absolute;
+    z-index: 1;
+    padding-bottom: max(2rem,12%);
+    box-sizing: content-box;
+    width: max(2rem,12%);
+    border-radius: 50%;
+    border-width: max(1px,0.03rem);
+    border-style: solid;
+    border-color: rgba(255, 255, 255, 1);
+    background-color: rgba(0,0,0,0.3);
+}
+.videoWrapper:hover::after{
+    border-color: transparent transparent transparent rgba(255, 255, 255, 0.6);
+}
+.videoWrapper:active::after,
+.videoWrapper::after{
+    content:"";
+    position: absolute;
+    z-index: 2;
+    /* padding-bottom: 5%; */
+    /* box-sizing: content-box; */
+    width: 0.88rem;
+    height: 0.88rem;
+    border-style: solid;
+    border-color: transparent transparent transparent rgba(255, 255, 255, 1);
+    border-radius: 0.1rem;
+    border-width: .4rem 0 .4rem 0.66rem;
+    margin-left: .4rem;
+}
+/**/
+.videoWrapper:hover img{
+    filter: brightness(1);
+}
+.videoWrapper:active img,
+.videoWrapper img{
+    transition: filter;
+    transition-duration: .5s;
+    filter: brightness(.65);
+}
+.videoWrapper span.title{
+    position: absolute;
+    left: 20px;
+    bottom: 20px;
+    width:calc(100% - 40px);
+    text-decoration: inherit;
+}

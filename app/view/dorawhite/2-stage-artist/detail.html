@@ -57,7 +57,7 @@
         <div class="list">      
             {% for item in post.listVideos %}
                 {# 乐队详情页 #}
-                <a href="{{item.urlVideo}} " target="_blank " class="item hoverUnderline {{'hide' if loop.index > 3}}">
+                <a href="{{item.urlVideo}} " target="_blank " class="item videoWrapper hoverUnderline {{'hide' if loop.index > 3}}">
                     <img src="{{item.urlImg}} " class="img-fluid" alt="{{item.title}} " />
                     <span class="title">{{item.name}}</span>
                 </a>
