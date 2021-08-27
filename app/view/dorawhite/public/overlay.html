@@ -221,10 +221,15 @@
                         $offcanvasDetail.querySelectorAll("img").forEach($img=>{
                             $img.classList.add("lazy");
                             if($img.dataset.src)$img.dataset.src=$img.dataset.src.replace("https://mmbiz.qpic.cn","/getWXImg");
+                            else $img.setAttribute("data-src",$img.src);
                             $img.src="";//$img.dataset.src.replace("https://mmbiz.qpic.cn","/getWXImg");
                             $offcanvasDetail.lazyLoad = $offcanvasDetail.lazyLoad || new LazyLoad({ container: $offcanvasDetail, threshold:500,});
                             $offcanvasDetail.lazyLoad.update();
                         })
+                        let str=$offcanvasDetail.querySelector(".detail.font-normal article").innerHTML
+                        let reg=new RegExp(["晕盖","Gatsby","Daze","不优雅","养鸡"].join("|"),"g")
+                        let tmplistFind=str.match(reg);//晕盖|Gatsby|Daze|不优雅|养鸡
+                        debugger;
                     }else{
                         error({msg:"服务器连接成功；返回错误:status=="+res.status,res,url})
                     }
