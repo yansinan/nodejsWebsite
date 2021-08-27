@@ -237,3 +237,26 @@ ul li {
     width:calc(100% - 40px);
     text-decoration: inherit;
 }
+
+/* modal */
+.modal{
+    background-color: rgba(0,0,0,.8);
+}
+
+#modalImagePreview .modal-dialog{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 100vw;
+}
+#modalImagePreview .modal-content{
+    background-color: transparent;
+    width:auto;
+}
+#modalImagePreview img{
+    max-width: 100vw;
+    max-height:calc(var(--vh, 1vh) * 100);
+    width:auto;
+    height:100%;
+    object-fit: contain;
+}

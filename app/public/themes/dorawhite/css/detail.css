@@ -199,12 +199,14 @@
     flex: auto;
 }
 .detail.artist .album img{
+    display:block;
     object-fit:cover;
     /* 手机竖屏高充满，宽自动 */
     width: auto;
     max-width:calc( var(--offsetcanvas-right) - var(--offsetcanvas-padding-right,0.77rem) - var(--offsetcanvas-padding) - 1rem);
     height:100%;
     max-height: 100%;
+    cursor:zoom-in;
 }
 /* 标签 */
 .detail.artist .list-inline{

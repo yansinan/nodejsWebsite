@@ -96,6 +96,26 @@
         })
     }
 </script>
+
+{# Image preview modal#}
+<!-- Modal -->
+<div class="modal fade " style="z-index: 1800;" id="modalImagePreview" aria-labelledby="" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <img src=""/>
+        </div>
+    </div>
+</div>
+<script>
+let $modalImagePreview = document.getElementById('modalImagePreview');
+$modalImagePreview.addEventListener('show.bs.modal', function (event) {
+    var $img = event.relatedTarget;
+    $modalImagePreview.querySelector("img").src=$img.dataset.drUrl;
+})
+</script>
+
+
+
 {# 侧边导航菜单 #}
 <div id="offcanvasRightMenu" class="offcanvas offcanvas-end offcanvasRightMenu-md" tabindex="-1" aria-labelledby="offcanvasRightMenuLabel">
     <div class="offcanvas-header">
@@ -192,6 +212,31 @@
             dom: "",
             loadingState: false,
         })
+        this.setDetailDom=function($detail){
+            {# 详情页更多按钮 #}
+            $offcanvasDetail.querySelectorAll("div.more").forEach($bn=>{$bn.addEventListener("click",$offcanvasDetail.eBnMore)});
+            {# 详情图片lazyLoad #}
+            $offcanvasDetail.querySelectorAll("img").forEach($img=>{
+                $img.classList.add("lazy");
+                if($img.dataset.src)$img.dataset.src=$img.dataset.src.replace("https://mmbiz.qpic.cn","/getWXImg");
+                else $img.setAttribute("data-src",$img.src);
+                $img.src="";//$img.dataset.src.replace("https://mmbiz.qpic.cn","/getWXImg");
+                $offcanvasDetail.lazyLoad = $offcanvasDetail.lazyLoad || new LazyLoad({ container: $offcanvasDetail, threshold:500,});
+                $offcanvasDetail.lazyLoad.update();
+            })
+            {# 详情scrollSnap #}
+            $offcanvasDetail.querySelectorAll(".scrollerSnap").forEach($scrollSnap=>{
+                $scrollSnap.addEventListener("wheel", (evt) => {
+                    evt.preventDefault();
+                    $($scrollSnap)[0].scrollBy({
+                        top      : 0,
+                        left     : evt.deltaY,
+                        behavior : 'smooth'
+                    });
+                    //$scrollSnap.scrollLeft += evt.deltaY;
+                });            
+            })
+        }
         this.addEventListener("OPEN_OFFCANVAS_DETAIL",function(e){
             let url=e.detail.apiDetail || e.detail.relatedTarget.attributes["data-dr-url"].value ||  "/about___.html";
             {# 如果是乐队列表详情 #}
@@ -216,20 +261,7 @@
                     if (res.status == 200) {
                         aOffcanvasBody.loadingState = false;
                         aOffcanvasBody.dom = res.data.comments || res.data;
-                        {# 详情页更多按钮 #}
-                        $offcanvasDetail.querySelectorAll("div.more").forEach($bn=>{$bn.addEventListener("click",$offcanvasDetail.eBnMore)});
-                        $offcanvasDetail.querySelectorAll("img").forEach($img=>{
-                            $img.classList.add("lazy");
-                            if($img.dataset.src)$img.dataset.src=$img.dataset.src.replace("https://mmbiz.qpic.cn","/getWXImg");
-                            else $img.setAttribute("data-src",$img.src);
-                            $img.src="";//$img.dataset.src.replace("https://mmbiz.qpic.cn","/getWXImg");
-                            $offcanvasDetail.lazyLoad = $offcanvasDetail.lazyLoad || new LazyLoad({ container: $offcanvasDetail, threshold:500,});
-                            $offcanvasDetail.lazyLoad.update();
-                        })
-                        let str=$offcanvasDetail.querySelector(".detail.font-normal article").innerHTML
-                        let reg=new RegExp(["晕盖","Gatsby","Daze","不优雅","养鸡"].join("|"),"g")
-                        let tmplistFind=str.match(reg);//晕盖|Gatsby|Daze|不优雅|养鸡
-                        debugger;
+                        that.setDetailDom($offcanvasDetail);
                     }else{
                         error({msg:"服务器连接成功；返回错误:status=="+res.status,res,url})
                     }
@@ -278,3 +310,6 @@
         $bnArrowTimeline.classList.remove("d-none");
     })
 </script>
+
+
+
