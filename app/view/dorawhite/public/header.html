@@ -267,7 +267,12 @@
     //});
 
     {# 驱动页面切换：所有页内跳转统一按url例如："/timeline/records/xxxxx.html" #}
-    this.goto=function(inURL){
+    this.goto=function(inObj){ // inObj = inURL || e 
+        let event = inObj.constructor === Object ? inObj : window.event;
+        let $tar=event.currentTarget || window.event.currentTarget;
+
+        let inURL=(inObj.constructor === String) ? inObj : (($tar.dataset && $tar.dataset.drUrl) ? $tar.dataset.drUrl : false);
+        if(!inURL)throw new Error("goto():没有url");
         {# 如果只传入/aaaaa___xxx.html为单独跳转detail #}
         if(inURL.split("/").length>2 || (inURL.split("/").length==2 && inURL.indexOf(".html")==-1)){
             inURL="/index"+inURL;
