@@ -192,6 +192,14 @@
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
 }
+.detail.artist .album.scrollerSnap.mouseDragging,
+.detail.artist .album.scrollerSnap.mouseDragging>*{
+    cursor:grabbing;
+    user-select: none;
+}
+.detail.artist .album.scrollerSnap:not(.mouseDragging){
+    cursor:grab;
+}
 /* scrollsnap用 */
 .detail.artist .album img{
     scroll-snap-align: center;

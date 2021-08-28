@@ -102,7 +102,7 @@
 <div class="modal fade " style="z-index: 1800;" id="modalImagePreview" aria-labelledby="" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
-            <img src=""/>
+            <img src=""  data-bs-toggle="modal" data-bs-target="#modalImagePreview"/>
         </div>
     </div>
 </div>
@@ -212,20 +212,25 @@ $modalImagePreview.addEventListener('show.bs.modal', function (event) {
             dom: "",
             loadingState: false,
         })
+        {# modal 图片预览 #}
+        
+        var bsModalImagePreview = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalImagePreview'));
         this.setDetailDom=function($detail){
             {# 详情页更多按钮 #}
             $offcanvasDetail.querySelectorAll("div.more").forEach($bn=>{$bn.addEventListener("click",$offcanvasDetail.eBnMore)});
             {# 详情图片lazyLoad #}
             $offcanvasDetail.querySelectorAll("img").forEach($img=>{
+                //$img.classList.remove("loaded","entered");
                 $img.classList.add("lazy");
                 if($img.dataset.src)$img.dataset.src=$img.dataset.src.replace("https://mmbiz.qpic.cn","/getWXImg");
                 else $img.setAttribute("data-src",$img.src);
-                $img.src="";//$img.dataset.src.replace("https://mmbiz.qpic.cn","/getWXImg");
+                if(!$img.classList.contains("loaded"))$img.src="";//$img.dataset.src.replace("https://mmbiz.qpic.cn","/getWXImg");
                 $offcanvasDetail.lazyLoad = $offcanvasDetail.lazyLoad || new LazyLoad({ container: $offcanvasDetail, threshold:500,});
                 $offcanvasDetail.lazyLoad.update();
             })
             {# 详情scrollSnap #}
             $offcanvasDetail.querySelectorAll(".scrollerSnap").forEach($scrollSnap=>{
+                {# 鼠标滚轮 #}
                 $scrollSnap.addEventListener("wheel", (evt) => {
                     evt.preventDefault();
                     $($scrollSnap)[0].scrollBy({
@@ -234,7 +239,59 @@ $modalImagePreview.addEventListener('show.bs.modal', function (event) {
                         behavior : 'smooth'
                     });
                     //$scrollSnap.scrollLeft += evt.deltaY;
-                });            
+                });
+                {# 鼠标拖拽 #}
+                function eMMove(e){
+                    let $scroll=e.currentTarget.classList.contains("scrollerSnap") ? e.currentTarget : e.currentTarget.parentElement;
+                    if(!$scroll.posDrag) return;
+                    e.preventDefault();
+                    // How far the mouse has been moved
+                    const dx = e.clientX - $scroll.posDrag.x;
+                    const dy = e.clientY - $scroll.posDrag.y;
+                    // 原生会卡顿
+                    //$scroll.scrollTop = $scroll.posDrag.top - dy;
+                    //$scroll.scrollLeft = $scroll.posDrag.left - dx;
+                    $($scroll)[0].scrollBy({
+                        top      : 0,
+                        left     : -$scroll.scrollLeft+($scroll.posDrag.left - dx),
+                        //behavior : 'smooth'
+                    });
+                }
+                function eMUp(e){
+                    let $scroll=e.currentTarget.classList.contains("scrollerSnap") ? e.currentTarget : e.currentTarget.parentElement;
+                    //if($scroll.posDrag)e.preventDefault();
+                    $scroll.posDrag=false;
+                    $scroll.classList.remove("mouseDragging");
+                    return false;
+                }
+                function eMDown(e){
+                    let $scroll=e.currentTarget.classList.contains("scrollerSnap") ? e.currentTarget : e.currentTarget.parentElement;
+                    $scroll.posDrag={
+                        left:$scroll.scrollLeft,
+                        top:$scroll.scrollTop,
+                        x:e.clientX,
+                        y:e.clientY,
+                    }
+                    $scroll.classList.add("mouseDragging");
+                    $scroll.addEventListener("mousemove",eMMove);
+                    $scroll.addEventListener("mouseup",eMUp);
+                    $scroll.addEventListener("mouseleave",eMUp);
+                    $scroll.addEventListener("mouseout",eMUp);
+                }
+                $scrollSnap.addEventListener("mousedown",eMDown);
+                $scrollSnap.querySelectorAll("img").forEach($img=>{
+                    $img.addEventListener("mousedown",eDown=>{
+                        function eMUpImg(e){
+                            {# console.log("imge mouseup posDrag",e.currentTarget.parentElement.posDrag); #}
+                            if(!e.currentTarget.parentElement.posDrag || Math.abs(e.clientX-e.currentTarget.parentElement.posDrag.x)<10){
+                                bsModalImagePreview.show(e.currentTarget);
+                                $img.removeEventListener("mouseup",eMUpImg);
+                            }
+                        }
+                        $img.addEventListener("mouseup",eMUpImg);
+                    })
+
+                })
             })
         }
         this.addEventListener("OPEN_OFFCANVAS_DETAIL",function(e){
@@ -262,6 +319,11 @@ $modalImagePreview.addEventListener('show.bs.modal', function (event) {
                         aOffcanvasBody.loadingState = false;
                         aOffcanvasBody.dom = res.data.comments || res.data;
                         that.setDetailDom($offcanvasDetail);
+
+                        let str=$offcanvasDetail.querySelector(".detail.font-normal article").innerHTML
+                        let reg=new RegExp(["晕盖","Gatsby","Daze","不优雅","养鸡"].join("|"),"g")
+                        let tmplistFind=str.match(reg);//晕盖|Gatsby|Daze|不优雅|养鸡
+                        //debugger;
                     }else{
                         error({msg:"服务器连接成功；返回错误:status=="+res.status,res,url})
                     }
