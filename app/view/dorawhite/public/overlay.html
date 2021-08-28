@@ -160,7 +160,7 @@ $modalImagePreview.addEventListener('show.bs.modal', function (event) {
                 {# 乐队名列表 #}
                 {# <h1 class="display-1">RUBY</h1> #}
                 <div class="artist artist-md d-flex align-items-center ">
-                    <button class="name hoverUnderline btn btn-link" data-dr-url="{{artist.url}}" data-bs-target="#offcanvasRight">
+                    <button class="name hoverUnderline btn btn-link" data-dr-url="{{artist.url}}"  onclick="window.goto('{{artist.url}}')">
                         {{artist.name}}
                     </button>
                     {% if artist.listNotices.length > 0%}
@@ -180,13 +180,6 @@ $modalImagePreview.addEventListener('show.bs.modal', function (event) {
             {% endfor %}
         </div>
         <script>
-            let $listBnArtistOffCanvas=document.querySelectorAll("#offcanvasListArtists button.name");
-            function eBnArtist(e){
-                {# e.relatedTarget=e.currentTarget; #}
-                window.goto(e.currentTarget.dataset.drUrl);
-            }
-            $listBnArtistOffCanvas.forEach($bn=>{$bn.onclick=eBnArtist});
-
             eInitTooltip(document.getElementById("offcanvasListArtists"),"top-end",document);
         </script>
     </div>
