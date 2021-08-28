@@ -133,7 +133,10 @@
     overflow: hidden;
 }
 .detail .list.showAll{
-    grid-auto-rows:minmax(100px,auto);
+    grid-auto-rows:minmax(1rem,auto);
+}
+.detail .list .item{
+    overflow: hidden;
 }
 .detail .more{
     width:calc(180 * 1rem / 36);
@@ -189,6 +192,15 @@
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
 }
+.detail.artist .album.scrollerSnap.mouseDragging,
+.detail.artist .album.scrollerSnap.mouseDragging>*{
+    cursor:grabbing;
+    user-select: none;
+}
+.detail.artist .album.scrollerSnap:not(.mouseDragging){
+    cursor:grab;
+}
+/* scrollsnap用 */
 .detail.artist .album img{
     scroll-snap-align: center;
     scroll-snap-stop: normal;
@@ -198,14 +210,18 @@
     flex: 0 0 min(800px,100%,calc( var(--offsetcanvas-right) - var(--offsetcanvas-padding) - var(--offsetcanvas-padding-right,0.77rem) - 1rem));
     flex: auto;
 }
+
 .detail.artist .album img{
+    display:block;
     object-fit:cover;
     /* 手机竖屏高充满，宽自动 */
     width: auto;
     max-width:calc( var(--offsetcanvas-right) - var(--offsetcanvas-padding-right,0.77rem) - var(--offsetcanvas-padding) - 1rem);
     height:100%;
     max-height: 100%;
+    cursor:zoom-in;
 }
+
 /* 标签 */
 .detail.artist .list-inline{
     line-height: 0px;
@@ -303,7 +319,6 @@
 }
 .detail.artist .videos .list .item{
     background: rgba(0, 0, 0, 0.75);
-    position: relative;
     margin-bottom:0.833rem;
 }
 .detail.artist .videos .list .item img{
@@ -311,13 +326,6 @@
     width: 100%;
     height:auto;
     /* max-height: 400px; */
-}
-.detail.artist .videos .list .item span{
-    position: absolute;
-    left: 20px;
-    bottom: 20px;
-    width:calc(100% - 40px);
-    text-decoration: inherit;
 }
 
 /* 新闻动态 */
@@ -327,15 +335,8 @@
 
 .detail.artist .news .list{
     width:79.8%;
-    display:grid;
-    grid-template-columns:1fr;
-    /* # 三列，并三等分，用fr做单位，不会产生横向的滚动条 */
-    /* #grid-template-columns:1fr 2fr 2fr; */
-    /* # 三列，二三列各占五份中的两份 */
-    grid-gap:1.277rem;
-    /* # 行间距，列间距都设为1rem */
-    grid-auto-rows:minmax(1rem,auto);
-    /* # 自动改变div高度 */
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+
 }
 .detail.artist .news .list .year{
     
@@ -345,6 +346,7 @@
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
+    margin-bottom: 1.277rem;
 }
 .detail .news .list .item::before{
     content:"";

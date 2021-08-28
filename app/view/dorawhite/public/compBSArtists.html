@@ -9,7 +9,8 @@
              
             <button 
                 class="name btn btn-link hoverUnderline" 
-                data-dr-url="{{artist.url}}">
+                data-dr-url="{{artist.url}}"
+                onclick="window.goto('{{artist.url}}')">
                 <span 
                     tabindex="0"
                     data-bs-toggle="tooltip" 
@@ -103,13 +104,6 @@
                 });
                 return tooltip;
             })
-
-            {# 乐队名按钮 #}
-            function eBnArtist(e){
-                window.goto(e.currentTarget.dataset.drUrl);
-            }
-            let $bnArtist=$artist.querySelector("button.name");
-            if($bnArtist)$bnArtist.addEventListener("click",eBnArtist)
         })
         </script>
     </div>
