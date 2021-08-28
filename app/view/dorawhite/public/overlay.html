@@ -312,11 +312,6 @@ $modalImagePreview.addEventListener('show.bs.modal', function (event) {
                         aOffcanvasBody.loadingState = false;
                         aOffcanvasBody.dom = res.data.comments || res.data;
                         that.setDetailDom($offcanvasDetail);
-
-                        let str=$offcanvasDetail.querySelector(".detail.font-normal article").innerHTML
-                        let reg=new RegExp(["晕盖","Gatsby","Daze","不优雅","养鸡"].join("|"),"g")
-                        let tmplistFind=str.match(reg);//晕盖|Gatsby|Daze|不优雅|养鸡
-                        //debugger;
                     }else{
                         error({msg:"服务器连接成功；返回错误:status=="+res.status,res,url})
                     }
