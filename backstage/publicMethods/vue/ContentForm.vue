@@ -33,6 +33,9 @@
             <slot name="leftMiddle">
 
             </slot>
+            <!-- 作者 -->
+            <SelectIds v-if="nameMod!='artist'" ref="selectArtists" :label="$t(nameMod+'.listArtists')" :allow-create="false" @change="eChangeArtist" :listIds="formState.formData.listRefs" :nameMode="nameMod" :apiAdd="false" apiFind="/manage/artist/getList" :initTag="false"/>
+
             <!-- 标签 -->
             <SelectIds :label="this.$t(nameMod+'.tags')" @change="eChangeTag" @loaded="eLoadedAllTags" :listIds="formState.formData.tags" :nameMode="nameMod" :initTag="createTag" />
 
@@ -267,14 +270,35 @@
         //    // 别名为空，自动填充拼音
         //    // if(this.formState.formData.alias=="")this.formState.formData.alias=getPinYin(this.formState.formData.name);
         //},
-        //"formState.formData.alias"(nV,oV){
-        //    // 别名为空，自动填充拼音
-        //    // if(this.formState.formData.alias=="")this.formState.formData.alias=getPinYin(this.formState.formData.name);
-        //}
+        // 提取关键字，自动填充listArtists            
+        "formState.formData.comments"(nV,oV){
+            let str=nV;
+            let reg=this.$refs.selectArtists ? this.$refs.selectArtists.regExpAll : false;//new RegExp(["晕盖","Gatsby","Daze","不优雅","养鸡"].join("|"),"g")
+            let listAllArtists=this.$refs.selectArtists ? this.$refs.selectArtists.listAll || [] : [];
+            if(reg){
+              let listNameArtistsFind=str.match(reg);//晕盖|Gatsby|Daze|不优雅|养鸡
+              listNameArtistsFind=[...(new Set(listNameArtistsFind))];//去重
+              let listIdArtists= [];
+              listNameArtistsFind.forEach(strNameFind=>{
+                listAllArtists.forEach(artist=>{
+                  if(artist.name==strNameFind)listIdArtists.push(artist._id);
+                })
+              })
+              // 去重合并
+              this.formState.formData.listRefs=[...new Set(this.formState.formData.listRefs.concat(listIdArtists))];
+              console.log(listNameArtistsFind,)
+            }
+        },
     },
     computed: {
         ...computed,
-        formState(){return this.value}
+        formState(){return this.value},
+        listAllArtists(){
+          return this.$refs.selectArtists ? this.$refs.selectArtists.listAllArtists : [];
+        },
+        regExpArtists(){
+          return this.$refs.selectArtists ? this.$refs.selectArtists.regExpAll : false;
+        },
     },
     methods: {
         // ...methods,
@@ -325,7 +349,24 @@
         eLoadedAllTags(e){
           this.listAllTags=e.listAllTags;
           this.$emit("loaded",{listAllTags:this.listAllTags});
-        }
+        },
+        // SelectIds变化::listRefs;
+        eChangeArtist(e){
+          this.formState.formData.listRefs=e.listIds;
+
+          this.updateKeywords(e.listObjDiff,e.strAction=="delete");
+          // 更新tags
+          let listAllTags=this.listAllTags;//this.contentTagList;      
+          if(listAllTags){
+            this.formState.formData.listRefs.forEach(idArtist=>{
+              let idTagFind=listAllTags.find(tag=>(tag.objRef && tag.objRef.id==idArtist));
+              if(idTagFind){
+                let idTagHave=this.formState.formData.tags.find(id=>(id==idTagFind._id))
+                if(!idTagHave)this.formState.formData.tags.push(idTagFind._id);
+              }
+            })
+          }
+        },
     },
     mounted() {
         // initData(this);

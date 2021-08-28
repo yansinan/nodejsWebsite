@@ -26,8 +26,6 @@
               </el-form-item>
             </el-col> 
           </el-row>
-          <!-- 作者 -->
-          <SelectIds :label="$t(nameMod+'.listArtists')" :allow-create="false" @change="eChangeArtist" :listIds="formState.formData.listRefs" :nameMode="nameMod" :apiAdd="false" apiFind="/manage/artist/getList" :initTag="false"/>
           <!-- 发行介质 -->
           <SelectIds :label="$t(nameMod+'.listFormatTags')" @change="eChangeFormats" :listIds="formState.formData.listFormatTags" :nameMode="nameMod" apiFind="/api/record/listAllFormats" :initTag="createFormatTag"/>
 
@@ -171,33 +169,6 @@ export default {
           alias:v,
       }
     },
-    // SelectIds变化::listRefs;
-    eChangeArtist(e){
-      this.formState.formData.listRefs=e.listIds;
-      this.updateKeywords(e.listObjDiff,e.strAction=="delete");
-      // 更新tags
-      let listAllTags=this.listAllTags;//this.contentTagList;      
-      if(listAllTags){
-        this.formState.formData.listRefs.forEach(idArtist=>{
-          let idTagFind=listAllTags.find(tag=>(tag.objRef && tag.objRef.id==idArtist));
-          if(idTagFind){
-            let idTagHave=this.formState.formData.tags.find(id=>(id==idTagFind._id))
-            if(!idTagHave)this.formState.formData.tags.push(idTagFind._id);
-          }
-        })
-      }
-    },
-    // SelectIds变化::Tags;
-    // {
-    //     listObjDiff:listObjDiff,
-    //     listIds:listIds,
-    //     strAction:(isAdd?"add":"delete")
-    // }
-    //eChangeTag(e){
-    //  this.formState.formData.tags=e.listIds;
-    //  this.updateKeywords(e.listObjDiff,e.strAction=="delete");
-    //},
-
   },
   computed: {
     ...computed,

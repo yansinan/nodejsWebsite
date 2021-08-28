@@ -51,8 +51,6 @@
                 </el-form-item>
               </el-col> 
             </el-row>
-            <!-- 作者 -->
-            <SelectIds v-if="formState.formData" :label="$t(nameMod+'.listArtists')" :allow-create="false" @change="eChangeArtist" :listIds="formState.formData.listRefs" :nameMode="nameMod" :apiAdd="false" apiFind="/manage/artist/getList" :initTag="false"/>
           </template>
 
           <template v-slot:footer>
@@ -134,23 +132,7 @@ export default {
     updateKeywords:methods.updateKeywords,
     getLocalContents:methods.getLocalContents,
     ...methods.funForWordUpload,
-    // SelectIds变化::listRefs;
-    eChangeArtist(e){
-      this.formState.formData.listRefs=e.listIds;
 
-      this.updateKeywords(e.listObjDiff,e.strAction=="delete");
-      // 更新tags
-      let listAllTags=this.listAllTags;//this.contentTagList;      
-      if(listAllTags){
-        this.formState.formData.listRefs.forEach(idArtist=>{
-          let idTagFind=listAllTags.find(tag=>(tag.objRef && tag.objRef.id==idArtist));
-          if(idTagFind){
-            let idTagHave=this.formState.formData.tags.find(id=>(id==idTagFind._id))
-            if(!idTagHave)this.formState.formData.tags.push(idTagFind._id);
-          }
-        })
-      }
-    },
 
     //submitForm(formName, type = "") {
     //  this.$refs[formName].validate(async valid => {
@@ -215,7 +197,7 @@ export default {
     ...computed,
     ...mod.mapState({
       formState: state => state.formState,
-      dataArtists:state => state.dataArtists,
+      // dataArtists:state => state.dataArtists,
     }),//模块的state
     ...mapGetters([
       //"contentTagList",

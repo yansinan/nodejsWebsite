@@ -93,11 +93,6 @@
         listAllTags:[],
       };
     },
-    //computed:{
-    //    listFilterTags(){
-    //        return listAllTags.filter(v=>(!v.isHide));
-    //    }
-    //},
     watch: {
         listIds(newV,oldV) {
             newV=newV || [];
@@ -136,6 +131,17 @@
         },
     },
     computed: {
+        //listFilterTags(){
+        //    return listAllTags.filter(v=>(!v.isHide));
+        //}
+        listAll(){return this.listAllTags},
+        regExpAll(){
+            if(this.listAll){
+                let listAll=this.listAll.map(v=>(v.name));
+                return new RegExp(listAll.join("|"),"g")
+            }
+            return false;
+        },
 
     },
     methods: {
