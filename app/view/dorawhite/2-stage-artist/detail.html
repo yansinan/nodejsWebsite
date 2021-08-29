@@ -42,7 +42,7 @@
     {# 专辑 #}
     {% if post.objDocsRecords.length>0%}
     <div class="block title records">
-        <div class="list">      
+        <div class="list" style="--cnt-item:{{4 if post.objDocsRecords.length > 4 else post.objDocsRecords.length}}">      
             {% for item in post.objDocsRecords %}
                 {# 乐队详情页 #}
                 <a onclick="window.goto('{{item.url}}')" class="item {{'hide' if loop.index > 4}}"><img src="{{item.sImg}} " class="img-fluid" alt="{{item.title}} " /></a>
@@ -54,7 +54,7 @@
     {# 视频 #}
     {% if post.listVideos.length>0%}
     <div class="block title videos">
-        <div class="list">      
+        <div class="list" style="--cnt-item:{{3 if post.listVideos.length > 3 else post.listVideos.length}}">      
             {% for item in post.listVideos %}
                 {# 乐队详情页 #}
                 <a href="{{item.urlVideo}} " target="_blank " class="item videoWrapper hoverUnderline">
@@ -69,7 +69,7 @@
     {# 时间轴 #}
     {% if post.listTimeline.length>0%}
     <div class="block title news">
-        <div class="list">      
+        <div class="list" style="--cnt-item:{{4 if post.listTimeline.length > 4 else post.listTimeline.length}}">      
             {% for item in post.listTimeline %}
             {# {%if post.listTimeline[loop.first]  or itme.dateYear!=post.listTimeline[loop.revindex0].dateYear %} #}
             {# <div class="year">{{ item.dateYear}}</div> #}
@@ -86,16 +86,16 @@
 
     {# 精选单曲 #}
     {% if false and post.listHotMusics.length>0%}
-    <div class="row border-2 border-bottom border-dark pt-5 pb-2">
-        <h2 class="">精选单曲</h2>
-    </div>
-    {% for link in post.listHotMusics %}
-    <div class="row border-bottom border-dark py-3" onclick="window.location.href= '{{ link.url }}';return false">
-        <span class="col" >{{ link.name }}</span>
-        <span class="col-1 d-none d-sm-block fa fa-play"  aria-hidden="true" style="margin: 5px;" id="bn-{{ link.url }}"></span>
-    </div>
-    {% endfor %}                        
-    <div class="row border-2 border-bottom border-dark"></div>
+        <div class="row border-2 border-bottom border-dark pt-5 pb-2">
+            <h2 class="">精选单曲</h2>
+        </div>
+        {% for link in post.listHotMusics %}
+        <div class="row border-bottom border-dark py-3" onclick="window.location.href= '{{ link.url }}';return false">
+            <span class="col" >{{ link.name }}</span>
+            <span class="col-1 d-none d-sm-block fa fa-play"  aria-hidden="true" style="margin: 5px;" id="bn-{{ link.url }}"></span>
+        </div>
+        {% endfor %}                        
+        <div class="row border-2 border-bottom border-dark"></div>
     {% endif %}
 </div>
 

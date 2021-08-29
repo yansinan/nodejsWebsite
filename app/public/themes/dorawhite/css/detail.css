@@ -293,7 +293,7 @@
 }
 .detail.artist .records .list{
     width:100%;
-    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-rows: repeat(var(--cnt-item,4),1fr);
 }
 .detail.artist .records .list .item{
     /* flex:0 1 calc(50% - 2.94%); */
@@ -315,7 +315,7 @@
 
 .detail.artist .videos .list{
     width:79.8%;
-    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-rows: repeat(var(--cnt-item,3),1fr);
 }
 .detail.artist .videos .list .item{
     background: rgba(0, 0, 0, 0.75);
@@ -335,7 +335,7 @@
 
 .detail.artist .news .list{
     width:79.8%;
-    grid-template-rows: 1fr 1fr 1fr 1fr;
+    grid-template-rows: repeat(var(--cnt-item,4),1fr);
 
 }
 .detail.artist .news .list .year{
