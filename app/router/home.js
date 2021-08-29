@@ -13,7 +13,6 @@ module.exports = app => {
     router.get("/sitemap.html", controller.page.home.getDataForSiteMap);
 
     // 测试新的复杂滚动首页
-    router.get(["/test", ], controller.page.index.getTestPage);
     router.get(["/", "/index/*" ,"/zh-CN", "/zh-TW", "/en"], controller.page.index.getDataForIndexPage);
 
     router.get("/page/:current.html", controller.page.home.getDataForIndexPage);
