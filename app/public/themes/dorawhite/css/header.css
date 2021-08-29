@@ -454,7 +454,7 @@
 #offcanvasRightMenu{
   background-color: #000000;
   color: rgba(255, 255, 255, 1);
-  font-family: SourceHanSansCN-Normal, SourceHanSansCN,NHaasGroteskTXPro-Rg;
+  /* font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB", "Source Han Sans", "Noto Sans CJK Sc", "Microsoft YaHei", "Microsoft Jhenghei", sans-serif;*//*SourceHanSansCN-Normal, SourceHanSansCN,NHaasGroteskTXPro-Rg; */
 
   width:100vw;
   padding-left: 0.711rem;
