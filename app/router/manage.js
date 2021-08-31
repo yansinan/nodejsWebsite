@@ -168,6 +168,20 @@ module.exports = app => {
 
     router.get('/manage/show/delete', controller.manage.show.removes)
     /**
+     * 周边管理
+     * 
+     */
+     router.get('/manage/good/getList', controller.manage.good.list)
+     router.get('/manage/good/getOne', controller.manage.good.getOne)
+ 
+     router.post('/manage/good/addOne', controller.manage.good.create)
+     router.post('/manage/good/updateOne', controller.manage.good.update)
+     router.post('/manage/good/top', controller.manage.good.updateToTop)
+     router.post('/manage/good/roof', controller.manage.good.roofPlacement)
+ 
+     router.get('/manage/good/delete', controller.manage.good.removes)
+ 
+    /**
      * 上传文件blocb 多文件管理
      * 
      */
