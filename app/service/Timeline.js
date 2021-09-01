@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-08-04 05:26:38 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-24 09:33:18
+ * @Last Modified time: 2021-09-01 11:39:13
  */
 'use strict';
 const { debug } = require('console');
@@ -224,11 +224,35 @@ class ServicePlugin extends Service {
         }
         //数据库读取文档
         let listDocs=[];
+        let listVideos=[];
         try{
             // listDocs=await this.getDoc(yearCurrent || new Date());
             //index过来的!yearCurrent，取所有docs
-            if(!yearCurrent)listDocs=(await this.service.uploadFiles.cacheJSON(path.join(strFolderCache,'listDocs.json'),{tar:this,fun:this.getDoc, params:[ yearCurrent || false ] },true,true));
-            else listDocs=await this.getDoc(yearCurrent);
+            if(!yearCurrent){
+                listDocs=(await this.service.uploadFiles.cacheJSON(path.join(strFolderCache,'listDocs.json'),{tar:this,fun:this.getDoc, params:[ yearCurrent || false ] },true,true));
+            }else{
+                listDocs=await this.getDoc(yearCurrent);
+            }
+            listVideos=await this.service.video.find(yearCurrent || false);//缓存在service.video.find内部
+            // 合并视频列表
+            if(listVideos.length>0){
+                listDocs.forEach((doc,idxDoc)=>{
+                    let idxVideo=-1;
+                    idxVideo=listVideos.findIndex((docV,idxV)=>{
+                        if(moment(docV.dateFull).isAfter(moment(doc.dateFull))){
+                            return true;
+                        }
+                        return false;
+                    });
+                    if(idxVideo !=-1){
+                        let listVideoToAdd=listVideos.splice(0,idxVideo+1);
+                        if(listVideoToAdd.length>0){
+                            console.log("在doc.",idxDoc,doc.dateFull,"之前添加了，",listVideoToAdd.length,"个 视频：",listVideoToAdd[0].dateFull,"，剩余视频:",listVideos.length);
+                            listDocs.splice(idxDoc,0,...listVideoToAdd);
+                        }                    
+                    }
+                })
+            }
             if(!listDocs[0] && !yearCurrent)throw(new Error("listDocs没有!",listDocs));
         }catch(e){ throw(new Error(e)); }
         // 文档中最新日期;
