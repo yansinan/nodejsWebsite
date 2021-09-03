@@ -80,7 +80,6 @@
             })
             tooltipTriggerEl.addEventListener('show.bs.tooltip', function (e) {
                 this.classList.add("now");
-                console.log("notice::show.bs.tooltip")
             })
             tooltipTriggerEl.addEventListener("touchstart",eShow);
             tooltipTriggerEl.addEventListener("mouseenter",eShow);
@@ -209,6 +208,9 @@ $modalImagePreview.addEventListener('show.bs.modal', function (event) {
         
         var bsModalImagePreview = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalImagePreview'));
         this.setDetailDom=function($detail){
+            {# 获取基础数据 #}
+            let title=$offcanvasDetail.querySelector(".name").innerText;
+            let objDetail={title};
             {# 详情页更多按钮 #}
             $offcanvasDetail.querySelectorAll("div.more").forEach($bn=>{$bn.addEventListener("click",$offcanvasDetail.eBnMore)});
             {# 详情图片lazyLoad #}
@@ -286,6 +288,7 @@ $modalImagePreview.addEventListener('show.bs.modal', function (event) {
 
                 })
             })
+            return objDetail;
         }
         this.addEventListener("OPEN_OFFCANVAS_DETAIL",function(e){
             let url=e.detail.apiDetail || e.detail.relatedTarget.attributes["data-dr-url"].value ||  "/about___.html";
@@ -311,16 +314,14 @@ $modalImagePreview.addEventListener('show.bs.modal', function (event) {
                     if (res.status == 200) {
                         aOffcanvasBody.loadingState = false;
                         aOffcanvasBody.dom = res.data.comments || res.data;
-                        that.setDetailDom($offcanvasDetail);
+                        let objDetail=that.setDetailDom($offcanvasDetail);
+                        that.dispatchEvent(new CustomEvent("NAV_AT", { detail:{apiDetail:url,titleDetail:objDetail.title}, }));
                     }else{
                         error({msg:"服务器连接成功；返回错误:status=="+res.status,res,url})
                     }
                 },
                 error,
             })
-        });
-        this.addEventListener("CLOSE_OFFCANVAS_DETAIL",(e)=>{
-
         });
 
     </script>

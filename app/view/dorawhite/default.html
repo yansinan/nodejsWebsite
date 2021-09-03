@@ -110,7 +110,7 @@
                             get:()=>(this.slideCover.getCurrentPage().pageY==1?"timeline":"artists"),
                         },
                     })
-                    this.slideCover.goto=function(inPage){
+                    this.slideCover.goto=function(inPage,isNavAt=true){
                         let tar= (inPage=="artists" ? 0 : 1);
                         {# 如果目标等于当前页，不跳转，但是相同页面也触发事件：为了使bsTimeline保持动作 #}
                         let page=that.slideCover.getCurrentPage();
@@ -118,6 +118,8 @@
                             if(inPage!="artists"){
                                 that.dispatchEvent(new CustomEvent("BS_COVER_TIMELINE", {page:this.getCurrentPage(),bsMain:this.strNow}));
                                 that.dispatchEvent(new CustomEvent("BS_COVER_TIMELINE_FINAL", {page:this.getCurrentPage(),bsMain:this.strNow}));
+                            }else if(inPage=="artists" && isNavAt ){ {# 当前页是artist并且goto(artists),也要触发NAV_AT #}
+                                that.dispatchEvent(new CustomEvent("NAV_AT", {detail:{bsMain:inPage}}));
                             }
                             return;
                         }
@@ -185,7 +187,8 @@
                     })
                     {# 页面跳转 #}
                     this.addEventListener("NAV_TO",(e)=>{
-                        this.slideCover.goto(e.detail.objNew.bsMain);
+                        {# 如果是过程中，或者相同一级栏目下的二级或者detail则不触发 #}
+                        this.slideCover.goto(e.detail.objNew.bsMain,e.detail.objNew.detail?false:true);
                     })
 
                 </script>

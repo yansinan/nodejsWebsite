@@ -63,7 +63,6 @@
                 tooltip.$sImg=$artist.querySelector(".sImg");
                 $nameArtist.tooltip=tooltip;
                 $nameArtist.addEventListener('shown.bs.tooltip', function (e) {
-                    console.log("sImg:","show.bs.tooltip");
                     let tooltip=e.target.tooltip;
                     if(tooltip && tooltip.$sImg){
                         let $inner=tooltip.tip.querySelector(".tooltip-inner");

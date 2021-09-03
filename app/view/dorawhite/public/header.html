@@ -119,7 +119,7 @@
         get strBSMain(){
             let path=window.location.pathname.split("/index/")[1];
             path=path.split("/")[0];
-            return path || "artists";
+            return path =="timeline" ? path : "artists";
         },
         get strDetail(){
             let path=window.location.pathname.split("/timeline/")[1] || window.location.pathname.split("/artists/")[1];// news/xxx.html
@@ -136,7 +136,13 @@
                         get:()=>("/index/" + this._objNavTo.bsMain + "/" + ( this._objNavTo.bsTimeline || this.funFindByURL(this._objNavTo.bsTimeline).defaultUrl) + "/" + (this._objNavTo.detail?this._objNavTo.detail : "")),
                     },
                     title:{
-                        get:()=>("{{site.title}}" + "|" + this.funFindByURL(this._objNavTo.bsTimeline).name),
+                        get:()=>{
+                            let t="艺术家";
+                            if(this._objNavTo.detail)t=this._objNavTo.titleDetail;
+                            else if(this._objNavTo.bsMain=="timeline")t=this.funFindByURL(this._objNavTo.bsTimeline).name;
+                            t="{{site.title}}的" + t;
+                            return t;
+                        },
                     },
                     detail:{ {# detail没有/,apiDetail有/ #}
                         get:()=>{
@@ -146,14 +152,20 @@
                             //let id=(urlEnd.split("___")[0]).split(".html")[0];
                             return this._objNavTo.apiDetail?this._objNavTo.apiDetail.split("/")[1]:false;
                         },
-                        set:(detail)=>{this._objNavTo.apiDetail="/"+detail;},//detail.split(".html")[0]
+                        set:(detail)=>{
+                            if(detail)this._objNavTo.apiDetail="/"+detail;
+                            else this._objNavTo.apiDetail="";
+                        },//detail.split(".html")[0]
                     }
                 })
             }
             return this._objNavTo;
         },
         set objNavTo(obj){
-            if(!obj.detail)delete obj.detail;
+            if(!obj.detail && !obj.apiDetail){
+                obj.apiDetail="";
+                obj.titleDetail="";
+            }
             if(!obj.bsTimeline)delete obj.bsTimeline;
             {# 更新前保存在header.objOld #}
             this.objNavOld=Object.assign({},this.objNavTo);
@@ -168,10 +180,14 @@
             }
         },
         set objNavAt(obj){
-            if(!obj.detail)delete obj.detail;
-            if(!obj.bsTimeline)delete obj.bsTimeline;
             this.objNavTo=obj;
-            window.history.pushState(this.objNavTo, this.objNavTo.title, this.objNavTo.url);//设置状态
+            document.title=this.objNavTo.title;
+            this.funSetNav(this.strAliasNav);
+            {# 如果传入值和history.state完全相同，认为是浏览器返回按钮；不新增history #}
+            let h=window.history.state;
+            let t=this.objNavTo;
+            if(h && t.bsMain==h.bsMain && t.bsTimeline == h.bsTimeline && t.apiDetail == h.apiDetail)return;
+            window.history.pushState(this.objNavTo, document.title, this.objNavTo.url);//设置状态
         },
     };
 </script>
@@ -198,7 +214,7 @@
     window.addEventListener('DOMContentLoaded', ePopStateHeader, false);
 
     function ePopStateHeader(event){
-        console.info("history::",event.type,window.history.state,"strAliasNav=",this.header.strAliasNav);
+        console.info("history::",event.type,"window.history.state:",window.history.state,";event.state",event.state,"strAliasNav=",this.header.strAliasNav);
         {# 非首页需要跳转相应页 #}
         if(event.type =="DOMContentLoaded" || event.type =="Load"){
             {# 等待sliceCover初始化完成？ #}
@@ -209,10 +225,9 @@
             //this.addEventListener("BS_TIMELINE_DOM_READY",eTimelineReady)
             this.goto(window.location.pathname.split("/index")[1]);
         }else{
-            {# 返回或者手动=》更新导航状态 #}
+            {# 浏览器返回按钮或者手动=》更新导航状态 #}
             if(event.type=="popstate" || event.state){
-                {# 浏览器返回 #}
-                this.goto(window.location.pathname.split("/index")[1]);
+                this.goto(window.location.pathname.split("/index")[1]);                
             }else{
                 this.header.funSetNav(this.header.strAliasNav);
             }
@@ -222,10 +237,10 @@
     function eNavAt(e){
         {# history路由 #}
         let obj={
-            bsMain:e.detail.bsMain,
+            bsMain:e.detail.bsMain || this.header.strBSMain,
             bsTimeline:e.detail.bsTimeline || this.header.strAliasNav || false,
-            //detail:e.detail.detail || false,
         }
+        Object.assign(obj,e.detail);
         this.header.objNavAt=obj;//objNavAt会保存在objNavTo
     }
     this.addEventListener("NAV_AT",eNavAt);
@@ -241,30 +256,24 @@
         
         if(e.type=='hide.bs.offcanvas'){
             {# 清除导航 #}
-            that.header.objNavAt={apiDetail:false};
             bsOffcanvasLeft.hide();
-            that.dispatchEvent(new CustomEvent("CLOSE_OFFCANVAS_DETAIL",{detail}));
+            that.dispatchEvent(new CustomEvent("NAV_AT", { detail:{apiDetail:false,titleDetail:""}, }));
         }else if(e.relatedTarget || e.apiDetail){
             if(e.apiDetail){
                 bsOffcanvasRight.show();
             }else if(e.type=='show.bs.offcanvas' && e.relatedTarget){
-                //bs驱动，监听结果，更新objNavAt,更新地址栏，一次
-                that.addEventListener("OPEN_OFFCANVAS_DETAIL",function(eBS){
-                    let url=eBS.detail.relatedTarget.attributes["data-dr-url"].value ||  "/about___.html";
-                    that.header.objNavAt={apiDetail:url};//objNavAt会保存在objNavTo
-                },{once:true});
+
             }
             bsOffcanvasLeft.show();
             that.dispatchEvent(new CustomEvent("OPEN_OFFCANVAS_DETAIL", {detail}));
+        }else if(e.apiDetail === ""){ {# 没有detail.relatedTarget，apiDetail ===""关闭详情 #}
+            bsOffcanvasRight.hide();
         }else{ {# 没有detail.relatedTarget，也没有apiDetail 手动触发bs->show触发的事件 是不需要监听的 #}
             return;
         }
     }
     $offcanvasRight.addEventListener('show.bs.offcanvas', this.toggleDetail)
     $offcanvasRight.addEventListener('hide.bs.offcanvas', this.toggleDetail)
-    {# 浮窗事件 #}
-    //this.addEventListener("CLOSE_OFFCANVAS_DETAIL",(e)=>{
-    //});
 
     {# 驱动页面切换：所有页内跳转统一按url例如："/timeline/records/xxxxx.html" #}
     this.goto=function(inObj){ // inObj = inURL || e 
@@ -293,7 +302,7 @@
                 detail:{objNew:this.header.objNavTo,objOld:this.header.objNavOld},
             }))
         }else if(inURL.split("/").length==2 && inURL.indexOf(".html")!=-1){//含html为详情{# 如果只传入/aaaaa___xxx.html为单独跳转detail #}
-            this.header.objNavAt={apiDetail:inURL};            
+            this.header.objNavTo={apiDetail:inURL};            
         }else{
             debugger
             throw new Error("goto(inURL)格式错误:"+inURL);
