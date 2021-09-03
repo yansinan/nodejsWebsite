@@ -146,6 +146,7 @@ class APIController extends Controller {
             dismissReason: fields.dismissReason,
             comments: fields.comments,
             type: fields.type,
+            listRefs:fields.listRefs,
         }
 
         // 设置显示模式
