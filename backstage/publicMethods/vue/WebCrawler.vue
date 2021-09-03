@@ -162,6 +162,7 @@ export default {
                         that.objRes.alias=res.data.name || res.data.title;
                         that.objRes.stitle=that.objRes.alias;
                         that.objRes.discription=res.data.name || res.data.title;
+                        that.objRes.date = that.objRes.date || new Date();
                         // 先缓存下面要canvas的图
                         // that.$set(that.objRes,"comments","");
                         that.listSrcImgWX=res.data.listSrcImg;

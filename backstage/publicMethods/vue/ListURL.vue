@@ -239,7 +239,10 @@
         this.$refs["formAdd"].validate((valid) => {
           if (valid) {
             that.getURLData(that.objToAdd,"formAdd").then(resObj=>{
-              that.listObjURL.push(resObj);
+              // 验证是否重复:
+              let objFind=that.listObjURL.find(v=>(v.url==url));
+              if(objFind)Object.assign(objFind,resObj);
+              else that.listObjURL.push(resObj);
               // 去重
               that.listObjURL=[...new Set(that.listObjURL)]
 
