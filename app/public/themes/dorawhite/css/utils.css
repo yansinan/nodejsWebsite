@@ -218,7 +218,7 @@ ul li {
     border-color: transparent transparent transparent rgba(255, 255, 255, 1);
     border-radius: 0.1rem;
     border-width: .4rem 0 .4rem 0.66rem;
-    margin-left: .4rem;
+    transform: translateX(.2rem);
 }
 /**/
 .videoWrapper:hover img{
