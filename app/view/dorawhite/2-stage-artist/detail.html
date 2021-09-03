@@ -105,6 +105,13 @@
         <div class="row border-2 border-bottom border-dark"></div>
     {% endif %}
 </div>
+{# 浮动导航 #}
+<ul class="nav">
+    <div class="backTop" ms-on-click="@eBnDetailNav(e,'.name')"></div>
+    {% for link in post.listNav %}
+    <li class="hoverUnderline" ms-on-click="@eBnDetailNav(e,'{{link.tar}}')">{{link.name}}</li>
+    {% endfor %}
+</ul>
 
 {% block content %}
 {% if false %}

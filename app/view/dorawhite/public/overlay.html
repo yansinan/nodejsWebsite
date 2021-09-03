@@ -189,8 +189,8 @@ $modalImagePreview.addEventListener('show.bs.modal', function (event) {
             <div class="icon-arrow left flex-column" data-bs-dismiss="offcanvas"></div>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
-        <div id="offcanvasDetail" class="offcanvas-body" ms-controller="offcanvasDetail">
-            <div :visible="!@loadingState" ms-html="@dom" class="position-relative"></div>
+        <div id="offcanvasDetail" class="offcanvas-body" ms-controller="offcanvasDetail" ms-on-scroll="@eScrollDetail">
+            <div :visible="!@loadingState" ms-html="@dom" style="background-color: inherit;"></div>
             <div :visible="@loadingState" class="loading w-100 justify-content-center align-items-center ">
                 <i class="fa fa-spin fa-spinner"></i>
             </div>
@@ -203,6 +203,24 @@ $modalImagePreview.addEventListener('show.bs.modal', function (event) {
             $id: 'offcanvasDetail',
             dom: "",
             loadingState: false,
+            eBnDetailNav:function(e,strTarget){
+                let offset=$offcanvasDetail.querySelector('#offcanvasDetail .detail '+ strTarget).getBoundingClientRect().top;
+                offset=offset - $offcanvasDetail.getBoundingClientRect().top;
+                $($offcanvasDetail)[0].scrollBy({
+                        top      : offset,
+                        left     : 0,
+                        behavior : 'smooth'
+                });
+            },
+            eScrollDetail:function(e){                
+                let $nav=$offcanvasDetail.querySelector(".nav");
+                if($nav){
+                    let $name =$offcanvasDetail.querySelector(".name");
+                    let isShow=$name?$name.getBoundingClientRect().bottom < 0 :  e.currentTarget.scrollTop > $offcanvasDetail.clientHeight;
+                    if(!$nav.classList.contains("show") && isShow)$nav.classList.add("show");
+                    else if($nav.classList.contains("show") && !isShow)$nav.classList.remove("show");
+                }
+            },
         })
         {# modal 图片预览 #}
         

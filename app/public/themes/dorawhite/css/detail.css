@@ -23,6 +23,7 @@
 #offcanvasLeft.offcanvas-body{
     display:flex;
     flex-direction: column;
+    position: relative;
 }
 /* 右侧详情 */
 #offcanvasRight.offcanvas-end{
@@ -61,6 +62,7 @@
 #offcanvasRight .offcanvas-body{
     padding: var(--offsetcanvas-padding, 0.77rem);    
     padding-right: var(--offsetcanvas-padding-right, 0.77rem);
+    background-color: inherit;
 }
 
 #offcanvasRight .offcanvas-body .loading{
@@ -73,7 +75,7 @@
     #offcanvasDetailAll{
         background: white;
         color: black;
-        --offsetcanvas-padding-right:3.67rem;
+        --offsetcanvas-padding-right:1.16rem;/*3.67rem;*/
         --offsetcanvas-padding:0.427rem;
         --offsetcanvas-left:13.89rem;
     }
@@ -228,10 +230,12 @@
     margin-top: 2.28rem;
     margin-bottom:1.75rem;
 }
-
 .detail.artist article{
-
+    max-width: calc( 100% - 20px);
+    align-self: center;
 }
+
+
 .detail.artist article p{
     margin-block: 0px;
     margin-bottom: 0rem;
@@ -254,7 +258,75 @@
     border-bottom: 1px solid #FFFFFF;
     width: 100%;
 }
+#offcanvasDetail .nav{
+    position: absolute;
+    z-index: 2000;
+    bottom:7px;/* var(--offsetcanvas-padding, 0.77rem);  */  
+
+    display:flex;
+    flex-wrap: nowrap;
+    justify-content:space-evenly;
+    align-items: center;
+    width:100%;
+    max-width:calc(100% - var(--offsetcanvas-padding, 0.77rem) - var(--offsetcanvas-padding-right, 0.77rem) );
+    height:calc(35 * 1rem / 26);
+    border-radius: 5rem;
+    border:1px solid white;
+    background-color: inherit;
+    font-size: 0.694rem;
+    opacity: .8;
+    transition: transform;
+    transition-duration: 1s;
+    transform:translateY(3rem);
+}
+#offcanvasDetail .nav.show{
+    transform:translateY(0);
+}
+#offcanvasDetail .nav::before,
+#offcanvasDetail .nav::after{
+    content:"";
+    display:block;
+    flex: 0 1 1rem;
+    min-width:0.375rem;
+}
+#offcanvasDetail .nav li{
+    flex: 0 1 2.6rem;
+    min-width:2.6rem;
+    white-space: nowrap;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    cursor: pointer;
+}
+#offcanvasDetail .nav .backTop{
+    background-image: url("/static/themes/images/bnArrowDetail.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 38px 38px;
+    position:absolute;
+    z-index: 1999;
+    bottom: 0;
+    right:0px;
+
+    width:38px;
+    height:38px;
+    border-radius: 50%;
+    border:1px solid white;
+    background-color: inherit;
+    cursor: pointer;
+    transition: bottom,right;
+    transition-duration: 2s;
+    /* transform:translateY(3rem); */
+}
+#offcanvasDetail .nav.show .backTop{
+    bottom: calc(100% + 8px);
+}
 @media (min-width: 768px) {
+    .detail.artist article{
+        max-width: calc( 100% - 2rem);
+        align-self: flex-start;
+    }
     .detail.artist .headEnd{
         flex:0 0 5.667rem;
     }
@@ -271,6 +343,15 @@
 
         height:auto;
     }    
+    #offcanvasDetail .nav{
+        bottom:var(--offsetcanvas-padding, 0.77rem);
+        width:auto;
+        right: var(--offsetcanvas-padding-right);
+        max-width:calc(0.5rem + 100% - var(--offsetcanvas-padding, 0.77rem) - var(--offsetcanvas-padding-right, 0.77rem) );
+    }
+    #offcanvasDetail .nav .backTop{
+        display: none;
+    }
 }
 
 .detail.artist .block{

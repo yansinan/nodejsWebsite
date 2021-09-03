@@ -591,14 +591,15 @@ class APIController extends Controller {
             let renderContent = Array(targetContent);
             renderContent = await this.renderList(userInfo._id, renderContent);
             // 获取唱片
-            // ctx.query.idArtist=targetId;
-            renderContent[0].objDocsRecords=await ctx.service.record.find({isPaging:false,pageSize:0,},{
+            let artist=renderContent[0];
+           // ctx.query.idArtist=targetId;
+           artist.objDocsRecords=await ctx.service.record.find({isPaging:false,pageSize:0,},{
                 sort: {dateRelease: -1},
                 query:{                    
                     listRefs:targetId,
                     state: '2'
                 },
-                files: "sImg name listFormatTags date"
+                files: "sImg name listFormatTags date url"
             });
             //await ctx.service.record.find(ctx.query, {
             //    sort: {dateRelease: -1},
@@ -607,7 +608,25 @@ class APIController extends Controller {
             //    files: "sImg name listFormatTags date"
             //});
             // 获取时间线:演出，唱片，新闻，视频，加入
-            renderContent[0].listTimeline= await this.getListTimeline(renderContent[0]);
+            artist.listTimeline= await this.getListTimeline(artist);
+            // 获取周边
+            //artist.listDocsGoods=await ctx.service.good.find({isPaging:false,pageSize:0,},{
+            //    sort: {dateRelease: -1},
+            //    query:{                    
+            //        listRefs:targetId,
+            //        state: '2'
+            //    },
+            //    files: "sImg name date url"
+            //});
+
+            // 构建详情的导航
+            artist.listNav=[{name:"关于",tar:".name"}];
+            if(!_.isEmpty(artist.objDocsRecords))artist.listNav.push({name:"专辑",tar:".records"});
+            if(!_.isEmpty(artist.listVideos))artist.listNav.push({name:"影像",tar:".videos"});
+            if(!_.isEmpty(artist.listTimeline))artist.listNav.push({name:"时间线",tar:".news"});
+            if(!_.isEmpty(artist.listHotMusics))artist.listNav.push({name:"单曲",tar:".musics"});
+            if(!_.isEmpty(artist.listDocsGoods))artist.listNav.push({name:"周边",tar:".goods"});
+
 
             ctx.helper.renderSuccess(ctx, {
                 data: renderContent[0]
