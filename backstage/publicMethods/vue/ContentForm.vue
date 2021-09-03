@@ -272,7 +272,7 @@
         //},
         // 提取关键字，自动填充listArtists            
         "formState.formData.comments"(nV,oV){
-            let str=nV;
+            let str=nV+" "+this.formState.formData.name+" "+this.formState.formData.alias;
             let reg=this.$refs.selectArtists ? this.$refs.selectArtists.regExpAll : false;//new RegExp(["晕盖","Gatsby","Daze","不优雅","养鸡"].join("|"),"g")
             let listAllArtists=this.$refs.selectArtists ? this.$refs.selectArtists.listAll || [] : [];
             if(reg){

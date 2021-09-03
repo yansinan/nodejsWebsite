@@ -185,6 +185,7 @@ export let methods={
     backToList() {
         // this.$router.push("/"+nameMod);
         // this.$store.dispatch(nameMod+"/showContentForm",{edit:false,formData:{test:"debug:backToList"},isInit:true});
+        this.formState.formData.tags=[];
         this.$router.push(this.$root.adminBasePath + "/"+this.nameMod);
 
     },
