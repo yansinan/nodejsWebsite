@@ -290,8 +290,8 @@
     min-width:0.375rem;
 }
 #offcanvasDetail .nav li{
-    flex: 0 1 2.6rem;
-    min-width:2.6rem;
+    /* flex: 1 1 calc(59 * 1rem / 26); */
+    min-width:calc(59 * 1rem / 26);
     white-space: nowrap;
     display:flex;
     justify-content: center;
@@ -344,6 +344,7 @@
         height:auto;
     }    
     #offcanvasDetail .nav{
+        font-size: 0.5rem;
         bottom:var(--offsetcanvas-padding, 0.77rem);
         width:auto;
         right: var(--offsetcanvas-padding-right);
@@ -352,6 +353,10 @@
     #offcanvasDetail .nav .backTop{
         display: none;
     }
+    #offcanvasDetail .nav li{
+        /* flex: 1 1 calc((37 + 57) * 1rem / 26); */
+        min-width:calc((37 + 57) * 1rem / 26);
+    }    
 }
 
 .detail.artist .block{
@@ -453,7 +458,6 @@
 }
 
 .detail.artist .news .list{
-    width:79.8%;
     grid-template-rows: repeat(var(--cnt-item,4),1fr);
 
 }
@@ -481,11 +485,72 @@
     color:white;
     cursor: pointer;
 }
+/* 周边 */
+.detail.artist .block.title.goods::before{
+    content:"周边";
+}
+.detail.artist .goods .list{
+    width:100%;
+    grid-template-columns:1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-column-gap:1px;
+}
+.detail.artist .goods .list .item{
+    /* flex:0 1 calc(50% - 2.94%); */
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.8) 100%);
+    border: 1px solid #979797;
+    cursor: pointer;
+    position: relative;
+}
+.detail.artist .goods .list .item::after{
+    content:"";
+    display:block;
+    padding-bottom:100%;
+    height:0px;
+}
+.detail.artist .goods .list .item img{
+    object-fit:cover;
+    width: 100%;
+    height:100%;
+    position:absolute;
+    /* max-height: 400px; */
+}
+.detail.artist .goods .list .item .intro{
+    width: 100%;
+    height:auto;
+    /* hover标题文字 */
+    color: white;
+    font-size: calc(32 * 1rem / 36);
+    background-color: #000000;
+    opacity: .0;
+    position: absolute;
+    top:0;
+    height: 100%;
+    width: 100%;
+    /* flex: 0 0 100%; */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    /* padding-bottom: calc(41 * 100% / 403); */
+    padding-left: 6%;
+    padding-right: 6%;
+    transition-property: opacity;
+    transition-duration: .5s;
+}
 
+.detail.artist .goods .list .item .intro:hover {
+    opacity: .8;
+}
 @media (min-width: 768px) {
     .detail.artist .records .list{
         grid-template-columns:1fr 1fr;
         grid-template-rows: 1fr 1fr;
         grid-column-gap:3.47vw;
     }  
+    .detail.artist .goods .list{
+        width:100%;
+        grid-template-columns:1fr 1fr 1fr;
+        /* grid-template-rows: 1fr 1fr; */
+    }
+    
 }

@@ -590,8 +590,10 @@ class APIController extends Controller {
             
             let renderContent = Array(targetContent);
             renderContent = await this.renderList(userInfo._id, renderContent);
-            // 获取唱片
+
             let artist=renderContent[0];
+            let listIdTags=await this.findIdTags([artist]);
+            // 获取唱片
            // ctx.query.idArtist=targetId;
            artist.objDocsRecords=await ctx.service.record.find({isPaging:false,pageSize:0,},{
                 sort: {dateRelease: -1},
@@ -610,15 +612,17 @@ class APIController extends Controller {
             // 获取时间线:演出，唱片，新闻，视频，加入
             artist.listTimeline= await this.getListTimeline(artist);
             // 获取周边
-            //artist.listDocsGoods=await ctx.service.good.find({isPaging:false,pageSize:0,},{
-            //    sort: {dateRelease: -1},
-            //    query:{                    
-            //        listRefs:targetId,
-            //        state: '2'
-            //    },
-            //    files: "sImg name date url"
-            //});
-
+            artist.listDocsGoods=await ctx.service.good.find({isPaging:false,pageSize:0,},{
+                sort: {date: -1},
+                query:{                    
+                    $or:[
+                        //{tags: {"$in" : listIdTags }},
+                        {listRefs: {"$in" : [targetId] }},
+                    ],
+                    state: '2'
+                },
+                files: "sImg name date url"
+            });
             // 构建详情的导航
             artist.listNav=[{name:"关于",tar:".name"}];
             if(!_.isEmpty(artist.objDocsRecords))artist.listNav.push({name:"专辑",tar:".records"});

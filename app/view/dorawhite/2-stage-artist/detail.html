@@ -91,6 +91,26 @@
     {% if post.listTimeline.length >4 %}<div class="more hoverUnderline" data-dr-target="news">更多</div>{% endif %}
     {% endif %}    
 
+    {# 周边 #}
+    {% if post.listDocsGoods.length>0%}
+    <div class="block title goods">
+        <div class="list" style="--cnt-item:{{4 if post.listDocsGoods.length > 4 else post.listDocsGoods.length}}">      
+            {% for item in post.listDocsGoods %}
+                {# 乐队详情页 #}
+                <a onclick="window.goto('{{item.url}}')" class="item {{'hide' if loop.index > 4}}">
+                    <img src="{{item.sImg}} " class="img-fluid" alt="{{item.title}} " />
+                    <div class="intro">
+                        <p class="title"><span class="hoverUnderline">{{item.name}}</span></p>
+                        {# 标签 #}
+                        {# <div class="tags goods">{{listTags(item.listFormatTags)}}</div> #}
+                    </div>
+                </a>
+            {% endfor %} 
+        </div>
+    </div>
+    {% if post.listDocsGoods.length >3 %}<div class="more hoverUnderline" data-dr-target="goods">更多</div>{% endif %}
+    {% endif %}
+
     {# 精选单曲 #}
     {% if false and post.listHotMusics.length>0%}
         <div class="row border-2 border-bottom border-dark pt-5 pb-2">
