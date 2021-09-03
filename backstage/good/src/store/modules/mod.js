@@ -6,6 +6,7 @@ import _ from 'lodash';
 
 const defautlFormData={
   targetUser: '',
+  date:new Date(),
   name: '',
   type: '1',
   sortPath: '',
@@ -32,11 +33,9 @@ const defautlFormData={
 function initDefautlFormData(){
   return Object.assign({},defautlFormData,{
     listRefs:[],
-    listDateDur:[Date.now()],
-    location:"",
-    listTicketLink:[],
     alias:"",
     listLinks:[],
+    tags:[],
   })
 }
 const state = {
