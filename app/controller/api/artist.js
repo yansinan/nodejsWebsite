@@ -621,7 +621,7 @@ class APIController extends Controller {
                     ],
                     state: '2'
                 },
-                files: "sImg name date url"
+                files: "sImg name date url listLinks"
             });
             // 构建详情的导航
             artist.listNav=[{name:"关于",tar:".name"}];

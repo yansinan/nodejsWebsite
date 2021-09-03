@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-08-04 05:26:38 
  * @Last Modified by: dr
- * @Last Modified time: 2021-09-01 11:39:13
+ * @Last Modified time: 2021-09-03 11:21:57
  */
 'use strict';
 const { debug } = require('console');
@@ -65,7 +65,7 @@ class ServicePlugin extends Service {
                     lean:false,
                 },{
                     query,
-                    files:"_id date listDateDur dateYear dateYYYYM dateTimeline percentDateOfYear docAlias name title nameTimeline alias listRefs listFormatTags nameArtists sImg tags url",
+                    files:"_id date listDateDur dateYear dateYYYYM dateTimeline percentDateOfYear docAlias name title nameTimeline alias listRefs listLinks listFormatTags nameArtists sImg tags url",
                     populate:[{
                         path: 'tags listRefs listFormatTags',
                         select: 'name _id alias comments'

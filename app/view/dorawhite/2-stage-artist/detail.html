@@ -94,10 +94,10 @@
     {# 周边 #}
     {% if post.listDocsGoods.length>0%}
     <div class="block title goods">
-        <div class="list" style="--cnt-item:{{4 if post.listDocsGoods.length > 4 else post.listDocsGoods.length}}">      
+        <div class="list" style="--cnt-item:{{6 if post.listDocsGoods.length > 6 else post.listDocsGoods.length}}">      
             {% for item in post.listDocsGoods %}
                 {# 乐队详情页 #}
-                <a onclick="window.goto('{{item.url}}')" class="item {{'hide' if loop.index > 4}}">
+                <a onclick="window.goto('{{item.url}}')" class="item {{'hide' if loop.index > 5}}">
                     <img src="{{item.sImg}} " class="img-fluid" alt="{{item.title}} " />
                     <div class="intro">
                         <p class="title"><span class="hoverUnderline">{{item.name}}</span></p>
@@ -108,7 +108,7 @@
             {% endfor %} 
         </div>
     </div>
-    {% if post.listDocsGoods.length >3 %}<div class="more hoverUnderline" data-dr-target="goods">更多</div>{% endif %}
+    {% if post.listDocsGoods.length >6 %}<div class="more hoverUnderline" data-dr-target="goods">更多</div>{% endif %}
     {% endif %}
 
     {# 精选单曲 #}

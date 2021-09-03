@@ -504,7 +504,7 @@
 .detail.artist .goods .list .item{
     /* flex:0 1 calc(50% - 2.94%); */
     background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.8) 100%);
-    border: 1px solid #979797;
+    border: 1px solid #000000;
     cursor: pointer;
     position: relative;
 }
