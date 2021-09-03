@@ -88,6 +88,11 @@ module.exports = app => {
     // router.redirect('/getImg/', app.config.server_puppeteerApi);
     router.get('/getWXImg/:typeId/:id/:size',controller.api.webCrawler.fetchWXImg)
 
+    // 抓微信微店文章
+    router.get("/api/content/fetchArticle/:site",controller.api.webCrawler.fetchArticle)
+    // router.redirect('/getImg/', app.config.server_puppeteerApi);
+    router.get('/getImg/:site/:path',controller.api.webCrawler.fetchImg)
+
     /**
      * 上传文件blocb 多文件管理
      * 
