@@ -133,6 +133,7 @@ class APIController extends Controller {
             discription: xss(fields.discription),
             simpleComments: xss(fields.simpleComments),
             updateDate: new Date(),
+            date:fields.date || new Date(),
             name: fields.name,
             alias: fields.alias,
             // stitle: fields.stitle,
