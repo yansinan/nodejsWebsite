@@ -28,7 +28,6 @@
             :on-remove="handleRemove"
             :before-remove="handleBeforeRemove"
             :before-upload="beforeUpload"
-            :on-change="eChange"
             :data="getObjField()"
         >
             <!-- <el-button slot="trigger" size="small" type="primary">选取文件</el-button> -->
@@ -66,8 +65,7 @@
             -->
             <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过2M</div>
         </el-upload>
-        <span slot="footer" class="dialog-footer" ref="footer">
-            
+        <span slot="footer" class="dialog-footer">
             <el-button @click="handleClose">取 消</el-button>
             <el-button type="success" @click="submitUpload">上 传</el-button>
         </span>
@@ -172,35 +170,6 @@ export default {
     mounted () {
     },
     methods: {
-        // 添加文件、上传成功和上传失败时都会被调用
-        eChange(file, fileList){
-            return;
-            //file{
-            //    name: "晕盖-主图.jpg"
-            //    percentage: 0
-            //    raw: File
-            //    size: 1905589
-            //    status: "ready"
-            //    uid: 1630927128083
-            //    url: "blob:http://wx.z-core.cn:8791/021d2f96-af23-4bd6-82cc-c2883a77cb13"
-            //}
-            // percentage:=>100,status:ready|"success"
-            if(file.percentage==0 && file.status=="ready"){
-                let $img=new Image();
-                $img.addEventListener("load",this.eImgLoaded);
-                $img.objFile=Object.assign({},file);
-                $img.nameFile="s"+file.name;
-                $img.src=file.url;
-                // if(this.$refs)
-
-                //let $input=document.querySelector(".el-upload__input");
-                //$img.inputTarget=$input
-                //$input.setAttribute("ref","$input");
-                //$input.files=Array.prototype.slice.call($input.files);
-                //this.$refs
-                //debugger
-            }
-        },
         // 图片读取完成，开始裁切、缩小
         eImgLoaded(e){
             let that=this;
@@ -214,8 +183,6 @@ export default {
                 targetWidth=img.naturalHeight > 640 ? 640 * img.naturalWidth/img.naturalHeight : img.naturalWidth;
                 targetHeight=Math.min(640,img.naturalHeight);
             }
-            // let typeSrc=img.src.substring(0,7);
-            // if(typeSrc.indexOf("blob")!=-1)return;
             let time=new Date();
             let srcOrg=img.src;
             img.type='image/jpeg';
@@ -226,8 +193,6 @@ export default {
                 img.src=resSrc.src;
                 img.blob=resSrc.blob;
                 console.log("图片裁切完成",img.src,(new Date()-time));
-                //that.$refs.footer.appendChild(img);
-                // new this.FileUpload(img, new File([resSrc.blob],objToAdd.name));
                 that.uploadBlob(img,resSrc.blob,img.nameFile);
             });//网易云MV图尺寸628,353
             
@@ -264,34 +229,6 @@ export default {
             debugger
           })
         },
-        //FileUpload(img, file) {
-        //    const reader = new FileReader();
-        //    // this.ctrl = createThrobber(img);
-        //    const xhr = new XMLHttpRequest();
-        //    this.xhr = xhr;
-        //
-        //    const self = this;
-        //    this.xhr.upload.addEventListener("progress", function(e) {
-        //            if (e.lengthComputable) {
-        //            const percentage = Math.round((e.loaded * 100) / e.total);
-        //            // self.ctrl.update(percentage);
-        //            }
-        //        }, false);
-        //
-        //    xhr.upload.addEventListener("load", function(e){
-        //            // self.ctrl.update(100);
-        //            // const canvas = self.ctrl.ctx.canvas;
-        //            // canvas.parentNode.removeChild(canvas);
-        //            debugger;
-        //        }, false);
-        //    xhr.open("POST", "/manage/artist/updateAlbum");
-        //    // xhr.overrideMimeType('text/plain; charset=x-user-defined-binary');
-        //    xhr.overrideMimeType('multipart/*');
-        //    reader.onload = function(evt) {
-        //        xhr.send(evt.target.result);
-        //    };
-        //    reader.readAsBinaryString(file);
-        //},
         handleSuccess(res, file,fileList){
             let _this=this;
             //传一个更新一遍,在服务器端完成;
