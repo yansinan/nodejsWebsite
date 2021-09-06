@@ -274,6 +274,19 @@ export default {
         },
         handleBeforeRemove(file,fileList){
             const _this = this;
+            if(file.url==this.dialogState.formData.sImg){
+                // this.$message.error("主形象图：请勿删除");
+                this.$confirm(
+                    "主形象图：请勿删除",
+                    "提示：",
+                    {
+                        confirmButtonText: "知道了",
+                        // cancelButtonText: this.$t("main.cancelBtnText"),
+                        type: "warning"
+                    }
+                )
+                return false;
+            }
             return new Promise((resolve, reject) => {
                 // 已经上传过的文件删除
                 if(file.status=="success"){
