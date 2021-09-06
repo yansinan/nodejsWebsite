@@ -141,6 +141,10 @@ export default {
         type:String,
         default:""
       },
+      aspectRatio:{
+        type:Number,
+        default:1,
+      },
       api:{
         type:String,
         default:"/manage/dr/uploadFiles",
@@ -235,7 +239,7 @@ export default {
                 viewMode: 1,
                 // aspectRatio: 16/9,
                 dragMode:"move",
-                aspectRatio:1,
+                aspectRatio:this.aspectRatio,
                 preview:".avatar"
             });
         },
