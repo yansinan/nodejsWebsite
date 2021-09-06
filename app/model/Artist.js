@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2019/11/10 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-23 04:55:23
+ * @Last Modified time: 2021-09-06 09:36:58
  */
 /**
  * Created by Dr on 2019/11/10.
@@ -87,6 +87,7 @@ module.exports =app=>{
             }],//相关链接
             listImages:[{
                 url:{type:String},
+                urlThumbsnail:{type:String},
                 name:{type:String},
                 type:{type:String,default:"link"},
             }],//相关照片
@@ -180,10 +181,16 @@ module.exports =app=>{
             if(artist.sImg){
                 let objImage={
                     url:artist.sImg,
+                    urlThumbsnail:artist.sImg,
                     name:artist.name,
                     type:"link",
                 };
                 if(v){
+                    v.forEach(img=>{
+                        let listPath=img.url.split("/");
+                        listPath[listPath.length-1]="s" + listPath[listPath.length-1];
+                        img.urlThumbsnail=listPath.join("/");
+                    })
                     let isInList=v.find((img)=>(img.url == artist.sImg));
                     if(!isInList)v.unshift(objImage)
                 }else{                        
