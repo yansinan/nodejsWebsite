@@ -21,22 +21,6 @@
       <div class="cropper" style="width: 100%; height: auto; border: dashed #cacaca 1px; text-align: center;">
           <img :src="src" style="max-width: 100%" ref="img">
       </div>
-      <div class="cropperPreview" style="display: flex;align-items: center;justify-content: space-around;">
-          <div>
-            <div :src="src" class="avatar avatar-128" style="overflow:hidden;display: inline-block;" ></div>
-            像素尺寸128px*128px
-          </div>
-          <div>
-            <div :src="src" class="avatar avatar-64" style="overflow:hidden;display: inline-block;" ></div>
-            像素尺寸64px*64px
-          </div>
-          <div>
-            <div :src="src" class="avatar avatar-32" style="overflow:hidden;display: inline-block;"></div>
-            像素尺寸32px*32px
-          </div>
-          
-          
-      </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="handleClose">取 消</el-button>
         <el-button type="primary" @click="uploadCropImg">上 传</el-button>
@@ -47,58 +31,6 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-
-.avatar {
-  position: relative;
-  /* display: inline-block; */
-  vertical-align: middle;
-  margin: 0;
-  padding: 0;
-  text-align: center;
-  text-transform: uppercase;
-  font-weight: normal;
-  font-style: normal;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  max-height: 32px;
-  width: 32px;
-  height: 100%;
-  font-size: 21px;
-  line-height: 32px;
-  border-radius: 50%;
-}
-.avatar.img-thumbnail {
-  padding: 4px;
-  max-width: none;
-}
-.avatar > img {
-  width: 100%;
-}
-
-.avatar-32 {
-  max-height: 32px;
-  width: 32px;
-  height: 100%;
-  font-size: 21px;
-  line-height: 32px;
-}
-
-.avatar-64 {
-  max-height: 64px;
-  width: 64px;
-  height: 100%;
-  font-size: 43px;
-  line-height: 64px;
-}
-
-.avatar-128 {
-  max-height: 128px;
-  width: 128px;
-  height: 100%;
-  font-size: 85px;
-  line-height: 128px;
-}
-
 img{
   object-fit:contain;
 }
@@ -240,7 +172,7 @@ export default {
                 // aspectRatio: 16/9,
                 dragMode:"move",
                 aspectRatio:this.aspectRatio,
-                preview:".avatar"
+                //preview:".avatar"
             });
         },
         // 浏览
