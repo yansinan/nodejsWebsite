@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-01-26 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-04 12:49:08
+ * @Last Modified time: 2021-09-06 08:27:18
  */
 
 'use strict';
@@ -228,6 +228,8 @@ class ServicePlugin extends Service {
                 options.subdirMod=parts.field.nameMod?parts.field.nameMod:'';
                 //控制器文件夹下是否按id分文件夹
                 options.subPath=parts.field.subPath?parts.field.subPath:'';
+                // isKeepName按文件名保存
+                let isKeepName = parts.field.isKeepName || false; // 默认不保留原文件名，防止乱码
                 
                 let beforeUploadFileInfo = await getFileInfoByStream(ctx, options, part);                    
                 let {
@@ -236,13 +238,14 @@ class ServicePlugin extends Service {
                     fileName,
                     fileType
                 } = beforeUploadFileInfo;
-
+                // 可能原名保存，或者使用服务器端名称；
+                let nameServerFile=isKeepName?fileName:uploadFileName+fileType;
                 const publicDir = options.upload_path || (process.cwd() + '/app/public');
                 uploadPath = `${publicDir}/${uploadForder}`
                 if (!fs.existsSync(uploadPath)) {
                     fs.mkdirSync(uploadPath,{recursive: true});
                 }
-                const target = path.join(uploadPath, `${uploadFileName+fileType}`)
+                const target = path.join(uploadPath, `${nameServerFile}`)
                 const writeStream = fs.createWriteStream(target)
                
 
@@ -253,10 +256,11 @@ class ServicePlugin extends Service {
                     await sendToWormhole(part)
                     throw err
                 }
-                returnPath=`${app.config.server_path}${app.config.static.prefix}/${uploadForder}/${uploadFileName+fileType}`;
+                returnPath=`${app.config.server_path}${app.config.static.prefix}/${uploadForder}/${nameServerFile}`;
                 listReturenPath.push(returnPath);
                 listObjImage.push({
-                    name:fileName+fileType,
+                    name:fileName,//+fileType,
+                    nameServerFile:`${nameServerFile}`,
                     url:returnPath,
                     type:part.mime,
                 })
