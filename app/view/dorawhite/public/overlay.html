@@ -106,11 +106,11 @@
     </div>
 </div>
 <script>
-let $modalImagePreview = document.getElementById('modalImagePreview');
-$modalImagePreview.addEventListener('show.bs.modal', function (event) {
-    var $img = event.relatedTarget;
-    $modalImagePreview.querySelector("img").src=$img.dataset.drUrl;
-})
+    let $modalImagePreview = document.getElementById('modalImagePreview');
+    $modalImagePreview.addEventListener('show.bs.modal', function (event) {
+        var $img = event.relatedTarget;
+        $modalImagePreview.querySelector("img").src=$img.dataset.drUrl;
+    })
 </script>
 
 
@@ -119,9 +119,9 @@ $modalImagePreview.addEventListener('show.bs.modal', function (event) {
 <div id="offcanvasRightMenu" class="offcanvas offcanvas-end offcanvasRightMenu-md" tabindex="-1" aria-labelledby="offcanvasRightMenuLabel">
     <div class="offcanvas-header">
         {# <h5 id="offcanvasRightLabel">Offcanvas right</h5> #}
-        <div class="d-flex flex-column" data-bs-dismiss="offcanvas"><i ms-click='@searchMe' class="fa fa-search"></i></div>
-        {# <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button> #}
-        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        <div class="btn btn-search" onclick='window.eBnSearch(event)'><i class="fa fa-search"></i></div>
+        <bn-close class="btn btn-close"  aria-label="Close" data-bs-dismiss="offcanvas" aria-label="Close"></bn-close>
+        {# <button type="button" class="btn btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button> #}
     </div>
     <div class="offcanvas-body offcanvas-body-md d-flex flex-column  justify-content-end">
         {# 导航菜单 #}
@@ -143,6 +143,85 @@ $modalImagePreview.addEventListener('show.bs.modal', function (event) {
         </ul>
         <div class="menuFootCopyright">赤瞳音乐&nbsp;&nbsp;RUBY&nbsp;EYES&nbsp;RECORDS&nbsp;&nbsp;&nbsp;&nbsp;Copyright©2021</div>
     </div>
+    <script>
+        window.eBnSearch=function(e){
+            let $offcanvasSearch=document.getElementById("offcanvasSearch")
+            let bsOffcanvasSearch=bootstrap.Offcanvas.getOrCreateInstance($offcanvasSearch);
+            let bsOffcanvasMenu=bootstrap.Offcanvas.getOrCreateInstance("#offcanvasRightMenu");
+            bsOffcanvasSearch.show();
+            bsOffcanvasMenu.hide();
+            {# 自动获取焦点 #}
+            $offcanvasSearch.addEventListener("shown.bs.offcanvas",(e)=>{
+                setTimeout(function(){
+                    window.offcanvasSearch.querySelector(".offcanvas-header input").focus();
+                },100);
+            },{once:true})
+        }
+    </script>
+</div>
+
+<datalist id="listInputSearchSuggest">
+    {% for letter,artistItems in listArtists|sort(false,false,"letters")|groupby("firstLetter") %}
+        {% for artist in artistItems %}
+        <option>{{artist.name}}</option>
+        {% endfor %}
+    {% endfor %}
+</datalist>
+{# 搜索菜单 #}
+<div id="offcanvasSearch" class="offcanvas offcanvas-end" tabindex="-1" aria-labelledby="offcanvasSearchLabel">
+    <div class="offcanvas-header">
+        <input placeholder="搜索" autocomplete="on" list="listInputSearchSuggest" size="50" onchange="eSearch(event)"></input>
+
+        <div class="btn btn-search"><i class="fa fa-search"></i></div>
+        <bn-close class="btn btn-close"  aria-label="Close" data-bs-dismiss="offcanvas" aria-label="Close"></bn-close>
+    </div>
+    <div class="offcanvas-body offcanvas-body-md d-flex flex-column detail fontNormal">
+        {# 导航菜单 #}
+        <ul class=" flex-fill d-flex flex-column justify-content-start flex-wrap">
+            {% for cate in navigation %} {% if cate.parentId == '0' %}
+            <li class="menuItem menuItem-md text-nowrap">
+                <a class=" hoverUnderline" style="color: inherit" tabindex="-1" alt="{{site.altkey}}{{cate.name}}" onclick="eBnNav('{{cate.defaultUrl}}')" name="{{cate.defaultUrl}}" data-bs-toggle="offcanvas" href="#offcanvasRightMenu" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">{{cate.name}}  {{cate.alias if cate.alias else ""}}</a>
+            </li>
+            {% endif %} {% endfor %}
+        </ul>
+    </div>
+    <script>
+        window.eSearch=function(e){
+            let v=e.currentTarget.value;
+            {# 检索 #}
+            fetch("/search?q="+v)
+            .then(function(data){
+                return data.text();
+            }).then(function (data) {
+                {# vm.isLoading=false; #}
+                // 在这个then里面我们能拿到最终的数据
+                let objData=JSON.parse(data);
+                if(objData.status==200){
+                    {# $timelineContent.dataset["strNoticeEnd"] = "加载完成"; #}
+                    try{
+                        
+                        let domToAppend = document.createRange().createContextualFragment(objData.data.dom);
+                        {# vm.$loading.before(domToAppend.cloneNode(true)); #}
+
+                        {# 触发事件更新懒加载图片 #}
+                        console.debug("eSearch=>appendDOM:done",objData);
+                        resolve({msg:"succ",isEnd:vm.yearTotal<=vm.yearCurrent});
+                    }catch(e){
+                        {# $timelineContent.dataset["strNoticeEnd"] = "加载错误"; #}
+                        throw new Error("timeline加载更多内容,通信正常，返回结果错误");
+                        reject({msg:"timeline加载更多内容,通信正常，返回结果错误 ", objData});
+                    }
+                }else{
+                    debugger
+                    reject({msg:"服务器返回错误 ", objData});
+                    throw new Error("timeline加载更多内容，服务器通信错误："+objData.status);
+                }
+            }).catch(err=>{
+                debugger
+                return Promise.reject(err);
+            });    
+        }
+    </script>
 </div>
 
 <div id="offcanvasDetailAll" class="">
@@ -186,8 +265,9 @@ $modalImagePreview.addEventListener('show.bs.modal', function (event) {
     <div id="offcanvasRight"  class="offcanvas offcanvas-end" tabindex="-1" aria-labelledby="offcanvasRightLabel">
         <div class="offcanvas-header">
             {# <h5 id="offcanvasRightLabel">Offcanvas right</h5> #}
-            <div class="icon-arrow left flex-column" data-bs-dismiss="offcanvas"></div>
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            <div class="btn icon-arrow left flex-column" data-bs-dismiss="offcanvas"></div>
+            <bn-close class="btn btn-close"  aria-label="Close" data-bs-dismiss="offcanvas" aria-label="Close"></bn-close>
+
         </div>
         <div id="offcanvasDetail" class="offcanvas-body" ms-controller="offcanvasDetail" ms-on-scroll="@eScrollDetail">
             <div :visible="!@loadingState" ms-html="@dom" style="background-color: inherit;"></div>
@@ -215,8 +295,8 @@ $modalImagePreview.addEventListener('show.bs.modal', function (event) {
             eScrollDetail:function(e){                
                 let $nav=$offcanvasDetail.querySelector(".nav");
                 if($nav){
-                    let $name =$offcanvasDetail.querySelector(".name");
-                    let isShow=$name?$name.getBoundingClientRect().bottom < 0 :  e.currentTarget.scrollTop > $offcanvasDetail.clientHeight;
+                    let $album =$offcanvasDetail.querySelector(".album");
+                    let isShow=$album?$album.getBoundingClientRect().top < 0 :  e.currentTarget.scrollTop > $offcanvasDetail.clientHeight;
                     if(!$nav.classList.contains("show") && isShow)$nav.classList.add("show");
                     else if($nav.classList.contains("show") && !isShow)$nav.classList.remove("show");
                 }

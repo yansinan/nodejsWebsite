@@ -33,9 +33,14 @@
     border:none;
 }
 #offcanvasRight .offcanvas-header{
-    padding: var(--offsetcanvas-padding, 0.77rem);
+    /* padding: var(--offsetcanvas-padding, 0.77rem); */
+    padding:0px;
 }
-#offcanvasDetailAll.artistDetailColor .offcanvas-end .offcanvas-header{
+#offcanvasDetailAll .offcanvas-header .icon-arrow{
+    background: url(/static/upload/images/icons/arrow-down.svg) center no-repeat;
+    background-size: 1rem;
+}
+#offcanvasDetailAll.artistDetailColor .offcanvas-header .icon-arrow{
     filter: invert(1);
 }
 /* 移动端隐藏叉子 */
@@ -43,25 +48,10 @@
     display:none;
 }
 
-.offcanvas-header .btn-close{
-    padding: .214rem .214rem;
-    margin-top: -.214rem;
-    margin-right: -.214rem;
-    margin-bottom: -.214rem;
-}
-.offcanvas-header .btn-close:active, 
-.offcanvas-header .btn-close:focus, 
-.offcanvas-header .btn-close:active:focus, 
-.offcanvas-header .btn-close.active:focus,
-.offcanvas-header .btn-close.focus, 
-.offcanvas-header .btn-close:active.focus, 
-.offcanvas-header .btn-close.active.focus {
-	outline: none;
-    box-shadow: none;
-}
 #offcanvasRight .offcanvas-body{
-    padding: var(--offsetcanvas-padding, 0.77rem);    
+    padding: var(--offsetcanvas-padding, 0.77rem);
     padding-right: var(--offsetcanvas-padding-right, 0.77rem);
+    padding-top:0px;
     background-color: inherit;
 }
 
@@ -86,17 +76,14 @@
     #offcanvasRight .offcanvas-header{
         justify-content:flex-end;
         /* padding: 0.427rem 0.427rem; */
-        padding: 1rem 1rem;/* 不准确使用bs值 */
+        padding:0px;
+        margin-bottom:0px;
     }
     #offcanvasRight .offcanvas-header .icon-arrow.left{
         display: none;
     }
     #offcanvasRight .offcanvas-header .btn-close{
         display:block;
-        padding: .214rem .214rem;
-        margin-top: -.214rem;
-        margin-right: -.214rem;
-        margin-bottom: -.214rem;
     } 
 }
 
@@ -165,11 +152,16 @@
     display:flex;
     align-items: flex-start;
 }
-
+.detail.artist .name{
+    position: fixed;
+    right: 1rem;
+    top: 1rem;
+    font-size: 1rem;
+}
 .detail.artist .album{
-    flex:0 0 400px;
+    flex:0 0 195px;
     max-height:450px;
-    height:400px;
+    height:195px;
     width:100%;
     display:flex;
     flex-wrap: nowrap;
@@ -323,6 +315,13 @@
     bottom: calc(100% + 8px);
 }
 @media (min-width: 768px) {
+    .detail.artist .name{
+        position: relative;
+        top: auto;
+        right: auto;
+        font-size: inherit;
+    }
+    
     .detail.artist article{
         max-width: calc( 100% - 2rem);
         align-self: flex-start;

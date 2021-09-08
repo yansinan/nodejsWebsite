@@ -398,9 +398,9 @@
                         {% endif %} {% endfor %}
                     </ul>
                     {# search #}
-                    <div class="input-group input-group-lg search" type="button" :class="['input-area',(@activeSearch? 'active':'')]">
+                    <div onclick='window.eBnSearch(event)' class="input-group input-group-lg search" type="button" :class="['input-area',(@activeSearch? 'active':'')]">
                         {# <input ms-on-keyup="@onKeyUp" type="text" class="form-control" ms-duplex="@searchkey" placeholder="Search">                             #}
-                        <span class="input-group-text"><i ms-click='@searchMe' class="fa fa-search"></i></span>
+                        <span class="input-group-text"><i class="fa fa-search"></i></span>
                     </div> 
                 </div>
                 <div class="btnWrapper">
