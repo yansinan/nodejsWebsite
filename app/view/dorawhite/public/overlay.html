@@ -83,7 +83,8 @@
             })
             tooltipTriggerEl.addEventListener("touchstart",eShow);
             tooltipTriggerEl.addEventListener("mouseenter",eShow);
-
+            tooltipTriggerEl.addEventListener("touchend",eHide);
+            tooltipTriggerEl.addEventListener("mouseup",eHide);
             tooltipTriggerEl.addEventListener("mouseleave",(e)=>{
                 setTimeout(()=>{
                     if(!e.target.tooltip.tip.isOnTooltip)eHide(e);
