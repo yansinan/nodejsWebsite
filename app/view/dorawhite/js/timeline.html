@@ -56,6 +56,9 @@
             observeDOM: true ,// 开启 observe-dom 插件
             stopPropagation: false,
             probeType: 3,
+            preventDefaultException:{ 
+                className:/(^|\s)bsClick(\s|$)/
+            }
         }
         //if( that.bsTimeline.destroy ){
         //    that.bsTimeline.destroy();

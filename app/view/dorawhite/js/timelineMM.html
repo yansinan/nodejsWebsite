@@ -79,6 +79,9 @@
             },
             scrollbar: true,
             //observeDOM: true // 开启 observe-dom 插件
+            preventDefaultException:{ 
+                className:/(^|\s)bsClick(\s|$)/
+            }
         }
         {# class按所有doc的栏目，统计并标注类 #}
         let $listDoc=$bsMM.querySelectorAll(".item");

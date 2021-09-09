@@ -102,7 +102,9 @@
                         bounce: false,
                         stopPropagation: false,
                         probeType: 3,
-                    
+                        preventDefaultException:{ 
+                            className:/(^|\s)bsClick(\s|$)/
+                        }
                     })
                     {# 创建自定义事件 #}
                     Object.defineProperties(this.slideCover,{
