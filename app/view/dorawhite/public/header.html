@@ -223,11 +223,11 @@
             //    this.removeEventListener("BS_TIMELINE_DOM_READY",eTimelineReady);
             //}
             //this.addEventListener("BS_TIMELINE_DOM_READY",eTimelineReady)
-            this.goto(window.location.pathname.split("/index")[1]);
+            this.goto(window.location.pathname.split("/index")[1]+decodeURI(window.location.search));
         }else{
             {# 浏览器返回按钮或者手动=》更新导航状态 #}
             if(event.type=="popstate" || event.state){
-                this.goto(window.location.pathname.split("/index")[1]);                
+                this.goto(window.location.pathname.split("/index")[1]+decodeURI(window.location.search));                
             }else{
                 this.header.funSetNav(this.header.strAliasNav);
             }
@@ -252,22 +252,31 @@
 
         let bsOffcanvasLeft=bootstrap.Offcanvas.getOrCreateInstance($offcanvasLeft);
         let bsOffcanvasRight=bootstrap.Offcanvas.getOrCreateInstance($offcanvasRight);
+        let bsOffcanvasSearch=bootstrap.Offcanvas.getOrCreateInstance(window.offcanvasSearch);
         let detail=e;
         
-        if(e.type=='hide.bs.offcanvas'){
-            {# 清除导航 #}
-            bsOffcanvasLeft.hide();
-            that.dispatchEvent(new CustomEvent("NAV_AT", { detail:{apiDetail:false,titleDetail:""}, }));
+        if(e.type=='hide.bs.offcanvas'){//按钮触发的要补一个关闭
+            {# 清除左侧乐队列表 #}
+            if($offcanvasLeft.classList.contains("show") && e.currentTarget!=$offcanvasLeft)bsOffcanvasLeft.hide();
         }else if(e.relatedTarget || e.apiDetail){
-            if(e.apiDetail){
-                bsOffcanvasRight.show();
-            }else if(e.type=='show.bs.offcanvas' && e.relatedTarget){
+            {# 搜索或详情 #}
+            if(e.apiDetail.indexOf("/search?q=")==0){
+                {# bsOffcanvasRight.hide(); #}
+                bsOffcanvasSearch.show();
+                that.dispatchEvent(new CustomEvent("OPEN_OFFCANVAS_SEARCH", {detail}));
+            }else{//详情或关于
+                if(e.apiDetail){
+                    bsOffcanvasRight.show();
+                    if(window.offcanvasSearch.classList.contains("show"))bsOffcanvasSearch.hide();
+                }else if(e.type=='show.bs.offcanvas' && e.relatedTarget){
 
+                }
+                bsOffcanvasLeft.show();
+                that.dispatchEvent(new CustomEvent("OPEN_OFFCANVAS_DETAIL", {detail}));
             }
-            bsOffcanvasLeft.show();
-            that.dispatchEvent(new CustomEvent("OPEN_OFFCANVAS_DETAIL", {detail}));
-        }else if(e.apiDetail === ""){ {# 没有detail.relatedTarget，apiDetail ===""关闭详情 #}
+        }else if(!e.apiDetail || e.apiDetail === ""){ {# 没有detail.relatedTarget，apiDetail ===""关闭详情 #}
             bsOffcanvasRight.hide();
+            bsOffcanvasSearch.hide();
         }else{ {# 没有detail.relatedTarget，也没有apiDetail 手动触发bs->show触发的事件 是不需要监听的 #}
             return;
         }
@@ -286,12 +295,12 @@
         if(inURL.split("/")[0].indexOf("http:")!=-1 || inURL.split("/")[0].indexOf("https:")!=-1){
             window.open(inURL);
             return;
-        }else if(inURL.split("/").length>2 || (inURL.split("/").length==2 && inURL.indexOf(".html")==-1)){
+        }else if(inURL.split("/").length>2 || (inURL.split("/").length==2 && inURL.indexOf(".html")==-1 && inURL.indexOf("/search?q=")==-1)){//2级以上，或者2级且没有有html或search?q="/artist"
             inURL="/index"+inURL;
             let listURL=inURL.split("/");
             let bsMain=listURL[2] == "timeline" ? "timeline" : "artists";//不是timeline就是artists;
             let detail = listURL[listURL.length-1] || "";
-            detail = detail.indexOf(".html") !=-1 ? detail : "";//没有.html则无效;
+            detail = (detail.indexOf(".html") !=-1 || detail.indexOf("search?q=")!=-1) ? detail : "";//没有.html则无效;
             let obj={
                 bsMain,
                 bsTimeline:listURL[3] || this.header.strAliasNav,// || this.header.funFindByURL().defaultUrl,
@@ -303,6 +312,8 @@
             }))
         }else if(inURL.split("/").length==2 && inURL.indexOf(".html")!=-1){//含html为详情{# 如果只传入/aaaaa___xxx.html为单独跳转detail #}
             this.header.objNavTo={apiDetail:inURL};            
+        }else if(inURL.split("/").length==2 && inURL.indexOf("/search?q=")!=-1){//含/search?q=为搜索{# 如果只传入//search?q=为单独跳转search #}
+            this.header.objNavTo={apiDetail:inURL};
         }else{
             debugger
             throw new Error("goto(inURL)格式错误:"+inURL);

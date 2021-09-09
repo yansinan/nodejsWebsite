@@ -65,7 +65,8 @@ module.exports = app => {
     ], controller.page.home.getDataForCatePage);
 
     // 搜索
-    router.get(["/search/:searchkey", "/search/:searchkey/:current.html"], controller.page.home.getDataForSearchPage);
+    // router.get(["/search/:searchkey", "/search/:searchkey/:current.html"], controller.page.index.getDomSearch);
+    router.get(["/search"], controller.page.index.getDomSearch);
     // 标签
     router.get(["/tag/:tagName", "/tag/:tagName/:current.html"], controller.page.home.getDataForTagPage);
     // 作者

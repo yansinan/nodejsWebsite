@@ -577,12 +577,28 @@
     order: 3;
     /* flex-basis: calc(100% - 2rem); */
   }
-
+#offcanvasSearch .offcanvas-body{
+  font-size: calc(22 * 1rem / 26);
+  line-height: calc(29 * 1rem / 26);
+  font-weight: 400;
+  color:inherit;
+}
+#offcanvasSearch .offcanvas-body ul li{
+  margin-bottom: calc(21 * 1rem / 26);
+}
   @media (min-width: 768px) {
     #offcanvasSearch .offcanvas-header input{
       display:flex;
       flex: 1;
       margin-left: 1rem;
       order:0;
+    }
+    #offcanvasSearch .offcanvas-body{
+      font-size: calc(32 * 1rem / 36);
+      line-height: calc(42 * 1rem / 36);
+    }
+    #offcanvasSearch .offcanvas-body ul li{
+      margin-bottom: calc(51 * 1rem / 36);
+      cursor: pointer;
     }
   }

@@ -84,7 +84,11 @@
     }
     #offcanvasRight .offcanvas-header .btn-close{
         display:block;
-    } 
+        filter: invert(1);
+    }
+    #offcanvasDetailAll.artistDetailColor .offcanvas-header .btn-close{
+        filter: invert(0);
+    }
 }
 
 .detail.font-normal{

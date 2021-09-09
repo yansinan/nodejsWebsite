@@ -116,6 +116,9 @@ ul li {
     padding: 0.05rem 0.5rem;
     line-height: 0.6rem;
 }
+.list-inline-item:hover{
+    cursor: pointer;
+}
 .list-inline-item a:active, .list-inline-item a:link, .list-inline-item a:visited{
     color: inherit;
     text-decoration: none;
