@@ -583,8 +583,83 @@
   font-weight: 400;
   color:inherit;
 }
+#offcanvasSearch .offcanvas-body #listSearchResult{
+  display:flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  flex: 1 1 auto;
+}
 #offcanvasSearch .offcanvas-body ul li{
   margin-bottom: calc(21 * 1rem / 26);
+  display:none;
+}
+/*
+*/
+#offcanvasSearch .offcanvas-body #listSearchResult.records li:not(.records),
+#offcanvasSearch .offcanvas-body #listSearchResult.videos li:not(.videos),
+#offcanvasSearch .offcanvas-body #listSearchResult.goods li:not(.goods),
+#offcanvasSearch .offcanvas-body #listSearchResult.artists li:not(.artists),
+#offcanvasSearch .offcanvas-body #listSearchResult.shows li:not(.shows),
+#offcanvasSearch .offcanvas-body #listSearchResult.news li:not(.news){
+  display:none;
+}
+#offcanvasSearch .offcanvas-body #listSearchResult.records li.records,
+#offcanvasSearch .offcanvas-body #listSearchResult.videos li.videos,
+#offcanvasSearch .offcanvas-body #listSearchResult.goods li.goods,
+#offcanvasSearch .offcanvas-body #listSearchResult.artists li.artists,
+#offcanvasSearch .offcanvas-body #listSearchResult.shows li.shows,
+#offcanvasSearch .offcanvas-body #listSearchResult.news li.news{
+  display:block;
+}
+/* 导航 */
+#offcanvasSearch .offcanvas-body .nav{
+  position: absolute;
+  z-index: 2000;
+  bottom:0px;/* var(--offsetcanvas-padding, 0.77rem);  */  
+  left: 0;
+  /* right:0; */
+  display:flex;
+  flex-wrap: nowrap;
+  justify-content:flex-start;
+  align-items: center;
+  /* max-width:calc(100% - var(--offsetcanvas-padding, 0.77rem) - var(--offsetcanvas-padding-right, 0.77rem) ); */
+  opacity: .9;
+  /* transition: transform; */
+  /* transition-duration: 1s; */
+  /* transform:translateY(3rem); */
+}
+/*
+#offcanvasSearch .nav.show{
+  transform:translateY(0);
+}
+*/
+#offcanvasSearch .offcanvas-body .nav::before,
+#offcanvasSearch .offcanvas-body .nav::after{
+  content:"";
+  display:block;
+  flex: 0 0 1rem;
+  /* min-width:0.375rem; */
+}
+#offcanvasSearch .offcanvas-body .nav li{
+  /* flex: 1 1 calc(59 * 1rem / 26); */
+  min-width:calc(75 * 1rem / 26);
+  height:calc(30 * 1rem / 26);
+  white-space: nowrap;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  background-color: black;
+  margin-right: 0rem;
+  font-size: 0.5rem;
+
+  /* cursor: pointer; */
+  /* border-radius: 5rem; */
+  /* border:1px solid white; */
+}
+#offcanvasSearch .offcanvas-body .nav li.off{
+  filter:brightness(0.5);
 }
   @media (min-width: 768px) {
     #offcanvasSearch .offcanvas-header input{
@@ -600,5 +675,14 @@
     #offcanvasSearch .offcanvas-body ul li{
       margin-bottom: calc(51 * 1rem / 36);
       cursor: pointer;
+    }
+    /*
+    #offcanvasSearch .offcanvas-body .nav{
+      left: 0px;
+    }
+    */
+    #offcanvasSearch .offcanvas-body .nav li{
+      height:calc(40 * 1rem / 36);
+      min-width: 120px;
     }
   }

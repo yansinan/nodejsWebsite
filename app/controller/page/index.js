@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-08-08 06:31:51 
  * @Last Modified by: dr
- * @Last Modified time: 2021-09-08 21:53:16
+ * @Last Modified time: 2021-09-09 02:06:03
  */
 const Controller = require('egg').Controller;
 const _ = require('lodash');
@@ -70,15 +70,11 @@ class IndexController extends Controller {
         const service = this.service;
         let {q}=ctx.query;
         q=q.replace(" ","|");
-        console.info("getDomSearch::",ctx.query);
-        let {
-            pageInfo,
-            docs
-        } = await service.doc.find(
+        let resFind = await service.doc.find(
             {
                 //filesType:"timelineBar", 
-                pageSize: 50,
-                isPaging:1,
+                pageSize: 0,
+                isPaging:0,
                 lean:false,
                 searchkey:q,
             },{
@@ -97,14 +93,21 @@ class IndexController extends Controller {
                 }],
                 sort:{date: -1},
             });
-        
+        let docs = resFind.docs || resFind;
+        let pageInfo = resFind.pageInfo || {};
+        // 统计数量：
+        pageInfo.objCnt={};
+        docs.forEach(doc=>{
+            pageInfo.objCnt[doc.docAlias]=pageInfo.objCnt[doc.docAlias] || {name:doc.docAliasSearch,cnt:0};
+            pageInfo.objCnt[doc.docAlias].cnt+=1;
+        })
         let pageData={
             posts:docs,
             pageInfo,
         }
         // 组合页面信息和数组
         let resObj = {
-            pageInfo,               
+            pageInfo,
         }
         //最终渲染
         // 模板的真实路径
@@ -115,7 +118,8 @@ class IndexController extends Controller {
         // ctx.tempPage在ctx.renderPageData()中使用
         // ctx.tempPage=pathTemplate;
         // await ctx.renderPageData(pageData);
-        try {
+        console.info("getDomSearch::",ctx.query,resObj);
+       try {
             resObj.dom=await ctx.renderView(path,pageData);
             ctx.helper.renderSuccess(ctx, {
                 data: resObj
