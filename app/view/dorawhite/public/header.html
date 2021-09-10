@@ -326,7 +326,7 @@
     this.addEventListener("BS_COVER_TIMELINE_FINAL",(e)=>{
         if(e.detail.bsMain!="artists" && this.header.objNavTo.bsTimeline){
             this.dispatchEvent(new CustomEvent("NAV_TO_TIMELINE", {
-                detail:{objNew:this.header.objNavTo,objOld:this.header.objNavOld},
+                detail:{objNew:Object.assign({},this.header.objNavTo,e.detail),objOld:this.header.objNavOld},
             }))
         }else {
             debugger

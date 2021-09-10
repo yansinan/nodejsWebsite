@@ -178,22 +178,34 @@
     padding: 0.131rem 0.616rem;
     line-height: 0.6rem;
   }
+  #navHeader .btn.btn-search{
+    /* aspect-ratio: 1 / 1; */
+    width: auto;
+    height: 100%;
+    min-width: 46px;
+    min-height: 46px;
+    max-height: 100%;
+    font-size: 25px;
+    padding: 0px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+  }
+  /*
   #navHeader .input-group.search{
     justify-content: center;
     aspect-ratio: 1 / 1;
     width: auto;
     height:100%;
-    /* max-height: 68px; */
   }
   #navHeader .input-group.search .input-group-text
   {
-    /* font-size: 0.5rem; */
-    padding: 0;/*0.7rem;*/
+    padding: 0;
     font-size: 25px;
     border: none;
     background-color: transparent;
   }
- 
+ */
   /* 手机菜单按钮 */
   #navHeader .navbar .btnWrapper{
 

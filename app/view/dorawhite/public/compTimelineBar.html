@@ -34,7 +34,7 @@
                                     <rect id="timelineSeason{{season.strTitle}}" x="{{season.x}}%" class="b-s {{'b-y' if season.strTitle=='12月'}}" />
                                     {% for doc in season.listIdxDocs %}
                                         {# <rect x="{{idxDays}}%" width="{{objTimeline.widthPercent*0.5}}%" height="16px" fill="#231F20" /> #}
-                                        <rect class="b-d {{doc.docAlias}}" x="{{doc.posX}}%" id="b{{doc.date}}"/>
+                                        <rect class="b-d {{doc.docAlias if doc.docAlias else 'news'}}" x="{{doc.posX}}%" id="b{{doc.date}}"/>
                                     {% endfor %}
                                 </g>
                             {% endfor %}

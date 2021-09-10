@@ -305,7 +305,6 @@
         that.bsTimeline.funFindDateNow({x:0},true);
         {# timeline加载完成 新加载的内容需要筛选；#}
         this.addEventListener("BS_TIMELINE_DOM_LOADED",that.bsTimeline.filterMM)
-        this.addEventListener("NAV_AT",that.bsTimeline.filterMM);
     }
 
     this.eDateChange=function(e){
@@ -378,7 +377,12 @@
     this.addEventListener("BS_TIMELINE_BAR_DATE_CHANGE_FINAL",this.eDateChangeFinal)
     {# 保留月份滚----end #}
     this.addEventListener("BS_COVER_WILL_TIMELINE",that.resetSlideMain);
+    {# PC处理 #}
+    this.addEventListener("NAV_AT",that.bsTimeline.filterMM);
+    {# 移动端处理通知底条 #}
     this.addEventListener("NAV_AT", (e)=>{//BS_COVER_TIMELINE
+        {# !bsTimeline是详情的NAV_AT,忽略 #}
+        if(!e.detail.bsTimeline)return;
         let bsTimeline=e.detail.bsTimeline;
         {# 通知底条，根据栏目判断是否缩放 #}
         that.dispatchEvent(new CustomEvent("BS_TIMELINE_NAV_AT",{detail:e.detail}));

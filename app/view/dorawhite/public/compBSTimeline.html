@@ -130,7 +130,7 @@
         function eNavToTimeline(e){
             let {objNew,objOld}=e.detail;
             {# 完成切换时，更新导航 #}
-            console.log("compBSTimeline::eNavToTimeline,触发NAV_AT");
+            console.debug("compBSTimeline::eNavToTimeline,触发NAV_AT");
             {# 移动端需要先改变样式，再触发 #}
             if(that.bsTimeline.isMobile)$timelineContent.classList.value = objNew.bsTimeline;
             window.dispatchEvent(new CustomEvent("NAV_AT", { detail:objNew, }));
