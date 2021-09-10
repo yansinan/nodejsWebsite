@@ -118,8 +118,8 @@
                         let page=that.slideCover.getCurrentPage();
                         if( page.pageY == tar){
                             if(inPage!="artists"){
-                                that.dispatchEvent(new CustomEvent("BS_COVER_TIMELINE", {page:this.getCurrentPage(),bsMain:this.strNow}));
-                                that.dispatchEvent(new CustomEvent("BS_COVER_TIMELINE_FINAL", {page:this.getCurrentPage(),bsMain:this.strNow}));
+                                that.dispatchEvent(new CustomEvent("BS_COVER_TIMELINE", {detail:{page:this.getCurrentPage(),bsMain:this.strNow}}));
+                                that.dispatchEvent(new CustomEvent("BS_COVER_TIMELINE_FINAL", {detail:{page:this.getCurrentPage(),bsMain:this.strNow}}));
                             }else if(inPage=="artists" && isNavAt ){ {# 当前页是artist并且goto(artists),也要触发NAV_AT #}
                                 that.dispatchEvent(new CustomEvent("NAV_AT", {detail:{bsMain:inPage}}));
                             }
