@@ -1,0 +1,38 @@
+
+{% macro loading() %}
+<div class="loading">
+    {# <i class="fa fa-spin fa-spinner"></i> #}
+    <svg width="60" height="60" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <g id="svgLineLoading">
+                <line stroke="#fff" x1="47" x2="100%" y1="50%" y2="50%" />
+            </g>
+        </defs>
+        <use transform="rotate(0 30 30)" xlink:href="#svgLineLoading"/>
+        {# <use transform="rotate(15 30 30)" xlink:href="#svgLineLoading"/> #}
+        <use transform="rotate(30 30 30)" xlink:href="#svgLineLoading"/>
+        {# <use transform="rotate(45 30 30)" xlink:href="#svgLineLoading"/> #}
+        <use transform="rotate(60 30 30)" xlink:href="#svgLineLoading"/>
+        {# <use transform="rotate(75 30 30)" xlink:href="#svgLineLoading"/> #}
+        <use transform="rotate(90 30 30)" xlink:href="#svgLineLoading"/>
+        {# <use transform="rotate(105 30 30)" xlink:href="#svgLineLoading"/> #}
+        <use transform="rotate(120 30 30)" xlink:href="#svgLineLoading"/>
+        {# <use transform="rotate(135 30 30)" xlink:href="#svgLineLoading"/> #}
+        <use transform="rotate(150 30 30)" xlink:href="#svgLineLoading"/>
+        {# <use transform="rotate(165 30 30)" xlink:href="#svgLineLoading"/> #}
+        {# <use transform="rotate(-15 30 30)" xlink:href="#svgLineLoading"/> #}
+        <use transform="rotate(-30 30 30)" xlink:href="#svgLineLoading"/>
+        {# <use transform="rotate(-45 30 30)" xlink:href="#svgLineLoading"/> #}
+        <use transform="rotate(-60 30 30)" xlink:href="#svgLineLoading"/>
+        {# <use transform="rotate(-75 30 30)" xlink:href="#svgLineLoading"/> #}
+        <use transform="rotate(-90 30 30)" xlink:href="#svgLineLoading"/>
+        {# <use transform="rotate(-105 30 30)" xlink:href="#svgLineLoading"/> #}
+        <use transform="rotate(-120 30 30)" xlink:href="#svgLineLoading"/>
+        {# <use transform="rotate(-135 30 30)" xlink:href="#svgLineLoading"/> #}
+        <use transform="rotate(-150 30 30)" xlink:href="#svgLineLoading"/>
+        {# <use transform="rotate(-165 30 30)" xlink:href="#svgLineLoading"/> #}
+        <use transform="rotate(-180 30 30)" xlink:href="#svgLineLoading"/>
+        <animateTransform attributeName="transform" type="rotate" from="0" to="360" begin="0s" dur="8s"  repeatCount="indefinite" />
+    </svg>
+</div>
+{% endmacro %}

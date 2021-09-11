@@ -670,6 +670,30 @@
   /* border-radius: 5rem; */
   /* border:1px solid white; */
 }
+#offcanvasSearch .offcanvas-body .loading{
+  display:none;
+}
+#offcanvasSearch .offcanvas-body .loading svg{
+  /* -webkit-animation: fa-spin 2s infinite linear; */
+  /* animation: fa-spin 2s infinite linear; */
+}
+#offcanvasSearch.loading .offcanvas-body .loading{
+  display:flex;
+  flex-direction: column;
+  height:100%;
+  width:100%;
+  justify-content: center;
+  align-items: center;
+}
+#offcanvasSearch.loading .offcanvas-body .loading::after{
+  content:"Loading...";
+  display:block;
+  font-size: 0.5rem;
+  line-height: 2rem;
+}
+#offcanvasSearch.loading .offcanvas-body #listSearchResult{
+  display:none;
+}
 #offcanvasSearch .offcanvas-body .nav li.off{
   filter:brightness(0.5);
 }

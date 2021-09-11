@@ -384,7 +384,7 @@
     {% endfor %}
 </datalist>
 {# 搜索菜单 #}
-<div id="offcanvasSearch" class="offcanvas offcanvas-end" tabindex="-1" aria-labelledby="offcanvasSearchLabel">
+<div id="offcanvasSearch" class="offcanvas offcanvas-end loading" tabindex="-1" aria-labelledby="offcanvasSearchLabel">
     <div class="offcanvas-header">
         <input id="inputSearch" placeholder="搜索" autocomplete="on" list="listInputSearchSuggest" max-length="50" onchange="eSearch(event)"></input>
 
@@ -396,9 +396,7 @@
         <ul id="listSearchResult" class="">
 
         </ul>
-        <div :visible="@loadingState" class="loading w-100 justify-content-center align-items-center ">
-            <i class="fa fa-spin fa-spinner"></i>
-        </div>
+        {{ loading() }}
         {# 浮动导航 #}
         <ul class="nav">
         </ul>
@@ -410,6 +408,7 @@
             if(e.detail && e.detail.apiDetail)window.inputSearch.value=e.detail.apiDetail.split("search?q=")[1];
             let v=window.inputSearch.value;//e.currentTarget.value || e;
             if(v=="")return;
+            window.offcanvasSearch.classList.add("loading");
             {# 检索 #}
             fetch("/search?q="+v)
             .then(function(data){
@@ -419,7 +418,7 @@
                 // 在这个then里面我们能拿到最终的数据
                 let objData=JSON.parse(data);
                 if(objData.status==200){
-                    {# $timelineContent.dataset["strNoticeEnd"] = "加载完成"; #}
+                    window.offcanvasSearch.classList.remove("loading");
                     try{                        
                         let domToAppend = document.createRange().createContextualFragment(objData.data.dom);
                         {# vm.$loading.before(domToAppend.cloneNode(true)); #}
