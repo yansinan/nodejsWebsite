@@ -152,13 +152,18 @@
   margin-top: var(--bs-gutter-y);
 }
 #timelineContent .wapper-mm .item .imgContainer{
-  display:none;
+  display:flex;
   flex:1;
   position:relative;
   width:100%;
   overflow:hidden;
-  min-height:max(calc(34.7vw - 3rem) , 6rem);
+  /* min-height:max(calc(34.7vw - 3rem) , 6rem); */
+  min-height:max(calc(34.7vw - 5rem) , 6rem);
   cursor: pointer;
+  background-color: var(--color-placeholder,#aaa);
+}
+#timelineContent .wapper-mm .item .imgContainer.left{
+  display:none;
 }
 #timelineContent .wapper-mm .item img.img-fluid{
   display:block;

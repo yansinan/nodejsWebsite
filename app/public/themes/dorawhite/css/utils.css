@@ -88,6 +88,9 @@ a:focus {
 ul li {
     list-style-type: none;
 }
+img:not([src]):not([srcset]) {
+    visibility: hidden;
+}
 
 .icon-arrow {
     z-index: 3;

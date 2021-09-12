@@ -14,9 +14,9 @@
                     {# 日期内容区 #}
 
                     {% for item in colItems %}
-                    <div class="item {{item.docAlias if item.docAlias else 'Content'}}" dr-date-doc="{{item.dateFull}}">
+                    <div class="item {{item.docAlias if item.docAlias else 'Content'}}" dr-date-doc="{{item.dateFull}}" style="--color-placeholder:{{ ['#cccc00', '#FF4D3E', '#5400ff','#ad49f0']|random }}">
                         {# 图 手机图 #}
-                        <div class="imgContainer bsClick" onclick="window.goto('{{item.url}}')">                        
+                        <div class="imgContainer left bsClick" onclick="window.goto('{{item.url}}')">                        
                             <img data-src="{{item.sImg}}" alt="{{item.nameTimeline}}"  class="lazy img-fluid" dr-id-doc="img{{item._id}}"/>
                         </div>
 
