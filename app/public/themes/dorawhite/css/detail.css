@@ -54,12 +54,14 @@
     padding-top:0px;
     background-color: inherit;
 }
-
-#offcanvasRight .offcanvas-body .loading{
+#offcanvasRight.loading .offcanvas-body .content,
+#offcanvasRight .offcanvas-body loading{
+    display:none;
+}
+#offcanvasRight.loading .offcanvas-body loading{
+    display:flex;
     height:calc(100% + 1px);
-    display: flex;
-    font-size: 1.5rem;
-}  
+}
 
 @media (min-width: 768px) {
     #offcanvasDetailAll{

@@ -351,3 +351,23 @@ ul li {
     height:100%;
     object-fit: contain;
 }
+
+
+/* loading */
+loading{
+    display:flex;
+    flex-direction: column;
+    height:100%;
+    width:100%;
+    justify-content: center;
+    align-items: center;
+  }
+  loading::after{
+    content:"Loading...";
+    display:block;
+    font-size: 0.5rem;
+    line-height: 2rem;
+  }
+  loading line{
+    stroke:#fff;
+  }  

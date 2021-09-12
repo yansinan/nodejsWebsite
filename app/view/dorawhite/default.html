@@ -145,7 +145,7 @@
                                     e.currentTarget.removeEventListener("transitionend", eTransitionEnd);
                                     //that.header.objNavTo.bsMain=this.strNow;
                                     //detail={page,objNew:that.header.objNavTo,objOld:that.header.objNavOld};
-                                    that.dispatchEvent(new CustomEvent("BS_COVER_TIMELINE_FINAL", {detail:{page,bsMain:that.slideCover.strNow}}));
+                                    that.dispatchEvent(new CustomEvent("BS_COVER_TIMELINE_FINAL", {detail:{page,bsMain:"timeline"}}));
                                 }
                             }
                             document.querySelector("#navHeader").addEventListener("transitionend", eTransitionEnd, {capture:false,once:false});                    

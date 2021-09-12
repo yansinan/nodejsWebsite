@@ -68,8 +68,14 @@
   /* background-color: gainsboro; */
   transform :translateY(-100%) translateZ(0);
 }
-#timelineContent .loading{
-  display: none;
+#timelineWrapper loading{
+  display:none;
+}
+#timelineWrapper.loading loading{
+  display:flex;
+}
+#timelineContent loading line{
+  stroke:#000000;
 }
 /* 占位列2个 */
 #timelineContent .container-mm.end{
@@ -297,7 +303,6 @@
     transform: translateX(calc(100% + 1rem)) translateZ(0);
   }
   #timelineContent .loading{
-    display:block;
     flex: 0 0 calc(100vw - (40.7vw));
     min-width: calc(100vw - (40.7vw));
   }

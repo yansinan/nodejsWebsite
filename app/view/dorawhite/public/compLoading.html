@@ -1,6 +1,6 @@
 
-{% macro loading() %}
-<div class="loading">
+{% macro loadingWhite() %}
+<loading class="loading">
     {# <i class="fa fa-spin fa-spinner"></i> #}
     <svg width="60" height="60" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -34,5 +34,37 @@
         <use transform="rotate(-180 30 30)" xlink:href="#svgLineLoading"/>
         <animateTransform attributeName="transform" type="rotate" from="0" to="360" begin="0s" dur="8s"  repeatCount="indefinite" />
     </svg>
-</div>
+</loading>
+{% endmacro %}
+{% macro loading() %}
+<loading class="loading">
+    {# <i class="fa fa-spin fa-spinner"></i> #}
+    <svg width="60" height="60" xmlns="http://www.w3.org/2000/svg">
+        <line transform="rotate(0 30 30)" x1="47" x2="100%" y1="50%" y2="50%"/>
+        {# <line transform="rotate(15 30 30)"/> #}
+        <line transform="rotate(30 30 30)" x1="47" x2="100%" y1="50%" y2="50%"/>
+        {# <line transform="rotate(45 30 30)"/> #}
+        <line transform="rotate(60 30 30)" x1="47" x2="100%" y1="50%" y2="50%"/>
+        {# <line transform="rotate(75 30 30)"/> #}
+        <line transform="rotate(90 30 30)" x1="47" x2="100%" y1="50%" y2="50%"/>
+        {# <line transform="rotate(105 30 30)"/> #}
+        <line transform="rotate(120 30 30)" x1="47" x2="100%" y1="50%" y2="50%"/>
+        {# <line transform="rotate(135 30 30)"/> #}
+        <line transform="rotate(150 30 30)" x1="47" x2="100%" y1="50%" y2="50%"/>
+        {# <line transform="rotate(165 30 30)"/> #}
+        {# <line transform="rotate(-15 30 30)"/> #}
+        <line transform="rotate(-30 30 30)" x1="47" x2="100%" y1="50%" y2="50%"/>
+        {# <line transform="rotate(-45 30 30)"/> #}
+        <line transform="rotate(-60 30 30)" x1="47" x2="100%" y1="50%" y2="50%"/>
+        {# <line transform="rotate(-75 30 30)"/> #}
+        <line transform="rotate(-90 30 30)" x1="47" x2="100%" y1="50%" y2="50%"/>
+        {# <line transform="rotate(-105 30 30)"/> #}
+        <line transform="rotate(-120 30 30)" x1="47" x2="100%" y1="50%" y2="50%"/>
+        {# <line transform="rotate(-135 30 30)"/> #}
+        <line transform="rotate(-150 30 30)" x1="47" x2="100%" y1="50%" y2="50%"/>
+        {# <line transform="rotate(-165 30 30)"/> #}
+        <line transform="rotate(-180 30 30)" x1="47" x2="100%" y1="50%" y2="50%"/>
+        <animateTransform attributeName="transform" type="rotate" from="0" to="360" begin="0s" dur="8s"  repeatCount="indefinite" />
+    </svg>
+</loading>
 {% endmacro %}

@@ -206,11 +206,15 @@
             <bn-close class="btn btn-close"  aria-label="Close" onclick="window.goto('/')" aria-label="Close"></bn-close>
 
         </div>
-        <div id="offcanvasDetail" class="offcanvas-body" ms-controller="offcanvasDetail" ms-on-scroll="@eScrollDetail">
-            <div :visible="!@loadingState" ms-html="@dom" style="background-color: inherit;"></div>
-            <div :visible="@loadingState" class="loading w-100 justify-content-center align-items-center ">
+        <div id="offcanvasDetail" class="offcanvas-body loading" ms-controller="offcanvasDetail" ms-on-scroll="@eScrollDetail">
+            <div class="content" ms-html="@dom" style="background-color: inherit;"></div>
+            {# 
+            <div class="loading w-100 justify-content-center align-items-center ">
                 <i class="fa fa-spin fa-spinner"></i>
             </div>
+             #}
+            {{ loading() }}
+
         </div>
     </div>
     <script>
@@ -343,11 +347,13 @@
                 aOffcanvasBody.dom = d.msg? d.msg : "网络故障，内容获取失败：" + d.toString();
                 debugger;
             }
+            window.offcanvasRight.classList.add("loading");
             $.ajax({
                 type: 'GET',
                 url,//url: '/about___' + cateId + '.html',
                 success: function (res) {
                     if (res.status == 200) {
+                        window.offcanvasRight.classList.remove("loading");
                         aOffcanvasBody.loadingState = false;
                         aOffcanvasBody.dom = res.data.comments || res.data;
                         let objDetail=that.setDetailDom($offcanvasDetail);
