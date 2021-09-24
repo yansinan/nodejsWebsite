@@ -1,6 +1,13 @@
 /* :root{
     font-size: 37.5px;
 } */
+
+@import url('utils.css');
+@import url('header.css');
+@import url('footer.css');
+@import url('artist.css');
+@import url('timeline.css');
+
 :root{
     --main-offset-left-mobile:0.76rem;
     --main-offset-left-pc:1.25rem; 

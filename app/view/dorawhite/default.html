@@ -4,6 +4,19 @@
 <head>
     {# <meta name='viewport' content='initial-scale=1, viewport-fit=cover'> #}
     {% header adaptor="ie" %}
+    <!-- 引入组件库 -->
+    <!-- Production version -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/avalon.js/2.2.7/avalon.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/popper.js/2.6.0/umd/popper.min.js"></script>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.0.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.0.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/better-scroll/2.4.1/better-scroll.min.js"></script>
+    {#  font-awesome #}
+    {# 
+    {% plugin name="popper twitter-bootstrap betterScroll" %} 
+    {% endplugin %}
+    #}
     <script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.4.0/dist/lazyload.min.js"></script>  
     <script>
         {# // Set the options globally to make LazyLoad self-initialize #}
@@ -27,14 +40,6 @@
             },
         })
     </script>
-    <!-- 引入组件库 -->
-    <!-- Production version -->
-    {# <script src="https://unpkg.com/@popperjs/core@2"></script> #}
-    {# <script src="https://cdn.bootcdn.net/ajax/libs/popper.js/2.6.0/umd/popper.min.js"></script> #}
-    {# <script src="https://unpkg.com/better-scroll@latest/dist/better-scroll.js"></script> #}
-    {#  font-awesome #}
-    {% plugin name="popper twitter-bootstrap betterScroll" %}
-    {% endplugin %}
     {# 模块 #}
     {# {% from "./public/compNavAvatar.html" import navAvatar %} #}
     {# {% from "./public/compContainerList.html" import containerOfList %} #}
@@ -44,8 +49,11 @@
     {% from "./public/compLoading.html" import loading %}
     <!-- 二次开发静态资源 -->
     {#  dora.front.js avatar.css  white.css #}
-    {% assets 'default.css detail.css header.css footer.css timelineBar.css artist.css timeline.css utils.css' %}
+    {# 
+    {% assets 'default.css' %}
     {% endassets %}
+    #}
+    <link rel="stylesheet" href="/static/themes/dorawhite/css/default.css">
 
     {% endheader %}
 

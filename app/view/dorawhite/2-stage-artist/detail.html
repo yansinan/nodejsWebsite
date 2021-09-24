@@ -5,7 +5,7 @@
 {# {% extends "../default.html" %}  #}
 
 
-
+<link rel="stylesheet" href="/static/themes/dorawhite/css/detail.css">
 <div class="detail artist font-normal">
     {# 乐队名 #}
     <div class="name">{{post.name}} {{post.alias if post.name!=post.alias else ""}}</div>
@@ -112,7 +112,7 @@
     {% endif %}
 
     {# 精选单曲 #}
-    {% if false and post.listHotMusics.length>0%}
+    {% if post.listHotMusics.length>0%}
         <div class="row border-2 border-bottom border-dark pt-5 pb-2">
             <h2 class="">精选单曲</h2>
         </div>
