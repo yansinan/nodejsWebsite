@@ -21,6 +21,11 @@
         //this.addEventListener("BS_TIMELINE_DOM_LOADED",(e)=>{
         //    //if(window.lazyLoadInstance)window.lazyLoadInstance.update();
         //})
+        Object.defineProperties(this,{
+            isMobile:{
+                get:()=>(this.$footer.isRotated || false), // || this.$timelineContent.isMobile
+            },
+        })
     </script>
     <!-- 引入组件库 -->
     <!-- Production version -->

@@ -484,7 +484,7 @@
 }
 .detail .news .list .item::before{
     content:"";
-    background: url(/static/themes/images/bnArrowLine.svg) center/0.55rem auto no-repeat ;
+    background: url("/static/upload/images/icons/arrow-down.svg") center/0.55rem auto no-repeat ;
     height: 0.55rem;
     margin-right: 0.55rem;
     flex: 0 0 0.55rem;

@@ -41,7 +41,7 @@
     display:flex;
     justify-content: center;
     align-items: center;
-    background: url(/static/themes/images/bnArrowLine.svg) center/1.25rem auto no-repeat ;
+    background: url("/static/upload/images/icons/arrow-down.svg") center/1.25rem auto no-repeat ;
 
     box-shadow: none;
     border: none;

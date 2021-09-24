@@ -31,16 +31,19 @@
             </button>
             {% for doc in artist.listNotices %}<div class="notice hoverUnderline d-none" data-dr-url="{{doc.url}}">{{doc.nameTimeline}}</div>{% endfor %}
             {% endif %}
-            <img src="{{artist.sImg}}" width="0px" alt="{{artist.nameTimeline}}" class="sImg img-fluid"/>
+            <img data-src="{{artist.sImg}}" width="0px" alt="{{artist.nameTimeline}}" class="sImg img-fluid d-none"/>
         </div >
         {% endfor %}
         {# 最后一列占宽用 #}
         <div class="artist artist-md d-flex align-items-center"></div>
         <script>
-        document.getElementById("coverArtistsWrapper").querySelectorAll(".artist").forEach($artist=>{
+        let $listArtists=document.getElementById("coverArtistsWrapper").querySelectorAll(".artist");
+        $listArtists.forEach($artist=>{
             var $listNameArtists = $artist.querySelectorAll('.name [data-bs-toggle="tooltip"]');
             if(!$listNameArtists)return;
             $listNameArtists.forEach(function ($nameArtist) {
+                {# 移动端不做操作 #}
+                if(that.isMobile)return;
                 if($nameArtist.tooltip && $nameArtist.tooltip.dispose)$nameArtist.tooltip.dispose();
                 let strClass=Math.random()>0.5 ? "sImg verticle" : "sImg";
                 let tooltip = new bootstrap.Tooltip($nameArtist,{
@@ -61,6 +64,8 @@
                     }
                 })
                 tooltip.$sImg=$artist.querySelector(".sImg");
+                tooltip.$sImg.src=tooltip.$sImg.dataset['src'];
+                tooltip.$sImg.classList.remove("d-none");
                 $nameArtist.tooltip=tooltip;
                 $nameArtist.addEventListener('shown.bs.tooltip', function (e) {
                     let tooltip=e.target.tooltip;
@@ -103,7 +108,19 @@
                 });
                 return tooltip;
             })
+
         })
+        this.addEventListener("NAV_TO",(e)=>{
+            if(!that.isMobile){
+                $listArtists.forEach($artist=>{
+                    var $listNameArtists = $artist.querySelectorAll('.name [data-bs-toggle="tooltip"]');
+                    if(!$listNameArtists)return;
+                    $listNameArtists.forEach($nameArtist=>{
+                        if($nameArtist.tooltip && $nameArtist.tooltip.tip && !$nameArtist.tooltip.tip.hidden)$nameArtist.tooltip.hide();
+                    });
+                });
+            }
+        });
         </script>
     </div>
     {# 乐手列表 #}

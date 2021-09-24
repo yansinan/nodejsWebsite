@@ -188,7 +188,7 @@
     height:20px;
     margin-right: 0.47rem;
     transform: rotate(-90deg);
-    background:url('/static/themes/images/bnArrowLine.svg') no-repeat center /20px 20px;/*兼容没测*/
+    background:url('/static/upload/images/icons/arrow-down.svg') no-repeat center /20px 20px;/*兼容没测*/
 }
 
 @media (min-width: 768px) {
