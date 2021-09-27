@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2019/11/10 
  * @Last Modified by: dr
- * @Last Modified time: 2021-09-06 09:36:58
+ * @Last Modified time: 2021-09-27 03:14:57
  */
 /**
  * Created by Dr on 2019/11/10.
@@ -189,7 +189,8 @@ module.exports =app=>{
                     v.forEach(img=>{
                         let listPath=img.url.split("/");
                         listPath[listPath.length-1]="s" + listPath[listPath.length-1];
-                        img.urlThumbsnail=listPath.join("/");
+                        if(img.url==artist.sImg)img.urlThumbsnail=img.url
+                        else img.urlThumbsnail=listPath.join("/");
                     })
                     let isInList=v.find((img)=>(img.url == artist.sImg));
                     if(!isInList)v.unshift(objImage)
@@ -205,6 +206,10 @@ module.exports =app=>{
         });
         schema.virtual('letters').get(function () {
             return getPinYin(this.name).toUpperCase();
+        });
+        // 搜索结果类名:
+        schema.virtual('docAliasSearch').get(function () {
+            return "签约";
         });
         let model=app.model.Artist || Doc.discriminator("Artist", schema);
         // app.model.Artist=model;

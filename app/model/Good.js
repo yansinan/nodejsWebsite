@@ -48,6 +48,11 @@ module.exports =app=>{
             let listName=this.listRefs.map(v=>(v.name));
             return listName.join();
         });
+        // 搜索结果类名:
+        schema.virtual('docAliasSearch').get(function () {
+            return "周边";
+        });
+    
         let model=app.model.Good || Doc.discriminator("Good", schema);
     
         return model

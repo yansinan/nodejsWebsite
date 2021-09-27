@@ -182,6 +182,10 @@
     ContentSchema.virtual('docAlias').get(function (v){
         return "news";
     })
+    // 搜索结果类名:
+    ContentSchema.virtual('docAliasSearch').get(function () {
+        return "动态";
+    });
 
     let model=app.model.Content || Doc.discriminator("Content", ContentSchema);
     // app.model.Artist=model;

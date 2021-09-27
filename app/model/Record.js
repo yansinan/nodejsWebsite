@@ -85,6 +85,11 @@ module.exports =app=>{
             let listName=this.listRefs.map(v=>(v.name));
             return listName.join();
         });
+        // 搜索结果类名:
+        schema.virtual('docAliasSearch').get(function () {
+            return "唱片";
+        });
+
         let model=app.model.Record || Doc.discriminator("Record", schema);
     
         return model
