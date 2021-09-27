@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-01-26 
  * @Last Modified by: dr
- * @Last Modified time: 2021-09-06 08:27:18
+ * @Last Modified time: 2021-09-27 04:52:45
  */
 
 'use strict';
@@ -379,6 +379,22 @@ class ServicePlugin extends Service {
         }
         return data || res;
     }
+    // 保存二进制文件:return=>{pathFile:服务器绝对路径,url:访问的相对}
+    async saveBinary(urlFile,data){
+        let pathFile=this.joinPublic(urlFile)
+        let folder=path.dirname(pathFile);
+        if (!fs.existsSync(folder)) {
+            fs.mkdirSync(folder,{recursive: true});
+        }
+        // 写入缓存目录:TODO错误处理
+        let res = fs.writeFileSync(pathFile, data ,"binary");
+        res=res || {};
+        res.pathFile=pathFile;
+        res.url="/static/"+urlFile;
+        return res;  
+    }
+    joinPublic(...params){return path.join(this.publicDir,...params)}
+    get publicDir(){return (process.cwd() + '/app/public');}
     get model(){
         if(!this._model)this._model=this.ctx.model[__filename.slice(__dirname.length + 1, -3)];
         return this._model;

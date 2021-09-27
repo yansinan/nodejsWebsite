@@ -93,6 +93,9 @@ module.exports = app => {
     // router.redirect('/getImg/', app.config.server_puppeteerApi);
     router.get('/getImg/:site/:path',controller.api.webCrawler.fetchImg)
 
+    // 抓网易云音乐歌曲
+    router.get('/api/fetchNCMSong/:idSong',controller.api.webCrawler.ncmGetSong)
+
     /**
      * 上传文件blocb 多文件管理
      * 

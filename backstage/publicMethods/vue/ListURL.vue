@@ -184,15 +184,19 @@
               let idSong=objLink.url.split("song?id=")[1];
               // name根据网易api自动读取;
               // Fetch会返回Promise 所以我们可以使用then 拿到请求成功的结果
-              fetch("https://api.imjad.cn/cloudmusic/?type=detail&id="+idSong).then(function(data){
-                  // text()方法属于fetchAPI的一部分，它返回一个Promise实例对象，
+              fetch("/api/fetchNCMSong/"+idSong).then(function(data){
+                 // text()方法属于fetchAPI的一部分，它返回一个Promise实例对象，
                   // 用于获取后台返回的数据 return data.text();
                   return data.text();
               }).then(function (data) {
                   // 在这个then里面我们能拿到最终的数据
                   let res=JSON.parse(data);
-                  if(res.code==200 && res.songs.length>0 && res.songs[0].name){
-                    objLink.name=res.songs[0].name;
+                  if(res.status==200 && res.data.name){
+                    objLink.name=res.data.name || res.data.songs[0].name;
+                    objLink.sImg=res.data.sImg;
+                    objLink.urlSong=res.data.urlSong;
+                    objLink.url=res.data.urlSong;
+                    objLink.urlSongNCM=res.data.urlSongNCM;
                     that.$message({
                       message: "找到网易云音乐歌曲信息，自动填充："+objLink.name,
                       type: "success"

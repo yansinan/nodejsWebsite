@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2019/11/10 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-23 04:55:23
+ * @Last Modified time: 2021-09-27 05:17:17
  */
 /**
  * Created by Dr on 2019/11/10.
@@ -78,6 +78,8 @@ module.exports =app=>{
                 url:{type:String},
                 name:{type:String},
                 type:{type:String,default:"音乐"},
+                urlSongNCM:{type:String},
+                sImg:{type:String},
             }],//推荐热门歌曲
             listLinks:[{
                 url:{type:String},
