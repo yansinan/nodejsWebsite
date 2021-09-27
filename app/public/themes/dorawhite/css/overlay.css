@@ -23,6 +23,7 @@
 #offcanvasLeft.offcanvas-body{
     display:flex;
     flex-direction: column;
+    position: relative;
 }
 /* 右侧详情 */
 #offcanvasRight.offcanvas-end{
@@ -32,9 +33,13 @@
     border:none;
 }
 #offcanvasRight .offcanvas-header{
-    padding: var(--offsetcanvas-padding, 0.77rem);
+    padding:0px;
 }
-#offcanvasDetailAll.artistDetailColor .offcanvas-end .offcanvas-header{
+#offcanvasDetailAll .offcanvas-header .icon-arrow{
+    background: url(/static/upload/images/icons/arrow-down.svg) center no-repeat;
+    background-size: 1rem;
+}
+#offcanvasDetailAll.artistDetailColor .offcanvas-header .icon-arrow{
     filter: invert(1);
 }
 /* 移动端隐藏叉子 */
@@ -42,12 +47,6 @@
     display:none;
 }
 
-.offcanvas-header .btn-close{
-    padding: .214rem .214rem;
-    margin-top: -.214rem;
-    margin-right: -.214rem;
-    margin-bottom: -.214rem;
-}
 .offcanvas-header .btn-close:active, 
 .offcanvas-header .btn-close:focus, 
 .offcanvas-header .btn-close:active:focus, 
@@ -59,15 +58,19 @@
     box-shadow: none;
 }
 #offcanvasRight .offcanvas-body{
-    padding: var(--offsetcanvas-padding, 0.77rem);    
+    padding: var(--offsetcanvas-padding, 0.77rem);
     padding-right: var(--offsetcanvas-padding-right, 0.77rem);
+    padding-top:0px;
+    background-color: inherit;
 }
-
-#offcanvasRight .offcanvas-body .loading{
+#offcanvasRight.loading .offcanvas-body .content,
+#offcanvasRight .offcanvas-body loading{
+    display:none;
+}
+#offcanvasRight.loading .offcanvas-body loading{
+    display:flex;
     height:calc(100% + 1px);
-    display: flex;
-    font-size: 1.5rem;
-}  
+}
 
 @media (min-width: 768px) {
     #offcanvasDetailAll{
@@ -84,16 +87,17 @@
     #offcanvasRight .offcanvas-header{
         justify-content:flex-end;
         /* padding: 0.427rem 0.427rem; */
-        padding: 1rem 1rem;/* 不准确使用bs值 */
+        padding:0px;
+        margin-bottom:0px;
     }
     #offcanvasRight .offcanvas-header .icon-arrow.left{
         display: none;
     }
     #offcanvasRight .offcanvas-header .btn-close{
         display:block;
-        padding: .214rem .214rem;
-        margin-top: -.214rem;
-        margin-right: -.214rem;
-        margin-bottom: -.214rem;
-    } 
+        filter: invert(1);
+    }
+    #offcanvasDetailAll.artistDetailColor .offcanvas-header .btn-close{
+        filter: invert(0);
+    }
 }

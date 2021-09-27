@@ -15,7 +15,7 @@ module.exports = app => {
     // 测试新的复杂滚动首页
     router.get(["/", "/index/*" ,"/zh-CN", "/zh-TW", "/en"], controller.page.index.getDataForIndexPage);
 
-    router.get("/page/:current.html", controller.page.home.getDataForIndexPage);
+    // router.get("/page/:current.html", controller.page.home.getDataForIndexPage);
 
     // 静态介绍入口
     router.get([
@@ -42,39 +42,39 @@ module.exports = app => {
         "/artists/:cate1?___:typeId?",
         "/artists/:cate1?___:typeId?/:current.html"
     ], controller.page.home.getDataForArtistsPage);
-    // 专辑列表；类别入口
-    router.get([
-        "/records___:typeId?",
-        "/records___:typeId?/:current.html",
-        "/records/:cate1?___:typeId?",
-        "/records/:cate1?___:typeId?/:current.html"
-    ], controller.page.home.getDataForRecordsPage);
-    // 时间线
-    router.get([
-        "/timeline___:typeId?",
-        "/timeline___:typeId?/:current.html",
-        "/timeline___/:cate1?___:typeId?",
-        "/timeline___/:cate1?___:typeId?/:current.html"
-    ], controller.page.home.getDataForTimelinePage);
-    // 类别入口
-    router.get([
-        "/:cate1?___:typeId?",
-        "/:cate1?___:typeId?/:current.html",
-        "/:cate0/:cate1?___:typeId?",
-        "/:cate0/:cate1?___:typeId?/:current.html"
-    ], controller.page.home.getDataForCatePage);
+    //// 专辑列表；类别入口
+    //router.get([
+    //    "/records___:typeId?",
+    //    "/records___:typeId?/:current.html",
+    //    "/records/:cate1?___:typeId?",
+    //    "/records/:cate1?___:typeId?/:current.html"
+    //], controller.page.home.getDataForRecordsPage);
+    //// 时间线
+    //router.get([
+    //    "/timeline___:typeId?",
+    //    "/timeline___:typeId?/:current.html",
+    //    "/timeline___/:cate1?___:typeId?",
+    //    "/timeline___/:cate1?___:typeId?/:current.html"
+    //], controller.page.home.getDataForTimelinePage);
+    //// 类别入口
+    //router.get([
+    //    "/:cate1?___:typeId?",
+    //    "/:cate1?___:typeId?/:current.html",
+    //    "/:cate0/:cate1?___:typeId?",
+    //    "/:cate0/:cate1?___:typeId?/:current.html"
+    //], controller.page.home.getDataForCatePage);
 
     // 搜索
     // router.get(["/search/:searchkey", "/search/:searchkey/:current.html"], controller.page.index.getDomSearch);
     router.get(["/search"], controller.page.index.getDomSearch);
-    // 标签
-    router.get(["/tag/:tagName", "/tag/:tagName/:current.html"], controller.page.home.getDataForTagPage);
-    // 作者
-    router.get(["/author/:userId", "/author/:userId/:current.html"], controller.page.home.getDataForAuthorPage);
+    //// 标签
+    //router.get(["/tag/:tagName", "/tag/:tagName/:current.html"], controller.page.home.getDataForTagPage);
+    //// 作者
+    //router.get(["/author/:userId", "/author/:userId/:current.html"], controller.page.home.getDataForAuthorPage);
 
-    // 移动端
-    router.get("/phone-fenlei.html", controller.page.home.getDataForPhoneCategory);
-    router.get("/phone-list.html", controller.page.home.getDataForPhoneList);
-    router.get("/phone-user.html", authPage, controller.page.home.getDataForPhoneUser);
+    //// 移动端
+    //router.get("/phone-fenlei.html", controller.page.home.getDataForPhoneCategory);
+    //router.get("/phone-list.html", controller.page.home.getDataForPhoneList);
+    //router.get("/phone-user.html", authPage, controller.page.home.getDataForPhoneUser);
 
 }

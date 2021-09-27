@@ -7,7 +7,7 @@
 @import url('footer.css');
 @import url('artist.css');
 @import url('timeline.css');
-
+@import url('overlay.css');
 :root{
     --main-offset-left-mobile:0.76rem;
     --main-offset-left-pc:1.25rem; 
