@@ -242,6 +242,82 @@
                     else if($nav.classList.contains("show") && !isShow)$nav.classList.remove("show");
                 }
             },
+            {# 详情页导航&试听 #}
+            playerStatus:"fa-play",
+            isList:false,
+            idxAudioNow:0,
+            {# 初始化时更新歌曲时间 #}
+            initAudio:function(){
+                let $listAudios=$offcanvasDetail.querySelectorAll(".nav .playList ul audio");
+                $listAudios.forEach($audio=>{
+                    {# 更新播放时间 #}
+                    $audio.addEventListener('durationchange', (e) => {
+                        let $song=e.currentTarget.parentElement;
+                        $song.dataset.currentTime=this.getPlayerTime(e.currentTarget.currentTime) + " / " + this.getPlayerTime(e.currentTarget.duration);                    
+                    },{once:true});
+
+                })                
+            },
+            {# 导航按钮 #}
+            eAudioToggleNow:function(e){
+                let $audio=this.getCurrentAudio();
+                this.audioToggle($audio);
+            },
+            {# 歌曲 #}
+            eAudioToggle:function(e){
+                let $audio=e.currentTarget.querySelector("audio");
+                {# 重新排序 #}
+                {# let $ulSong=$offcanvasDetail.querySelector(".nav .playList ul"); #}
+                let $lastAudio=this.getCurrentAudio();
+                if($lastAudio!=$audio)$lastAudio.parentElement.parentElement.before($audio.parentElement.parentElement);
+                this.audioToggle($audio);
+            },
+            {# 播放控制 #}
+            audioToggle:function($audio){
+                if(!$audio)return;
+                let that=this;
+                {# 播放控制 #}
+                let $listAudios=$offcanvasDetail.querySelectorAll(".nav .playList ul audio");
+                $listAudios.forEach($a=>{
+                    if($a!=$audio){
+                        $a.pause();
+                        $a.currentTime=0;
+                        $a.parentElement.classList.value="";
+                    }
+                })
+                let resToggle=false;
+                if($audio.paused){
+                    $audio.play();
+                    resToggle=true;
+                }else $audio.pause();
+
+
+                {# 显示控制 #}
+                this.playerStatus=!$audio.paused ? "fa-pause" : "fa-play";
+                {# 当前歌曲标记 #}
+                let $song=$audio.parentElement;
+                let $playerList=$song.parentElement;
+                $song.classList.value="now";
+
+                {# 更新播放时间 #}
+                $audio.addEventListener('timeupdate', (e) => {
+                    {# let $audio=e.currentTarget; #}
+                    let $song=e.currentTarget.parentElement;
+                    $song.dataset.currentTime=this.getPlayerTime(e.currentTarget.currentTime) + " / " + this.getPlayerTime(e.currentTarget.duration);                    
+                });
+                return resToggle;
+            },
+            getPlayerTime:function(v){
+                let sec=Math.round(v);
+                let minutes=Math.floor(v/60);
+                sec=sec-minutes*60;
+                return minutes + ":" + sec;
+            },
+            getCurrentAudio:function(){
+                let $song=$offcanvasDetail.querySelector(".nav .playList ul li");
+                if(!$song)return false;
+                return $song.querySelector("audio");
+            }
         })
         {# modal 图片预览 #}
         
@@ -327,6 +403,8 @@
 
                 })
             })
+            {# 试听播放器 #}
+            aOffcanvasBody.initAudio();
             return objDetail;
         }
         this.addEventListener("OPEN_OFFCANVAS_DETAIL",function(e){
@@ -378,7 +456,6 @@
         }
         
     </script>
-
 </div>
 
 {# 搜索建议 #}

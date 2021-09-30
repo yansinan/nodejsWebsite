@@ -108,26 +108,31 @@
         </div>
     </div>
     {% if post.listDocsGoods.length >6 %}<div class="more hoverUnderline" data-dr-target="goods">更多</div>{% endif %}
-    {% endif %}
+    {% endif %}    
 
-    {# 精选单曲 #}
-    {% if post.listHotMusics.length>0%}
-        <div class="row border-2 border-bottom border-dark pt-5 pb-2">
-            <h2 class="">精选单曲</h2>
-        </div>
-        {% for link in post.listHotMusics %}
-        <div class="row border-bottom border-dark py-3" onclick="window.open('{{ link.url }}')">
-            <span class="col" >{{ link.name }}</span>
-            <span class="col-1 d-none d-sm-block fa fa-play"  aria-hidden="true" style="margin: 5px;" id="bn-{{ link.url }}"></span>
-        </div>
-        {% endfor %}                        
-        <div class="row border-2 border-bottom border-dark"></div>
-    {% endif %}
 </div>
 {# 浮动导航 #}
-<ul class="nav">
-    <div class="backTop" ms-on-click="@eBnDetailNav(e,'.name')"></div>
-    {% for link in post.listNav %}
-    <li class="hoverUnderline" ms-on-click="@eBnDetailNav(e,'{{link.tar}}')">{{link.name}}</li>
-    {% endfor %}
-</ul>
+<div class="nav artist">
+    <ul>
+        <div class="backTop" ms-on-click="@eBnDetailNav(e,'.name')"></div>
+        {% for link in post.listNav %}
+        <li class="hoverUnderline" ms-on-click="@eBnDetailNav(e,'{{link.tar}}')">{{link.name}}</li>
+        {% endfor %}
+        <li class="player" ms-on-click="@eAudioToggleNow(e)"><i class="fa" :class="@playerStatus"/></li>
+    </ul>
+    {# 精选单曲 #}
+    {% if post.listHotMusics.length>0%}
+    <div class="playList" :class="@playerStatus">
+        <ul>
+            {% for link in post.listHotMusics %}
+            <li class="song">
+                <span ms-on-click="@eAudioToggle($event,'{{loop.index}}')" data-link="{{link.url}}" data-current-time="0 : 0 / 0 : 0">
+                    {{link.name}}
+                    <audio src="{{link.url}}" preload="metadata">Your browser does not support the <code>audio</code> element.</audio>
+                </span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+</div>

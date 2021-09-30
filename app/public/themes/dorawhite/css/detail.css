@@ -162,22 +162,17 @@
     width: 100%;
 }
 #offcanvasDetail .nav{
+    font-size: calc(18 * 1rem / 26);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     position: absolute;
     z-index: 2000;
-    bottom:7px;/* var(--offsetcanvas-padding, 0.77rem);  */  
+    bottom:0px;
+    left: 0px;
 
-    display:flex;
-    flex-wrap: nowrap;
-    justify-content:space-evenly;
-    align-items: center;
-    width:100%;
-    max-width:calc(100% - var(--offsetcanvas-padding, 0.77rem) - var(--offsetcanvas-padding-right, 0.77rem) );
-    height:calc(35 * 1rem / 26);
-    border-radius: 5rem;
-    border:1px solid white;
-    background-color: inherit;
-    font-size: 0.694rem;
-    opacity: .8;
+    width: 100vw;
+
     transition: transform;
     transition-duration: 1s;
     transform:translateY(3rem);
@@ -185,12 +180,30 @@
 #offcanvasDetail .nav.show{
     transform:translateY(0);
 }
-#offcanvasDetail .nav::before,
-#offcanvasDetail .nav::after{
+#offcanvasDetail .nav ul::before,
+#offcanvasDetail .nav ul::after{
     content:"";
     display:block;
     flex: 0 1 1rem;
     min-width:0.375rem;
+}
+#offcanvasDetail .nav ul{
+    position: relative;
+
+    bottom:7px;/* var(--offsetcanvas-padding, 0.77rem);  */  
+
+    display:flex;
+    flex-wrap: nowrap;
+    justify-content:space-evenly;
+    align-items: center;
+    width:100%;
+    max-width:calc(100% - 14px );
+    height:calc(45 * 1rem / 26);
+    border-radius: 5rem;
+    border:1px solid white;
+    background-color: inherit;
+    opacity: .8;
+
 }
 #offcanvasDetail .nav li{
     /* flex: 1 1 calc(59 * 1rem / 26); */
@@ -223,7 +236,105 @@
     /* transform:translateY(3rem); */
 }
 #offcanvasDetail .nav.show .backTop{
-    bottom: calc(100% + 8px);
+    bottom: calc(100% + 16px);
+}
+#offcanvasDetail .nav.artist{
+    background-color: black;
+}
+/* 试听 */
+#offcanvasDetail .nav ul li.player{
+    /* 
+    border-style: solid;
+    border-color: transparent transparent transparent rgba(255, 255, 255, 1);
+    border-radius: 0.1rem;
+    border-width: .4rem 0 .4rem 0.66rem;
+    transform: translateX(.2rem);
+     */
+    min-width:1.5rem;
+}
+#offcanvasDetail .nav.artist .playList{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    border-radius: 0px;
+    background-color: inherit;
+    
+    width: 100vw;    
+    margin-top:16px;
+    transition: max-height;
+    transition-duration: 1s;
+    max-height:0px;
+    overflow: hidden;
+}
+#offcanvasDetail .nav.artist.show .playList.fa-pause{
+    max-height:100vh;
+}
+#offcanvasDetail .nav.artist.show .playList.fa-pause::before,
+#offcanvasDetail .nav.artist.show .playList.fa-play::before{
+    content:"";
+    width: 100%;
+    border-top: 2px solid white;
+}
+#offcanvasDetail .nav.artist.show .playList ul{
+    flex-direction: column;
+    border:none;
+    border-radius: 0px;
+    top: 0;
+    height:auto;
+    max-width: none;
+}
+#offcanvasDetail .nav.artist.show .playList  ul::before,
+#offcanvasDetail .nav.artist.show .playList  ul::after{
+    display:none;
+}
+#offcanvasDetail .nav.artist.show .playList ul li{
+    display: flex;
+    justify-content: flex-start;
+    border-bottom:1px solid #CDCDCD;
+    width:100%;
+    height:calc(45 * 1rem / 26);
+}
+#offcanvasDetail .nav.artist.show .playList ul li::before,
+#offcanvasDetail .nav.artist.show .playList ul li::after{
+    content: "";
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    flex: 0 1 50px;
+    height: 100%;
+    /* filter: invert(1); */
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+/*
+#offcanvasDetail .nav.artist.show .playList ul li::before{
+    content: "\f104";
+}
+#offcanvasDetail .nav.artist.show .playList ul li::after{
+    content:"\f105";
+}
+*/
+/* 歌曲 */
+#offcanvasDetail .nav.artist.show .playList ul li span{
+    height: 100%;
+    flex:1;
+    display: flex;
+    align-items: center;
+}
+#offcanvasDetail .nav.artist.show .playList ul li span.now::before{
+    content:"";
+    border-left:solid 1px white;
+    transform:translateX(0px);
+    flex: 0 0 2rem;
+    height: 100%;
+}
+#offcanvasDetail .nav.artist.show .playList ul li span::after{
+    content:attr(data-current-time);
+    margin-left:1rem;
 }
 @media (min-width: 768px) {
     .detail.artist .name{

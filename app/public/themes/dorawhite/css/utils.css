@@ -20,6 +20,15 @@
 .fa-play:before {
     content: "\f04b";
 }
+.fa-pause:before {
+    content: "\f04c";
+}
+.fa-angle-left::before{
+    content: "\f104";
+}
+.fa-angle-right::before{
+    content:"\f105";
+}
 .fa-music:before {
     content: "\f001";
 }
