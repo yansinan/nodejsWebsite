@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2019/11/10 
  * @Last Modified by: dr
- * @Last Modified time: 2021-09-27 06:46:32
+ * @Last Modified time: 2021-10-28 03:08:00
  */
 /**
  * Created by Dr on 2019/11/10.
@@ -200,6 +200,10 @@ module.exports =app=>{
                     v = [objImage];
                 }
             }
+            v.forEach(v=>{
+                v.url=v.url.replace("http://wx.z-core.cn:8791","");
+                v.urlThumbsnail=v.urlThumbsnail.replace("http://wx.z-core.cn:8791","");
+            })
             return v;
         })
         //首字母

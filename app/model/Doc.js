@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2019/11/10 20:30:53 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-26 06:26:13
+ * @Last Modified time: 2021-10-28 07:08:04
  */
 const INIT_DOC= app=>{
     //如果已经初始化过，则直接返回；
@@ -213,6 +213,10 @@ const INIT_DOC= app=>{
     schema.virtual('nameTimeline').get(function (){
         return this.name;
     })
+    // sImg链接改为相对路径
+    schema.path('sImg').get(function (v) {
+        return v?v.replace("http://wx.z-core.cn:8791",""):v;
+    });
     app.model=app.model || {};
     let model=app.model.DocModel || mongoose.model("Doc", schema);
     app.model.DocModel=model;
