@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-01-26 
  * @Last Modified by: dr
- * @Last Modified time: 2021-09-27 04:52:45
+ * @Last Modified time: 2021-10-28 03:21:15
  */
 
 'use strict';
@@ -256,7 +256,7 @@ class ServicePlugin extends Service {
                     await sendToWormhole(part)
                     throw err
                 }
-                returnPath=`${app.config.server_path}${app.config.static.prefix}/${uploadForder}/${nameServerFile}`;
+                returnPath=`${app.config.static.prefix}/${uploadForder}/${nameServerFile}`;//${app.config.server_path}
                 listReturenPath.push(returnPath);
                 listObjImage.push({
                     name:fileName,//+fileType,
@@ -300,7 +300,7 @@ class ServicePlugin extends Service {
         if(urlFile){
             res.urlFile=urlFile;
             // 文件本地路径：
-            let pathFile=urlFile.split(`${app.config.server_path}${app.config.static.prefix}/`);
+            let pathFile=urlFile.split(`${app.config.static.prefix}/`);//${app.config.server_path}
             pathFile=`${publicDir}/`+pathFile[1];
 
             res.pathFile=pathFile;
@@ -340,7 +340,7 @@ class ServicePlugin extends Service {
                 if(stats.isDirectory()){
                     getListFile(fullpath,list);
                 }else{
-                    let urlRoot=`${app.config.server_path}${app.config.static.prefix}/upload/images`;
+                    let urlRoot=`${app.config.static.prefix}/upload/images`;//${app.config.server_path}
                     list.push(fullpath.replace(root,urlRoot));
                 }
             });
