@@ -1,7 +1,8 @@
 .detail.font-normal{
-    font-size:0.667rem;
+    font-size:calc(14 * 1rem / 26);
     line-height: 0.917rem;
-    font-family: PingFangSC-Regular, PingFang SC;
+    /* font-family: PingFangSC-Regular, PingFang SC; */
+    font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB", "Source Han Sans", "Noto Sans CJK Sc", "Microsoft YaHei", "Microsoft Jhenghei", sans-serif;
     font-weight: 400;
     color:black;
 }
@@ -11,6 +12,40 @@
     align-items: flex-start;
     
     /* background-color: white; */
+}
+
+.detail .album{
+    width:auto;
+    width:max-content;
+    max-width: 100%;
+    margin-bottom: calc(56 * 1rem / 26);
+}
+.detail .album img{
+    display:block;
+    object-fit:cover;
+    /* 手机竖屏高充满，宽自动 */
+    min-width:auto;
+    width: 100%;
+    max-width:100%;
+    height:100%;
+    max-height: 100%;
+    cursor:zoom-in;
+}
+.detail .date,
+.detail .name{
+    font-size: 1rem;
+    line-height: calc(32 * 1rem / 26);
+}
+.detail .name{
+    margin-bottom: 1rem;
+}
+.detail .list-inline,
+.detail .list-inline{
+    margin-bottom: 1rem;
+}
+.detail .list-inline li.border,
+.detail .list-inline li.border{
+    border: 1px solid #000!important;
 }
 .detail article{
     max-width: 100%;
@@ -50,6 +85,13 @@
     align-items: center;
     align-self: center;
     cursor: pointer;
+}
+
+@media (min-width: 768px) {
+    .detail.font-normal{
+        font-size:calc(24 * 1rem / 36);
+        line-height: calc(33 * 1rem / 36);
+    }
 }
 /* artistDetail */
 .detail.artist.font-normal{
@@ -115,23 +157,19 @@
     flex: 0 0 min(800px,100%,calc( var(--offsetcanvas-right) - var(--offsetcanvas-padding) - var(--offsetcanvas-padding-right,0.77rem) - 1rem));
     flex: auto;
 }
-
 .detail.artist .album img{
-    display:block;
-    object-fit:cover;
     /* 手机竖屏高充满，宽自动 */
     width: auto;
     max-width:calc( var(--offsetcanvas-right) - var(--offsetcanvas-padding-right,0.77rem) - var(--offsetcanvas-padding) - 1rem);
-    height:100%;
-    max-height: 100%;
-    cursor:zoom-in;
 }
-
 /* 标签 */
 .detail.artist .list-inline{
     line-height: 0px;
-    margin-top: 2.28rem;
+    margin-top: 1.28rem;
     margin-bottom:1.75rem;
+}
+.detail.artist .list-inline li.border{
+    border: 1px solid #fff!important;
 }
 .detail.artist article{
     max-width: calc( 100% - 20px);
@@ -148,7 +186,8 @@
     /* margin-bottom:5.667rem; */
 
     font-size: 0.389rem;
-    font-family: PingFangSC-Regular, PingFang SC;
+    /* font-family: PingFangSC-Regular, PingFang SC; */
+    font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB", "Source Han Sans", "Noto Sans CJK Sc", "Microsoft YaHei", "Microsoft Jhenghei", sans-serif;
     font-weight: 400;
     color: #979797;
     line-height: 0.694rem;
@@ -356,6 +395,10 @@
         height:450px;
     
     }
+    .detail.artist .album.scrollerSnap{
+        left: 0;
+        max-width: initial;
+    }
     .detail.artist .album img{
         scroll-snap-align: start;
         object-fit:contain;
@@ -368,7 +411,10 @@
         font-size: 0.5rem;
         bottom:var(--offsetcanvas-padding, 0.77rem);
         width:auto;
-        right: var(--offsetcanvas-padding-right);
+        /* right: var(--offsetcanvas-padding-right); */
+        right: var(--offsetcanvas-padding);
+        left: auto;
+        align-items: flex-start;
         max-width:calc(0.5rem + 100% - var(--offsetcanvas-padding, 0.77rem) - var(--offsetcanvas-padding-right, 0.77rem) );
     }
     #offcanvasDetail .nav .backTop{
@@ -583,14 +629,6 @@
 }
 
 /* 专辑和周边详情 */
-body.records #offcanvasDetailAll,
-body.goods #offcanvasDetailAll{
-    background: inherit;
-}
-.detail.record.font-normal,
-.detail.good.font-normal{
-    font-size: calc(14 * 1rem / 26);
-}
 .detail.record,
 .detail.good{
     display:flex;
@@ -618,6 +656,7 @@ body.goods #offcanvasDetailAll{
         overflow: hidden;
         cursor: pointer;
         background-color: var(--color-placeholder,#aaa);
+        margin-bottom: 0px;
     }
     .detail.record .head .album::after,
     .detail.good .head .album::after{
@@ -664,20 +703,7 @@ body.goods #offcanvasDetailAll{
     flex: 1 1 40%;
 }
     /* 乐队名称&标题 */
-    .detail.record .name,
-    .detail.good .name{
-        font-size: 1rem;
-        line-height: calc(32 * 1rem / 26);
-        margin-bottom: 1rem;
-    }
-    .detail.good .list-inline,
-    .detail.record .list-inline{
-        margin-bottom: 1rem;
-    }
-    .detail.good .list-inline li.border,
-    .detail.record .list-inline li.border{
-        border: 1px solid #000!important;
-    }
+
     .detail .formatTags{
         display:none;
     }
@@ -690,6 +716,12 @@ body.goods #offcanvasDetailAll{
     }
     .detail.record .formatTags .breadcrumb-item::before{
         color:inherit;
+    }
+    .detail.record .formatTags,
+    .detail.good .date,
+    .detail.record .date{
+        font-size:calc(14 * 1rem / 26);
+        line-height: 0.917rem;
     }
     .detail.good .date::before,
     .detail.record .date::before{
@@ -720,5 +752,11 @@ body.goods #offcanvasDetailAll{
     .detail.record .info,
     .detail.good .info{
         order:-1;
+    }
+    .detail.record .formatTags,
+    .detail.good .date,
+    .detail.record .date{
+        font-size:calc(24 * 1rem / 36);
+        line-height: 0.917rem;
     }
 }

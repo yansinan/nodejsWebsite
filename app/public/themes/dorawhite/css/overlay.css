@@ -9,10 +9,18 @@
     --offsetcanvas-left:0vw;
     --offsetcanvas-right:calc( 100vw - var(--offsetcanvas-left,0vw));
 }
+#offcanvasDetailAll.news{ background-color: #FFFFFF; }
+#offcanvasDetailAll.artists{ background-color: #000000; color:white;}
+#offcanvasDetailAll.records{ background-color: #FF4D3E; }
+#offcanvasDetailAll.shows{ background-color: #FFEC00; }
+#offcanvasDetailAll.goods{ background-color: #00FF2E; }
+#offcanvasDetailAll.videos{ background-color: #00FFFE; }
+/*
 #offcanvasDetailAll.artistDetailColor{
     background-color: black;
     color:white;
 }
+*/
 #offcanvasLeft.offcanvas-start{
     width:var(--offsetcanvas-left,0vw);
     display:none;
@@ -34,12 +42,31 @@
 }
 #offcanvasRight .offcanvas-header{
     padding:0px;
+    position:relative;
+    margin-bottom: 0rem;
+}
+/* 详情页logo */
+#offcanvasDetailAll.artists #offcanvasRight .offcanvas-header .navbar-brand{display:none;}
+#offcanvasDetailAll #offcanvasRight .offcanvas-header .navbar-brand{
+    display:flex;
+    justify-content: center;
+    position: absolute;
+    width: 100%;
+}
+#offcanvasDetailAll #offcanvasRight .offcanvas-header .navbar-brand img {
+    min-width: 98px;
+    max-width: 131px;
+    min-height: 30px;
+    max-height: 40px;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
 }
 #offcanvasDetailAll .offcanvas-header .icon-arrow{
     background: url(/static/upload/images/icons/arrow-down.svg) center no-repeat;
     background-size: 1rem;
 }
-#offcanvasDetailAll.artistDetailColor .offcanvas-header .icon-arrow{
+#offcanvasDetailAll.artists .offcanvas-header .icon-arrow{
     filter: invert(1);
 }
 /* 移动端隐藏叉子 */
@@ -57,11 +84,12 @@
 	outline: none;
     box-shadow: none;
 }
-#offcanvasRight .offcanvas-body{
+#offcanvasRight #offcanvasDetail{
     padding: var(--offsetcanvas-padding, 0.77rem);
     padding-right: var(--offsetcanvas-padding-right, 0.77rem);
     padding-top:0px;
     background-color: inherit;
+    margin-top: 1.5rem;
 }
 #offcanvasRight.loading .offcanvas-body .content,
 #offcanvasRight .offcanvas-body loading{
@@ -76,11 +104,21 @@
     #offcanvasDetailAll{
         background: white;
         color: black;
+        --offsetcanvas-padding-right:0.77rem;
+        --offsetcanvas-padding:0.77rem;
+        --offsetcanvas-left:0vw;    
+    }
+    #offcanvasDetailAll.about,
+    #offcanvasDetailAll.artists{
         --offsetcanvas-padding-right:3.67rem;
         --offsetcanvas-padding:0.427rem;
         --offsetcanvas-left:13.89rem;
     }
-    #offcanvasLeft.offcanvas-start{
+    #offcanvasDetailAll #offcanvasLeft.offcanvas-start{
+        display:none;
+    }
+    #offcanvasDetailAll.about #offcanvasLeft.offcanvas-start,
+    #offcanvasDetailAll.artists #offcanvasLeft.offcanvas-start{
         display:flex;
     }
     /* header详情弹出层 */
@@ -88,8 +126,19 @@
         justify-content:flex-end;
         /* padding: 0.427rem 0.427rem; */
         padding:0px;
-        margin-bottom:0px;
     }
+    #offcanvasDetailAll #offcanvasRight .offcanvas-header .navbar-brand{
+        display:flex;
+        justify-content: flex-start;
+        position: relative;
+        flex: 1;
+        margin-left: calc(var(--main-offset-left-pc,46px))!important;
+    }
+    #offcanvasDetailAll.about  #offcanvasRight .offcanvas-header .navbar-brand,
+    #offcanvasDetailAll.artists  #offcanvasRight .offcanvas-header .navbar-brand{
+        display:none;
+    }
+
     #offcanvasRight .offcanvas-header .icon-arrow.left{
         display: none;
     }
@@ -97,7 +146,19 @@
         display:block;
         filter: invert(1);
     }
-    #offcanvasDetailAll.artistDetailColor .offcanvas-header .btn-close{
+
+    #offcanvasDetailAll.artists .offcanvas-header .btn-close{
         filter: invert(0);
     }
+    #offcanvasDetailAll #offcanvasRight #offcanvasDetail{
+        margin-top: 57px;
+        padding-left: calc(var(--main-offset-left-pc,46px));
+        padding-right: calc(var(--main-offset-left-pc,46px));
+    }
+    #offcanvasDetailAll.artists #offcanvasRight #offcanvasDetail{
+        margin-top: 19px;
+        /* padding-left: 0px; */
+        /* padding-right: 0; */
+    }
 }
+

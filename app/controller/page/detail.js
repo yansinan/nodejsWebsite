@@ -129,7 +129,10 @@ class IndexController extends Controller {
                     files : null
                 })
                 if (!_.isEmpty(pageData.post)) {
-                    ctx.tempPage="../view/dorawhite/2-stage-timeline/detail.html";//"../view/dorawhite/2-stage-timeline/listTempTimeline.html";//app/view/dorawhite/2-stage-timeline/listTempTimeline.html
+                    // 根据serviceName，选用不同模板
+                    if(serviceName=="record" || serviceName=="good"){
+                        ctx.tempPage="../view/dorawhite/2-stage-record/detail.html";
+                    }else ctx.tempPage="../view/dorawhite/2-stage-timeline/detail.html";//"../view/dorawhite/2-stage-timeline/listTempTimeline.html";//app/view/dorawhite/2-stage-timeline/listTempTimeline.html
                     //ctx.tempPage=fs.existsSync(ctx.tempPage)?ctx.tempPage:"../view/dorawhite/2-stage-default/detail.html";
                 } else {
                     throw new Error(ctx.__('label_page_no_power_content'));

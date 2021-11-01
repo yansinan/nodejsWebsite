@@ -24,10 +24,11 @@ html {
     -moz-osx-font-smoothing: grayscale;
     line-height: 1.8;
     /* background: #f5f5f5; */
-    font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,Helvetica,Arial,PingFang SC,Hiragino Sans GB,Microsoft YaHei UI,Microsoft YaHei,Source Han Sans CN,sans-serif;
+    /* font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,Helvetica,Arial,PingFang SC,Hiragino Sans GB,Microsoft YaHei UI,Microsoft YaHei,Source Han Sans CN,sans-serif; */
 
     font-size: 162.5%;/*292.5%;*/
-    font-family: -apple-system,PingFangSC-Regular, Roboto, Helvetica Neue, Helvetica, Tahoma,Arial, PingFang SC-Light, Microsoft YaHei;
+    /* font-family: -apple-system,PingFangSC-Regular, Roboto, Helvetica Neue, Helvetica, Tahoma,Arial, PingFang SC-Light, Microsoft YaHei; */
+    font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB", "Source Han Sans", "Noto Sans CJK Sc", "Microsoft YaHei", "Microsoft Jhenghei", sans-serif;
 }
 
 body * {
@@ -38,21 +39,13 @@ body{
     transition-duration: 1s;
     background-color: #FFFFFF;
 }
-body.records{
-    background-color: #FF4D3E;
-}
-body.shows{
-    background-color: #cccc00;
-}
-body.shows{
-    background-color: #2A00FF;
-}
-body.goods{
-    background-color: #00FF2E;
-}
-body.videos{
-    background-color: #2A00FF;
-}
+body.news{ background-color: #FFFFFF; }
+body.records{ background-color: #FF4D3E; }
+body.shows{ background-color: #FFEC00; }
+/* body.shows{ background-color: #2A00FF; } */
+body.goods{ background-color: #00FF2E; }
+body.videos{ background-color: #00FFFE; }
+
 @media only screen and (min-width: 768px) {
     html {
         font-size: 225%!important;
