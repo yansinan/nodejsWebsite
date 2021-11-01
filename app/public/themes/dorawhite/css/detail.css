@@ -581,3 +581,144 @@
     }
     
 }
+
+/* 专辑和周边详情 */
+body.records #offcanvasDetailAll,
+body.goods #offcanvasDetailAll{
+    background: inherit;
+}
+.detail.record.font-normal,
+.detail.good.font-normal{
+    font-size: calc(14 * 1rem / 26);
+}
+.detail.record,
+.detail.good{
+    display:flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+.detail.record .head,
+.detail.good .head{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+
+    /* flex: 0 1 560px; */
+    flex: 1 1 60%;
+    margin-bottom: calc(42 * 1rem / 26);
+    align-self: center;
+}
+    .detail.record .head .album,
+    .detail.good .head .album{
+        position: relative;
+        width: 83.33vw;
+        overflow: hidden;
+        cursor: pointer;
+        background-color: var(--color-placeholder,#aaa);
+    }
+    .detail.record .head .album::after,
+    .detail.good .head .album::after{
+        content:"";
+        display:block;
+        padding-bottom:100%;
+        height:0px;
+    }
+    .detail.record .head .album img,
+    .detail.good .head .album img{
+        /* width:83.33vw; */
+        width: 100%;
+        height:100%;
+        position: absolute;  
+    }
+    /* 链接和编号 */
+    .detail.record .head .link,
+    .detail.good .head .link{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        width: 83.33vw;        
+        margin-top: 1rem;
+    }
+    .detail.record .head .link .catalog,
+    .detail.good .head .link .catalog{
+        border:1px solid black;
+        padding: 5px 10px;
+    }
+    .detail.record .head .link .url,
+    .detail.good .head .link .url{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+.detail.record .info,
+.detail.good .info{
+    display:flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    flex: 1 1 40%;
+}
+    /* 乐队名称&标题 */
+    .detail.record .name,
+    .detail.good .name{
+        font-size: 1rem;
+        line-height: calc(32 * 1rem / 26);
+        margin-bottom: 1rem;
+    }
+    .detail.good .list-inline,
+    .detail.record .list-inline{
+        margin-bottom: 1rem;
+    }
+    .detail.good .list-inline li.border,
+    .detail.record .list-inline li.border{
+        border: 1px solid #000!important;
+    }
+    .detail .formatTags{
+        display:none;
+    }
+    .detail.record .formatTags{
+        display:flex;
+        margin-bottom: 0px;
+    }
+    .detail.record .formatTags::before{
+        content:"发行方式：";
+    }
+    .detail.record .formatTags .breadcrumb-item::before{
+        color:inherit;
+    }
+    .detail.good .date::before,
+    .detail.record .date::before{
+        content:"发行时间：";
+    }
+
+.detail.good .headEnd,
+.detail.record .headEnd{
+    /* flex:0 0 3rem; */
+    border-bottom: 1px solid #000;
+    width: 100%;
+    flex: 0 0 100%;
+    margin: calc(32 * 1rem / 26) 0px;
+}
+
+
+@media (min-width: 1024px) {
+    .detail.record .head .album,
+    .detail.good .head .album{
+        width:39vw;
+        min-width:560px;
+    }
+    .detail.record .head .link,
+    .detail.good .head .link{
+        width:39vw;
+        min-width:560px;
+    }
+    .detail.record .info,
+    .detail.good .info{
+        order:-1;
+    }
+}

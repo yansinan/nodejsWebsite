@@ -45,10 +45,13 @@ body.shows{
     background-color: #cccc00;
 }
 body.shows{
-    background-color: #5400ff;
+    background-color: #2A00FF;
 }
 body.goods{
-    background-color: #ad49f0;
+    background-color: #00FF2E;
+}
+body.videos{
+    background-color: #2A00FF;
 }
 @media only screen and (min-width: 768px) {
     html {

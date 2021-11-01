@@ -52,7 +52,7 @@
     background-color: #fff;
     position: fixed;
     bottom: 150px;
-    border-radius: 20px;
+    border-radius: 50%;
     cursor: pointer;
     -webkit-transition: .3s;
     transition: .3s;

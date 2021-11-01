@@ -277,7 +277,12 @@ img:not([src]):not([srcset]) {
 .hoverUnderline:hover{
     text-decoration: underline;
 }
-
+.outUnderline:not(:hover){
+    text-decoration: underline;
+}
+.outUnderline:hover{
+    text-decoration: none;
+}
 
 /* 通用视频播放按钮 */
 .videoWrapper{
