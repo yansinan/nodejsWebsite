@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-08-04 05:26:38 
  * @Last Modified by: dr
- * @Last Modified time: 2021-09-03 11:21:57
+ * @Last Modified time: 2021-11-02 01:45:39
  */
 'use strict';
 const { debug } = require('console');
@@ -41,6 +41,7 @@ const docTemplate={// 生成文档种子
 
 class ServicePlugin extends Service {
     async getDoc(yearStart=""){
+        let console=this.logger;
         let {ctx,service}=this;
         let query={
             state: '2',
@@ -213,6 +214,7 @@ class ServicePlugin extends Service {
     // 获取时间轴按年的日期数组//payload.yearCurrent
     async getListDateYear(payload={}){
         let that=this;
+        let console=this.logger;
         let {
             yearCurrent,
             isRandom,
@@ -247,7 +249,7 @@ class ServicePlugin extends Service {
                     if(idxVideo !=-1){
                         let listVideoToAdd=listVideos.splice(0,idxVideo+1);
                         if(listVideoToAdd.length>0){
-                            console.log("在doc.",idxDoc,doc.dateFull,"之前添加了，",listVideoToAdd.length,"个 视频：",listVideoToAdd[0].dateFull,"，剩余视频:",listVideos.length);
+                            // console.info("在doc.",idxDoc,doc.dateFull,"之前添加了，",listVideoToAdd.length,"个 视频：",listVideoToAdd[0].dateFull,"，剩余视频:",listVideos.length);
                             listDocs.splice(idxDoc,0,...listVideoToAdd);
                         }                    
                     }
@@ -320,7 +322,7 @@ class ServicePlugin extends Service {
         //    pageInfo.yearNewest=parseInt(moment(listDocs[0].date).format("YYYY"));
         //}
         if(!yearCurrent)pageInfo.yearNewest=parseInt(moment(listYear[0]).format("YYYY"));
-        console.log(listYear,pageInfo)
+        console.info(listYear,pageInfo)
         return {pageInfo,listDateYear,listDocs};
     }
     // 获取虚拟docs,payload.yearCurrent

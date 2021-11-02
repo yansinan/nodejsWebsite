@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-01-28 04:34:44 
  * @Last Modified by: dr
- * @Last Modified time: 2021-09-27 04:52:40
+ * @Last Modified time: 2021-11-02 01:38:55
  */
 
 
@@ -30,7 +30,7 @@ class ServicePlugin extends Service {
         try{
             if(!api)throw new Error({api});
             res=await Axios.get(this.app.config.server_neteaseCloudMusicApi+api,{ params:payload,});
-            console.warn("跨域网络请求:网易云音乐",api,res.status,res.data);
+            console.info("跨域网络请求:网易云音乐",api,res.status);//,res.data);
             if(res.status!=200 || !res.data ) throw new Error("webCrawler连接服务器错误,status:"+res.status);
             return {
                 status:res.data.code,

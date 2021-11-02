@@ -194,6 +194,7 @@ let ControllerPlugin = {
     },
 
     async create(ctx, app) {
+        const console=this.logger;
         try {
             let service=ctx.service[SERVICE_NAME];
 
@@ -201,7 +202,7 @@ let ControllerPlugin = {
             // 初始化用户喜欢
             fields.likeUserIds=[];
             let formObj=await funGetData(ctx,fields);//Object.assign({},await funGetData(ctx,fields));
-            console.log("controller."+SERVICE_NAME,fields,formObj)
+            console.info("controller."+SERVICE_NAME,fields,formObj)
             // 数据有效性
             ctx.validate(checkRule(ctx), formObj);
 

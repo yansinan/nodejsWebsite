@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-01-28
  * @Last Modified by: dr
- * @Last Modified time: 2021-09-01 11:35:17
+ * @Last Modified time: 2021-11-02 01:41:46
  */
 
 'use strict';
@@ -135,6 +135,7 @@ class ServicePlugin extends Service {
     // message: "OK",
     // }
     async ncmURLMV(idNCMMV){
+        const console=this.logger;
         try{
             if(!idNCMMV)throw new Error("没有idNCMMV");
             let resNCM=await this.ctx.service.webCrawler.api("/mv/url",{id:idNCMMV});
@@ -143,7 +144,7 @@ class ServicePlugin extends Service {
             return resNCM.data.url;
         }catch(e){
             debugger
-            console.warn("ncmURLMV错误",e);
+            console.error("ncmURLMV错误",e);
             return "";
         }        
     }
@@ -201,6 +202,7 @@ class ServicePlugin extends Service {
     //     message: "OK",
     // }
     async ncmMV(idNCMMV){
+        const console=this.logger;
         try{
             if(!idNCMMV)throw new Error("没有idNCMMV");
             let resNCM=await this.ctx.service.webCrawler.api("/mv/detail",{mvid:idNCMMV});
@@ -221,7 +223,7 @@ class ServicePlugin extends Service {
             return res;
         }catch(e){
             debugger
-            console.warn("ncmMV错误",e);
+            console.error("ncmMV错误",e);
             return false;
         }        
     }

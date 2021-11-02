@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-08-08 06:31:51 
  * @Last Modified by: dr
- * @Last Modified time: 2021-09-09 02:06:03
+ * @Last Modified time: 2021-11-02 01:37:53
  */
 const Controller = require('egg').Controller;
 const _ = require('lodash');
@@ -17,10 +17,11 @@ const moment = require('moment')
 
 class IndexController extends Controller {
     async getDataForIndexPage() {
+        const console=this.logger;
         const ctx = this.ctx;
         ctx.query.current = ctx.params.current;
         ctx.pageType = "index";
-        // console.log('-ctx.getSiteInfo();--', await ctx.getSiteInfo())
+        // console.info('-ctx.getSiteInfo();--', await ctx.getSiteInfo())
         // await ctx.getPageData();
     
         // 获取通用页面信息

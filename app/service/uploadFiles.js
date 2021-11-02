@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-01-26 
  * @Last Modified by: dr
- * @Last Modified time: 2021-10-28 03:21:15
+ * @Last Modified time: 2021-11-02 01:42:54
  */
 
 'use strict';
@@ -202,6 +202,7 @@ let getUploadConfig = (userUploadConfig) => {
 
 class ServicePlugin extends Service {
     async create() {
+        const console=this.logger;
         const {
             ctx,
             app
@@ -217,13 +218,13 @@ class ServicePlugin extends Service {
         let part;
         while ((part = await parts()) != null) {
             if (part.length) {
-                console.log("field: " + part[0]);
-                console.log("value: " + part[1]);
+                console.info("field: " + part[0]);
+                console.info("value: " + part[1]);
             } else {
                 if (!part.filename) {
                     continue;
                 }
-                console.log("uploadFiles.service=>uploading fileInfo from part: " , part);
+                console.info("uploadFiles.service=>uploading fileInfo from part: " , part);
                 // 在upload/images下，按控制器分文件夹
                 options.subdirMod=parts.field.nameMod?parts.field.nameMod:'';
                 //控制器文件夹下是否按id分文件夹
@@ -351,6 +352,7 @@ class ServicePlugin extends Service {
     
     //缓存json数据
     async cacheJSON(pathFile,objCallBack,isLocalFirst=true,isUpdateAfter=true){
+        const console=this.logger;
         let folder=path.dirname(pathFile);
         let data=false;
         let res = false;
