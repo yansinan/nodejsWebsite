@@ -27,8 +27,9 @@ html {
     /* font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,Helvetica,Arial,PingFang SC,Hiragino Sans GB,Microsoft YaHei UI,Microsoft YaHei,Source Han Sans CN,sans-serif; */
 
     font-size: 162.5%;/*292.5%;*/
+    --bs-font-sans-serif: "PingFang SC", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB", "Source Han Sans", "Noto Sans CJK Sc", "Microsoft YaHei", "Microsoft Jhenghei", sans-serif;
     /* font-family: -apple-system,PingFangSC-Regular, Roboto, Helvetica Neue, Helvetica, Tahoma,Arial, PingFang SC-Light, Microsoft YaHei; */
-    font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB", "Source Han Sans", "Noto Sans CJK Sc", "Microsoft YaHei", "Microsoft Jhenghei", sans-serif;
+    /* font-family:var(); */
 }
 
 body * {
@@ -38,6 +39,7 @@ body{
     transition-property: background-color;
     transition-duration: 1s;
     background-color: #FFFFFF;
+
 }
 body.news{ background-color: #FFFFFF; }
 body.records{ background-color: #FF4D3E; }
@@ -121,7 +123,7 @@ body.flex #mainCover.paddingCoverTop{
     body.flex #mainCover.paddingCoverTop-md{
         /* height:74px; */
         /* flex:0 0 74px; */
-        padding-top:74px;
+        padding-top:64px;
         padding-left: calc(var(--main-offset-left-pc,46px));
     }
 }

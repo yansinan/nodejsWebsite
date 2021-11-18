@@ -39,14 +39,19 @@
   display: flex;
   height: 100%;
   flex:0 1 3.7rem;
+  /* flex:0 1 calc(163 * 1rem /36); */
   margin-right:0px;
   /* flex:1 0 9.1vw; */
+  /* padding-top: 0rem; */
+  /* padding-bottom: 0rem; */
 }
 #navHeader .navbar-brand img{
     min-width:98px;
     max-width:131px;
+    max-width:163px;
     min-height:30px;
     max-height:40px;
+    /* max-height:53px; */
     width: 100%;
     height: auto;
     object-fit: contain;
@@ -178,6 +183,35 @@
     padding: 0.131rem 0.616rem;
     line-height: 0.6rem;
   }
+  #navHeader .btn{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1 / 1;
+    width: auto;
+    height:100%;
+    /* max-height: 68px; */
+    padding: 0px;
+    /* IOS下有默认的按钮渲染方式 */
+    /* -webkit-appearance:unset; */
+    /* font-size: 1.25rem; */
+    /* line-height: 1; */
+    /* background-color: transparent; */
+    /* border-color: transparent; */
+    /* border: 1px solid transparent; */
+    /* border-radius: .25rem; */
+    /* transition: box-shadow .15s ease-in-out; */
+    cursor: pointer;
+    vertical-align: middle;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: auto;
+    /* background-size: 0.827rem 0.56rem; */
+    /* background-size: calc(46 * 1rem /36); */
+
+
+  }
   #navHeader .btn.btn-search{
     /* aspect-ratio: 1 / 1; */
     width: auto;
@@ -187,9 +221,9 @@
     max-height: 100%;
     font-size: 25px;
     padding: 0px;
-    align-items: center;
-    justify-content: center;
-    display: flex;
+  }
+  #navHeader bn-search{
+    background: url(/static/upload/images/icons/bnSearch.svg) center no-repeat;
   }
   /*
   #navHeader .input-group.search{
@@ -220,40 +254,17 @@
     overflow: hidden;
   }
     #navHeader bn-menu-toggler{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
 
-    aspect-ratio: 1 / 1;
-    width: auto;
-    height:100%;
-    /* max-height: 68px; */
-    padding: 0px;
-    /* IOS下有默认的按钮渲染方式 */
-    /* -webkit-appearance:unset; */
-    /* font-size: 1.25rem; */
-    /* line-height: 1; */
-    /* background-color: transparent; */
-    /* border-color: transparent; */
-    /* border: 1px solid transparent; */
-    /* border-radius: .25rem; */
-    /* transition: box-shadow .15s ease-in-out; */
-    cursor: pointer;
+      /* background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 0, 0, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e"); */
+      background: url(/static/upload/images/icons/bnMenu.svg) center no-repeat;
 
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 0, 0, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-    vertical-align: middle;
-    background-repeat: no-repeat;
-    background-position: center;
-    /* background-size: 100%; */
-    background-size: 0.827rem 0.56rem;
 
-    position: relative;
-    top: -100%;
-    left: 0;
-    bottom:0;
-    right:0;
-  }
+      position: relative;
+      top: -100%;
+      left: 0;
+      bottom:0;
+      right:0;
+    }
   #navHeader.listArtist bn-menu-toggler{
     animation:slideDownIn .3s ease 0s 1 normal both; 
   }
@@ -261,36 +272,13 @@
     animation:slideUpOut .3s ease 0s 1 normal both; 
   }
 
-
-
   #navHeader .navbar .btn-close{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
 
-    aspect-ratio: 1 / 1;
-    width: auto;
-    height:100%;
-    /* max-height: 68px; */
-    padding: 0px;
-    /* IOS下有默认的按钮渲染方式 */
-    /* -webkit-appearance:unset; */
-    /* font-size: 1.25rem; */
-    /* line-height: 1; */
-    /* background-color: transparent; */
-    /* border-color: transparent; */
-    /* border: 1px solid transparent; */
-    /* border-radius: .25rem; */
-    /* transition: box-shadow .15s ease-in-out; */
-    cursor: pointer;
+    /* background-image: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat; */
+    background: url(/static/upload/images/icons/bnClose.svg) center no-repeat;
 
-    background-image: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
-    vertical-align: middle;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 0.74rem 0.74rem;
-    opacity: 0.5;
+    /* background-size: 0.74rem 0.74rem; */
+    /* opacity: 0.5; */
   }
   #navHeader.timeline .navbar .btn-close{
     /* @keyframes name | duration | easing-function | delay |
@@ -331,15 +319,33 @@
     flex: 1 0 calc(var(--main-offset-left-mobile,20px) + var(--footer-size-mobile,16px) );
   }
 @media (min-width: 768px) {
+  #navHeader .navbar{
+    padding-top: calc(30 * 1rem / 36);
+  }
   /* PC版缩进，保持跟mainCover对齐 */
   #navHeader .navbar .navOffsetLeft-md{
     flex: 0 0 calc(var(--main-offset-left-pc,46px))!important;
     min-width: calc(var(--main-offset-left-pc,46px))!important;
   }
+  #navHeader .navbar-brand{
+    flex:0 1 calc(163 * 1rem /36);
+    padding-top: 0rem;
+    padding-bottom: 0rem;
+  }
+  #navHeader .navbar-brand img{
+      max-width:163px;
+      min-height:63px;
+      max-height:100%;
+      width: auto;
+      height: 100%;
+      object-fit: contain;
+  }
   /* #navHeader.timeline .navbar .navOffsetLeft-md */
   /* #navHeader.timeline.done .navbar .navOffsetLeft-md */
+  #navHeader.timeline .navbar .navOffsetRight-md,
   #navHeader .navbar .navOffsetRight-md{
     flex: 1 1 0;
+    margin-right:calc(46 * 1rem / 36)!important;;
   }
 
   /* PC端，乐队列表页隐藏移动端的居中timeline导航菜单 */

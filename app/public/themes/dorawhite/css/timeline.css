@@ -103,7 +103,8 @@
   margin-bottom: 0.77rem;
   font-size: 1rem;/*18px*/
   line-height:calc(30 * 1rem / 26);
-  font-family: NHaasGroteskTXPro-Rg, NHaasGroteskTXPro;
+  /* font-family: NHaasGroteskTXPro-Rg, NHaasGroteskTXPro; */
+  font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB", "Source Han Sans", "Noto Sans CJK Sc", "Microsoft YaHei", "Microsoft Jhenghei", sans-serif;
   position: relative;
   /* 摘自row */
   --bs-gutter-x: 1.5rem;
@@ -211,36 +212,47 @@
   display:flex;
 }
 /* 唱片列表 */
+#timelineContent.goods .wapper-mm .item .imgContainer,
 #timelineContent.records .wapper-mm .item .imgContainer{
   display:flex;
   margin-right: calc(var(--bs-gutter-x) * .5);
+  min-height:auto;
+
 }
+#timelineContent.goods .wapper-mm .item .titleContainer,
 #timelineContent.records .wapper-mm .item .titleContainer{
   flex: 0 0 6.54rem;
   font-size:calc(18 * 1rem / 26);
 }
+#timelineContent.goods .wapper-mm .item .nameArtists,
 #timelineContent.records .wapper-mm .item .title .nameArtists{
   display:block;
 }
+#timelineContent.goods .wapper-mm .item .titleContainer .imgContainer,
 #timelineContent.records .wapper-mm .item .titleContainer .imgContainer{
   display:none;
 }
+#timelineContent.goods .titleContainer .tags,
 #timelineContent.records .titleContainer .tags{
   display:none;
 }
+#timelineContent.goods .titleContainer .tags.goods,
 #timelineContent.records .titleContainer .tags.records{
   display:flex;
 }
+#timelineContent.goods .titleContainer .tags.goods .list-inline-item,
 #timelineContent.records .titleContainer .tags.records .list-inline-item{
   border:1px solid black!important;
   border-radius: 0px!important;
 }
+#timelineContent.goods .imgContainer::after,
 #timelineContent.records .imgContainer::after{
   content:"";
   display:block;
   padding-bottom:100%;
   height:0px;
 }
+#timelineContent.goods .imgContainer img.img-fluid,
 #timelineContent.records .imgContainer img.img-fluid{
   height:100%;
   position: absolute;
@@ -282,6 +294,9 @@
     overflow: visible;
     transform: translateY(0%);
   }
+  #timelineContent.goods .container-mm.goods{
+    max-width: 23.6vw;
+  }
   #timelineContent .container-mm{
     transition-property: max-width,transform;
     transition-duration: .5s,1s;
@@ -316,6 +331,11 @@
     width:34.7vw;
     margin-right:6vw;
   }
+  #timelineContent.goods .wapper-mm-md{
+    width:22vw;
+    margin-right:1.6vw;
+    min-width:22vw;
+  }
   #timelineContent .wapper-mm-md .item{
     margin-bottom: 1.42rem;
     margin-right: calc(var(--bs-gutter-x) * -.5);
@@ -337,6 +357,7 @@
     /* padding-left: calc(var(--bs-gutter-x) * .5); */
     flex: 1 0 auto;
   }
+  #timelineContent.goods .wapper-mm .item .titleContainer,
   #timelineContent.records .wapper-mm .item .titleContainer{
     color: white;
     font-size: calc(32 * 1rem / 36);
@@ -355,6 +376,7 @@
     transition-property: opacity;
     transition-duration: .5s;
   }
+  #timelineContent.goods .wapper-mm .item:hover .titleContainer:hover,
   #timelineContent.records .wapper-mm .item:hover .titleContainer:hover {
     opacity: .8;
   }
@@ -364,9 +386,11 @@
     display:none;
   }
   */
+  #timelineContent.goods .tags.goods
   #timelineContent.records .tags.records{
     display:flex;
   }
+  #timelineContent.goods .titleContainer .tags.goods .list-inline-item
   #timelineContent.records .titleContainer .tags.records .list-inline-item{
     border:1px solid white!important;
   }

@@ -84,9 +84,13 @@
     #dr-footer{
         overflow: hidden;
     }
+    .foot-float.back-to-top{
+        right:calc(0.534rem + 18px);
+        top:calc(50vh - ( 40 * 1rem /36 ) );
+    }
     .foot-float .btnRubyEyes-md{
-        width: 2rem;
-        height: 2rem;
-        background: url(/static/upload/images/defaultlogo.png) center/1.5rem auto no-repeat ;
+        width: calc(80 * 1rem / 36);
+        height: calc(80 * 1rem / 36);
+        background: url(/static/upload/images/defaultlogo.png) center/1.55rem auto no-repeat ;
     }
 }

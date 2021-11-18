@@ -409,12 +409,13 @@
                         </li>{% endif %} {% endfor %}                        
                     </ul>
                     {# search #}
-                    <div class="btn btn-search" onclick="window.eBnSearch(event)"><i class="fa fa-search"></i></div>
+                    {# <div class="btn btn-search" onclick="window.eBnSearch(event)"><i class="fa fa-search"></i></div> #}
+                    <bn-search class="btn" onclick="window.eBnSearch(event)"></bn-search>
                 </div>
                 <div class="btnWrapper">
                 {# <button type="button" class="btn-close text-reset" aria-label="Close" onclick="eClickTimelineClose()"></button> #}
-                <bn-close class="btn-close"  aria-label="Close" onclick="eClickTimelineClose()"></bn-close>
-                <bn-menu-toggler class="show"  data-bs-toggle="offcanvas" href="#offcanvasRightMenu" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation"></bn-menu-toggler>
+                <bn-close class="btn btn-close"  aria-label="Close" onclick="eClickTimelineClose()"></bn-close>
+                <bn-menu-toggler class="btn show"  data-bs-toggle="offcanvas" href="#offcanvasRightMenu" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation"></bn-menu-toggler>
                 </div>
             </div>
         {# </div> #}
