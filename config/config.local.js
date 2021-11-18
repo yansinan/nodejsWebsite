@@ -8,7 +8,7 @@ module.exports = appInfo => {
 
     return {
         // 后台管理vue-cli模块的调试环境服务器路径，找到package.json时，dev_modules列表存在时使用
-        admin_root_path: "http://wx.z-core.cn",//'http://serverhome.local',//'http://wx.z-core.cn',
+        admin_root_path: "http://wx.z-core.cn",//"http://192.168.1.202:8084",//'http://serverhome.local',//'http://wx.z-core.cn',
         // DEV_CONFIG_MODULES_BEGIN
         dev_modules: [
             // 'navbar',
@@ -69,8 +69,8 @@ module.exports = appInfo => {
         logger: {
             dir: path.join(appInfo.baseDir, 'logs'),
         },
-        server_path: 'http://wx.z-core.cn:8791',
-        server_api: 'http://wx.z-core.cn:8791/api',
+        server_path: 'http://wx.z-core.cn:8791',//'http://192.168.1.202:8084',//
+        server_api: 'http://wx.z-core.cn:8791/api',//'http://192.168.1.202:8084/api',//
         server_neteaseCloudMusicApi:"http://192.168.1.202:3000",
         server_puppeteerApi:"http://puppeteer:8080",
     }
