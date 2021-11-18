@@ -1,3 +1,6 @@
+body{
+    --main-width-artist-pc:32.4vw;
+}
 #coverArtistsWrapper{
     /* display:flex; */
     /* flex-direction: column; */
@@ -54,9 +57,12 @@
     pointer-events: none;
     position: relative;  
     display:block;
-    min-width: 390px;
-    width: max(390px,32.4vw);
-    max-width:32.4vw;
+    /* min-width: 390px; */
+    /* width: max(390px,var(--main-width-artist-pc,32.4vw)); */
+    width:calc( var(--main-width-artist-pc,32.4vw) - 2rem );
+    /* max-width:27vw; */
+    height:calc( ( var(--main-width-artist-pc,32.4vw) - 2rem ) * 9 / 16 );
+    max-height:30vh;
     text-align: left;
     border:none;
     background-color: transparent;
@@ -86,7 +92,10 @@
 .tooltip.sImg.show .tooltip-inner img.loaded{
     filter:saturate(1) hue-rotate(0deg) brightness(1) opacity(1);
 }
-
+.tooltip.sImg.verticle .tooltip-inner{
+    height:30vh;
+    width:calc(30vh * 9 / 16 );
+}
 .tooltip.sImg.verticle .tooltip-inner::after{
     padding-bottom: calc(3 * 100% / 2);
 }
@@ -201,8 +210,8 @@
     .listArtists .artist-md{
         /* height:calc(100%/15); */
         /* PC宽415+52 */
-        min-width:32.4vw;
-        max-width:32.4vw;
+        min-width:var(--main-width-artist-pc,32.4vw);
+        max-width:var(--main-width-artist-pc,32.4vw);
         /* width:32.4vw; */
         /* padding-bottom: 6px; */
         height:1.2rem;
