@@ -94,11 +94,16 @@
     border-left: 4px solid black;
     width:10px;
     height:100%;
-    background-color:#52FF00;
+    background-color:#2A00FF;
 
     opacity: 1;
     transform:translateX(0px);
 }
+body.news #dr-footer .scrollBar div{ background-color: #2A00FF; }
+body.records #dr-footer .scrollBar div{ background-color: #FF4D3E; }
+body.shows #dr-footer .scrollBar div{ background-color: #FFEC00; }
+body.goods #dr-footer .scrollBar div{ background-color: #00FF2E; }
+body.videos #dr-footer .scrollBar div{ background-color: #00FFFE; }
 #dr-footer.timeline.done .scrollBar{
     opacity:1;
     /* height:var(--footer-size-mobile,105px); */
@@ -350,12 +355,12 @@ body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s {
     #dr-footer.footerContainer-md .scrollBar{
         opacity: 1;
         height:var(--footer-size-pc,105px);
-        transform: translate(280px,calc(-1 * var(--footer-size-pc,105px)));
+        transform: translate(var(--width-footer-bn-pc,40px),calc(-1 * var(--footer-size-pc,105px)));
     }
     #dr-footer.footerContainer-md.timeline.done .scrollBar{
         opacity:1;
         height:var(--footer-size-pc,105px);
-        transform: translate(280px,0px);
+        transform: translate(var(--width-footer-bn-pc,40px),0px);
     }
     #bsTimelineBarWrapper .bsTimelineBarContent-md .left{
         flex-basis: calc(var(--main-offset-left-pc,46px))!important;
@@ -404,6 +409,7 @@ body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s {
     #dr-footer .timelineContainer .timelineYearContainer-md .timelineYear span{
         transform: translate(calc(-50% + 35.5px),44px);
         padding-right:71px;
+        font-weight: 500;
         /* border:1px solid green; */
         /* background-color: white; */
         /* -webkit-text-stroke: 2.0px white; */

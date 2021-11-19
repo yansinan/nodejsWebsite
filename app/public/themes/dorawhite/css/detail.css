@@ -76,7 +76,7 @@
 .detail .more{
     width:calc(180 * 1rem / 36);
     height:calc(60 * 1rem / 36);
-    border: 1px solid #FFFFFF;
+    border: 1px solid #FDFDFD;
     border-radius: calc(60 * 1rem / 36 / 2);
     margin-top: calc(44 * 1rem / 36);
     margin-bottom: calc(44 * 1rem / 36);
@@ -169,7 +169,7 @@
     margin-bottom:1.75rem;
 }
 .detail.artist .list-inline li.border{
-    border: 1px solid #fff!important;
+    border: 1px solid #FDFDFD!important;
 }
 .detail.artist article{
     max-width: calc( 100% - 20px);
@@ -197,7 +197,7 @@
 
 .detail.artist .headEnd{
     flex:0 0 3rem;
-    border-bottom: 1px solid #FFFFFF;
+    border-bottom: 1px solid #FDFDFD;
     width: 100%;
 }
 #offcanvasDetail .nav{

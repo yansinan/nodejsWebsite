@@ -38,10 +38,10 @@ body * {
 body{
     transition-property: background-color;
     transition-duration: 1s;
-    background-color: #FFFFFF;
+    background-color: #FDFDFD;
 
 }
-body.news{ background-color: #FFFFFF; }
+body.news{ background-color: #FDFDFD; }
 body.records{ background-color: #FF4D3E; }
 body.shows{ background-color: #FFEC00; }
 /* body.shows{ background-color: #2A00FF; } */

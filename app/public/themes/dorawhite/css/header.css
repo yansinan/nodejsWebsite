@@ -61,6 +61,7 @@
     width:auto;
     height:100%;
     flex:1 1 100%;
+    margin-right: calc( 20 * 1rem / 36 );
     justify-content: flex-end;
     align-items: center;
     flex-wrap: nowrap;
@@ -334,7 +335,7 @@
   }
   #navHeader .navbar-brand img{
       max-width:163px;
-      min-height:63px;
+      min-height:53px;
       max-height:100%;
       width: auto;
       height: 100%;
@@ -345,7 +346,7 @@
   #navHeader.timeline .navbar .navOffsetRight-md,
   #navHeader .navbar .navOffsetRight-md{
     flex: 1 1 0;
-    margin-right:calc(46 * 1rem / 36)!important;;
+    margin-right:calc(36 * 1rem / 36)!important;;
   }
 
   /* PC端，乐队列表页隐藏移动端的居中timeline导航菜单 */
@@ -354,9 +355,10 @@
   }
   #navHeader #collapseNavbarPC.navbar-collapse-md ul{
     display: flex;
+    margin-right:2rem;
     transition-property: transform;
     transition-duration: .3s;
-    transform:translateY(109%);
+    transform:translateY(135%);
   }
   #navHeader.timeline #collapseNavbarPC.navbar-collapse-md ul{
     /* animation:slideUpIn .3s ease 0s 1 normal both; */
@@ -364,7 +366,12 @@
   }
   #navHeader.listArtist #collapseNavbarPC.navbar-collapse-md ul{
     /* animation:slideOut .3s ease 0s 1 normal both; */
-    transform:translateY(109%);
+    transform:translateY(135%);
+  }
+  #navHeader #collapseNavbarPC.navbar-collapse-md ul li{
+    margin:0rem calc(4.5 * 1rem / 36) 0rem calc(4.5 * 1rem / 36) ;
+    height: calc( 42 * 1rem / 36);
+    padding: 0 calc( 5.5 * 1rem / 36 );
   }
   #navHeader .navbar .navbar-collapse.navbar-collapse-md ul li a
   {

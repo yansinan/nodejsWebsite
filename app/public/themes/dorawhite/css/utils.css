@@ -119,6 +119,7 @@ img:not([src]):not([srcset]) {
     width:0.427rem;
     height:0.427rem;
     border-radius: 0.11rem;/*0.25rem*/
+    opacity: 1;
 }
 
 .list-inline-item{
@@ -127,6 +128,7 @@ img:not([src]):not([srcset]) {
     margin-right:0.278rem;
     padding: 0.05rem 0.5rem;
     line-height: 0.6rem;
+    border:1px solid black;
 }
 .list-inline-item:hover{
     cursor: pointer;

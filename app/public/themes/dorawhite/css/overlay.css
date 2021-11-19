@@ -2,15 +2,15 @@
     transition-property: background-color;
     transition-duration: 1s;
 
-    background: white;
+    background: #FDFDFD;
     color: black;
     --offsetcanvas-padding-right:0.77rem;
     --offsetcanvas-padding:0.77rem;
     --offsetcanvas-left:0vw;
     --offsetcanvas-right:calc( 100vw - var(--offsetcanvas-left,0vw));
 }
-#offcanvasDetailAll.news{ background-color: #FFFFFF; }
-#offcanvasDetailAll.artists{ background-color: #000000; color:white;}
+#offcanvasDetailAll.news{ background-color: #FDFDFD; }
+#offcanvasDetailAll.artists{ background-color: #000000; color:#FDFDFD;}
 #offcanvasDetailAll.records{ background-color: #FF4D3E; }
 #offcanvasDetailAll.shows{ background-color: #FFEC00; }
 #offcanvasDetailAll.goods{ background-color: #00FF2E; }
@@ -121,6 +121,17 @@
     #offcanvasDetailAll.artists #offcanvasLeft.offcanvas-start{
         display:flex;
     }
+    #offcanvasDetailAll #offcanvasLeft #offcanvasListArtists{
+        margin-top:2rem;
+        margin-left: 10px;
+    }
+    #offcanvasDetailAll #offcanvasLeft #offcanvasListArtists .firstLetter{
+        padding-top: 1rem;
+    }
+    #offcanvasDetailAll #offcanvasLeft #offcanvasListArtists .firstLetter,
+    #offcanvasDetailAll #offcanvasLeft #offcanvasListArtists .artist{
+        padding-bottom: 0.5rem;
+    }
     /* header详情弹出层 */
     #offcanvasRight .offcanvas-header{
         justify-content:flex-end;
@@ -152,6 +163,7 @@
     }
     #offcanvasDetailAll #offcanvasRight #offcanvasDetail{
         margin-top: 57px;
+        margin-top: 0px;
         padding-left: calc(var(--main-offset-left-pc,46px));
         padding-right: calc(var(--main-offset-left-pc,46px));
     }
