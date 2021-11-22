@@ -88,6 +88,10 @@
         right:calc(0.534rem + 18px);
         top:calc(50vh - ( 40 * 1rem /36 ) );
     }
+    .foot-float.bnTest{
+        right:calc(0.534rem + 18px);
+        bottom:3rem;
+    }
     .foot-float .btnRubyEyes-md{
         width: calc(80 * 1rem / 36);
         height: calc(80 * 1rem / 36);

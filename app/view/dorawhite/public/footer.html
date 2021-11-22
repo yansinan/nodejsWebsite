@@ -113,14 +113,10 @@
                     },
                 })
                 this.$svgTimelineBar=document.getElementById("svgTimelineBar");
-                
-
-
-
             }
             {# footer初始化 #}
             this.$footer.init();
-
+            this.$footer.classList.add("listArtist","done");
 
             // 添加一个适当的事件监听器
             this.addEventListener("BS_COVER_WILL_LISTARTISTS", (page)=>{
@@ -149,6 +145,18 @@
                 this.$footer.classList.add("listArtist","done");
                 this.$footer.classList.remove("timeline");
             })
+            let footerUpHeight=getComputedStyle(document.documentElement).getPropertyValue('--footer-size-up-pc');
+            footerUpHeight=parseInt(footerUpHeight);
+            footerHoverHeight=(getBrowserInterfaceSize()).pageHeight-footerUpHeight
+            function eMouseMoveScreen(e){
+                if(e.y>footerHoverHeight){
+                    if(!this.$footer.classList.contains("up"))this.$footer.classList.add("up");
+                }else{
+                    if(this.$footer.classList.contains("up"))this.$footer.classList.remove("up");
+                }
+            } 
+            {# 鼠标下移拉出 #}
+            this.addEventListener("mousemove",eMouseMoveScreen);
         </script>
         {% include "../js/timelineBar.html" %}
     {% endblock %}
