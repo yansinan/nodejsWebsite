@@ -407,6 +407,10 @@ body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s {
         height:var(--footer-size-up-pc,36px);
         y: 0;
     }
+    #dr-footer.listArtist.up .timelineBn,
+    #dr-footer.listArtist.up .timelineYearContainer{
+        display:none;
+    }
     #bsTimelineBarWrapper .bsTimelineBarContent .blank{
         flex:0 0 var(--width-timeline-bar-wrapper-pc);
         min-width:var(--width-timeline-bar-wrapper-pc);
