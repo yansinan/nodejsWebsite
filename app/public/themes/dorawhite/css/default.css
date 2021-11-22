@@ -127,7 +127,7 @@ body.flex #mainCover.paddingCoverTop{
     body.flex #mainCover.paddingCoverTop-md{
         /* height:74px; */
         /* flex:0 0 74px; */
-        padding-top:64px;
+        padding-top:2.2rem;
         padding-left: calc(var(--main-offset-left-pc,46px));
     }
 }

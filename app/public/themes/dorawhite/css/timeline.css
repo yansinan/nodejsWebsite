@@ -342,7 +342,7 @@
     font-size: calc(32 * 1rem / 36);
     font-weight: 500;
     line-height: calc(42 * 1rem / 36);
-
+    max-height: 18rem;
     /* 隐藏动画 */
     /* 
     transition-property: max-height,margin-bottom;
@@ -353,6 +353,11 @@
     transition-duration: .7s;
      */
   }
+  #timelineContent.goods .wapper-mm .item,
+  #timelineContent.records .wapper-mm .item{
+    max-height: none;
+  }
+
   #timelineContent .wapper-mm .item .titleContainer{
     padding-left: 0px;
     /* padding-left: calc(var(--bs-gutter-x) * .5); */
