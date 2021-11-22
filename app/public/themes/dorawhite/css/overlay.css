@@ -133,9 +133,12 @@
         padding-bottom: 0.5rem;
     }
     /* header详情弹出层 */
-    #offcanvasRight .offcanvas-header{
+    .offcanvas-end .offcanvas-header{
         justify-content:flex-end;
-        /* padding: 0.427rem 0.427rem; */
+        align-items: flex-end;
+        height: var(--header-btn-height,53px);
+        margin-right: var(--header-margin-right,1rem)!important;
+        margin-top:var(--header-margin-top,30px);
         padding:0px;
     }
     #offcanvasDetailAll #offcanvasRight .offcanvas-header .navbar-brand{
@@ -143,6 +146,9 @@
         justify-content: flex-start;
         position: relative;
         flex: 1;
+        height: 100%;
+        padding-top:0px;
+        padding-bottom: 0px;
         margin-left: calc(var(--main-offset-left-pc,46px))!important;
     }
     #offcanvasDetailAll.about  #offcanvasRight .offcanvas-header .navbar-brand,
@@ -155,22 +161,25 @@
     }
     #offcanvasRight .offcanvas-header .btn-close{
         display:block;
-        filter: invert(1);
+        filter: invert(0);
     }
 
     #offcanvasDetailAll.artists .offcanvas-header .btn-close{
-        filter: invert(0);
+        filter: invert(1);
     }
     #offcanvasDetailAll #offcanvasRight #offcanvasDetail{
         margin-top: 57px;
-        margin-top: 0px;
+        margin-top: 64px;
         padding-left: calc(var(--main-offset-left-pc,46px));
         padding-right: calc(var(--main-offset-left-pc,46px));
     }
+    #offcanvasDetailAll.about #offcanvasRight #offcanvasDetail{
+        margin-top: 0px;
+    }
     #offcanvasDetailAll.artists #offcanvasRight #offcanvasDetail{
         margin-top: 19px;
-        /* padding-left: 0px; */
-        /* padding-right: 0; */
     }
 }
 
+
+  

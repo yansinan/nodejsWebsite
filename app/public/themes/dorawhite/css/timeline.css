@@ -374,12 +374,24 @@
     /* padding-bottom: calc(41 * 100% / 403); */
     padding-left: 6%;
     padding-right: 6%;
-    transition-property: opacity;
+    transition-property: background-color,opacity;
     transition-duration: .5s;
   }
   #timelineContent.goods .wapper-mm .item:hover .titleContainer:hover,
   #timelineContent.records .wapper-mm .item:hover .titleContainer:hover {
-    opacity: .8;
+    background-color: rgba(0,0,0,0.5);
+    opacity:1;
+  }
+  #timelineContent .wapper-mm .item.videos .imgContainer {
+    min-height:auto;
+  }
+  #timelineContent .wapper-mm .item .imgContainer {
+    transition-property: filter;
+    transition-duration: .5s;
+    filter:saturate(0);
+  }
+  #timelineContent .wapper-mm .item:hover .imgContainer{
+    filter:saturate(1);
   }
   /*
   #timelineContent.records .titleContainer .title,

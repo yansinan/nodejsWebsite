@@ -213,8 +213,8 @@
 
 
   }
+  /*
   #navHeader .btn.btn-search{
-    /* aspect-ratio: 1 / 1; */
     width: auto;
     height: 100%;
     min-width: 46px;
@@ -223,10 +223,6 @@
     font-size: 25px;
     padding: 0px;
   }
-  #navHeader bn-search{
-    background: url(/static/upload/images/icons/bnSearch.svg) center no-repeat;
-  }
-  /*
   #navHeader .input-group.search{
     justify-content: center;
     aspect-ratio: 1 / 1;
@@ -276,7 +272,6 @@
   #navHeader .navbar .btn-close{
 
     /* background-image: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat; */
-    background: url(/static/upload/images/icons/bnClose.svg) center no-repeat;
 
     /* background-size: 0.74rem 0.74rem; */
     /* opacity: 0.5; */
@@ -321,7 +316,7 @@
   }
 @media (min-width: 768px) {
   #navHeader .navbar{
-    padding-top: calc(30 * 1rem / 36);
+    margin-top: var(--header-margin-top,28px)
   }
   /* PC版缩进，保持跟mainCover对齐 */
   #navHeader .navbar .navOffsetLeft-md{
@@ -333,9 +328,9 @@
     padding-top: 0rem;
     padding-bottom: 0rem;
   }
-  #navHeader .navbar-brand img{
+  .navbar-brand img{
       max-width:163px;
-      min-height:53px;
+      min-height:var(--header-btn-height,53px);
       max-height:100%;
       width: auto;
       height: 100%;
@@ -346,7 +341,7 @@
   #navHeader.timeline .navbar .navOffsetRight-md,
   #navHeader .navbar .navOffsetRight-md{
     flex: 1 1 0;
-    margin-right:calc(36 * 1rem / 36)!important;;
+    margin-right:var(--header-margin-right,1rem)!important;
   }
 
   /* PC端，乐队列表页隐藏移动端的居中timeline导航菜单 */
@@ -410,7 +405,6 @@
     transform:translateY(-100%);
   }
 }
-
 /* 菜单打开 */
 #offcanvasRightMenu{
   background-color: #000000;
@@ -482,8 +476,13 @@
   }    
 
 @media (min-width: 768px) {
-  #offcanvasRightMenu .offcanvas-header {
+  #offcanvasRightMenu.offcanvas-end .offcanvas-header {
     margin-bottom:1.333rem;
+    justify-content: space-between;
+    padding-left: 20px;
+  }
+  #offcanvasRightMenu .offcanvas-header .btn{
+      filter: invert(1);
   }
   #offcanvasRightMenu.offcanvasRightMenu-md{
     width: 35.42vw;
@@ -505,8 +504,6 @@
     margin-bottom:60px;
   }
 }
-
-
 /* 搜索&标签 */
 #offcanvasSearch{
   background-color: #000000;
@@ -516,6 +513,12 @@
 }
 #offcanvasSearch .offcanvas-header{
   flex-wrap: wrap;
+  align-items: flex-start;
+  height: calc( 75px + var(--header-btn-height，53px) );
+  margin-bottom: 0px;
+}
+#offcanvasSearch .offcanvas-header .btn{
+  filter:invert(1);
 }
   #offcanvasSearch input{
       border:none;
@@ -525,6 +528,8 @@
       line-height: 2.5rem;
       font-size: 1rem;
       outline: none;
+      position: relative;
+      bottom: 0.5rem;
   }
   #offcanvasSearch input:focus{
       border:none;
@@ -538,6 +543,10 @@
     order: 3;
     /* flex-basis: calc(100% - 2rem); */
   }
+  #offcanvasSearch .offcanvas-header bn-search{
+    margin-right: calc( 20 * 1rem / 36 );
+  }
+  
 #offcanvasSearch .offcanvas-body{
   font-size: calc(22 * 1rem / 26);
   line-height: calc(29 * 1rem / 26);
@@ -634,12 +643,13 @@
     #offcanvasSearch .offcanvas-header input{
       display:flex;
       flex: 1;
-      margin-left: 1rem;
+      margin-left: 1.5rem;
       order:0;
     }
     #offcanvasSearch .offcanvas-body{
       font-size: calc(32 * 1rem / 36);
       line-height: calc(42 * 1rem / 36);
+      padding:1.5rem;
     }
     #offcanvasSearch .offcanvas-body ul li{
       margin-bottom: calc(51 * 1rem / 36);
@@ -650,6 +660,10 @@
       left: 0px;
     }
     */
+    #offcanvasSearch .offcanvas-body .nav::before,
+    #offcanvasSearch .offcanvas-body .nav::after{
+      flex: 0 0 1.5rem;
+    }
     #offcanvasSearch .offcanvas-body .nav li{
       height:calc(40 * 1rem / 36);
       min-width: 120px;

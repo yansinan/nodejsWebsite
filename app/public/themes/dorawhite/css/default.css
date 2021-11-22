@@ -17,6 +17,9 @@
     --footer-size-open-mobile:54px;
     --footer-size-open-pc:106px;
 
+    --header-margin-right:calc(36 * 1rem / 36);
+    --header-margin-top:calc(27 * 1rem / 36);
+    --header-btn-height:calc(53 * 1rem / 36);
 }
 
 html {
