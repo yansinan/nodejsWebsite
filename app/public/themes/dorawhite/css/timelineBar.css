@@ -70,7 +70,11 @@
     opacity: 1;
     transform: translateX(0px);
 }
-
+#dr-footer.footerContainer.timeline.done.oldestYear .timelineContainer .timelineBn.next,
+#dr-footer.footerContainer.timeline.done.newestYear .timelineContainer .timelineBn.prev{
+    filter:opacity(0.3);
+    pointer-events: none;
+}
 /* 当前标记 */
 #dr-footer .scrollBar{
     transition-property: height,opacity,transform;

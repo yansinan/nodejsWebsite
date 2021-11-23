@@ -3,7 +3,7 @@
 <footer id="dr-footer" class="footerContainer footerContainer-md border-top border-dark">
     {% block footerUp %}
         <div class="timelineContainer">
-            <div class="timelineBn prev">
+            <div onclick="window.eClickBnYear('next')" class="timelineBn prev">
                 <div class="bnArrow"></div>
             </div>
             <div id="scrollbarTimeLine" class="scrollBar" style="">
@@ -58,7 +58,7 @@
                     </div>
             </div>
             </div>
-            <div class="timelineBn next">
+            <div  onclick="window.eClickBnYear('prev')" class="timelineBn next">
                 <div class="bnArrow"></div>
             </div>
         </div>
@@ -145,6 +145,8 @@
                 this.$footer.classList.add("listArtist","done");
                 this.$footer.classList.remove("timeline");
             })
+
+            {# 鼠标下移拉出 #}
             let footerUpHeight=getComputedStyle(document.documentElement).getPropertyValue('--footer-size-up-pc');
             footerUpHeight=parseInt(footerUpHeight);
             footerHoverHeight=(getBrowserInterfaceSize()).pageHeight-footerUpHeight
@@ -155,7 +157,6 @@
                     if(this.$footer.classList.contains("up"))this.$footer.classList.remove("up");
                 }
             } 
-            {# 鼠标下移拉出 #}
             this.addEventListener("mousemove",eMouseMoveScreen);
         </script>
         {% include "../js/timelineBar.html" %}
