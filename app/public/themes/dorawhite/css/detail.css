@@ -48,10 +48,10 @@
     border: 1px solid #000!important;
 }
 .detail article{
-    max-width: 100%;
+    max-width: 80%;
 }
 .detail article img{
-    max-width: 100%;
+    max-width: 80%;
     object-fit: contain;
 }
 .detail .list{
@@ -687,6 +687,9 @@
         border:1px solid black;
         padding: 5px 10px;
     }
+    .detail.good .head .link .catalog{
+        visibility: hidden;
+    }
     .detail.record .head .link .url,
     .detail.good .head .link .url{
         display: flex;
@@ -758,5 +761,13 @@
     .detail.record .date{
         font-size:calc(24 * 1rem / 36);
         line-height: 0.917rem;
+    }
+    .detail.record article,
+    .detail.good article{
+        max-width: calc( 75% - 20px);
+    }
+    .detail.record article img,
+    .detail.good article img{
+        margin-bottom: 1rem;
     }
 }

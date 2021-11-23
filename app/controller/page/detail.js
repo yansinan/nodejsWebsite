@@ -121,7 +121,7 @@ class IndexController extends Controller {
                 // ctx.pageType = "artist"
                 // 获取通用页面信息
                 //let {pageData,defaultTemp}=await ctx.getInitPageData("artist");//
-                let pageData={};
+                let pageData={serviceName};
                 //数据提取、修改标题；需要根据post信息修改内容：pageData.post,pageData.site,pageData.ogData,ctx.tempPage
                 pageData.post = await ctx.service[serviceName].item(ctx, {
                     query : {_id:contentId},

@@ -342,7 +342,7 @@
     font-size: calc(32 * 1rem / 36);
     font-weight: 500;
     line-height: calc(42 * 1rem / 36);
-    max-height: 18rem;
+    max-height: max(18rem,calc( 9rem + ( 34.7vw - 6vw ) * 4 / 4));;
     /* 隐藏动画 */
     /* 
     transition-property: max-height,margin-bottom;
@@ -413,5 +413,8 @@
     border:1px solid white!important;
   }
 }
-
+@media (min-width: 1024px) {
+  #timelineContent .wapper-mm-md .item{
+  }
+}
 /*# sourceMappingURL=avatar.css.map */

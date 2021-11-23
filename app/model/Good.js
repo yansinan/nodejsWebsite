@@ -36,6 +36,7 @@ module.exports =app=>{
         });        
         // url地址
         schema.virtual('url').get(function () {
+            return `/good___${this._id}.html`;
             return this.listLinks && this.listLinks[0]?this.listLinks[0].url : `/good___${this._id}.html`;
         });
         schema.virtual('nameTimeline').get(function (){
