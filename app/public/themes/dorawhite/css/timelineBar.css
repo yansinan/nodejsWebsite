@@ -43,6 +43,7 @@
 #dr-footer.timeline.done .timelineContainer .timelineBn{
     opacity:1;
     flex-basis: var(--width-footer-bn-mobile,34px);
+    z-index: 2041;
 }
 #dr-footer .timelineContainer .timelineBn.next{
     transform: rotate(180deg);
@@ -426,6 +427,7 @@ body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s {
     }
     #dr-footer .timelineContainer .timelineYearContainer-md .timelineYear{
         font-size: 1.11rem;
+        /* pointer-events: none; */
         /* font-family: HelveticaNeue; */
     }
     #dr-footer .timelineContainer .timelineYearContainer-md .timelineYear span{

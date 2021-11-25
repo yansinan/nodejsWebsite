@@ -401,7 +401,8 @@
         }
         let $yearTo=$bsTimelineBarWrapper.querySelector(".svgTimelineBar [data-year='"+yearTo+"']");
         if(!$yearTo)throw Error("目标年份:"+yearTo+",年份dom未找到");
-        that.bsTimelineBarWrapper.scrollToElement($yearTo);
+        $listDocs=Array.from($yearTo.querySelectorAll(".b-d")).filter(($doc)=>(parseInt(getComputedStyle($doc).getPropertyValue("opacity"))>0))
+        that.bsTimelineBarWrapper.scrollToElement($listDocs[0]);
     }
     {# 开始先移动到最新日期 #}
     //this.bsTimelineBarWrapper.scrollTo(that.bsTimelineBarWrapper.scrollStartX,0,0);
@@ -442,7 +443,7 @@
     {# timeline切换栏目 #}
     this.addEventListener("BS_TIMELINE_NAV_AT",(e)=>{
         let bsTimeline=e.detail.bsTimeline;
-        if(bsTimeline=="records"){
+        if(bsTimeline=="records" || bsTimeline=="goods" || bsTimeline=="videos"){
             that.bsTimelineBarWrapper.offAll();
             function eTransitionEnd(eTransition){
                 if(eTransition.target.classList.contains("svgTimelineBar")){
