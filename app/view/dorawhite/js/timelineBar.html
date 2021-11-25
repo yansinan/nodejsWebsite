@@ -338,7 +338,7 @@
         //mobile
         //if(that.$footer.isRotated)posX=-1 * ($date.getBoundingClientRect().top - that.bsTimelineBarWrapper.content.querySelector(".left").getBoundingClientRect().bottom);
         if(that.$footer.isRotated)posX=-1 * ($date.getBoundingClientRect().top - that.$footer.paddingNow);
-        return posX;
+        return Math.round(posX);
     }
     this.bsTimelineBarWrapper.scrollToElement=function($dateTo){
         //let posX=-$dateTo.x.baseVal.value;// + ( that.$footer.isRotated ? $bsTimelineBarWrapper.getBoundingClientRect().top : $bsTimelineBarWrapper.getBoundingClientRect().left);//-$dateTo.x*$svgTimelineBar.clientWidth;

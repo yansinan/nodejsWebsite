@@ -149,7 +149,7 @@ body.videos #dr-footer .scrollBar div{ background-color: #00FFFE; }
     /* transition-property: flex-basis; */
     /* transition-duration: 0.3s; */
     flex : 0 0 0px;
-    flex-basis:calc(var(--top-main-timeline-mobile,125px) - var(--width-footer-bn-mobile,20px));
+    flex-basis:calc(var(--top-main-timeline-mobile,125px) - var(--width-footer-bn-mobile,20px) + 1px);
 }
 /* 
 #dr-footer.timeline.done #bsTimelineBarWrapper .bsTimelineBarContent .left{

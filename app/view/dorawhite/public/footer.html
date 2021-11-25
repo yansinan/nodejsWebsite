@@ -108,7 +108,7 @@
                         get:()=>{
                             let $coverWrapper=document.getElementById("coverWrapper");
                             if(!$coverWrapper)return 0;
-                            else return this.isRotated ? $coverWrapper.getBoundingClientRect().top : $coverWrapper.getBoundingClientRect().left;
+                            else return Math.floor( this.isRotated ? $coverWrapper.getBoundingClientRect().top : $coverWrapper.getBoundingClientRect().left );
                         } 
                     },
                 })
