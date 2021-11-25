@@ -293,21 +293,24 @@
     this.bsTimelineBarWrapper.eAnimaterEnd=function(position={x:0}){
         that.bsTimelineBarWrapper.$docNow=that.bsTimelineBarWrapper.findDateNow({x:that.bsTimelineBarWrapper.x,y:that.bsTimelineBarWrapper.y});
         let strNowDate=that.bsTimelineBarWrapper.$docNow.id.replace("b","");
-        if(that.bsTimelineBarWrapper.$dateTo && that.bsTimelineBarWrapper.$docNow != that.bsTimelineBarWrapper.$dateTo && Math.abs(that.bsTimelineBarWrapper.calcPosX(that.bsTimelineBarWrapper.$dateTo))<0.5){
+        let offsetNowScroll=that.bsTimelineBarWrapper.calcPosX(that.bsTimelineBarWrapper.$docNow);
+        let offsetToScroll=that.bsTimelineBarWrapper.$dateTo ? that.bsTimelineBarWrapper.calcPosX(that.bsTimelineBarWrapper.$dateTo) : false;
+
+        if(that.bsTimelineBarWrapper.$dateTo && offsetToScroll && that.bsTimelineBarWrapper.$docNow != that.bsTimelineBarWrapper.$dateTo && Math.abs(offsetToScroll)<0.5){
             {# 有$dateTo,且没完成，是被动滚，继续完成 #}
-            console.log("底条animater.end停止:修正需要:",that.bsTimelineBarWrapper.$docNow.id,"==>",that.bsTimelineBarWrapper.$dateTo.id,that.bsTimelineBarWrapper.calcPosX(that.bsTimelineBarWrapper.$dateTo));//,that.bsTimelineBarWrapper.$dateTo.id
+            console.log("底条animater.end停止:修正需要:",that.bsTimelineBarWrapper.$docNow.id,"==>",that.bsTimelineBarWrapper.$dateTo.id,offsetToScroll);//,that.bsTimelineBarWrapper.$dateTo.id
             that.bsTimelineBarWrapper.scrollToElement(that.bsTimelineBarWrapper.$dateTo);
         }else if(that.bsTimelineBarWrapper.$docNow == that.bsTimelineBarWrapper.$dateTo){
             {# 有dateTo并且docNow相等，被动移动真正完成 #}
             that.bsTimelineBarWrapper.enable();
             {# 触发事件 #}
-            console.log("底条animater.end停止:修正后:",that.bsTimelineBarWrapper.$docNow.id,that.bsTimelineBarWrapper.calcPosX(that.bsTimelineBarWrapper.$docNow));//,that.bsTimelineBarWrapper.$dateTo.id
+            console.log("底条animater.end停止:修正后:",that.bsTimelineBarWrapper.$docNow.id,offsetNowScroll);//,that.bsTimelineBarWrapper.$dateTo.id
             {# that.dispatchEvent(new CustomEvent("BS_TIMELINE_BAR_DATE_CHANGE_FINAL", { detail:{ strDateNow:strNowDate, } })) #}
             that.bsTimelineBarWrapper.$dateTo=false;
         }else if(strNowDate){
             {# 手滑动动画完成 #}
             that.bsTimelineBarWrapper.enable();
-            console.log("底条animater.end停止:手滑:",that.bsTimelineBarWrapper.$docNow.id,that.bsTimelineBarWrapper.calcPosX(that.bsTimelineBarWrapper.$docNow));
+            console.log("底条animater.end停止:手滑:",that.bsTimelineBarWrapper.$docNow.id,offsetNowScroll);
             that.dispatchEvent(new CustomEvent("BS_TIMELINE_BAR_DATE_CHANGE_FINAL", { detail:{ strDateNow:strNowDate, } }))
         }
     }
@@ -341,12 +344,14 @@
         //let posX=-$dateTo.x.baseVal.value;// + ( that.$footer.isRotated ? $bsTimelineBarWrapper.getBoundingClientRect().top : $bsTimelineBarWrapper.getBoundingClientRect().left);//-$dateTo.x*$svgTimelineBar.clientWidth;
         let posX=that.bsTimelineBarWrapper.calcPosX($dateTo);
         let vScroll=Math.floor(Math.min(1000,Math.max(100,Math.abs(posX)*50)));
+        vScroll = Math.abs(vScroll) <= 100 ? 0 : vScroll;
         if(that.bsTimelineBarWrapper.pending)that.bsTimelineBarWrapper.stop();
         that.bsTimelineBarWrapper.disable();
         that.bsTimelineBarWrapper.scrollBy(posX,0,vScroll);
         {# 一定时间后恢复可交互 #}
-        if(that.bsTimelineBarWrapper.timerEnable)clearTimeout(that.bsTimelineBarWrapper.timerEnable);
-        that.bsTimelineBarWrapper.timerEnable=setTimeout(()=>{that.bsTimelineBarWrapper.enable()},vScroll);
+        if(that.bsTimelineBarWrapper.timerEnable || vScroll==0)clearTimeout(that.bsTimelineBarWrapper.timerEnable);
+        if(vScroll>0)that.bsTimelineBarWrapper.timerEnable=setTimeout(()=>{that.bsTimelineBarWrapper.enable()} , vScroll);
+        else that.bsTimelineBarWrapper.enable();
     }
     {# 跟随时间轴从动 #}
     this.bsTimelineBarWrapper.eTimelineDateChange=function(e){
