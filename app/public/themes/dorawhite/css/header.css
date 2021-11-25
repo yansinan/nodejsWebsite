@@ -20,8 +20,9 @@
   align-items: stretch;
 }
 #navHeader .navbar{
-    padding-top:0.08rem;
+    padding-top:0px;
     padding-bottom:0;
+    margin-top: var(--header-margin-top,28px)
 }
 #navHeader .navbar .navOffsetLeft{
   transition-property: all;
@@ -42,16 +43,15 @@
   /* flex:0 1 calc(163 * 1rem /36); */
   margin-right:0px;
   /* flex:1 0 9.1vw; */
-  /* padding-top: 0rem; */
-  /* padding-bottom: 0rem; */
+  padding-top: 0rem;
+  padding-bottom: 0px;
 }
 #navHeader .navbar-brand img{
     min-width:98px;
     max-width:131px;
     max-width:163px;
     min-height:30px;
-    max-height:40px;
-    /* max-height:53px; */
+    max-height: 100%;
     width: 100%;
     height: auto;
     object-fit: contain;
@@ -101,10 +101,11 @@
   }
   #navHeader.timeline.done #collapseNavbarMobile.navbar-collapse{
     /* 缩回用all,展开用max-height（ios） */
-    transition-property: max-height,padding-left;    
+    transition-property: max-height,padding-left,margin-top;    
     flex:1 1 0%;
     max-height: 1.2rem; /*1.154rem */
     padding-bottom: 1px;
+    margin-top: 1rem;
   }  
   #navHeader #collapseNavbarMobile.navbar-collapse ul{
     display: flex;
@@ -249,6 +250,7 @@
     min-height: 46px;
     max-height: 100%;
     overflow: hidden;
+    margin-right: var(--header-margin-right,0.5rem)!important;
   }
     #navHeader bn-menu-toggler{
 
@@ -315,9 +317,6 @@
     flex: 1 0 calc(var(--main-offset-left-mobile,20px) + var(--footer-size-mobile,16px) );
   }
 @media (min-width: 768px) {
-  #navHeader .navbar{
-    margin-top: var(--header-margin-top,28px)
-  }
   /* PC版缩进，保持跟mainCover对齐 */
   #navHeader .navbar .navOffsetLeft-md{
     flex: 0 0 calc(var(--main-offset-left-pc,46px))!important;
@@ -331,17 +330,15 @@
   .navbar-brand img{
       max-width:163px;
       min-height:var(--header-btn-height,53px)!important;
-      max-height:100%;
       width: auto;
       height: 100%;
       object-fit: contain;
   }
   /* #navHeader.timeline .navbar .navOffsetLeft-md */
   /* #navHeader.timeline.done .navbar .navOffsetLeft-md */
-  #navHeader.timeline .navbar .navOffsetRight-md,
-  #navHeader .navbar .navOffsetRight-md{
+  #navHeader.timeline .navbar .navOffsetRight,
+  #navHeader .navbar .navOffsetRight{
     flex: 1 1 0;
-    margin-right:var(--header-margin-right,1rem)!important;
   }
 
   /* PC端，乐队列表页隐藏移动端的居中timeline导航菜单 */

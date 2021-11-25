@@ -1,10 +1,10 @@
 {# 横滚乐队名 #}
-<div id="coverArtistsWrapper" class="d-none bs-wrapper-listArtist paddingTop paddingTop-md">                        
+<div id="coverArtistsWrapper" class="d-none bs-wrapper-listArtist">                        
     <div class="bs-content-listArtist listArtists">
         {% for artist in listArtists|sort(false,false,"letters") %}
         {# 乐队名列表 #}
         {# <h1 class="display-1">RUBY</h1> #}
-        <div class="artist artist-md d-flex align-items-center ">
+        <div class="artist d-flex align-items-center ">
             {# <div class="fixed"><div class="sImg"><img src="{{artist.sImg}}" width="0px" data-src="{{artist.sImg}}" alt="{{artist.nameTimeline}}"  class="img-fluid"/></div></div> #}
              
             <button 
@@ -35,7 +35,7 @@
         </div >
         {% endfor %}
         {# 最后一列占宽用 #}
-        <div class="artist artist-md d-flex align-items-center"></div>
+        <div class="artist d-flex align-items-center"></div>
         <script>
         let $listArtists=document.getElementById("coverArtistsWrapper").querySelectorAll(".artist");
         $listArtists.forEach($artist=>{

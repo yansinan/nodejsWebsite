@@ -170,7 +170,7 @@
             {# <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button> #}
         {# </div> #}
         <div id="offcanvasListArtists" class="offcanvas-body listArtists">
-                <div class="artist artist-md d-flex align-items-center ">
+                <div class="artist d-flex align-items-center ">
                     <button class="name hoverUnderline btn btn-link" data-dr-url="/about___.html"  onclick="window.goto('/about___.html')">
                         赤瞳音乐
                     </button>
@@ -191,7 +191,7 @@
                 {% for artist in artistItems %}
                 {# 乐队名列表 #}
                 {# <h1 class="display-1">RUBY</h1> #}
-                <div class="artist artist-md d-flex align-items-center ">
+                <div class="artist d-flex align-items-center ">
                     <button class="name hoverUnderline btn btn-link" data-dr-url="{{artist.url}}"  onclick="window.goto('{{artist.url}}')">
                         {{artist.name}}
                     </button>
