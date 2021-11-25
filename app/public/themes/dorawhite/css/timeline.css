@@ -162,6 +162,7 @@
   min-height:max(calc(34.7vw - 5rem) , 6rem);
   cursor: pointer;
   background-color: var(--color-placeholder,#aaa);
+  padding-right:0px;
 }
 #timelineContent .wapper-mm .item .imgContainer.left{
   display:none;
@@ -217,7 +218,7 @@
   display:flex;
   margin-right: calc(var(--bs-gutter-x) * .5);
   min-height:auto;
-
+  height: max-content;
 }
 #timelineContent.goods .wapper-mm .item .titleContainer,
 #timelineContent.records .wapper-mm .item .titleContainer{
