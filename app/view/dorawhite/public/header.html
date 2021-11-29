@@ -273,7 +273,7 @@
         }else if(!e.apiDetail || e.apiDetail === ""){ {# apiDetail ===""关闭详情 #}
             bsOffcanvasRight.hide();
             bsOffcanvasSearch.hide();
-            that.dispatchEvent(new CustomEvent("NAV_AT", { detail:{apiDetail:false,titleDetail:""}, }));
+            that.dispatchEvent(new CustomEvent("NAV_AT", { detail: Object.assign({},detail,{apiDetail:false,titleDetail:""}) }));
         }else{ {# 没有detail.relatedTarget，也没有apiDetail 手动触发bs->show触发的事件 是不需要监听的 #}
             return;
         }
@@ -358,32 +358,6 @@
 {# <header class="clearfix" id="header" ms-controller="headerCtr"> #}
 {# <div id="navHeader" class="container-fluid position-absolute heightNav" style="" > #}
 <div id="navHeader" class="listArtist done" >
-
-    {# PC版显示 #}
-    <!--
-    <div class="row d-none d-md-block " ms-controller="headerCtr">
-        <div class="row justify-content-between p-4">
-            {# <h1 class="display-6 text-white">赤瞳音乐</h1> #}
-            <div class="col-4 ms-4">
-                <a class="logo d-flex" href="#"><img class="img-fluid" src="{{site.logo}}" alt="{{site.title}}"/></a>
-                {# <span class="text-muted">Toggleable via the navbar brand.</span> #}
-            </div>
-            {# 中部菜单 #}
-            <div id="navMenuBnGroup" class="col d-flex flex-row justify-content-center align-items-center">
-                <span class="px-3 rounded-pill border text-truncate">中文</span>
-                <span class="px-3 rounded-pill border text-truncate">EN</span>
-            </div>
-
-            {# search #}
-            <div class="col-3 input-group input-group-lg w-auto" :class="['input-area',(@activeSearch? 'active':'')]">
-                {# <input ms-on-keyup="@onKeyUp" type="text" class="form-control" ms-duplex="@searchkey" placeholder="Search">                             #}
-                <span class="input-group-text"><i ms-click='@searchMe' class="fa fa-search"></i></span>
-            </div>
-        </div>
-    </div>
-    -->
-
-
     {# toggle内容上部分 #}
     <nav id="headerNav" class="navbar d-flex flex-nowrap justify-content-between navbar-light bg-transparent sticky-top" ms-controller="headerCtr" style="">
         {# <div class="row"> #}

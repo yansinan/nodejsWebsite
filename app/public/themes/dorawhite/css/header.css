@@ -413,6 +413,9 @@
   /* padding-right: 0.711rem; */
   /* padding-left:4.6vw; */
 }
+#offcanvasRightMenu .offcanvas-header .btn{
+  filter: invert(1);
+}
 
   /* 搜索按钮 */
   #offcanvasRightMenu .offcanvas-body .menuItem{
@@ -477,9 +480,6 @@
     margin-bottom:1.333rem;
     justify-content: space-between;
     padding-left: 20px;
-  }
-  #offcanvasRightMenu .offcanvas-header .btn{
-      filter: invert(1);
   }
   #offcanvasRightMenu.offcanvasRightMenu-md{
     width: 35.42vw;
