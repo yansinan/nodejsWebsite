@@ -111,7 +111,7 @@
     display: flex;
     justify-content: space-between;
     transition-property: all;
-    transition-duration: .4s;
+    transition-duration: .6s;
   }
   /* ul上移动画 */
   #navHeader.listArtist #collapseNavbarMobile.navbar-collapse ul{

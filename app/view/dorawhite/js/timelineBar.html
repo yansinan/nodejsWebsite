@@ -428,7 +428,8 @@
         },300);
     })
     this.addEventListener("BS_COVER_TIMELINE_FINAL", (page)=>{
-        that.bsTimelineBarWrapper.onAll()
+        {# setTimeout(()=>{that.bsTimelineBarWrapper.onAll();} , 500);         #}
+        that.bsTimelineBarWrapper.onAll();
     })
     this.addEventListener("BS_COVER_LISTARTISTS", (page)=>{
         this.removeEventListener("BS_MAIN_DATE_CHANGE",this.bsTimelineBarWrapper.eTimelineDateChange);
@@ -451,7 +452,7 @@
         if(bsTimeline=="records" || bsTimeline=="goods" || bsTimeline=="videos"){
             that.bsTimelineBarWrapper.offAll();
             function eTransitionEnd(eTransition){
-                if(eTransition.target.classList.contains("svgTimelineBar")){
+                if(eTransition && eTransition.target.classList.contains("svgTimelineBar")){
                     that.bsTimelineBarWrapper.disable();
                     that.bsTimelineBarWrapper.scrollTo(0,0,0);
                     that.bsTimelineBarWrapper.onAll();
@@ -463,8 +464,8 @@
                 }
             }
             {# PC端有动画 移动端没有动画，直接跳转 #}
-            if(!that.bsTimelineBarWrapper.isRotated)$bsTimelineBarWrapper.addEventListener("transitionend", eTransitionEnd, {capture:false,once:false});
-            else eTransitionEnd(eTransition);
+            if(!that.$footer.isRotated)$bsTimelineBarWrapper.addEventListener("transitionend", eTransitionEnd, {capture:false,once:false});
+            {# else eTransitionEnd(false); #}
             {# 缩放 #}
             let $listSVG=$bsTimelineBarWrapper.querySelectorAll(".svgTimelineBar");
             $bsTimelineBarWrapper.style.setProperty('--scale-timeline-bar-svg', Math.max(1/($listSVG.length+1),1/4));
