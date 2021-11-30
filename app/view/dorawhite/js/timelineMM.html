@@ -105,7 +105,8 @@
                         let $listDocs=$mmNow.querySelectorAll("[dr-date-doc]");
                         $mmNow.$docLast=$mmNow._$docNow || false;
                         $mmNow._$docNow=Array.from($listDocs).find(($doc,idx)=>{
-                            return $doc.getBoundingClientRect().top >= topMM;
+                            const rect=$doc.getBoundingClientRect();
+                            return rect.height>0 && rect.top >= topMM;
                         });
                         if(!$mmNow._$docNow)$mmNow._$docNow=$listDocs[$listDocs.length-1];
                         return $mmNow._$docNow;
