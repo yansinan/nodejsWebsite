@@ -258,7 +258,10 @@
         that.bsTimeline.scroller.actionsHandler.hooks.on('beforeStart', (e)=>{
             if(that.bsTimeline.pending)that.bsTimeline.stop()
             that.bsTimeline.enable();
+
         })
+        that.bsTimeline.scroller.actionsHandler.hooks.on("move",()=>{ that.dispatchEvent(new CustomEvent("BS_MAIN_TOUCH_MOVE")); })
+        that.bsTimeline.scroller.actionsHandler.hooks.on("end",()=>{ that.dispatchEvent(new CustomEvent("BS_MAIN_TOUCH_END")); })
         that.bsTimeline.on('scroll', that.bsTimeline.eUpdateTimeline);
 
         that.bsTimeline.scroller.animater.hooks.on('end', () => {
