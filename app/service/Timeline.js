@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-08-04 05:26:38 
  * @Last Modified by: dr
- * @Last Modified time: 2021-11-02 01:45:39
+ * @Last Modified time: 2021-11-29 23:59:27
  */
 'use strict';
 const { debug } = require('console');
@@ -132,6 +132,7 @@ class ServicePlugin extends Service {
                 let docFind=listDocsOfYear[idxFindDoc];
                 //listDocFind.push(doc);
                 posX=Math.abs((cntDays*100/cntDaysFullYear)-docFind.percentDateOfYear).toFixed(3) ;
+                posX=(posX/(cntDays/cntDaysFullYear)).toFixed(3) ;
                 let strDate=moment(docFind.date).format("YYYY-MM-DD");
                 // listIdxDays.push(posX);
                 // 去重
@@ -160,6 +161,14 @@ class ServicePlugin extends Service {
                 //}else{
                 //    listIdxDaysGroup.findIndex()
                 //}
+
+                //全年天数;
+                let cntDaysFullYear=Math.abs(moment(dateTmp).startOf("year").diff(moment(dateTmp).endOf("year"),"days"));
+                //当前第几天
+                let idxDayOfYear=Math.abs(moment(dateTmp).startOf("year").diff(moment(dateTmp),"days"));
+                let percentDateOfYear= Math.abs(idxDayOfYear*100/cntDaysFullYear).toFixed(3);
+                posX=Math.abs((cntDays*100/cntDaysFullYear) - percentDateOfYear).toFixed(3) ;
+                posX=(posX/(cntDays/cntDaysFullYear)).toFixed(3) ;
                 listTmpYearDocs.push({
                     posX,
                     date:strDate
