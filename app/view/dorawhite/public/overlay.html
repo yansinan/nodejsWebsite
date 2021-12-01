@@ -278,6 +278,16 @@
 
                 })                
             },
+            {# 停止播放 #}
+            stopAudioAll:function(){
+                let $listAudios=$offcanvasDetail.querySelectorAll(".nav .playList ul audio");
+                $listAudios.forEach($a=>{
+                        $a.pause();
+                        $a.currentTime=0;
+                        $a.parentElement.classList.value="";
+                })
+                
+            },
             {# 导航按钮 #}
             eAudioToggleNow:function(e){
                 let $audio=this.getCurrentAudio();
@@ -474,7 +484,7 @@
                 error,
             })
         });
-
+        this.addEventListener( "CLOSE_OFFCANVAS_DETAIL", aOffcanvasBody.stopAudioAll );
     </script>
     {# 详情页更多按钮 #}
     <script type="text/javascript">

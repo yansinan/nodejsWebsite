@@ -256,6 +256,7 @@
         let detail=e;
 
         if(e.type=='hide.bs.offcanvas'){//按钮触发的要补一个关闭
+            that.dispatchEvent(new CustomEvent("CLOSE_OFFCANVAS_DETAIL", {detail}));
             {# 清除左侧乐队列表 #}
             if($offcanvasLeft.classList.contains("show") && e.currentTarget!=$offcanvasLeft)bsOffcanvasLeft.hide();
         }else if(e.apiDetail){

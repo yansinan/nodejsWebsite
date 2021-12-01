@@ -168,7 +168,7 @@
     margin-top: 1.28rem;
     margin-bottom:1.75rem;
 }
-.detail.artist .list-inline li.border{
+.detail.artist .list-inline li{
     border: 1px solid #FDFDFD!important;
 }
 .detail.artist article{
@@ -565,7 +565,7 @@
 .detail.artist .goods .list{
     width:100%;
     grid-template-columns:1fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
     grid-column-gap:1px;
 }
 .detail.artist .goods .list .item{
@@ -613,6 +613,14 @@
 
 .detail.artist .goods .list .item .intro:hover {
     opacity: .8;
+}
+/* 最后为了避开nav重叠 */
+.detail.artist .headEnd.fa-pause{
+    flex-basis:12rem;
+}
+.detail.artist .headEnd.fa-play::before,
+.detail.artist .headEnd.fa-pause::before{
+    content:none;
 }
 @media (min-width: 768px) {
     .detail.artist .records .list{
