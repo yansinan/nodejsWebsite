@@ -60,79 +60,20 @@
     {# 找到当前日期 #}
     this.bsTimelineBarWrapper.findDateNow=function(position){
         let $listYears=$bsTimelineBarWrapper.querySelectorAll(".svgTimelineBar");
-        let $docNow=false;
-        
-        let $listDocs=Array.from($bsTimelineBarWrapper.querySelectorAll(".svgTimelineBar .b-d"));
-        $docNow=$listDocs.find(($doc)=>{
-            const isShow=parseInt(getComputedStyle($doc).getPropertyValue("opacity"))>0;
-            {# const distant=!that.$footer.isRotated ? $doc.getBoundingClientRect().left - (that.$footer.paddingNow - 1) : $doc.getBoundingClientRect().top - ( that.$footer.paddingNow - 1 ); #}
-            if(isShow)return !that.$footer.isRotated ? $doc.getBoundingClientRect().left - (that.$footer.paddingNow - 1) >=0 : $doc.getBoundingClientRect().top - ( that.$footer.paddingNow - 1 ) >=0;
-            return false;
-        })
-
-        
-        //let $docFindLastShow=false;
-        //let distantFindLastShow=100000000;
-        //let idxYearNow=Array.from($listYears).findIndex(($year,idx,$list)=>{
-        //    let isFind=$year.getBoundingClientRect().right >= that.$footer.paddingNow - 1;
-        //    if(that.$footer.isRotated)isFind=$year.getBoundingClientRect().bottom >= that.$footer.paddingNow - 1;
-        //    if(isFind){
-        //        {# 更新翻年按钮状态 #}
-        //        that.bsTimelineBarWrapper.updateYearButton($year,$listYears);
-        //        let $listSeasons=Array.from($year.querySelectorAll(".groupSeason"));
-        //        let idxSeason=$listSeasons.findIndex(($s,$idxS)=>{
-        //            let isFindSeason=$s.getBoundingClientRect().right >= that.$footer.paddingNow - 1;
-        //            if(that.$footer.isRotated)isFindSeason=$s.getBoundingClientRect().bottom >= that.$footer.paddingNow - 1;
-        //            if(isFindSeason){
-        //                function findNowDoc($doc,idx,$list){
-        //                    //return $doc.x.baseVal.value >= -position.x -1 ;// + ( that.$footer.isRotated ? $bsTimelineBarWrapper.getBoundingClientRect().top : $bsTimelineBarWrapper.getBoundingClientRect().left);//动画导致对齐存在误差，保留1像素
-        //                    //let isFind=$doc.getBoundingClientRect().left >= $bsTimelineBarWrapper.querySelector(".bsTimelineBarContent .left").clientWidth -1;
-        //                    let distant=!that.$footer.isRotated ? $doc.getBoundingClientRect().left - (that.$footer.paddingNow - 1) : $doc.getBoundingClientRect().top - ( that.$footer.paddingNow - 1 );
-        //                    if(Math.abs(distant) < Math.abs(distantFindLastShow) ){
-        //                        distantFindLastShow=distant;
-        //                        $docFindLastShow=$doc;
-        //                    }
-        //                    //let isFindDoc=$doc.getBoundingClientRect().left >= that.$footer.paddingNow - 1;
-        //                    //if(that.$footer.isRotated)isFindDoc=$doc.getBoundingClientRect().top >= that.$footer.paddingNow - 1;
-        //                    let isFindDoc= distant>=0 && distant<=distantFindLastShow ? true : false;
-        //                    return isFindDoc;
-        //                }
-        //                let $listDocs=Array.from($s.querySelectorAll(".b-d"));
-        //                {# 只选择没有隐藏的 #}
-        //                $listDocs=$listDocs.filter(($doc)=>(parseInt(getComputedStyle($doc).getPropertyValue("opacity"))>0))
-        //                let $docFind=$listDocs.find(findNowDoc)
-        //                {# 如果动画中，当前季度没有，退回到年筛选 #}
-        //                if(!$docFind){
-        //                    $listDocs=Array.from($bsTimelineBarWrapper.querySelectorAll(".svgTimelineBar .b-d"));
-        //                    $listDocs=$listDocs.filter(($doc)=>(parseInt(getComputedStyle($doc).getPropertyValue("opacity"))>0))
-        //                    $docFind=$listDocs.find(findNowDoc);
-        //                    console.warn("底条:补充查找最接近日期",$docFind?$docFind.id:false,$docFindLastShow.id);
-        //                }else{
-        //                    console.warn("底条:优化查找到：",$docFind?$docFind.id:false,$docFindLastShow.id);
-        //                };
-        //                $docNow=$docFind || $docFindLastShow;
-        //                isFindSeason = $docNow ? true :false;
-        //            }
-        //            return isFindSeason;
-        //        })
-        //        isFind = idxSeason != -1? true : false;
-        //    }
-        //    return isFind;
-        //})
-        //let $yearNow=$listYears[idxYearNow];
-        //if(!$yearNow)throw new Error("底条:没有找到$yearNow:x="+that.bsTimelineBarWrapper.x+";y="+that.bsTimelineBarWrapper.y);
-
-        if(!$docNow)throw new Error("底条:没有找到$docNow"+$listYears[idxYearNow].id);
+        let $docNow=that.bsTimelineBarWrapper.$docFindNow;
+        if(!$docNow)throw new Error("底条:没有找到$docNow");
         else{
-            {# 改变样式 #}
-            $docNow.classList.add("now");
             {# 是否需要改变class #}
             that.bsTimelineBarWrapper.$docLast=that.bsTimelineBarWrapper.$docLast || $docNow;
             {# $docNow有变化 #}
             if($docNow != that.bsTimelineBarWrapper.$docLast){                
                 that.bsTimelineBarWrapper.$docLast.classList.remove("now");
+                const $docLastNow=$bsTimelineBarWrapper.querySelector(".svgTimelineBar .b-d.now");
+                if($docLastNow)$docLastNow.classList.remove("now");
                 //that.bsTimelineBarWrapper.$docLast=$docNow;
             }
+            {# 改变样式 #}
+            $docNow.classList.add("now");
             {# 年份按钮状态 #}
             const $year=$docNow.parentElement.parentElement.parentElement;
             that.bsTimelineBarWrapper.updateYearButton($year,$listYears);
@@ -152,13 +93,15 @@
     this.bsTimelineBarWrapper.getNewStrDate=function(){
         if(that.bsTimelineBarWrapper.$docNow){
             let strDate=that.bsTimelineBarWrapper.$docNow.id.replace("b","");
-            //that.bsTimelineBarWrapper.$docNow.classList.add("now");
 
             {# 是否需要改变class #}
             that.bsTimelineBarWrapper.$docLast=that.bsTimelineBarWrapper.$docLast || that.bsTimelineBarWrapper.$docNow;
             {# $docNow有变化 #}
             if(that.bsTimelineBarWrapper.$docNow != that.bsTimelineBarWrapper.$docLast){                
                 that.bsTimelineBarWrapper.$docLast.classList.remove("now");
+                const $docLastNow=$bsTimelineBarWrapper.querySelector(".svgTimelineBar .b-d.now");
+                if($docLastNow)$docLastNow.classList.remove("now");
+                that.bsTimelineBarWrapper.$docNow.classList.add("now");
                 that.bsTimelineBarWrapper.$docLast=that.bsTimelineBarWrapper.$docNow;                
                 return strDate;
             }else return false;
@@ -273,6 +216,19 @@
                 return -scrollStartX
             },
         },
+        strBodyBSMain:{
+            get:()=>( document.body.classList.value.replace(/flex\s|flex/g,"") || "news" ),
+        },
+        $listDocsNow:{
+            get:()=>( Array.from($bsTimelineBarWrapper.querySelectorAll(".svgTimelineBar .b-d."+that.bsTimelineBarWrapper.strBodyBSMain) || []) ),
+        },
+        $docFindNow:{
+            get:()=>{
+                return that.bsTimelineBarWrapper.$listDocsNow.find(($doc)=>{
+                    return !that.$footer.isRotated ? $doc.getBoundingClientRect().left - (that.$footer.paddingNow - 1) >=0 : $doc.getBoundingClientRect().top - ( that.$footer.paddingNow - 1 ) >=0;
+                })
+            }
+        }
         ////初始化参数
         //rectWrapper:{get:()=>($bsTimelineBarWrapper.getBoundingClientRect())},
         //wWrapper:{get:()=>($bsTimelineBarWrapper.clientWidth)},
@@ -433,7 +389,7 @@
             that.$footer.classList.add("oldestYear");
             throw Error("目标年份:"+yearTo+",年份dom未找到");
         }
-        $listDocs=Array.from($yearTo.querySelectorAll(".b-d")).filter(($doc)=>(parseInt(getComputedStyle($doc).getPropertyValue("opacity"))>0))
+        $listDocs=Array.from($yearTo.querySelectorAll(".b-d."+that.bsTimelineBarWrapper.strBodyBSMain));
         if($listDocs && $listDocs.length>0){
             {# 是否需要同步到时间轴 #}
             let strNowDate=$listDocs[0].id.replace("b","");
