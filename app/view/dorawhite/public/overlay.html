@@ -80,6 +80,11 @@
             })
             tooltipTriggerEl.addEventListener('show.bs.tooltip', function (e) {
                 this.classList.add("now");
+                $container.tooltipList.forEach((tooltip)=>{
+                    if(tooltip && tooltip!=this && tooltip.tip && !tooltip.tip.hidden){
+                        tooltip.hide();
+                    }
+                });
             })
             tooltipTriggerEl.addEventListener("touchstart",eShow);
             tooltipTriggerEl.addEventListener("mouseenter",eShow);
