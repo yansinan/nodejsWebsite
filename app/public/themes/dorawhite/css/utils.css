@@ -130,9 +130,13 @@ bn-search{
     font-size: 0.444rem;
     margin: 0px;
     margin-right:0.278rem;
+    margin-right:0px;
     padding: 0.05rem 0.5rem;
     line-height: 0.6rem;
     border:1px solid black;
+}
+.list-inline-item:not(:last-child) {
+    margin-right:0px;
 }
 .list-inline-item:hover{
     cursor: pointer;
@@ -295,7 +299,11 @@ bn-search{
 .outUnderline:hover{
     text-decoration: none;
 }
-
+.noSelect{
+    user-select: none;
+    -webkit-user-select: none;/*禁用手机浏览器的用户选择功能 */
+    -moz-user-select: none;
+}
 /* 通用视频播放按钮 */
 .videoWrapper{
     position: relative;

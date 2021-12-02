@@ -44,12 +44,12 @@
         <div class="list" style="--cnt-item:{{4 if post.objDocsRecords.length > 4 else post.objDocsRecords.length}}">      
             {% for item in post.objDocsRecords %}
                 {# 乐队详情页 #}
-                <a onclick="window.goto('{{item.url}}')" class="item {{'hide' if loop.index > 4}}">
+                <a onclick="window.goto('{{item.url}}')" class="item {{'hide' if loop.index > 4}} noSelect">
                     <img src="{{item.sImg}} " class="img-fluid" alt="{{item.title}} " />
                     <div class="intro">
                         <p class="title">{{item.dateTimeline}}<br><span class="hoverUnderline">{{item.name}}</span></p>
                         {# 标签 #}
-                        <div class="tags records">{{listTags(item.listFormatTags)}}</div>
+                        {% if item.listFormatTags.length > 0 %}<div class="tags records">{{listTags(item.listFormatTags)}}</div>{% endif %}
                     </div>
                 </a>
             {% endfor %} 
