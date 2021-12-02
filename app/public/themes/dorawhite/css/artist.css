@@ -132,15 +132,18 @@ body{
 }
 
 .listArtists .noticeCnt{
-    /* font-size:0.373rem; */
-    /* font-size: 0.426rem; */
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    border:2px black solid;
+    border-radius: 50%;
     font-size: 0.48rem;
     font-weight: 600;
-    /* width:0.694rem; */
+    flex: 0 0 1rem;
     width: 1rem;
-    /* height:0.694rem; */
     height: 1rem;
     margin-left: 1rem;
+    padding: 0px;
     /* line-height: 0.48rem; */
     line-height: 1rem;
 
@@ -151,6 +154,7 @@ body{
 }
 .listArtists .noticeCnt.now{
     filter: invert(100%);
+    border-color: white!important;
 }
 .tooltip{
     /* filter: invert(100%); */
