@@ -224,10 +224,14 @@
 #timelineContent.records .wapper-mm .item .titleContainer{
   flex: 0 0 6.54rem;
   font-size:calc(18 * 1rem / 26);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 #timelineContent.goods .wapper-mm .item .nameArtists,
 #timelineContent.records .wapper-mm .item .title .nameArtists{
   display:block;
+  font-size:0.4444rem;
 }
 #timelineContent.goods .wapper-mm .item .titleContainer .imgContainer,
 #timelineContent.records .wapper-mm .item .titleContainer .imgContainer{
@@ -240,11 +244,12 @@
 #timelineContent.goods .titleContainer .tags.goods,
 #timelineContent.records .titleContainer .tags.records{
   display:flex;
+  font-size:0.444rem;
+  margin-bottom:0px;
 }
-#timelineContent.goods .titleContainer .tags.goods .list-inline-item,
-#timelineContent.records .titleContainer .tags.records .list-inline-item{
-  border:1px solid black!important;
-  border-radius: 0px!important;
+#timelineContent.goods .titleContainer .tags.goods.breadcrumb .breadcrumb-item::before,
+#timelineContent.records .titleContainer .tags.records.breadcrumb .breadcrumb-item::before{
+  padding:0 0.25rem
 }
 #timelineContent.goods .imgContainer::after,
 #timelineContent.records .imgContainer::after{

@@ -21,11 +21,11 @@
                         </div>
 
                         {# 内容&标题预览 #}
-                        <div class="titleContainer">
+                        <div class="titleContainer bsClick" onclick="window.goto('{{item.url}}')">
                             {# 日期 #}
                             {# <div class="col-auto date">{{item.dateTimeline}}</div> #}
                             {# 大标题 #}
-                            <p class="title">{{item.dateTimeline}}<br><a class=" bsClick {{item.docAlias+' hoverUnderline' if item.url else 'fake'}}" onclick="window.goto('{{item.url}}')">{{item.nameTimeline}}</a><span class="nameArtists">{{item.nameArtists}}<br></span></p>
+                            <p class="title">{{item.dateTimeline}}<br><a class=" bsClick {{item.docAlias+' hoverUnderline' if item.url else 'fake'}}" onclick="window.goto('{{item.url}}')">{{item.name}}</a><span class="nameArtists">{{item.nameArtists}}<br></span></p>
                             {# 标签 #}
                             <div class="tags">
                                 {{listTags(item.tags)}}
