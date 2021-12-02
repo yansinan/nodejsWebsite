@@ -132,6 +132,14 @@
     #offcanvasDetailAll #offcanvasLeft #offcanvasListArtists .artist{
         padding-bottom: 0.5rem;
     }
+    #offcanvasDetailAll #offcanvasLeft #offcanvasListArtists .artist .noticeCnt{
+        /* border:2px solid var(--color-bg-white,#FDFDFD); */
+        /* color:var(--color-bg-white,#FDFDFD); */
+        /* background-color: black; */
+    }
+    #offcanvasDetailAll #offcanvasLeft #offcanvasListArtists .artist .noticeCnt.now{
+        border:2px solid black!important;
+    }
     /* header详情弹出层 */
     .offcanvas-end .offcanvas-header{
         justify-content:flex-end;

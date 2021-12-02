@@ -148,13 +148,13 @@ body{
     line-height: 1rem;
 
     align-items: center;
-    background-color: white;
+    background-color: var(--color-bg-white,#FDFDFD);
     color:black;
     -webkit-appearance:none;
 }
 .listArtists .noticeCnt.now{
     filter: invert(100%);
-    border-color: white!important;
+    border-color: var(--color-bg-white,#FDFDFD);
 }
 .tooltip{
     /* filter: invert(100%); */
@@ -173,7 +173,7 @@ body{
     flex-direction: column;
     border:1px solid black;
     border-bottom: none;
-    background-color: white;
+    background-color: var(--color-bg-white,#FDFDFD);
     border-radius: 0px;
     padding:0;
     color:black;

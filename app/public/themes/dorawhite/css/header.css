@@ -470,7 +470,7 @@
     word-break: keep-all;
     margin-top: 0.88rem;
     text-align: left;
-    align-self: center;
+    /* align-self: center; */
     line-height: 0.56rem;
     margin-bottom:8px;
   }    
