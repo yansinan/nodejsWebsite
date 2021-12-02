@@ -200,6 +200,8 @@ body.videos #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-d:not
 body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-d:not(.records) {
     opacity: 0;
 }
+body.goods #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s,
+body.videos #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s,
 body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s {
     opacity: 0;
 }
