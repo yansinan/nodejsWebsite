@@ -16,26 +16,31 @@
                     {% for item in colItems %}
                     <div class="item {{item.docAlias if item.docAlias else 'Content'}}" dr-date-doc="{{item.dateFull}}" style="--color-placeholder:{{ ['#cccc00', '#FF4D3E', '#5400ff','#ad49f0']|random }}">
                         {# 图 手机图 #}
-                        <div class="imgContainer left bsClick" onclick="window.goto('{{item.url}}')">                        
-                            <img data-src="{{item.sImg}}" alt="{{item.nameTimeline}}"  class="lazy img-fluid" dr-id-doc="img{{item._id}}"/>
+                        <div class="imgContainer left">                        
+                            <img data-src="{{item.sImg}}" alt="{{item.nameTimeline}}"  class="lazy img-fluid bsClick" dr-id-doc="img{{item._id}}" onclick="window.goto('{{item.url}}')"/>
                         </div>
 
                         {# 内容&标题预览 #}
-                        <div class="titleContainer" onclick="window.goto('{{item.url}}')">
+                        <div class="titleContainer">
                             {# 日期 #}
                             {# <div class="col-auto date">{{item.dateTimeline}}</div> #}
                             {# 大标题 #}
-                            <p class="title">{{item.dateTimeline}}<br><span class="nameArtists">{{item.nameArtists}}<br></span><a class=" bsClick {{item.docAlias+' hoverUnderline' if item.url else 'fake'}}" onclick="window.goto('{{item.url}}')">{{item.nameTimeline}}</a></p>
+                            <p class="title">{{item.dateTimeline}}<br><a class=" bsClick {{item.docAlias+' hoverUnderline' if item.url else 'fake'}}" onclick="window.goto('{{item.url}}')">{{item.nameTimeline}}</a><span class="nameArtists">{{item.nameArtists}}<br></span></p>
                             {# 标签 #}
                             <div class="tags">
                                 {{listTags(item.tags)}}
                             </div>
-                            <div class="tags records goods">
-                                {{listTags(item.listFormatTags)}}
-                            </div>
+                            {# {{listTags(item.listFormatTags)}} #}
+                            {% if item.listFormatTags.length>0%}
+                            <ol class="tags records goods formatTags breadcrumb">
+                                {% for link in item.listFormatTags %}
+                                <li class="breadcrumb-item bsClick" onclick="window.goto('/search?q={{link.name}}')">{{link.name}}</li>
+                                {% endfor %}
+                            </ol>
+                            {% endif %}
                             {# 图 手机隐藏纵向图 #}
-                            <div class="imgContainer bsClick {{' videoWrapper' if item.docAlias=='videos' else ''}}" onclick="window.goto('{{item.url}}')">                        
-                                <img data-src="{{item.sImg}}" src="/static/upload/images/defaultlogo.png" width="100%" height="100%" alt="{{item.nameTimeline}}"  class="lazy img-fluid" dr-id-doc="img{{item._id}}"/>
+                            <div class="imgContainer {{' videoWrapper' if item.docAlias=='videos' else ''}}">                        
+                                <img data-src="{{item.sImg}}" src="/static/upload/images/defaultlogo.png" width="100%" height="100%" alt="{{item.nameTimeline}}"  class="lazy img-fluid bsClick" onclick="window.goto('{{item.url}}')" dr-id-doc="img{{item._id}}"/>
                             </div>
                         </div>
                     </div>
