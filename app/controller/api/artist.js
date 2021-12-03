@@ -413,7 +413,7 @@ class APIController extends Controller {
                         ],
                         $or:[{isTop:1},{roofPlacement: "1"}],
                     },
-                    files:"_id date listDateDur dateTimeline name title nameTimeline alias tags nameArtists sImg url listRefs",
+                    files:"_id date listDateDur dateTimeline name title nameTimeline alias tags sImg url listRefs",
                     populate:[{
                         path: 'tags',
                         select: 'name url'

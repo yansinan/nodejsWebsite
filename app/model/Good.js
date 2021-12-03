@@ -45,10 +45,6 @@ module.exports =app=>{
         schema.virtual('listArtists').get(function () {
             return this.listRefs;
         });
-        schema.virtual('nameArtists').get(function () {
-            let listName=this.listRefs.map(v=>(v.name));
-            return listName.join();
-        });
         // 搜索结果类名:
         schema.virtual('docAliasSearch').get(function () {
             return "周边";

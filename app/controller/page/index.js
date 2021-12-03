@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-08-08 06:31:51 
  * @Last Modified by: dr
- * @Last Modified time: 2021-11-02 01:37:53
+ * @Last Modified time: 2021-12-02 19:58:17
  */
 const Controller = require('egg').Controller;
 const _ = require('lodash');
@@ -81,7 +81,7 @@ class IndexController extends Controller {
             },{
                 // query,
                 searchKeys: ['keywords', 'name', 'comments', 'discription','listRefs','tags'],
-                files:"_id date listDateDur dateYear dateYYYYM dateTimeline percentDateOfYear docAlias docAliasSearch name title nameTimeline alias listRefs listLinks listFormatTags nameArtists sImg tags url",
+                files:"_id date listDateDur dateYear dateYYYYM dateTimeline percentDateOfYear docAlias docAliasSearch name title nameTimeline alias listRefs listLinks listFormatTags sImg tags url",
                 populate:[{
                     path: 'tags listRefs listFormatTags',
                     select: 'name _id alias',

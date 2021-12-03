@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-01-28
  * @Last Modified by: dr
- * @Last Modified time: 2021-11-02 01:41:46
+ * @Last Modified time: 2021-12-02 20:00:16
  */
 
 'use strict';
@@ -72,7 +72,7 @@ class ServicePlugin extends Service {
                         dateTimeline:moment(objVideo.date).format("MM/DD"),
                         nameTimeline:objVideo.name,
                         sImg:objVideo.urlImg,
-                        nameArtists:artist.name,
+                        nameArtist:artist.name,
                         url:objVideo.link,
 
                         percentDateOfYear:percentDateOfYear(objVideo.date),
