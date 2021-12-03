@@ -205,7 +205,7 @@
     font-weight: 400;
     color: #979797;
     line-height: 0.694rem;
-    text-decoration: underline;
+    /* text-decoration: underline; */
     -webkit-background-clip: text;
 }
 
@@ -730,7 +730,8 @@
     flex: 1 1 40%;
 }
     /* 乐队名称&标题 */
-    .detail.record .info .name .nameArtists{
+    .detail.good .info .name .list-inline.artists,
+    .detail.record .info .name .list-inline.artists{
         font-size: calc(14 * 1rem / 26);
         line-height: 0.917rem;
     }

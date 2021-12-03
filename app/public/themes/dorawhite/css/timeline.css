@@ -192,7 +192,7 @@
   margin-bottom: 0.61rem;
   padding-left: 0px;
 }
-#timelineContent .wapper-mm .item .title .nameArtists{
+#timelineContent .wapper-mm .item .title .list-inline.artists{
   display:none;
 }
 #timelineContent .wapper-mm .item .title a{
@@ -228,9 +228,9 @@
   flex-direction: column;
   justify-content: space-between;
 }
-#timelineContent.goods .wapper-mm .item .nameArtists,
-#timelineContent.records .wapper-mm .item .title .nameArtists{
-  display:block;
+#timelineContent.goods .wapper-mm .item .list-inline.artists,
+#timelineContent.records .wapper-mm .item .title .list-inline.artists{
+  display:flex;
   font-size:0.4444rem;
 }
 #timelineContent.goods .wapper-mm .item .titleContainer .imgContainer,
@@ -247,9 +247,13 @@
   font-size:0.444rem;
   margin-bottom:0px;
 }
+#timelineContent.goods .titleContainer .tags.goods.breadcrumb .breadcrumb-item,
+#timelineContent.records .titleContainer .tags.records.breadcrumb .breadcrumb-item{
+  padding-left:0.25rem;
+}
 #timelineContent.goods .titleContainer .tags.goods.breadcrumb .breadcrumb-item::before,
 #timelineContent.records .titleContainer .tags.records.breadcrumb .breadcrumb-item::before{
-  padding:0 0.25rem
+  padding-right:0.25rem;
 }
 #timelineContent.goods .imgContainer::after,
 #timelineContent.records .imgContainer::after{

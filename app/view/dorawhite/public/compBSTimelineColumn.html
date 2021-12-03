@@ -1,5 +1,6 @@
 {# 时间轴列 #}
 {% from "./compListTags.html" import listTags %}
+{% from "./compListTags.html" import listArtists %}
         {% for month, colItems in posts|groupby("dateYYYYM") %}
         <div class="container-mm d-flex flex-column" data-mm="{{colItems[0].dateYYYYM|trim}}" style="--idx-mm:{{loop.index}}">
             {# 月份行 手机隐藏#}
@@ -25,7 +26,7 @@
                             {# 日期 #}
                             {# <div class="col-auto date">{{item.dateTimeline}}</div> #}
                             {# 大标题 #}
-                            <p class="title">{{item.dateTimeline}}<br><a class=" bsClick {{item.docAlias+' hoverUnderline' if item.url else 'fake'}}" onclick="window.goto('{{item.url}}')">{{item.name}}</a><span class="nameArtists">{{item.nameArtists}}<br></span></p>
+                            <div class="title">{{item.dateTimeline}}<br><a class=" bsClick {{item.docAlias+' hoverUnderline' if item.url else 'fake'}}" onclick="window.goto('{{item.url}}')">{{item.name}}</a>{{listArtists(item.listArtists)}}</div>
                             {# 标签 #}
                             <div class="tags">
                                 {{listTags(item.tags)}}
@@ -34,7 +35,7 @@
                             {% if item.listFormatTags.length>0%}
                             <ol class="tags records goods formatTags breadcrumb">
                                 {% for link in item.listFormatTags %}
-                                <li class="breadcrumb-item bsClick" onclick="window.goto('/search?q={{link.name}}')">{{link.name}}</li>
+                                <li class="breadcrumb-item"><a class=" hoverUnderline bsClick" onclick="window.goto('/search?q={{link.name}}')">{{link.name}}</a></li>
                                 {% endfor %}
                             </ol>
                             {% endif %}

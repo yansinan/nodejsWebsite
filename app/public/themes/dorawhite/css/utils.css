@@ -138,14 +138,24 @@ bn-search{
 .list-inline-item:not(:last-child) {
     margin-right:0px;
 }
+.breadcrumb-item,
+.list-inline-word:hover,
 .list-inline-item:hover{
     cursor: pointer;
 }
+.breadcrumb-item a,.breadcrumb-item a:active, .breadcrumb-item a:link, .breadcrumb-item a:visited,
+.list-inline-word a,.list-inline-word a:active, .list-inline-item a:link, .list-inline-item a:visited,
 .list-inline-item a:active, .list-inline-item a:link, .list-inline-item a:visited{
     color: inherit;
     text-decoration: none;
 }
-
+.list-inline-word:not(:last-child)::after{
+    content:"，";
+}
+.list-inline.artists{
+    display: flex;
+    flex-wrap: wrap;
+}
 /* offcanvas滚动条pc样式 */
 @media only screen and (min-width: 768px) {
     ::-webkit-scrollbar { /* 滚动条整体样式 */
@@ -294,10 +304,10 @@ bn-search{
     text-decoration: underline;
 }
 .outUnderline:not(:hover){
-    text-decoration: underline;
+    text-decoration: underline!important;
 }
 .outUnderline:hover{
-    text-decoration: none;
+    text-decoration: none!important;
 }
 .noSelect{
     user-select: none;

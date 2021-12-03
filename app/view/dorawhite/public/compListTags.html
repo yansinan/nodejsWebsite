@@ -12,3 +12,13 @@
         </ul>
     {% endif %}
 {% endmacro %}
+
+{% macro listArtists(listArtists,class="") %}
+    {% if listArtists.length>0%}
+        <ol class="list-inline artists">
+            {% for artist in listArtists %}
+                <li class="list-inline-word"><a class=" bsClick hoverUnderline" onclick="window.goto('{{artist.url}}')">{{artist.name}}</a></li>
+            {% endfor %}
+        </ol>
+    {% endif %}
+{% endmacro %}

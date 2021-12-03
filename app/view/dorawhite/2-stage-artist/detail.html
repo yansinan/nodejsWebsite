@@ -32,7 +32,7 @@
     {% if post.listLinks.length>0%}
     <ol class="breadcrumb">
         {% for link in post.listLinks %}
-        <li class="breadcrumb-item"><a href="{{link.url}}" target="_blank">{{link.name}}</a></li>
+        <li class="breadcrumb-item outUnderline"><a href="{{link.url}}" target="_blank">{{link.name}}</a></li>
         {% endfor %}
     </ol>
     {% endif %}

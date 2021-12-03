@@ -1,5 +1,7 @@
 {% from "../public/compListTags.html" import tag as domTag %}
 {% from "../public/compListTags.html" import listTags as listTags %}
+{% from "../public/compListTags.html" import listArtists %}
+
 <link rel="stylesheet" href="/static/themes/dorawhite/css/detail.css">
 <div class="detail {{serviceName}} font-normal" data-bs-main="{{post.docAlias}}">
     <div class="head">
@@ -14,14 +16,14 @@
     </div>
     <div class="info">
         {# 乐队名 #}
-        <div class="name">{{post.name}}<br><span class="nameArtists">{{post.nameArtists}}</span></div>
+        <div class="name">{{post.name}}{{listArtists(post.listArtists)}}</div>
         {# 标签 #}
         {{ listTags(post.tags) }}
         {# 唱片：发行方式&发行日期 #}
         {% if post.listFormatTags.length>0%}
         <ol class="formatTags breadcrumb">
             {% for link in post.listFormatTags %}
-            <li class="breadcrumb-item" onclick="window.goto('/search?q={{link.name}}')">{{link.name}}</li>
+            <li class="breadcrumb-item hoverUnderline" onclick="window.goto('/search?q={{link.name}}')">{{link.name}}</li>
             {% endfor %}
         </ol>
         {% endif %}
@@ -36,7 +38,7 @@
     {% if post.listLinks.length>0%}
     <ol class="breadcrumb">
         {% for link in post.listLinks %}
-        <li class="breadcrumb-item"><a href="#">{{link.name}}</a></li>
+        <li class="breadcrumb-item hoverUnderline"><a href="#">{{link.name}}</a></li>
         {% endfor %}
     </ol>
     {% endif %}
