@@ -11,12 +11,33 @@
         //    });
         //})
         //阻止默认行为函数
+        function isChildOf(child, parent, justChild = false) { 
+        // justChild为true则只判断是否为子元素，若为false则判断是否为本身或者子元素 默认为false
+        let parentNode;
+        if (justChild) {
+            parentNode = child.parentNode;
+        } else {
+            parentNode = child;
+        }
+        
+        if (child && parent) {
+            while (parentNode) {
+            if (parent === parentNode) {
+                return true;
+            }
+            parentNode = parentNode.parentNode;
+            }
+        }
+        return false;
+        }
         function preventDefault(e) {
-            e.preventDefault();
+            let tar=e.target;
+            let isScrollble=isChildOf(tar,window.offcanvasDetailAll)
+            if(!isScrollble)e.preventDefault();
         }
 
         // 禁用触摸滚动页面
-        //document.addEventListener('touchmove', preventDefault, {passive: false});
+        document.addEventListener('touchmove', preventDefault, {passive: false});
 
     }
     {# 监听Element变化 #}
