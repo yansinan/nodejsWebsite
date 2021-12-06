@@ -63,7 +63,7 @@
         <div class="list" style="--cnt-item:{{3 if post.listVideos.length > 3 else post.listVideos.length}}">      
             {% for item in post.listVideos %}
                 {# 乐队详情页 #}
-                <a href="{{item.link}} " target="_blank " class="item videoWrapper hoverUnderline">
+                <a onclick="window.goto('{{item.url}}') " class="item videoWrapper hoverUnderline">
                     <img src="{{item.urlImg}} " class="img-fluid" alt="{{item.title}} " />
                     <span class="title">{{item.name}}</span>
                 </a>

@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-01-28
  * @Last Modified by: dr
- * @Last Modified time: 2021-12-06 01:14:46
+ * @Last Modified time: 2021-12-06 01:51:31
  */
 
 'use strict';
@@ -70,11 +70,11 @@ class ServicePlugin extends Service {
                         dateMM:" "+moment(objVideo.date).format("MM"),
                         dateFull:moment(objVideo.date).format("YYYY-MM-DD"),
                         dateTimeline:moment(objVideo.date).format("MM/DD"),
-                        nameTimeline:objVideo.name,
+                        nameTimeline:"视频《"+objVideo.name+ "》发布",//objVideo.nameTimeline,
                         name:objVideo.name,
                         sImg:objVideo.urlImg,
                         nameArtist:artist.name,
-                        url:"/video___"+objVideo.idURL+".html",//objVideo.link,
+                        url:objVideo.url,//"/video___"+objVideo.idURL+".html",//objVideo.link,
 
                         percentDateOfYear:percentDateOfYear(objVideo.date),
                     }

@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2019/11/10 
  * @Last Modified by: dr
- * @Last Modified time: 2021-10-28 03:08:00
+ * @Last Modified time: 2021-12-06 01:46:26
  */
 /**
  * Created by Dr on 2019/11/10.
@@ -95,7 +95,7 @@ module.exports =app=>{
             }],//相关照片
             listVideos:[{
                 // _id:{type:String,default:''},
-                // url:{type:String},
+                url:{type:String},
                 name:{type:String},
                 type:{type:String,default:"link"},
                 date:{type:Date,default:Date.now},
@@ -104,6 +104,7 @@ module.exports =app=>{
                 urlImg:{type:String,default:""},
                 urlVideo:{type:String,default:""},
                 link:{type:String},//外链网页，用于分析id数据
+                desc:{type:String},
             }],//相关视频
             idNCM:{
                 type:String,
@@ -205,6 +206,16 @@ module.exports =app=>{
                 v.urlThumbsnail=v.urlThumbsnail.replace("http://wx.z-core.cn:8791","");
             })
             return v;
+        })
+        // listVideos补齐属性
+        schema.path("listVideos").get(function(listV){
+            let artist=this;
+            return listV.map(v=>{
+                v.url="/video___"+v.idURL+".html";
+                v.sImg=v.urlImg;
+                v.nameTimeline="视频《"+v.name+ "》发布";
+                return v;
+            })
         })
         //首字母
         schema.virtual('firstLetter').get(function () {
