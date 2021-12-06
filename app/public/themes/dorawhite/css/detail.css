@@ -47,6 +47,9 @@
 .detail .list-inline li.border{
     border: 1px solid #000!important;
 }
+.detail span,
+.detail p,
+.detail iframe,
 .detail article{
     max-width: 100%;
 }

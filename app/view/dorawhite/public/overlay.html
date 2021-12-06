@@ -357,6 +357,15 @@
         {# modal 图片预览 #}
         
         var bsModalImagePreview = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalImagePreview'));
+        {# 改变文章css #}
+        this.setDetailStyle=function($detail){
+            $detail.querySelectorAll("span,p,img").forEach($dom=>{
+                $dom.style.removeProperty("font-size");
+                $dom.style.removeProperty("font-family");
+                $dom.style.removeProperty("width");
+            });
+            
+        }
         this.setDetailDom=function($detail){
             {# 获取基础数据 #}
             let $name=$offcanvasDetail.querySelector(".name");
@@ -481,6 +490,9 @@
                         {# 根据内容改变 #offcanvasDetailAll 的class 控制样式 #}
                         that.setDetailClassList();
                         let objDetail=that.setDetailDom($offcanvasDetail);
+                        {# 改变详情style #}
+                        that.setDetailStyle($offcanvasDetail)
+
                         that.dispatchEvent(new CustomEvent("NAV_AT", { detail:{apiDetail:url,titleDetail:objDetail.title}, }));
                     }else{
                         error({msg:"服务器连接成功；返回错误:status=="+res.status,res,url})
