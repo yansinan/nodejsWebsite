@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-01-28
  * @Last Modified by: dr
- * @Last Modified time: 2021-12-02 20:00:16
+ * @Last Modified time: 2021-12-05 23:26:54
  */
 
 'use strict';
@@ -219,6 +219,7 @@ class ServicePlugin extends Service {
                 urlImg:resNCM.data.cover,//ncmMV.imgurl,
                 urlVideo:"",
                 link:"https://music.163.com/#/mv?id="+resNCM.data.id,
+                desc:resNCM.data.desc || "",
             }
             return res;
         }catch(e){

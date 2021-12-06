@@ -323,12 +323,71 @@
           // [this.dialogState.strListObjURL]:data,
         }
       },
+      // 获取mv详情
+      getDetailMV(item){
+        return new Promise((resolve,reject)=>{
+          fetch("/api/video/item?idNCMMV="+item.idURL)
+          .then((data)=>data.text())
+          .then((data)=> {
+              // 在这个then里面我们能拿到最终的数据
+              let res=JSON.parse(data);
+              if(res.status==200 && res.data){
+                resolve(res);
+              }else{
+                reject({
+                  status:res.status,
+                  msg:"获取云音乐MV详情错误",
+                  data:res.data,
+                })
+              }
+          }).catch(e=>{
+            reject({
+              status:res.status,
+              msg:"获取云音乐MV详情错误",
+              data:res.data,
+            })
+            debugger
+          })
+        })        
+      },
+      // 获取mv播放地址
+      getURLMV(item){
+        return new Promise((resolve,reject)=>{
+          fetch("/api/video/url?idNCMMV="+item.idURL)
+          .then((data)=>data.text())
+          .then((data)=> {
+              // 在这个then里面我们能拿到最终的数据
+              let res=JSON.parse(data);
+              if(res.status==200 && res.data.length>0){
+                resolve(res);
+              }else{
+                reject({
+                  status:res.status,
+                  msg:"获取云音乐MV播放地址错误",
+                  data:res.data,
+                })
+              }
+          }).catch(e=>{
+            reject({
+              status:res.status,
+              msg:"获取云音乐MV播放地址错误",
+              data:res.data,
+            })
+            debugger
+          })
+        })
+      },
       // 添加到本地,检查图片是否已修正，上传图片+数据
       addDomain(item){
         let that=this;
         item.isLoading=true;
         that.uploadBlob(item.blob).then(resSrc=>{
           item.urlImg=resSrc;
+        //  // return that.getURLMV(item);
+        //  return that.getDetailMV(item);
+        //}).then(resURLMV=>{
+        //  item.urlVideo=resURLMV.data.urlVideo;
+        //  // 更新乐队信息
           let payload=that.getPushDataToUpdate(item);
           return updateOne(payload,this.nameMod);
         }).then(result => {
