@@ -40,7 +40,7 @@
                             </ol>
                             {% endif %}
                             {# 图 手机隐藏纵向图 #}
-                            <div class="imgContainer {{' videoWrapper' if item.docAlias=='videos' else ''}}">                        
+                            <div class="imgContainer {{' videoWrapper bsClick' if item.docAlias=='videos' else ''}}" onclick="window.goto('{{item.url}}')">                        
                                 <img data-src="{{item.sImg}}" src="/static/upload/images/defaultlogo.png" width="100%" height="100%" alt="{{item.nameTimeline}}"  class="lazy img-fluid bsClick" onclick="window.goto('{{item.url}}')" dr-id-doc="img{{item._id}}"/>
                             </div>
                         </div>

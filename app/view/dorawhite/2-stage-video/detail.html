@@ -1,0 +1,21 @@
+{% from "../public/compListTags.html" import listArtists %}
+{% from "../public/compListTags.html" import listTags as listTags %}
+
+<link rel="stylesheet" href="/static/themes/dorawhite/css/detail.css">
+<div class="detail {{serviceName}} font-normal" data-bs-main="{{post.docAlias}}">
+    <video class="album" playsinline controls 
+        src="{{post.urlVideo | safe}}" poster="{{post.sImg}}" preload="metadata" controlslist="nodownload"></video>
+    {# <a href="{{post.link}}" _target="blank">网易云音乐链接</a> #}
+    <div class="info">
+        {# 乐队名 #}
+        <div class="date">{{post.dateFull}}</div>
+        <div class="name">{{post.name}}{{listArtists(post.listArtists)}}</div>
+        {# 标签 #}
+        {{ listTags(post.tags) }}
+    </div>
+    <div class="headEnd"></div>
+    {# 介绍 #}
+    <article class="">
+        {{post.comments | safe | trim}}
+    </article>
+</div>

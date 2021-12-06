@@ -52,6 +52,8 @@
 .detail iframe,
 .detail article{
     max-width: 100%;
+    line-height: 1rem;
+    word-break: break-word;
 }
 .detail article img{
     max-width: 100%;
@@ -801,4 +803,14 @@
     .detail.good article img{
         margin-bottom: 1rem;
     }
+}
+
+/* 视频播放页 */
+.detail.video video{
+    width:100%;
+    max-width: 100%;
+}
+.detail.video article{
+    white-space: break-spaces;
+    white-space: pre-line;
 }

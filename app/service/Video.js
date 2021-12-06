@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-01-28
  * @Last Modified by: dr
- * @Last Modified time: 2021-12-05 23:26:54
+ * @Last Modified time: 2021-12-06 01:14:46
  */
 
 'use strict';
@@ -71,9 +71,10 @@ class ServicePlugin extends Service {
                         dateFull:moment(objVideo.date).format("YYYY-MM-DD"),
                         dateTimeline:moment(objVideo.date).format("MM/DD"),
                         nameTimeline:objVideo.name,
+                        name:objVideo.name,
                         sImg:objVideo.urlImg,
                         nameArtist:artist.name,
-                        url:objVideo.link,
+                        url:"/video___"+objVideo.idURL+".html",//objVideo.link,
 
                         percentDateOfYear:percentDateOfYear(objVideo.date),
                     }
@@ -110,6 +111,31 @@ class ServicePlugin extends Service {
         let listSortedDocs = (await this.service.uploadFiles.cacheJSON(path.join(strFolderCache,'listDocVideos.json'),{tar:this,fun:this.findAll, params:[] },true,true));
         if(dateRange)listSortedDocs=listSortedDocs.filter(docV=>(dateRange &&  moment(docV.date).isBetween(dateRange.dateStart,dateRange.dateEnd)));
         return listSortedDocs;
+    }
+
+    // 根据contentId从webcrawl获取&组合单个视频数据
+    async item(ctx,{
+        query = {},
+        populate = [],
+        files = null
+    } = {}){
+        let idNCMMV=query._id;
+        const console=this.logger;
+        let res=false;
+        try{
+            if(!idNCMMV)throw new Error("没有idNCMMV");
+            res=await this.ncmMV(idNCMMV);
+            res.comments=res.desc;
+            res.sImg=res.urlImg;//前端使用
+            res.dateFull=moment(res.date).format("YYYY-MM-DD"),
+            res.urlVideo=await this.ncmURLMV(idNCMMV);
+            return res;
+        }catch(e){
+            debugger
+            console.error("错误：视频item",e);
+            return "";
+        }  
+        
     }
     // 再取视频播放地址/mv/url
     // let resNCM=await this.ctx.service.webCrawler.api("/mv/url",{id:idNCMMV});
@@ -221,6 +247,7 @@ class ServicePlugin extends Service {
                 link:"https://music.163.com/#/mv?id="+resNCM.data.id,
                 desc:resNCM.data.desc || "",
             }
+            // res.desc=res.desc.replace(/^\s*|\s*$/g,"");
             return res;
         }catch(e){
             debugger

@@ -132,6 +132,8 @@ class IndexController extends Controller {
                     // 根据serviceName，选用不同模板
                     if(serviceName=="record" || serviceName=="good"){
                         ctx.tempPage="../view/dorawhite/2-stage-record/detail.html";
+                    }else if(serviceName=="video"){
+                        ctx.tempPage="../view/dorawhite/2-stage-video/detail.html";
                     }else ctx.tempPage="../view/dorawhite/2-stage-timeline/detail.html";//"../view/dorawhite/2-stage-timeline/listTempTimeline.html";//app/view/dorawhite/2-stage-timeline/listTempTimeline.html
                     //ctx.tempPage=fs.existsSync(ctx.tempPage)?ctx.tempPage:"../view/dorawhite/2-stage-default/detail.html";
                 } else {

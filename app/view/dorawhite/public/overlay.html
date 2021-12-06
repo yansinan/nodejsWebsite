@@ -285,7 +285,7 @@
             },
             {# 停止播放 #}
             stopAudioAll:function(){
-                let $listAudios=$offcanvasDetail.querySelectorAll(".nav .playList ul audio");
+                let $listAudios=$offcanvasDetail.querySelectorAll(".nav .playList ul audio,video");
                 $listAudios.forEach($a=>{
                         $a.pause();
                         $a.currentTime=0;
