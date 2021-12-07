@@ -8,6 +8,7 @@
 @import url('artist.css');
 @import url('timeline.css');
 @import url('overlay.css');
+@import url('detail.css');
 :root{
     --main-offset-left-mobile:0.85rem;
     --main-offset-left-pc:1.25rem; 
