@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-01-28
  * @Last Modified by: dr
- * @Last Modified time: 2021-12-06 01:51:31
+ * @Last Modified time: 2021-12-06 22:17:37
  */
 
 'use strict';
@@ -129,6 +129,7 @@ class ServicePlugin extends Service {
             res.sImg=res.urlImg;//前端使用
             res.dateFull=moment(res.date).format("YYYY-MM-DD"),
             res.urlVideo=await this.ncmURLMV(idNCMMV);
+            res.docAlias="videos";
             return res;
         }catch(e){
             debugger
