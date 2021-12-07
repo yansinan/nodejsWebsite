@@ -115,6 +115,7 @@
     transition-property: max-height;
     transition-duration: .5s;
     overflow: hidden;
+    width: 100%;
 }
 .detail .relative.list .item{
     color:inherit;

@@ -467,6 +467,8 @@
             {# 关于和乐队没有相关 #}
             if(!inData.pageData || inData.pageData.post.docAlias == "artists")return;
             let listKeywords=inData.pageData.post.keywords || [];
+            let listRefs=inData.pageData.post.listRefs || [];
+            listKeywords=listKeywords.concat(listRefs.map(v=>(v.name)));
             let strSearch=listKeywords.join(" ");
             {# let listTags=inData.pageData.post.tags || []; #}
             {# listTags=listTags.map(tag=>(tag.name)); #}

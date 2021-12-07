@@ -155,39 +155,47 @@ class IndexController extends Controller {
         const ctx = this.ctx;
         const service = this.service;
         let {q,id}=ctx.query;
+        q=q.replace(/^\s*/g,"");
         q=q.replace(/^,/g,"");
         q=q.replace(" ","|");
         q=q.replace(",","|");
-        let resFind = await service.doc.find(
-            {
-                //filesType:"timelineBar", 
-                pageSize: 10,
-                isPaging:1,
-                lean:false,
-                searchkey:q,
-            },{
-                query:{
-                    _id:{$ne:id},
-                    $or:[
-                        {keywords: { $regex: q },},
-                        {keywords: { $in: q.split("|") },},
-                    ]
-                },
-                searchKeys: ['keywords', 'name', 'comments', 'discription','listRefs','tags'],
-                files:"_id date listDateDur dateYear dateYYYYM dateTimeline percentDateOfYear docAlias docAliasSearch name title nameTimeline alias listRefs listLinks listFormatTags sImg tags url",
-                populate:[{
-                    path: 'tags listRefs listFormatTags',
-                    select: 'name _id alias',
-                    match:{
-                        $or:[
-                            {name: { $regex: q }},
-                            {alias: { $regex: q }},
-                        ]
-                    }
-                }],
-                sort:{date: -1},
-            });
+        let resFind = [];
+        if(q!=""){
+            resFind = await service.doc.find(
+                {
+                    //filesType:"timelineBar", 
+                    pageSize: 10,
+                    isPaging:1,
+                    lean:false,
+                    searchkey:q,
+                },{
+                    //query:{
+                    //    _id:{$ne:id},
+                    //    //$or:[
+                    //    //    {keywords: { $regex: q },},
+                    //    //    {keywords: { $in: q.split("|") },},
+                    //    //]
+                    //},
+                    searchKeys: ['keywords', 'name', 'comments', 'discription','listRefs','tags'],
+                    files:"_id date listDateDur dateYear dateYYYYM dateTimeline percentDateOfYear docAlias docAliasSearch name title nameTimeline alias listRefs listLinks listFormatTags sImg tags url",
+                    populate:[{
+                        path: 'tags listRefs listFormatTags',
+                        select: 'name _id alias',
+                        match:{
+                            $or:[
+                                {name: { $regex: q }},
+                                {alias: { $regex: q }},
+                            ]
+                        }
+                    }],
+                    sort:{date: -1},
+                });
+        }
         let docs = resFind.docs || resFind;
+        // 删除本文章，避免重复推荐
+        const idx=docs.findIndex(doc=>(doc._id==id));
+        if(idx!=-1)delete docs[idx];
+
         let pageInfo = resFind.pageInfo || {};
         let pageData={
             posts:docs,
@@ -200,7 +208,7 @@ class IndexController extends Controller {
         //最终渲染
         // 模板的真实路径
         let path="../view/dorawhite/public/relative.html";
-        console.info("getDomSearch::",ctx.query,q,resObj);
+        console.info("getDomSearch::",ctx.query,q,resObj.pageInfo);
        try {
             resObj.dom=await ctx.renderView(path,pageData);
             ctx.helper.renderSuccess(ctx, {
