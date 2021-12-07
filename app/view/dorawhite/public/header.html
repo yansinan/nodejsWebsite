@@ -341,6 +341,11 @@
         }
         {# 如果有详情，打开详情 #}
         this.toggleDetail(this.header.objNavTo);
+        {# 如果按钮点击，屏蔽后续事件 #}
+        if(window.event.type=="click"){
+            window.event.preventDefault();
+            window.event.stopPropagation();
+        }
     }
             
 
