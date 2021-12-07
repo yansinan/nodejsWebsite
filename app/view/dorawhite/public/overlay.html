@@ -455,14 +455,17 @@
             return objDetail;
         }
         {# 根据内容改变 #offcanvasDetailAll 的class 控制样式 #}
-        this.setDetailClassList=function(){
-            let $detail = $offcanvasDetail.querySelector(".content .detail");
-            let classList=$detail.dataset && $detail.dataset.bsMain?$detail.dataset.bsMain : "news about";
-            $offcanvasDetailAll.classList.value=classList;
-            return classList;
+        this.setDetailClassList=function(inData){
+            //let $detail = $offcanvasDetail.querySelector(".content .detail");
+            //let classList=$detail.dataset && $detail.dataset.bsMain?$detail.dataset.bsMain : "news about";
+            //$offcanvasDetailAll.classList.value=classList;
+            //return classList;
+            $offcanvasDetailAll.classList.value=inData.pageData && inData.pageData.post.docAlias ?inData.pageData.post.docAlias : "news about";
         }
         {# 检索相关文档 #}
         this.addRelativeDocs=function(inData){
+            {# 关于和乐队没有相关 #}
+            if(!inData.pageData || inData.pageData.post.docAlias == "artists")return;
             let listKeywords=inData.pageData.post.keywords || [];
             let strSearch=listKeywords.join(" ");
             {# let listTags=inData.pageData.post.tags || []; #}
@@ -518,10 +521,10 @@
                 success: function (res) {
                     if (res.status == 200) {
                         window.offcanvasRight.classList.remove("loading");
+                        {# 先根据内容改变 #offcanvasDetailAll 的class 控制样式 #}
+                        that.setDetailClassList(res.data);
                         aOffcanvasBody.dom="";
-                        aOffcanvasBody.dom = res.data.pageData.comments || res.data.dom;
-                        {# 根据内容改变 #offcanvasDetailAll 的class 控制样式 #}
-                        that.setDetailClassList();
+                        aOffcanvasBody.dom = res.data.comments || res.data.dom;
                         let objDetail=that.setDetailDom($offcanvasDetail);
                         {# 改变详情style #}
                         that.setDetailStyle($offcanvasDetail);
