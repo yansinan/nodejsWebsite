@@ -115,7 +115,7 @@ class APIController extends Controller {
         } else if (type == 'navAvatar') {
             files = '_id url name alias sImg roofPlacement isTop '
         } else {
-            files = '_id url name firstLetter letters alias sImg date discription clickNum roofPlacement type appShowType imageArr videoArr duration simpleComments comments videoImg state dismissReason categories isTop from listHotMusics listLinks listMembers listDateDur listVideos listImages dateStart dateEnd dateYear'
+            files = '_id url name firstLetter letters alias sImg date discription keywords clickNum roofPlacement type appShowType imageArr videoArr duration simpleComments comments videoImg state dismissReason categories isTop from listHotMusics listLinks listMembers listDateDur listVideos listImages dateStart dateEnd dateYear'
         }
         // console.log('--files----', files)
         return files;
