@@ -232,7 +232,7 @@
 
         </div>
         <div id="offcanvasDetail" class="offcanvas-body loading" ms-controller="offcanvasDetail" ms-on-scroll="@eScrollDetail">
-            <div class="content" ms-html="@dom" style="background-color: inherit;"></div>
+            <div class="content" :visible="!@loadingState" ms-html="@dom" style="background-color: inherit;"></div>
             {# 
             <div class="loading w-100 justify-content-center align-items-center ">
                 <i class="fa fa-spin fa-spinner"></i>
@@ -461,6 +461,38 @@
             $offcanvasDetailAll.classList.value=classList;
             return classList;
         }
+        {# 检索相关文档 #}
+        this.addRelativeDocs=function(inData){
+            let listKeywords=inData.pageData.post.keywords || [];
+            let strSearch=listKeywords.join(" ");
+            {# let listTags=inData.pageData.post.tags || []; #}
+            {# listTags=listTags.map(tag=>(tag.name)); #}
+            {# strSearch+=" "+listTags.join(" "); #}
+            fetch("/relative?q="+strSearch)
+            .then(function(data){
+                return data.text();
+            }).then(function (data) {
+                // 在这个then里面我们能拿到最终的数据
+                let objData=JSON.parse(data);
+                if(objData.status==200){
+                    try{                        
+                        //aOffcanvasBody.dom += objData.data.dom;//
+                        let $detail = $offcanvasDetail.querySelector(".content .detail");
+                        let domToAppend=document.createRange().createContextualFragment(objData.data.dom);
+                        $detail.appendChild(domToAppend);
+                    }catch(e){
+                        debugger;
+                        throw new Error("detail加载relative内容,通信正常，返回结果错误"+JSON.stringfy(e));
+                    }
+                }else{
+                    debugger
+                    throw new Error("detail加载relative内容，服务器通信错误："+objData.status);
+                }
+            }).catch(err=>{
+                debugger
+                return Promise.reject(err);
+            });    
+        }
         this.addEventListener("OPEN_OFFCANVAS_DETAIL",function(e){
             let url=e.detail.apiDetail;// || e.detail.relatedTarget.attributes["data-dr-url"].value ||  "/about___.html";
             if(!url)debugger;
@@ -486,13 +518,17 @@
                 success: function (res) {
                     if (res.status == 200) {
                         window.offcanvasRight.classList.remove("loading");
-                        aOffcanvasBody.loadingState = false;
-                        aOffcanvasBody.dom = res.data.comments || res.data;
+                        aOffcanvasBody.dom="";
+                        aOffcanvasBody.dom = res.data.pageData.comments || res.data.dom;
                         {# 根据内容改变 #offcanvasDetailAll 的class 控制样式 #}
                         that.setDetailClassList();
                         let objDetail=that.setDetailDom($offcanvasDetail);
                         {# 改变详情style #}
-                        that.setDetailStyle($offcanvasDetail)
+                        that.setDetailStyle($offcanvasDetail);
+                        {# 样式处理完再显示 #}
+                        aOffcanvasBody.loadingState = false;
+                        {# 添加相关文档 #}
+                        that.addRelativeDocs(res.data);
 
                         that.dispatchEvent(new CustomEvent("NAV_AT", { detail:{apiDetail:url,titleDetail:objDetail.title}, }));
                     }else{

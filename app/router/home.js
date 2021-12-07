@@ -67,6 +67,8 @@ module.exports = app => {
     // 搜索
     // router.get(["/search/:searchkey", "/search/:searchkey/:current.html"], controller.page.index.getDomSearch);
     router.get(["/search"], controller.page.index.getDomSearch);
+    // 相关
+    router.get(["/relative"], controller.page.detail.getRelativeDocs);
     //// 标签
     //router.get(["/tag/:tagName", "/tag/:tagName/:current.html"], controller.page.home.getDataForTagPage);
     //// 作者

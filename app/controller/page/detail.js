@@ -98,7 +98,7 @@ class IndexController extends Controller {
                 //最终渲染
                 ctx.tempPage=pageData.staticforder + '/' + ctx.tempPage;
                 let dom=await ctx.renderView(ctx.tempPage, pageData);
-                ctx.helper.renderSuccess(ctx,{data:dom});
+                ctx.helper.renderSuccess(ctx,{data:{pageData,dom}});
             }
         } else {
             ctx.redirect("/");
@@ -143,13 +143,68 @@ class IndexController extends Controller {
                 // ctx.tempPage=pageData.staticforder + '/' + ctx.tempPage;
 
                 let dom=await ctx.renderView(ctx.tempPage, pageData);
-                ctx.helper.renderSuccess(ctx,{data:dom});
+                ctx.helper.renderSuccess(ctx,{data:{pageData,dom}});
             }
         } else {
             ctx.redirect("/");
         }
     }
-    
+
+    // 相关内容
+    async getRelativeDocs(){
+        const ctx = this.ctx;
+        const service = this.service;
+        let {q}=ctx.query;
+        q=q.replace(/^,/g,"");
+        q=q.replace(" ","|");
+        q=q.replace(",","|");
+        let resFind = await service.doc.find(
+            {
+                //filesType:"timelineBar", 
+                pageSize: 10,
+                isPaging:1,
+                lean:false,
+                searchkey:q,
+            },{
+                // query,
+                searchKeys: ['keywords', 'name', 'comments', 'discription','listRefs','tags'],
+                files:"_id date listDateDur dateYear dateYYYYM dateTimeline percentDateOfYear docAlias docAliasSearch name title nameTimeline alias listRefs listLinks listFormatTags sImg tags url",
+                populate:[{
+                    path: 'tags listRefs listFormatTags',
+                    select: 'name _id alias',
+                    match:{
+                        $or:[
+                            {name: { $regex: q }},
+                            {alias: { $regex: q }},
+                        ]
+                    }
+                }],
+                sort:{date: -1},
+            });
+        let docs = resFind.docs || resFind;
+        let pageInfo = resFind.pageInfo || {};
+        let pageData={
+            posts:docs,
+            pageInfo,
+        }
+        // 组合页面信息和数组
+        let resObj = {
+            pageInfo,
+        }
+        //最终渲染
+        // 模板的真实路径
+        let path="../view/dorawhite/public/relative.html";
+        console.info("getDomSearch::",ctx.query,q,resObj);
+       try {
+            resObj.dom=await ctx.renderView(path,pageData);
+            ctx.helper.renderSuccess(ctx, {
+                data: resObj
+            });
+        } catch (err) {
+           ctx.helper.renderFail(ctx, { message: err });
+        }
+
+    }    
 }
 
 module.exports = IndexController;

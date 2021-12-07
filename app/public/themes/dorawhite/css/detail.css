@@ -39,6 +39,12 @@
 .detail .name{
     margin-bottom: 1rem;
 }
+.detail .headEnd{
+    flex:0 0 3rem;
+    border-bottom: 1px solid #FDFDFD;
+    width: 100%;
+}
+
 .detail .list-inline,
 .detail .list-inline{
     margin-bottom: 1rem;
@@ -91,7 +97,45 @@
     align-self: center;
     cursor: pointer;
 }
-
+.detail .relative::before{
+    content:"相关文档";
+    width:100%;
+    flex:1;
+    display:flex;
+    align-items: flex-start;
+    margin-top:1.528rem;
+    margin-bottom:1.528rem;
+}
+.detail .relative.list{
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: unset;
+    grid-auto-rows: 0px;
+    grid-auto-rows: auto;
+    transition-property: max-height;
+    transition-duration: .5s;
+    overflow: hidden;
+}
+.detail .relative.list .item{
+    color:inherit;
+    position: relative;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    margin-bottom: 1.277rem;
+    margin-bottom: .5rem;
+    cursor: pointer;
+}
+.detail .relative.list .item::before{
+    content: "";
+    background: url(/static/upload/images/icons/arrow-down.svg) center/0.55rem auto no-repeat;
+    height: 0.55rem;
+    margin-right: 0.55rem;
+    flex: 0 0 0.55rem;
+    display: flex;
+    transform: rotate(-90deg);
+    /* filter: invert(1); */
+}
 @media (min-width: 768px) {
     .detail article{
         max-width: 80%;
@@ -213,11 +257,8 @@
     /* text-decoration: underline; */
     -webkit-background-clip: text;
 }
-
-.detail.artist .headEnd{
-    flex:0 0 3rem;
-    border-bottom: 1px solid #FDFDFD;
-    width: 100%;
+.detail.artist .relative.list .item::before{
+    filter: invert(1);
 }
 #offcanvasDetail .nav{
     font-size: calc(18 * 1rem / 26);
