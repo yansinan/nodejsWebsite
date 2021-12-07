@@ -154,7 +154,7 @@ class IndexController extends Controller {
     async getRelativeDocs(){
         const ctx = this.ctx;
         const service = this.service;
-        let {q}=ctx.query;
+        let {q,id}=ctx.query;
         q=q.replace(/^,/g,"");
         q=q.replace(" ","|");
         q=q.replace(",","|");
@@ -166,7 +166,13 @@ class IndexController extends Controller {
                 lean:false,
                 searchkey:q,
             },{
-                // query,
+                query:{
+                    _id:{$ne:id},
+                    $or:[
+                        {keywords: { $regex: q },},
+                        {keywords: { $in: q.split("|") },},
+                    ]
+                },
                 searchKeys: ['keywords', 'name', 'comments', 'discription','listRefs','tags'],
                 files:"_id date listDateDur dateYear dateYYYYM dateTimeline percentDateOfYear docAlias docAliasSearch name title nameTimeline alias listRefs listLinks listFormatTags sImg tags url",
                 populate:[{

@@ -471,7 +471,7 @@
             {# let listTags=inData.pageData.post.tags || []; #}
             {# listTags=listTags.map(tag=>(tag.name)); #}
             {# strSearch+=" "+listTags.join(" "); #}
-            fetch("/relative?q="+strSearch)
+            fetch("/relative?id="+inData.pageData.post.id+"&q="+strSearch)
             .then(function(data){
                 return data.text();
             }).then(function (data) {
