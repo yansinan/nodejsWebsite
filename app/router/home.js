@@ -26,22 +26,22 @@ module.exports = app => {
     ],controller.page.detail.getDataAbout);
 
     // 内容详情入口
-    router.get("/details/:id.html", controller.page.home.getDataForContentDetails);
+    // router.get("/details/:id.html", controller.page.home.getDataForContentDetails);
     // 艺术家详情
     router.get("/artist___:id.html", controller.page.detail.getDataForArtistDetails);
     router.get("/:service?___:id.html", controller.page.detail.getDataForDocDetails);
     //检索艺术家的专辑
     router.get("/record/artist/:idArtist", controller.api.record.list);
     // 专辑详情
-    router.get("/record/:id.html", controller.page.home.getDataForRecordDetails);
+    // router.get("/record/:id.html", controller.page.home.getDataForRecordDetails);
 
     // 艺术家列表；类别入口
-    router.get([
-        "/artists___:typeId?",
-        "/artists___:typeId?/:current.html",
-        "/artists/:cate1?___:typeId?",
-        "/artists/:cate1?___:typeId?/:current.html"
-    ], controller.page.home.getDataForArtistsPage);
+    //router.get([
+    //    "/artists___:typeId?",
+    //    "/artists___:typeId?/:current.html",
+    //    "/artists/:cate1?___:typeId?",
+    //    "/artists/:cate1?___:typeId?/:current.html"
+    //], controller.page.home.getDataForArtistsPage);
     //// 专辑列表；类别入口
     //router.get([
     //    "/records___:typeId?",
