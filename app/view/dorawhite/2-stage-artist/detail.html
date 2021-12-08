@@ -5,7 +5,7 @@
 
 
 {# <link rel="stylesheet" href="/static/themes/dorawhite/css/detail.css"> #}
-<div class="detail artist font-normal" data-bs-main="{{post.docAlias}}">
+<div class="detail {{serviceName}} font-normal" data-bs-main="{{post.docAlias}}">
     {# 乐队名 #}
     <div class="name">{{post.name}} {{post.alias if post.name!=post.alias else ""}}</div>
     {# 乐队图 #}

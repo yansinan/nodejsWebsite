@@ -418,3 +418,48 @@ loading{
   loading line{
     stroke:#fff;
   }  
+
+
+  /* error */
+  .error .title{
+    font-size: 1rem;
+    letter-spacing: 0.1rem;
+    position: relative;
+    top: calc(50vh - 4rem);
+  }
+  .error .message.textJustify{
+    font-size: 0.3rem;
+    letter-spacing: 0.1rem;
+    /* width: 7.8rem; */
+    height: 0.8rem;
+    padding-right: 0.7rem;
+  }
+  .error .bnBack{
+    width: calc(180 * 1rem / 36);
+    height: calc(60 * 1rem / 36);
+    border: 1px solid #FDFDFD;
+    border-radius: calc(60 * 1rem / 36 / 2);
+    margin-top: calc(44 * 1rem / 36);
+    margin-top: 24px;
+    margin-bottom: calc(44 * 1rem / 36);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* align-self: center; */
+    cursor: pointer;
+    position: relative;
+    top: calc(50vh - 4rem);
+  }
+
+/* 空白页面 文字两端对齐*/
+.textJustify{
+    text-align: justify;
+    width:100%;
+    height:100%;
+}
+.textJustify::after{
+    width: 100%;
+    display: inline-block;
+    height:0rpx;
+    content: ''; /*这三个都不可以少*/
+}

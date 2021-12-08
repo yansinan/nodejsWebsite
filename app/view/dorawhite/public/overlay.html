@@ -455,12 +455,12 @@
             return objDetail;
         }
         {# 根据内容改变 #offcanvasDetailAll 的class 控制样式 #}
-        this.setDetailClassList=function(inData){
+        this.setDetailClassList=function(inStrServiceName){
             //let $detail = $offcanvasDetail.querySelector(".content .detail");
             //let classList=$detail.dataset && $detail.dataset.bsMain?$detail.dataset.bsMain : "news about";
             //$offcanvasDetailAll.classList.value=classList;
             //return classList;
-            $offcanvasDetailAll.classList.value=inData.pageData && inData.pageData.post.docAlias ?inData.pageData.post.docAlias : "news about";
+            $offcanvasDetailAll.classList.value=inStrServiceName;
         }
         {# 检索相关文档 #}
         this.addRelativeDocs=function(inData){
@@ -510,10 +510,20 @@
             console.info("event:详情即将打开：",url);
             {# let cateId="8hIKx4Ulz"; #}
             aOffcanvasBody.loadingState=true;
+            function appendDom(res){
+                window.offcanvasRight.classList.remove("loading");
+                {# 先根据内容改变 #offcanvasDetailAll 的class 控制样式 #}
+                let strDocAlias=res.data.pageData && res.data.pageData.post.docAlias ?res.data.pageData.post.docAlias : (res.data.params && res.data.params.serviceName? (res.data.params.serviceName+"s"):"news about")
+                that.setDetailClassList(strDocAlias);
+                aOffcanvasBody.dom="";
+                aOffcanvasBody.dom = res.data.comments || res.data.dom;
+                {# 样式处理完再显示 #}
+                aOffcanvasBody.loadingState = false;
+            }
             function error(d) {
                 console.error('error:', url,d);
-                aOffcanvasBody.loadingState = false;
-                aOffcanvasBody.dom = d.msg? d.msg : "网络故障，内容获取失败：" + d.toString();
+                appendDom(d.responseJSON);
+                that.dispatchEvent(new CustomEvent("NAV_AT", { detail:{apiDetail:url,titleDetail:"出错了"}, }));
                 debugger;
             }
             window.offcanvasRight.classList.add("loading");
@@ -521,22 +531,19 @@
                 type: 'GET',
                 url,//url: '/about___' + cateId + '.html',
                 success: function (res) {
-                    if (res.status == 200) {
-                        window.offcanvasRight.classList.remove("loading");
-                        {# 先根据内容改变 #offcanvasDetailAll 的class 控制样式 #}
-                        that.setDetailClassList(res.data);
-                        aOffcanvasBody.dom="";
-                        aOffcanvasBody.dom = res.data.comments || res.data.dom;
-                        let objDetail=that.setDetailDom($offcanvasDetail);
-                        {# 改变详情style #}
-                        that.setDetailStyle($offcanvasDetail);
-                        {# 样式处理完再显示 #}
-                        aOffcanvasBody.loadingState = false;
-                        {# 添加相关文档 #}
-                        that.addRelativeDocs(res.data);
-
+                    if (res.status == 200 || res.status==500) {
+                        appendDom(res);
+                        let objDetail= {title:"出错了"}
+                        if(res.status == 200){
+                            objDetail=that.setDetailDom($offcanvasDetail);
+                            {# 改变详情style #}
+                            that.setDetailStyle($offcanvasDetail);
+                            {# 添加相关文档 #}
+                            that.addRelativeDocs(res.data);
+                        }
                         that.dispatchEvent(new CustomEvent("NAV_AT", { detail:{apiDetail:url,titleDetail:objDetail.title}, }));
                     }else{
+                        debugger;
                         error({msg:"服务器连接成功；返回错误:status=="+res.status,res,url})
                     }
                 },

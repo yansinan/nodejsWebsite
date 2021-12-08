@@ -56,6 +56,8 @@ class IndexController extends Controller {
     async getDataForArtistDetails() {
         const ctx = this.ctx;
         let contentId = ctx.params.id;
+        ctx.params.serviceName="artist";
+        let serviceName=ctx.params.serviceName;
         if (contentId) {
             if (!shortid.isValid(contentId)) {
                 ctx.redirect("/");
@@ -67,7 +69,7 @@ class IndexController extends Controller {
                 // ctx.pageType = "artist"
                 // 获取通用页面信息
                 let {pageData,defaultTemp}=await ctx.getInitPageData("artist");//
-                
+                pageData.serviceName=serviceName;
                 //数据提取、修改标题；需要根据post信息修改内容：pageData.post,pageData.site,pageData.ogData,ctx.tempPage
                 pageData.post = await ctx.helper.reqJsonData('artist/get', { id: contentId })
                 if (!_.isEmpty(pageData.post)) {
@@ -93,12 +95,18 @@ class IndexController extends Controller {
                     ctx.tempPage = fs.existsSync(themePath + currentPath)?currentPath:"2-stage-default/detail.html";
                     
                 } else {
+                    ctx.throw(500,"艺术家已删除");
                     throw new Error(ctx.__('label_page_no_power_content'));
                 }
                 //最终渲染
                 ctx.tempPage=pageData.staticforder + '/' + ctx.tempPage;
-                let dom=await ctx.renderView(ctx.tempPage, pageData);
-                ctx.helper.renderSuccess(ctx,{data:{pageData,dom}});
+                try {
+                    let dom=await ctx.renderView(ctx.tempPage, pageData);
+                    ctx.helper.renderSuccess(ctx,{data:{pageData,dom}});
+                } catch (err) {
+                    ctx.throw(500,"模板渲染错误");
+                }
+
             }
         } else {
             ctx.redirect("/");
@@ -110,6 +118,20 @@ class IndexController extends Controller {
         const {ctx,service} = this;
         let contentId = ctx.params.id;
         let serviceName=ctx.params.service;
+        //let res={
+        //    status: 500,
+        //    message: message,
+        //    data: data || {},
+        //}
+        //debugger
+        //let dom=await ctx.renderView("../view/dorawhite/public/error.html",res);
+        // throw new Error("错误测试dr");
+        // return;
+        //ctx.throw(500,"错误测试");
+        //return;
+        //await ctx.helper.renderFail(ctx, { message: "错误测试" });
+        //return;
+        
         if (contentId) {
             if (!shortid.isValid(contentId) || !ctx.service[serviceName]) {
                 ctx.redirect("/");
@@ -134,16 +156,22 @@ class IndexController extends Controller {
                         ctx.tempPage="../view/dorawhite/2-stage-record/detail.html";
                     }else if(serviceName=="video"){
                         ctx.tempPage="../view/dorawhite/2-stage-video/detail.html";
+                    }else if(serviceName=="artist"){
+                        ctx.tempPage="../view/dorawhite/2-stage-artist/detail.html";
                     }else ctx.tempPage="../view/dorawhite/2-stage-timeline/detail.html";//"../view/dorawhite/2-stage-timeline/listTempTimeline.html";//app/view/dorawhite/2-stage-timeline/listTempTimeline.html
                     //ctx.tempPage=fs.existsSync(ctx.tempPage)?ctx.tempPage:"../view/dorawhite/2-stage-default/detail.html";
                 } else {
+                    ctx.throw(500,"文档已删除");
                     throw new Error(ctx.__('label_page_no_power_content'));
                 }
                 //最终渲染
                 // ctx.tempPage=pageData.staticforder + '/' + ctx.tempPage;
-
-                let dom=await ctx.renderView(ctx.tempPage, pageData);
-                ctx.helper.renderSuccess(ctx,{data:{pageData,dom}});
+                try {
+                    let dom=await ctx.renderView(ctx.tempPage, pageData);
+                    ctx.helper.renderSuccess(ctx,{data:{pageData,dom}});
+                } catch (err) {
+                    ctx.throw(500,"模板渲染错误");
+                }
             }
         } else {
             ctx.redirect("/");
@@ -208,14 +236,14 @@ class IndexController extends Controller {
         //最终渲染
         // 模板的真实路径
         let path="../view/dorawhite/public/relative.html";
-        console.info("getDomSearch::",ctx.query,q,resObj.pageInfo);
-       try {
+        ctx.logger.info("getDomSearch::",ctx.query,q,resObj.pageInfo);
+        try {
             resObj.dom=await ctx.renderView(path,pageData);
             ctx.helper.renderSuccess(ctx, {
                 data: resObj
             });
         } catch (err) {
-           ctx.helper.renderFail(ctx, { message: err });
+            ctx.throw(500,"模板渲染错误");
         }
 
     }    
