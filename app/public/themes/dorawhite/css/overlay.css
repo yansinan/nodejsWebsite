@@ -163,9 +163,15 @@
     #offcanvasDetailAll.artists  #offcanvasRight .offcanvas-header .navbar-brand{
         display:none;
     }
-
+    #offcanvasDetailAll #offcanvasRight .offcanvas-header{
+        /* justify-content: space-between; */
+        /* padding-left: calc(var(--main-offset-left-pc,46px)); */
+    }
     #offcanvasRight .offcanvas-header .icon-arrow.left{
-        display: none;
+        /* display: none; */
+        background-size: 0.8rem;
+        margin-right: 1rem;
+        margin-right: calc( 16 * 1rem / 36 );
     }
     #offcanvasRight .offcanvas-header .btn-close{
         display:block;
