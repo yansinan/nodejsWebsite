@@ -463,3 +463,8 @@ loading{
     height:0rpx;
     content: ''; /*这三个都不可以少*/
 }
+
+/* logo图鼠标指针 */
+.navbar-brand{
+    cursor: pointer;
+}  

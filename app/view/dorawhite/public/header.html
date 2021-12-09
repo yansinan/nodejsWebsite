@@ -94,8 +94,39 @@
     document.addEventListener('DOMContentLoaded', loadTimeline);
     {# window.addEventListener('load', loadTimeline); #}
     window.addEventListener('resize', refreshVH);
-
-
+</script>
+<script>
+    {# 地址路由 #}
+    const regAllowed=/(?:(?:\/((?!index)(?:timeline|artists))(?=\/){1}\/([a-z]+){1})|^)((?:\/\w+___(?:\w|.)*.html)|(?:\/search\?q\=.+)|\/|$)/i
+    const regMain=/\/(timeline|artists)(?:\/)/i
+    const regTimeline=/\/(?:timeline|artists)\/([a-z]+){1}(?:\/|)/i
+    const regDetail=/(?:\/)((?:\w+___(?:\w|.)*.html)|(?:search\?q\=.+))/i
+    const regPathName=/\/(?:timeline|artists)\/[a-z]+((?:\/\w+___(?:\w|.)*.html)|\/search|\/|$|)/i
+    const regSearch=/\?.+\=.*/i    
+    function getRouter(inURL){
+        let objRouter={
+            input:inURL,
+            url:"/"+this.header.strBSMain+"/"+this.header.strAliasNav+"/",
+            pathname:"/"+this.header.strBSMain+"/"+this.header.strAliasNav+"/",
+            bsMain:this.header.strBSMain,
+            bsTimeline:this.header.strAliasNav,
+        };
+        let hasDetail=regDetail.exec(inURL);
+        if(hasDetail)objRouter.detail=hasDetail[1];
+        let hasPathName=regPathName.exec(inURL);
+        if(hasPathName)objRouter.pathname=hasPathName[0];
+        let testURL=regAllowed.exec(inURL);
+        if(testURL){
+            Object.assign(objRouter,{
+                url:testURL[0],//0没有则不符合
+                bsMain:testURL[1] || objRouter.bsMain,
+                bsTimeline:testURL[2] || objRouter.bsTimeline,
+                detail:testURL[3] || "",
+            })
+        }
+        console.log("路由拆解测试：",objRouter,testURL,)
+        return objRouter;
+    }
     {# 更新导航状态 #}
     this.header={
         funSetNav:function(strAliasNav="news"){
@@ -130,23 +161,30 @@
             {% endif %} {% endfor %}
         ],
         get strAliasNav(){
-            let path=window.location.pathname.split("/timeline/")[1] || window.location.pathname.split("/artists/")[1];///artists___KuvrGBz9e
-            let strAliasNav=path ? path.split("__")[0].split("/")[0] : this.funFindByURL().defaultUrl;
+            //let path=window.location.pathname.split("/timeline/")[1] || window.location.pathname.split("/artists/")[1];///artists___KuvrGBz9e
+            //let strAliasNav=path ? path.split("__")[0].split("/")[0] : this.funFindByURL().defaultUrl;
+            let res=regTimeline.exec(window.location.pathname);
+            let strAliasNav=(res ? res[1] : false ) || this.funFindByURL().defaultUrl;//   news/artists___KuvrGBz9e.html
             if(this.strBSMain=="timeline" && typeof strAliasNav === "string")document.querySelector("body").classList.value="flex "+strAliasNav;
             else document.querySelector("body").classList.value="flex";
             return strAliasNav;
         },
         {# 获取前台路由，timeline? #}
         get strBSMain(){
-            let path=window.location.pathname.split("/index/")[1];
-            path=path.split("/")[0];
-            return path =="timeline" ? path : "artists";
+            //let path=window.location.pathname.split("/index/")[1] || window.location.pathname || "artists/";
+            //path=path.split("/")[0];
+            //return path =="timeline" ? path : "artists";
+            const res=regMain.exec(window.location.pathname);
+            return res ? res[1] : "artists";
         },
         get strDetail(){
-            let path=window.location.pathname.split("/timeline/")[1] || window.location.pathname.split("/artists/")[1];// news/xxx.html
-            return path.split("/")[1];
+            //let path=window.location.pathname.split("/timeline/")[1] || window.location.pathname.split("/artists/")[1];// news/xxx.html
+            //return path.split("/")[1];
+            let hasDetail=regDetail.exec(window.location.pathname);
+            debugger;//只有get objNavAt用
+            return hasDetail ? hasDetail[1] : "";
         },
-        get idDetail(){return this.strDetail.split(".html")[0] || this.strDetail.split("___")[0] || ""},
+        //get idDetail(){return this.strDetail.split(".html")[0] || this.strDetail.split("___")[0] || ""},
         get idxNav(){let idx=this.listNav.findIndex(v=>(v.defaultUrl==this.strAliasNav));return idx==-1?0:idx;},
         get objNav(){return this.listNav[this.idxNav]},
         get objNavTo(){
@@ -154,7 +192,7 @@
                 this._objNavTo = {};
                 Object.defineProperties(this._objNavTo,{
                     url:{
-                        get:()=>("/index/" + this._objNavTo.bsMain + "/" + ( this._objNavTo.bsTimeline || this.funFindByURL(this._objNavTo.bsTimeline).defaultUrl) + "/" + (this._objNavTo.detail?this._objNavTo.detail : "")),
+                        get:()=>("/" + this._objNavTo.bsMain + "/" + ( this._objNavTo.bsTimeline || this.funFindByURL(this._objNavTo.bsTimeline).defaultUrl) + "/" + (this._objNavTo.detail?this._objNavTo.detail : "")),
                     },
                     title:{
                         get:()=>{
@@ -193,6 +231,7 @@
             Object.assign(this._objNavTo,obj);
         },
         get objNavAt(){
+            debugger;//好像没有用
             return {
                 bsMain:this.strBSMain,
                 bsTimeline:this.strAliasNav,
@@ -235,8 +274,19 @@
     window.addEventListener('DOMContentLoaded', ePopStateHeader, false);
 
     function ePopStateHeader(event){
-        console.info("history::",event.type,"window.history.state:",window.history.state,";event.state",event.state,"strAliasNav=",this.header.strAliasNav);
+        console.info("history::",event.type,window.location.pathname,"window.history.state:",window.history.state,";event.state",event.state,"strAliasNav=",this.header.strAliasNav);
         {# 非首页需要跳转相应页 #}
+        //let path=window.location.pathname.split("/index")[1] || window.location.pathname || "/";
+
+        //let isStartOfIndex=/^\/index/g
+        //isStartOfIndex=isStartOfIndex.test(window.location.pathname);
+        //let isStartOfBSMain=/^\/timeline|^\/artists/gi
+        //isStartOfBSMain=isStartOfBSMain.test(window.location.pathname)
+        //let path="/artists/news";        
+        //if(!isStartOfIndex && isStartOfBSMain)path=window.location.pathname;
+
+        let path=getRouter(window.location.pathname).pathname;
+
         if(event.type =="DOMContentLoaded" || event.type =="Load"){
             {# 等待sliceCover初始化完成？ #}
             //function eTimelineReady(e){
@@ -244,11 +294,11 @@
             //    this.removeEventListener("BS_TIMELINE_DOM_READY",eTimelineReady);
             //}
             //this.addEventListener("BS_TIMELINE_DOM_READY",eTimelineReady)
-            this.goto(window.location.pathname.split("/index")[1]+decodeURI(window.location.search));
+            this.goto(path+decodeURI(window.location.search));
         }else{
             {# 浏览器返回按钮或者手动=》更新导航状态 #}
             if(event.type=="popstate" || event.state){
-                this.goto(window.location.pathname.split("/index")[1]+decodeURI(window.location.search));                
+                this.goto(path+decodeURI(window.location.search));                
             }else{
                 this.header.funSetNav(this.header.strAliasNav);
             }
@@ -309,8 +359,11 @@
 
         let inURL=(inObj.constructor === String) ? inObj : (($tar.dataset && $tar.dataset.drUrl) ? $tar.dataset.drUrl : false);
         if(!inURL)throw new Error("goto():没有url");
+        getRouter(inURL);
+        //const isDetailOld=(inURL.split("/").length==2 && inURL.indexOf(".html")!=-1);
+        //const isSearchOld=(inURL.split("/").length==2 && inURL.indexOf("/search?q=")!=-1);
         {# 绝对地址为外部链接 #}
-        if(inURL.split("/")[0].indexOf("http:")!=-1 || inURL.split("/")[0].indexOf("https:")!=-1){
+        if(inURL.search(/^http:|^https:/gi)!=-1){ {# let isAbsoluteLink=(inURL.split("/")[0].indexOf("http:")!=-1 || inURL.split("/")[0].indexOf("https:")!=-1); #}
             window.open(inURL);
             return;
         }else if(inURL=="/"){
@@ -331,9 +384,9 @@
             this.dispatchEvent(new CustomEvent("NAV_TO", {
                 detail:{objNew:this.header.objNavTo,objOld:this.header.objNavOld},
             }))
-        }else if(inURL.split("/").length==2 && inURL.indexOf(".html")!=-1){//含html为详情{# 如果只传入/aaaaa___xxx.html为单独跳转detail #}
-            this.header.objNavTo={apiDetail:inURL};            
-        }else if(inURL.split("/").length==2 && inURL.indexOf("/search?q=")!=-1){//含/search?q=为搜索{# 如果只传入//search?q=为单独跳转search #}
+        }else if(regDetail.test(inURL)){  //if(inURL.split("/").length==2 && inURL.indexOf(".html")!=-1){
+            //含html为详情{# 如果只传入/aaaaa___xxx.html为单独跳转detail #}
+            //含/search?q=为搜索{# 如果只传入//search?q=为单独跳转search #}
             this.header.objNavTo={apiDetail:inURL};
         }else{
             debugger
