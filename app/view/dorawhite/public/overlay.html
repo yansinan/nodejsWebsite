@@ -511,10 +511,10 @@
             {# let cateId="8hIKx4Ulz"; #}
             aOffcanvasBody.loadingState=true;
             function appendDom(res){
-                window.offcanvasRight.classList.remove("loading");
                 {# 先根据内容改变 #offcanvasDetailAll 的class 控制样式 #}
                 let strDocAlias=res.data.pageData && res.data.pageData.post.docAlias ?res.data.pageData.post.docAlias : (res.data.params && res.data.params.serviceName? (res.data.params.serviceName+"s"):"news about")
                 that.setDetailClassList(strDocAlias);
+                window.offcanvasRight.classList.remove("loading");
                 aOffcanvasBody.dom="";
                 aOffcanvasBody.dom = res.data.comments || res.data.dom;
                 {# 样式处理完再显示 #}

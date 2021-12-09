@@ -416,7 +416,7 @@ loading{
     line-height: 2rem;
   }
   loading line{
-    stroke:#fff;
+    stroke:black;
   }  
 
 

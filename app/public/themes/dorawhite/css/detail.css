@@ -601,6 +601,9 @@
 .detail.artist .news .list .year{
     
 }
+.detail.artist  loading line{
+    filter: invert(1);
+}
 .detail .news .list .item{
     position: relative;
     display: flex;
