@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-01-26 
  * @Last Modified by: dr
- * @Last Modified time: 2021-11-02 01:42:54
+ * @Last Modified time: 2021-12-10 00:37:01
  */
 
 'use strict';
@@ -349,28 +349,39 @@ class ServicePlugin extends Service {
         }
         return listFilePathTree;
     }
-    
+
     //缓存json数据
     async cacheJSON(pathFile,objCallBack,isLocalFirst=true,isUpdateAfter=true){
+        const {
+            ctx,
+            app
+        } = this; 
         const console=this.logger;
-        let folder=path.dirname(pathFile);
+        const folder=path.dirname(pathFile);
+        const strFile=path.basename(pathFile);
+        if (!fs.existsSync(folder)) fs.mkdirSync(folder,{recursive: true});
         let data=false;
         let res = false;
-        if (!fs.existsSync(folder)) {
-            fs.mkdirSync(folder,{recursive: true});
-        }
         // 强制更新
-        if(isLocalFirst){            
-            if (fs.existsSync(pathFile)) {
+        if(isLocalFirst){
+            // 优先用内存缓存
+            data = app.cache.get(strFile);
+            if(!_.isEmpty(data)){
+                data=JSON.parse(data);
+                console.info("缓存from:memory:",strFile);
+            }else if (fs.existsSync(pathFile)) {
                 // 同步读取:TODO错误处理
                 data = JSON.parse(fs.readFileSync(pathFile, 'utf-8'));
-            }            
+                console.info("缓存from:file:",strFile);
+            }
         }
-        if((!isLocalFirst || !data)){// 如果强制更新，或者没有缓存，或者强制后更新 
-            
+        if((!isLocalFirst || _.isEmpty(data))){// 如果强制更新，或者没有缓存，或者强制后更新             
             data=await objCallBack.fun.call(objCallBack.tar || this,...(objCallBack.params || []));//:TODO错误处理
+            let jsonData=JSON.stringify(data);
+            // 写入内存缓存
+            ctx.helper.setMemoryCache(strFile, jsonData, 1000 * 60 * 60 * 24);
             // 写入缓存目录:TODO错误处理
-            res = fs.writeFileSync(pathFile, JSON.stringify(data));
+            res = fs.writeFileSync(pathFile, jsonData);
         }
         if(isUpdateAfter){
             new Promise((resolve,reject)=>{

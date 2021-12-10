@@ -57,7 +57,7 @@ class AppBootHook {
         _theApp.cache = new Cache();
 
         _theApp.messenger.on('refreshCache', by => {
-            _theApp.logger.info('start update by %s', by);
+            if(by.key.indexOf(_theApp.config.session_secret)!=-1)_theApp.logger.info('start update by %s', by);
             const ctx = _theApp.createAnonymousContext();
             ctx.runInBackground(async () => {
                 let {
