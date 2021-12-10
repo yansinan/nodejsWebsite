@@ -413,15 +413,17 @@
             throw new Error("再次导航objNew到时间轴，但是" + JSON.stringify(this.header.objNavTo));
         }
     })
-    //this.addEventListener("BS_TIMELINE_DOM_READY",(e)=>{
-    //    this.isInit=true;
-    //})
+    {#-
+    this.addEventListener("BS_TIMELINE_DOM_READY",(e)=>{
+        this.isInit=true;
+    })
     const eBnNav=function(strAliasNav){
         let currentPageIndex=this.header.listNav.findIndex(v=>(v.defaultUrl==strAliasNav));
         if(currentPageIndex>=0){
             this.goto("/timeline/"+ this.header.listNav[currentPageIndex].defaultUrl +"/");
         }
     }
+    -#}
 </script>
 
 <input type="hidden" value="{{userInfo._id}}" id="userId">
@@ -459,7 +461,7 @@
                     <ul>{% for cate in navigation %} {% if cate.parentId == '0' %}                        
                         <li class="nav-item text-nowrap rounded-pill hoverUnderline" role="presentation" dr-dom-nav-bn="{{cate.defaultUrl}}">
                             <a class="nav-link" style="" role="menuitem" tabindex="-1" alt="{{site.altkey}}{{cate.name}}"
-                                href="javascript:void(0)" onclick="eBnNav('{{cate.defaultUrl}}')" name="{{cate.defaultUrl}}">{{cate.name}}</a>
+                                href="javascript:void(0)" onclick="goto('/timeline/{{cate.defaultUrl}}/')" name="{{cate.defaultUrl}}">{{cate.name}}</a>
                         </li>{% endif %} {% endfor %}                        
                     </ul>
                     {# search #}
@@ -478,7 +480,7 @@
         <ul>{% for cate in navigation %} {% if cate.parentId == '0' %}            
             <li class="nav-item text-nowrap rounded-pill hoverUnderline" role="presentation" dr-dom-nav-bn="{{cate.defaultUrl}}">
                 <a class="nav-link" role="menuitem" tabindex="-1" alt="{{site.altkey}}{{cate.name}}"
-                    href="javascript:void(0)" onclick="eBnNav('{{cate.defaultUrl}}')" name="{{cate.defaultUrl}}">{{cate.name}}</a>
+                    href="javascript:void(0)" onclick="goto('/timeline/{{cate.defaultUrl}}/')" name="{{cate.defaultUrl}}">{{cate.name}}</a>
             </li>{% endif %} {% endfor %}            
         </ul>
     </div>
