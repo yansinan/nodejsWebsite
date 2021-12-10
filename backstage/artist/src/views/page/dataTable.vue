@@ -26,7 +26,7 @@
       <!-- 名称 -->
       <el-table-column prop="name" :label="$t('docs.name')" min-width="250" show-overflow-tooltip>
         <template slot-scope="scope">
-          <el-avatar :src="scope.row.sImg" fit="cover" size="large"  @click="eLink('/'+nameMod+'/'+scope.row._id+'.html')" :style="scope.row.state!=2 ? 'filter: opacity(0.5) grayscale(1);' : ''"/>
+          <el-avatar :src="scope.row.sImg" fit="cover" size="large" :style="scope.row.state!=2 ? 'filter: opacity(0.5) grayscale(1);' : ''"/>
           <el-button type="text" size="large" @click="editContentInfo(scope.$index, dataList)" :style="scope.row.state!=2 ? 'filter: opacity(0.5) grayscale(1);' : ''">{{scope.row.name}}  <i class="el-icon-edit" /></el-button>
           <!-- <div v-else class="col-name hide" ><el-avatar :src="scope.row.sImg" :fit="cover"/>{{scope.row.name}}</div> -->
         </template>
@@ -76,7 +76,7 @@
       <el-table-column :label="$t('main.dataTableOptions')" width="200" fixed="right">
         <template slot-scope="scope">
           <el-button-group>
-            <el-button icon="el-icon-view" :type="scope.row.state?'':'info'" :disabled="!scope.row.state" size="large" @click="eLink('/'+nameMod+'/'+scope.row._id+'.html')" />
+            <el-button icon="el-icon-view" :type="scope.row.state?'':'info'" :disabled="!scope.row.state" size="large" @click="eLink('/artists/news/'+scope.row.url)" />
             <el-button icon="el-icon-edit" size="large" type="success" @click="editContentInfo(scope.$index, dataList)" plain/>
             <el-button icon="el-icon-delete" size="large" type="danger" plain @click="deleteContent(scope.$index, dataList)" />
           </el-button-group>
