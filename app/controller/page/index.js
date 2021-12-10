@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-08-08 06:31:51 
  * @Last Modified by: dr
- * @Last Modified time: 2021-12-02 19:58:17
+ * @Last Modified time: 2021-12-10 05:13:17
  */
 const Controller = require('egg').Controller;
 const _ = require('lodash');
@@ -16,6 +16,42 @@ const qr = require('qr-image')
 const moment = require('moment')
 
 class IndexController extends Controller {
+    //所有页面通用信息
+    async getInitPageData(inPageType="") {
+        const console=this.logger;
+        const ctx = this.ctx;
+        let payload = ctx.params;
+        let pageData = {
+            pageType: ctx.pageType || inPageType || "index",
+            staticforder: 'dorawhite' ,//ctx.renderPageData()
+        };
+        pageData.navigation = await this.service.uploadFiles.cacheJSON(`${(process.cwd() + '/app/public')}/cache/objNavigation.json`,{tar:this,fun:ctx.helper.reqJsonData, params:['contentCategory/getList', payload] },true,true);
+
+        // pageData.site = await this.getSiteInfo();
+        pageData.site = await this.service.uploadFiles.cacheJSON(`${(process.cwd() + '/app/public')}/cache/objSite.json`,{tar:ctx,fun:ctx.getSiteInfo, params:[] },true,true);
+        pageData.staticRootPath = this.app.config.static.prefix;
+        
+        if (!_.isEmpty(pageData.site)) {
+            // let ogImg = `${siteDomain}${this.app.config.static.prefix}/themes/${defaultTemp.alias}/images/mobile_logo2.jpeg`;
+            pageData.ogData = {
+                url: pageData.site.configs.siteDomain,
+                img: `${pageData.site.configs.siteDomain}${this.app.config.static.prefix}/upload/images/defaultImg.jpg`
+            };
+        }
+
+        let targetLocalJson = require('@root/config/locale/zh-CN.json')
+        // 记录针对组件的国际化信息
+        let sysKeys = {};
+        for (let lockey in targetLocalJson) {
+            if (lockey.indexOf('_layer_') > 0 || lockey.indexOf('label_system_') >= 0 || lockey.indexOf('label_uploader_') >= 0) {
+                sysKeys[lockey] = ctx.__(lockey);
+            }
+        }
+
+        // console.log('----ctx.hooks.---', ctx.locals['HOOK@documentDetailAfter']);
+        pageData.lsk = JSON.stringify(sysKeys);
+        return {pageData};
+    }
     async getDataForIndexPage() {
         const console=this.logger;
         const ctx = this.ctx;
@@ -25,7 +61,7 @@ class IndexController extends Controller {
         // await ctx.getPageData();
     
         // 获取通用页面信息
-        let {pageData,defaultTemp}=await ctx.getInitPageData("cate");
+        let {pageData}=await this.getInitPageData("cate");
         // 添加导航英文信息；
         const dictAliasNav={
             "artists":"ARTIST",
