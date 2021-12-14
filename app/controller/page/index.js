@@ -106,7 +106,7 @@ class IndexController extends Controller {
         let pathTemplate = "dorawhite/default.html";//this.app.config.temp_view_forder + defaultTemp.alias + '/' + "2-stage-timeline" +"/" + "contentList.html";
         try {
             if(isDom){
-                let dom = (await this.service.uploadFiles.cacheJSON(`${(process.cwd() + '/app/public')}/cache/dom/index.html`,{tar:this,fun:this.ctx.renderView, params:[pathTemplate,pageData] },true,true));
+                let dom = (await this.service.uploadFiles.cacheJSON(`${(process.cwd() + '/app/public')}/cache/dom/index.html`,{tar:this.ctx,fun:this.ctx.renderView, params:[pathTemplate,pageData] },true,true));
                 this.ctx.body=dom//await this.getDataForIndexPage();
                 this.ctx.status = 200;
             }else{

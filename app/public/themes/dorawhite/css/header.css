@@ -427,6 +427,7 @@
   
       line-height: 1.27rem;
       margin-bottom: 0.154rem;
+      cursor: pointer;
   }
   /* 
   #offcanvasRightMenu .offcanvas-body .language{

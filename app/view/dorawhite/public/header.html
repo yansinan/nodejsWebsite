@@ -409,6 +409,150 @@
     }
     -#}
 </script>
+{# 浮层：菜单 #}
+
+{# 侧边导航菜单 #}
+<div id="offcanvasRightMenu" class="offcanvas offcanvas-end offcanvasRightMenu-md" tabindex="-1" aria-labelledby="offcanvasRightMenuLabel">
+    <div class="offcanvas-header">
+        {# <h5 id="offcanvasRightLabel">Offcanvas right</h5> #}
+        {# <div class="btn btn-search" onclick='window.eBnSearch(event)'><i class="fa fa-search"></i></div> #}
+        <bn-search class="btn" onclick="window.eBnSearch(event)"></bn-search>
+        <bn-close class="btn btn-close"  aria-label="Close" data-bs-dismiss="offcanvas" aria-label="Close"></bn-close>
+        {# <button type="button" class="btn btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button> #}
+    </div>
+    <div class="offcanvas-body offcanvas-body-md d-flex flex-column  justify-content-end">
+        {# 导航菜单 #}
+        <ul class=" flex-fill d-flex flex-column justify-content-start flex-wrap">
+            {% for cate in navigation %} {% if cate.parentId == '0' %}
+            <li class="menuItem menuItem-md text-nowrap hoverUnderline" onclick="goto('/timeline/{{cate.defaultUrl}}/')" data-bs-toggle="offcanvas" href="#offcanvasRightMenu">
+                {{cate.name}}  {{cate.alias if cate.alias else ""}}
+                {# <a class="" style="color: inherit" tabindex="-1" alt="{{site.altkey}}{{cate.name}}" name="{{cate.defaultUrl}}" data-bs-toggle="offcanvas" href="#offcanvasRightMenu" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">{{cate.name}}  {{cate.alias if cate.alias else ""}}</a> #}
+            </li>
+            {% endif %} {% endfor %}
+        </ul>
+        {# 链接和其他 #}
+        <ul class="menuFoot">
+            <li>网易云音乐</li>
+            <li>豆瓣</li>
+            <li>Facebook</li>
+            <li>订阅</li>
+            <li>联系我们</li>
+
+        </ul>
+        <div class="menuFootCopyright">赤瞳音乐&nbsp;&nbsp;RUBY&nbsp;EYES&nbsp;RECORDS&nbsp;&nbsp;&nbsp;&nbsp;Copyright©2021</div>
+    </div>
+    <script>
+        window.eBnSearch=function(e){
+            let $offcanvasSearch=document.getElementById("offcanvasSearch")
+            let bsOffcanvasSearch=bootstrap.Offcanvas.getOrCreateInstance($offcanvasSearch);
+            let bsOffcanvasMenu=bootstrap.Offcanvas.getOrCreateInstance("#offcanvasRightMenu");
+            bsOffcanvasSearch.show();
+            bsOffcanvasMenu.hide();
+            {# 自动获取焦点 #}
+            $offcanvasSearch.addEventListener("shown.bs.offcanvas",(e)=>{
+                setTimeout(function(){
+                    window.offcanvasSearch.querySelector(".offcanvas-header input").focus();
+                },100);
+            },{once:true})
+        }
+    </script>
+</div>
+
+{# 搜索建议 #}
+<datalist id="listInputSearchSuggest">
+    {% for letter,artistItems in listArtists|sort(false,false,"letters")|groupby("firstLetter") %}
+        {% for artist in artistItems %}
+        <option>{{artist.name}}</option>
+        {% endfor %}
+    {% endfor %}
+</datalist>
+
+{# 搜索菜单 #}
+<div id="offcanvasSearch" class="offcanvas offcanvas-end" tabindex="-1" aria-labelledby="offcanvasSearchLabel">
+    <div class="offcanvas-header">
+        <input id="inputSearch" placeholder="搜索" autocomplete="on" list="listInputSearchSuggest" max-length="50" onchange="eSearch(event)"></input>
+
+        {# <div class="btn btn-search" onclick="eSearch(event)"><i class="fa fa-search"></i></div> #}
+        <bn-search class="btn" onclick="eSearch(event)"></bn-search>
+        <bn-close class="btn btn-close"  aria-label="Close" onclick="window.goto('/')" aria-label="Close"></bn-close>
+    </div>
+    <div class="offcanvas-body offcanvas-body-md d-flex flex-column">
+        {# 导航菜单 #}
+        <ul id="listSearchResult" class="">
+
+        </ul>
+        {{njLoading()}}
+        {# 浮动导航 #}
+        <ul class="nav">
+        </ul>
+    </div>
+    <script>
+        window.eSearch=function(e){
+            let that=this;
+            {# 如果是从tag链接过来，填充搜索词 #}
+            if(e.detail && e.detail.apiDetail)window.inputSearch.value=e.detail.apiDetail.split("search?q=")[1];
+            let v=window.inputSearch.value;//e.currentTarget.value || e;
+            if(v=="")return;
+            window.offcanvasSearch.classList.add("loading");
+            {# 检索 #}
+            fetch("/search?q="+v)
+            .then(function(data){
+                return data.text();
+            }).then(function (data) {
+                {# vm.isLoading=false; #}
+                // 在这个then里面我们能拿到最终的数据
+                let objData=JSON.parse(data);
+                if(objData.status==200){
+                    window.offcanvasSearch.classList.remove("loading");
+                    try{                        
+                        let domToAppend = document.createRange().createContextualFragment(objData.data.dom);
+                        {# vm.$loading.before(domToAppend.cloneNode(true)); #}
+                        window.listSearchResult.replaceChildren(domToAppend.cloneNode(true));
+                        {# 触发事件更新懒加载图片 #}
+                        console.debug("eSearch=>appendDOM:done",objData);
+                        {# resolve({msg:"succ",isEnd:vm.yearTotal<=vm.yearCurrent}); #}
+                        that.dispatchEvent(new CustomEvent("NAV_AT", { detail:{apiDetail:"/search?q="+v,titleDetail:"搜索：" + v}, }));
+                        {# 前端生成浮动导航 #}
+                        let objNav=objData.data.pageInfo.objCnt;
+                        if(objNav){
+                            let $nav=window.offcanvasSearch.querySelector(".nav");
+                            $nav.replaceChildren();
+                            window.listSearchResult.classList.value="";
+                            function eBnNav(e){
+                                {# window.listSearchResult.classList.value=e.currentTarget.dataset.docAlias; #}
+                                window.listSearchResult.classList.toggle(e.currentTarget.dataset.docAlias);
+                                e.currentTarget.classList.toggle("off");
+                            }
+                            for(let k in objNav){
+                                let domBnNav=document.createElement("li");
+                                domBnNav.classList.add("list-inline-item","rounded-pill","border","text-truncate","hoverUnderline");
+                                domBnNav.innerText=objNav[k].name+" "+ Math.min(999,objNav[k].cnt);
+                                domBnNav.setAttribute("data-doc-alias",k);
+                                domBnNav.addEventListener("click",eBnNav)
+                                $nav.appendChild(domBnNav);
+                                window.listSearchResult.classList.add(k);
+                            }
+                        }
+                    }catch(e){
+                        {# $timelineContent.dataset["strNoticeEnd"] = "加载错误"; #}
+                        debugger;
+                        throw new Error("timeline加载更多内容,通信正常，返回结果错误"+JSON.stringfy(e));
+                        {# reject({msg:"timeline加载更多内容,通信正常，返回结果错误 ", objData}); #}
+                    }
+                }else{
+                    debugger
+                    throw new Error("timeline加载更多内容，服务器通信错误："+objData.status);
+                }
+            }).catch(err=>{
+                debugger
+                return Promise.reject(err);
+            });    
+        }
+        this.addEventListener("OPEN_OFFCANVAS_SEARCH",window.eSearch);
+    </script>
+</div>
+
+
 
 <input type="hidden" value="{{userInfo._id}}" id="userId">
 <input type="hidden" value="{{logined}}" id="logined">
