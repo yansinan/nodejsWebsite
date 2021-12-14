@@ -14,7 +14,7 @@
                     <div class="bsTimelineBarContent bsTimelineBarContent-md">
                         <div class="left"></div>
                         {# {{timelineBar(objTimeline)}} #}
-                        {% for objTimeline in listDateYear %}
+                        {% for objTimeline in dataTimelineBar.listDateYear %}
                         {{timelineBarDocs(objTimeline,true)}}
                         {% endfor %}
                         <div class="blank"></div>
@@ -30,7 +30,7 @@
                     {% endfor %}
                 {% endfor %}
                  #}
-                {% for year in range(pageInfo.yearNewest,pageInfo.yearTotal-1,-1) %}
+                {% for year in range(dataTimelineBar.yearNewest,dataTimelineBar.yearTotal-1,-1) %}
                 <div class="timelineYear"><span>{{year}}</span></div>
                 {% endfor %}
                 {# 剩余年份 #}
