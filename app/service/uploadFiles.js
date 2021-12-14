@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-01-26 
  * @Last Modified by: dr
- * @Last Modified time: 2021-12-10 00:37:01
+ * @Last Modified time: 2021-12-13 22:54:10
  */
 
 'use strict';
@@ -356,7 +356,7 @@ class ServicePlugin extends Service {
             ctx,
             app
         } = this; 
-        const console=this.logger;
+        // const console=this.logger;
         const folder=path.dirname(pathFile);
         const strFile=path.basename(pathFile);
         if (!fs.existsSync(folder)) fs.mkdirSync(folder,{recursive: true});
@@ -367,7 +367,7 @@ class ServicePlugin extends Service {
             // 优先用内存缓存
             data = app.cache.get(strFile);
             if(!_.isEmpty(data)){
-                data=JSON.parse(data);
+                //data=JSON.parse(data);
                 console.info("缓存from:memory:",strFile);
             }else if (fs.existsSync(pathFile)) {
                 // 同步读取:TODO错误处理
@@ -377,18 +377,26 @@ class ServicePlugin extends Service {
         }
         if((!isLocalFirst || _.isEmpty(data))){// 如果强制更新，或者没有缓存，或者强制后更新             
             data=await objCallBack.fun.call(objCallBack.tar || this,...(objCallBack.params || []));//:TODO错误处理
-            let jsonData=JSON.stringify(data);
-            // 写入内存缓存
-            ctx.helper.setMemoryCache(strFile, jsonData, 1000 * 60 * 60 * 24);
-            // 写入缓存目录:TODO错误处理
-            res = fs.writeFileSync(pathFile, jsonData);
+            ctx.runInBackground(async () => {
+                let jsonData=JSON.stringify(data);
+                // 写入内存缓存
+                ctx.helper.setMemoryCache(strFile, data, 1000 * 60 * 60 * 24);
+                // 写入缓存目录:TODO错误处理
+                res = fs.writeFileSync(pathFile, jsonData);
+                console.info("service.uploadFiles.cacheJSON 延迟缓存memory&file完成",strFile);
+            });
         }
         if(isUpdateAfter){
-            new Promise((resolve,reject)=>{
-                return this.cacheJSON(pathFile,objCallBack,false,false);
-            }).then(res=>{
-                console.info("service.uploadFiles.cacheJSON 事后更新",res);
-            })
+            ctx.runInBackground(async () => {
+                // 这里面的异常都会统统被 Backgroud 捕获掉，并打印错误日志
+                res = await this.cacheJSON(pathFile,objCallBack,false,false);
+                console.info("service.uploadFiles.cacheJSON 事后更新",strFile);
+            });
+            //new Promise((resolve,reject)=>{
+            //    return this.cacheJSON(pathFile,objCallBack,false,false);
+            //}).then(res=>{
+            //    console.info("service.uploadFiles.cacheJSON 事后更新",res);
+            //})
         }
         return data || res;
     }
