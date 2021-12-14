@@ -70,10 +70,10 @@
 
 <body class="flex">
     {# 各种浮动层 #}
-    {% include "./public/overlay.html" %}
+    {% block overylay %} {% include "./public/overlay.html" %} {% endblock %}
     {# 整屏容器 #}
     {% include "./public/header.html" %}
-    {% include "./public/footer.html" %}
+    {% block footer %} {% include "./public/footer.html" %} {% endblock %}
 
     <div id="mainCover" class="paddingCoverTop paddingCoverTop-md loading">
         {% include "./public/compLoading.html" %}

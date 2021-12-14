@@ -1,4 +1,9 @@
-{% extends "./default.html" %} {% block main %}
+{% extends "./default.html" %} 
+{% block overylay %} {% endblock %}
+{% block footerUp %} {% endblock %}
+
+
+{% block main %}
 <div id="errorMain" class="container  min-hight margin-bottom-20 margin-top-20" style="background: #FFFFFF">
     <div class="detail {{data.serviceName}} font-normal error" data-bs-main="{{data.serviceName}}s">
         <div class="title">
@@ -8,4 +13,16 @@
         <div class="bnBack" onclick="window.location.replace('/')">返回上一页</div>
     </div>
 </div>
+<script>
+    {# goto替换为重定向 #}
+    this.goto=function(inObj){
+        let event = inObj.constructor === Object ? inObj : (window.event || {});
+        let $tar= event ? event.currentTarget : (window.event.currentTarget || {});
+
+        let inURL=(inObj.constructor === String) ? inObj : (($tar.dataset && $tar.dataset.drUrl) ? $tar.dataset.drUrl : false);
+        if(!inURL)throw new Error("goto():没有url");
+        let objRouter=getRouter(inURL);
+        window.location.replace(objRouter.url || "/");
+    };
+</script>
 {% endblock %}

@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-08-08 06:31:51 
  * @Last Modified by: dr
- * @Last Modified time: 2021-12-14 05:48:26
+ * @Last Modified time: 2021-12-14 06:41:48
  */
 const Controller = require('egg').Controller;
 const _ = require('lodash');
@@ -126,7 +126,7 @@ class IndexController extends Controller {
     
         // 获取通用页面信息
         let {pageData}=await this.getInitPageData();
-
+        pageData.site.title=pageData.site.title+"404页面未找到"
         // 底条用信息
         pageData.listDateYear=[];
         pageData.pageInfo={

@@ -108,6 +108,7 @@
                 detail:testURL[3] || "",
             })
         }
+        objRouter.detail=objRouter.detail == "/" ? "": objRouter.detail;
         console.log("路由拆解测试：",objRouter,testURL,)
         return objRouter;
     }
@@ -235,6 +236,140 @@
         },
     };
 </script>
+{# 核心控制 #}
+<script>
+
+    {# 页面切换完成 #}
+    function eNavAt(e){
+        {# history路由 #}
+        let obj={
+            bsMain:e.detail.bsMain || this.header.strBSMain,
+            bsTimeline:e.detail.bsTimeline || this.header.strAliasNav || false,
+        }
+        Object.assign(obj,e.detail);
+        this.header.objNavAt=obj;//objNavAt会保存在objNavTo
+    }
+    this.addEventListener("NAV_AT",eNavAt);
+
+    {# 详情页设置 #}
+    let $offcanvasLeft=document.getElementById("offcanvasLeft");
+    let $offcanvasRight=document.getElementById("offcanvasRight");
+    this.toggleDetail=function(e={}){
+        if(!$offcanvasLeft || !$offcanvasRight)return;
+        let bsOffcanvasLeft=bootstrap.Offcanvas.getOrCreateInstance($offcanvasLeft) ;
+        let bsOffcanvasRight=bootstrap.Offcanvas.getOrCreateInstance($offcanvasRight);
+        let bsOffcanvasSearch=bootstrap.Offcanvas.getOrCreateInstance(window.offcanvasSearch);
+        let detail=e;
+
+        if(e.type=='hide.bs.offcanvas'){//按钮触发的要补一个关闭
+            that.dispatchEvent(new CustomEvent("CLOSE_OFFCANVAS_DETAIL", {detail}));
+            {# 清除左侧乐队列表 #}
+            if($offcanvasLeft.classList.contains("show") && e.currentTarget!=$offcanvasLeft)bsOffcanvasLeft.hide();
+        }else if(e.apiDetail){
+            {# 搜索或详情 #}
+            if(e.apiDetail.indexOf("/search?q=")==0){
+                {# bsOffcanvasRight.hide(); #}
+                bsOffcanvasSearch.show();
+                that.dispatchEvent(new CustomEvent("OPEN_OFFCANVAS_SEARCH", {detail}));
+            }else{//详情或关于
+                bsOffcanvasRight.show();
+                bsOffcanvasLeft.show();
+                if(window.offcanvasSearch.classList.contains("show"))bsOffcanvasSearch.hide();
+                that.dispatchEvent(new CustomEvent("OPEN_OFFCANVAS_DETAIL", {detail}));
+            }
+        }else if(!e.apiDetail || e.apiDetail === ""){ {# apiDetail ===""关闭详情 #}
+            bsOffcanvasRight.hide();
+            bsOffcanvasSearch.hide();
+            that.dispatchEvent(new CustomEvent("NAV_AT", { detail: Object.assign({},detail,{apiDetail:false,titleDetail:""}) }));
+        }else{ {# 没有detail.relatedTarget，也没有apiDetail 手动触发bs->show触发的事件 是不需要监听的 #}
+            return;
+        }
+    }
+    $offcanvasRight && $offcanvasRight.addEventListener('hide.bs.offcanvas', this.toggleDetail)
+
+    {# 驱动页面切换：所有页内跳转统一按url例如："/timeline/records/xxxxx.html" #}
+    this.goto=function(inObj){ // inObj = inURL || e 
+        let event = inObj.constructor === Object ? inObj : (window.event || {});
+        let $tar= event ? event.currentTarget : (window.event.currentTarget || {});
+
+        let inURL=(inObj.constructor === String) ? inObj : (($tar.dataset && $tar.dataset.drUrl) ? $tar.dataset.drUrl : false);
+        if(!inURL)throw new Error("goto():没有url");
+        let objRouter=getRouter(inURL);
+        const isFullURL=(inURL.split("/").length>2 || (inURL.split("/").length==2 && inURL.indexOf(".html")==-1 && inURL.indexOf("/search?q=")==-1));//2级以上，或者2级且没有有html或search?q="/artist"
+        //const isDetailOld=(inURL.split("/").length==2 && inURL.indexOf(".html")!=-1);
+        //const isSearchOld=(inURL.split("/").length==2 && inURL.indexOf("/search?q=")!=-1);
+        {# 绝对地址为外部链接 #}
+        if(inURL.search(/^http:|^https:/gi)!=-1){ {# let isAbsoluteLink=(inURL.split("/")[0].indexOf("http:")!=-1 || inURL.split("/")[0].indexOf("https:")!=-1); #}
+            window.open(inURL);
+            return;
+        }else if(inURL=="/"){
+            this.header.objNavTo={apiDetail:""};
+            {# window.history.back(); #}
+        }else if(isFullURL){//2级以上，或者2级且没有有html或search?q="/artist"
+            if(!objRouter.url)debugger;
+            inURL="/index"+inURL;
+            let listURL=inURL.split("/");
+            let bsMain=listURL[2] == "timeline" ? "timeline" : "artists";//不是timeline就是artists;
+            let detail = listURL[listURL.length-1] || "";
+            detail = (detail.indexOf(".html") !=-1 || detail.indexOf("search?q=")!=-1) ? detail : "";//没有.html则无效;
+            let obj={
+                bsMain,
+                bsTimeline:listURL[3] || this.header.strAliasNav,// || this.header.funFindByURL().defaultUrl,
+                detail,
+            }
+            if(objRouter.bsMain!=obj.bsMain || objRouter.detail!=obj.detail || objRouter.bsTimeline!=obj.bsTimeline)debugger
+            else{
+                obj={
+                    bsMain:objRouter.bsMain,
+                    bsTimeline:objRouter.bsTimeline,
+                    detail:objRouter.detail,
+                }
+            }
+            this.header.objNavTo=obj;
+            this.dispatchEvent(new CustomEvent("NAV_TO", {
+                detail:{objNew:this.header.objNavTo,objOld:this.header.objNavOld},
+            }))
+        }else if(regDetail.test(inURL)){  //if(inURL.split("/").length==2 && inURL.indexOf(".html")!=-1){
+            //含html为详情{# 如果只传入/aaaaa___xxx.html为单独跳转detail #}
+            //含/search?q=为搜索{# 如果只传入//search?q=为单独跳转search #}
+            this.header.objNavTo={apiDetail:inURL};
+        }else{
+            debugger
+            throw new Error("goto(inURL)格式错误:"+inURL);
+        }
+        {# 如果有详情，打开详情 #}
+        this.toggleDetail(this.header.objNavTo);
+        {# 如果按钮点击，屏蔽后续事件 #}
+        if(window.event && window.event.type=="click"){
+            window.event.preventDefault();
+            window.event.stopPropagation();
+        }
+    }
+            
+
+    {# 在时间轴页，再次导航objNew #}
+    this.addEventListener("BS_COVER_TIMELINE_FINAL",(e)=>{
+        if(e.detail.bsMain!="artists" && this.header.objNavTo.bsTimeline){
+            this.dispatchEvent(new CustomEvent("NAV_TO_TIMELINE", {
+                detail:{objNew:Object.assign({},this.header.objNavTo,e.detail),objOld:this.header.objNavOld},
+            }))
+        }else {
+            debugger
+            throw new Error("再次导航objNew到时间轴，但是" + JSON.stringify(this.header.objNavTo));
+        }
+    })
+    {#-
+    this.addEventListener("BS_TIMELINE_DOM_READY",(e)=>{
+        this.isInit=true;
+    })
+    const eBnNav=function(strAliasNav){
+        let currentPageIndex=this.header.listNav.findIndex(v=>(v.defaultUrl==strAliasNav));
+        if(currentPageIndex>=0){
+            this.goto("/timeline/"+ this.header.listNav[currentPageIndex].defaultUrl +"/");
+        }
+    }
+    -#}
+</script>
 {# 导航相关控制&监听 #}
 <script>
     {# pushState和replaceState被调用时，是不会触发触发 popstate 事件的解决方案 #}
@@ -288,127 +423,8 @@
             }
         }
     }
-    {# 页面切换完成 #}
-    function eNavAt(e){
-        {# history路由 #}
-        let obj={
-            bsMain:e.detail.bsMain || this.header.strBSMain,
-            bsTimeline:e.detail.bsTimeline || this.header.strAliasNav || false,
-        }
-        Object.assign(obj,e.detail);
-        this.header.objNavAt=obj;//objNavAt会保存在objNavTo
-    }
-    this.addEventListener("NAV_AT",eNavAt);
-
-    {# 详情页设置 #}
-    let $offcanvasLeft=document.getElementById("offcanvasLeft");
-    let $offcanvasRight=document.getElementById("offcanvasRight");
-    this.toggleDetail=function(e={}){
-
-        let bsOffcanvasLeft=bootstrap.Offcanvas.getOrCreateInstance($offcanvasLeft);
-        let bsOffcanvasRight=bootstrap.Offcanvas.getOrCreateInstance($offcanvasRight);
-        let bsOffcanvasSearch=bootstrap.Offcanvas.getOrCreateInstance(window.offcanvasSearch);
-        let detail=e;
-
-        if(e.type=='hide.bs.offcanvas'){//按钮触发的要补一个关闭
-            that.dispatchEvent(new CustomEvent("CLOSE_OFFCANVAS_DETAIL", {detail}));
-            {# 清除左侧乐队列表 #}
-            if($offcanvasLeft.classList.contains("show") && e.currentTarget!=$offcanvasLeft)bsOffcanvasLeft.hide();
-        }else if(e.apiDetail){
-            {# 搜索或详情 #}
-            if(e.apiDetail.indexOf("/search?q=")==0){
-                {# bsOffcanvasRight.hide(); #}
-                bsOffcanvasSearch.show();
-                that.dispatchEvent(new CustomEvent("OPEN_OFFCANVAS_SEARCH", {detail}));
-            }else{//详情或关于
-                bsOffcanvasRight.show();
-                bsOffcanvasLeft.show();
-                if(window.offcanvasSearch.classList.contains("show"))bsOffcanvasSearch.hide();
-                that.dispatchEvent(new CustomEvent("OPEN_OFFCANVAS_DETAIL", {detail}));
-            }
-        }else if(!e.apiDetail || e.apiDetail === ""){ {# apiDetail ===""关闭详情 #}
-            bsOffcanvasRight.hide();
-            bsOffcanvasSearch.hide();
-            that.dispatchEvent(new CustomEvent("NAV_AT", { detail: Object.assign({},detail,{apiDetail:false,titleDetail:""}) }));
-        }else{ {# 没有detail.relatedTarget，也没有apiDetail 手动触发bs->show触发的事件 是不需要监听的 #}
-            return;
-        }
-    }
-    $offcanvasRight.addEventListener('hide.bs.offcanvas', this.toggleDetail)
-
-    {# 驱动页面切换：所有页内跳转统一按url例如："/timeline/records/xxxxx.html" #}
-    this.goto=function(inObj){ // inObj = inURL || e 
-        let event = inObj.constructor === Object ? inObj : (window.event || {});
-        let $tar= event ? event.currentTarget : (window.event.currentTarget || {});
-
-        let inURL=(inObj.constructor === String) ? inObj : (($tar.dataset && $tar.dataset.drUrl) ? $tar.dataset.drUrl : false);
-        if(!inURL)throw new Error("goto():没有url");
-        getRouter(inURL);
-        //const isDetailOld=(inURL.split("/").length==2 && inURL.indexOf(".html")!=-1);
-        //const isSearchOld=(inURL.split("/").length==2 && inURL.indexOf("/search?q=")!=-1);
-        {# 绝对地址为外部链接 #}
-        if(inURL.search(/^http:|^https:/gi)!=-1){ {# let isAbsoluteLink=(inURL.split("/")[0].indexOf("http:")!=-1 || inURL.split("/")[0].indexOf("https:")!=-1); #}
-            window.open(inURL);
-            return;
-        }else if(inURL=="/"){
-            this.header.objNavTo={apiDetail:""};
-            {# window.history.back(); #}
-        }else if(inURL.split("/").length>2 || (inURL.split("/").length==2 && inURL.indexOf(".html")==-1 && inURL.indexOf("/search?q=")==-1)){//2级以上，或者2级且没有有html或search?q="/artist"
-            inURL="/index"+inURL;
-            let listURL=inURL.split("/");
-            let bsMain=listURL[2] == "timeline" ? "timeline" : "artists";//不是timeline就是artists;
-            let detail = listURL[listURL.length-1] || "";
-            detail = (detail.indexOf(".html") !=-1 || detail.indexOf("search?q=")!=-1) ? detail : "";//没有.html则无效;
-            let obj={
-                bsMain,
-                bsTimeline:listURL[3] || this.header.strAliasNav,// || this.header.funFindByURL().defaultUrl,
-                detail,
-            }
-            this.header.objNavTo=obj;
-            this.dispatchEvent(new CustomEvent("NAV_TO", {
-                detail:{objNew:this.header.objNavTo,objOld:this.header.objNavOld},
-            }))
-        }else if(regDetail.test(inURL)){  //if(inURL.split("/").length==2 && inURL.indexOf(".html")!=-1){
-            //含html为详情{# 如果只传入/aaaaa___xxx.html为单独跳转detail #}
-            //含/search?q=为搜索{# 如果只传入//search?q=为单独跳转search #}
-            this.header.objNavTo={apiDetail:inURL};
-        }else{
-            debugger
-            throw new Error("goto(inURL)格式错误:"+inURL);
-        }
-        {# 如果有详情，打开详情 #}
-        this.toggleDetail(this.header.objNavTo);
-        {# 如果按钮点击，屏蔽后续事件 #}
-        if(window.event && window.event.type=="click"){
-            window.event.preventDefault();
-            window.event.stopPropagation();
-        }
-    }
-            
-
-    {# 在时间轴页，再次导航objNew #}
-    this.addEventListener("BS_COVER_TIMELINE_FINAL",(e)=>{
-        if(e.detail.bsMain!="artists" && this.header.objNavTo.bsTimeline){
-            this.dispatchEvent(new CustomEvent("NAV_TO_TIMELINE", {
-                detail:{objNew:Object.assign({},this.header.objNavTo,e.detail),objOld:this.header.objNavOld},
-            }))
-        }else {
-            debugger
-            throw new Error("再次导航objNew到时间轴，但是" + JSON.stringify(this.header.objNavTo));
-        }
-    })
-    {#-
-    this.addEventListener("BS_TIMELINE_DOM_READY",(e)=>{
-        this.isInit=true;
-    })
-    const eBnNav=function(strAliasNav){
-        let currentPageIndex=this.header.listNav.findIndex(v=>(v.defaultUrl==strAliasNav));
-        if(currentPageIndex>=0){
-            this.goto("/timeline/"+ this.header.listNav[currentPageIndex].defaultUrl +"/");
-        }
-    }
-    -#}
 </script>
+
 {# 浮层：菜单 #}
 
 {# 侧边导航菜单 #}
