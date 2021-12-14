@@ -103,7 +103,7 @@
         if(testURL){
             Object.assign(objRouter,{
                 url:testURL[0],//0没有则不符合
-                bsMain:testURL[1] || objRouter.bsMain,
+                bsMain:testURL[1] || regMain.exec(inURL)[1] || objRouter.bsMain,
                 bsTimeline:testURL[2] || objRouter.bsTimeline,
                 detail:testURL[3] || "",
             })

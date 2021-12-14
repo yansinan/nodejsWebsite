@@ -31,7 +31,7 @@
             </button>
             {% for doc in artist.listNotices %}<div class="notice hoverUnderline d-none" data-dr-url="{{doc.url}}">{{doc.nameTimeline}}</div>{% endfor %}
             {% endif %}
-            <img data-src="{{artist.sImg}}" width="0px" alt="{{artist.nameTimeline}}" class="sImg img-fluid d-none"/>
+            <img data-src="{{artist.sImg}}" width="0px" alt="{{artist.nameTimeline}}" class="sImg img-fluid d-none" onerror="this.style.display='none'"/>
         </div >
         {% endfor %}
         {# 最后一列占宽用 #}

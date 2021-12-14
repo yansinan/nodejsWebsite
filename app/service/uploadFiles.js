@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-01-26 
  * @Last Modified by: dr
- * @Last Modified time: 2021-12-13 22:54:10
+ * @Last Modified time: 2021-12-14 05:59:25
  */
 
 'use strict';
@@ -388,9 +388,14 @@ class ServicePlugin extends Service {
         }
         if(isUpdateAfter){
             ctx.runInBackground(async () => {
-                // 这里面的异常都会统统被 Backgroud 捕获掉，并打印错误日志
-                res = await this.cacheJSON(pathFile,objCallBack,false,false);
-                console.info("service.uploadFiles.cacheJSON 事后更新",strFile);
+                try{
+                    // 这里面的异常都会统统被 Backgroud 捕获掉，并打印错误日志
+                    res = await this.cacheJSON(pathFile,objCallBack,false,false);
+                    console.info("service.uploadFiles.cacheJSON 事后更新",strFile);
+                }catch(err){
+                    debugger;
+                    throw err;
+                }
             });
             //new Promise((resolve,reject)=>{
             //    return this.cacheJSON(pathFile,objCallBack,false,false);
