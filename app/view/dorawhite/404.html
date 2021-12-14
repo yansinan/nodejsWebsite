@@ -1,10 +1,11 @@
-<!-- BEGIN CONTAINER -->
-<div class="container  min-hight margin-bottom-20 margin-top-20" style="background: #FFFFFF">
-    <div class="row">
-        <div class="col-md-12 page-404">
-            <script type="text/javascript" src="http://www.qq.com/404/search_children.js" charset="utf-8"
-                homePageUrl="{{domain}}" homePageName="{{siteName}}"></script>
+{% extends "./default.html" %} {% block main %}
+<div id="errorMain" class="container  min-hight margin-bottom-20 margin-top-20" style="background: #FFFFFF">
+    <div class="detail {{data.serviceName}} font-normal error" data-bs-main="{{data.serviceName}}s">
+        <div class="title">
+            <div class="message textJustify">{{err.message}}</div>
+            OOPS！出错了！
         </div>
+        <div class="bnBack" onclick="window.location.replace('/')">返回上一页</div>
     </div>
 </div>
-<!-- END CONTAINER -->
+{% endblock %}

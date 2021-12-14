@@ -437,7 +437,8 @@ loading{
   .error .bnBack{
     width: calc(180 * 1rem / 36);
     height: calc(60 * 1rem / 36);
-    border: 1px solid #FDFDFD;
+    /* border: 1px solid #FDFDFD; */
+    border: 1px solid black;
     border-radius: calc(60 * 1rem / 36 / 2);
     margin-top: calc(44 * 1rem / 36);
     margin-top: 24px;

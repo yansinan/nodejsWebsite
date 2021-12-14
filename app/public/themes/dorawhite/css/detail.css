@@ -604,6 +604,9 @@
 .detail.artist  loading line{
     filter: invert(1);
 }
+.detail.artist.error .bnBack{
+    border: 1px solid #FDFDFD;
+}
 .detail .news .list .item{
     position: relative;
     display: flex;

@@ -12,8 +12,9 @@ module.exports = app => {
 
     router.get("/sitemap.html", controller.page.home.getDataForSiteMap);
 
+    router.get(["/404"], controller.page.index.getErrorPage);
     // 测试新的复杂滚动首页
-    router.get(["/", "/index/*" ,"/zh-CN", "/zh-TW", "/en"], controller.page.index.getDataForIndexPage);
+    router.get(["/","/timeline/*","/artists/*", "/index/*" ,"/zh-CN", "/zh-TW", "/en"], controller.page.index.getIndexPage);//
 
     // router.get("/page/:current.html", controller.page.home.getDataForIndexPage);
 
@@ -31,7 +32,7 @@ module.exports = app => {
     router.get("/artist___:id.html", controller.page.detail.getDataForArtistDetails);
     router.get("/:service?___:id.html", controller.page.detail.getDataForDocDetails);
     //检索艺术家的专辑
-    router.get("/record/artist/:idArtist", controller.api.record.list);
+    //20211210 router.get("/record/artist/:idArtist", controller.api.record.list);
     // 专辑详情
     // router.get("/record/:id.html", controller.page.home.getDataForRecordDetails);
 
@@ -78,5 +79,5 @@ module.exports = app => {
     //router.get("/phone-fenlei.html", controller.page.home.getDataForPhoneCategory);
     //router.get("/phone-list.html", controller.page.home.getDataForPhoneList);
     //router.get("/phone-user.html", authPage, controller.page.home.getDataForPhoneUser);
-
+    //router.get(["/*"], controller.page.index.getDataForIndexPage);
 }

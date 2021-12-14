@@ -7,7 +7,7 @@
     {% include './compBSTimelineColumn.html' %}
 {% endset %}
 {# {{containerOfList(infoPagination,tempList)}} #}
-<div id="timelineWrapper" class="d-none bs-wrapper-main loading">
+<div id="timelineWrapper" class="bs-wrapper-main loading">
     {# 不指定高：手机纵向自适应高，PC在定义高度  dr-dom-append="{{infoPagination.idDOM}}"#}
     <div id="timelineContent" class="" style="" data-str-notice-end="">
         {% include '../js/timelineMM.html' %}
@@ -17,7 +17,7 @@
         {# 最后两个空列占位:TODO待解决 #}
         {# 月份行 手机隐藏#}
         {# <div class="container-mm end d-flex flex-column"></div> #}
-        {{loading()}}
+        {{njLoading()}}
     </div>
     {% include '../js/timeline.html' %}
     <script>

@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-08-08 06:31:51 
  * @Last Modified by: dr
- * @Last Modified time: 2021-12-10 05:13:17
+ * @Last Modified time: 2021-12-14 01:02:56
  */
 const Controller = require('egg').Controller;
 const _ = require('lodash');
@@ -17,15 +17,30 @@ const moment = require('moment')
 
 class IndexController extends Controller {
     //所有页面通用信息
-    async getInitPageData(inPageType="") {
+    async getInitPageData() {
         const console=this.logger;
         const ctx = this.ctx;
         let payload = ctx.params;
         let pageData = {
-            pageType: ctx.pageType || inPageType || "index",
+            //pageType: ctx.pageType || inPageType || "index",
             staticforder: 'dorawhite' ,//ctx.renderPageData()
         };
+        // 添加导航英文信息；
+        const dictAliasNav={
+            "artists":"ARTIST",
+            "news":"NEWS",
+            "records":"ALBUM",
+            "shows":"SHOW",
+            "videos":"VIDEO",
+            "goods":"PRODUCT",
+            "timelines":"TIMELINE",
+            "abouts":"ABOUT",
+        }
         pageData.navigation = await this.service.uploadFiles.cacheJSON(`${(process.cwd() + '/app/public')}/cache/objNavigation.json`,{tar:this,fun:ctx.helper.reqJsonData, params:['contentCategory/getList', payload] },true,true);
+        pageData.navigation.forEach(cate=>{
+            let alias=dictAliasNav[cate.defaultUrl];
+            if(alias)cate.alias=alias;
+        })
 
         // pageData.site = await this.getSiteInfo();
         pageData.site = await this.service.uploadFiles.cacheJSON(`${(process.cwd() + '/app/public')}/cache/objSite.json`,{tar:ctx,fun:ctx.getSiteInfo, params:[] },true,true);
@@ -55,28 +70,9 @@ class IndexController extends Controller {
     async getDataForIndexPage() {
         const console=this.logger;
         const ctx = this.ctx;
-        ctx.query.current = ctx.params.current;
-        ctx.pageType = "index";
-        // console.info('-ctx.getSiteInfo();--', await ctx.getSiteInfo())
-        // await ctx.getPageData();
     
         // 获取通用页面信息
-        let {pageData}=await this.getInitPageData("cate");
-        // 添加导航英文信息；
-        const dictAliasNav={
-            "artists":"ARTIST",
-            "news":"NEWS",
-            "records":"ALBUM",
-            "shows":"SHOW",
-            "videos":"VIDEO",
-            "goods":"PRODUCT",
-            "timelines":"TIMELINE",
-            "abouts":"ABOUT",
-        }
-        pageData.navigation.forEach(cate=>{
-            let alias=dictAliasNav[cate.defaultUrl];
-            if(alias)cate.alias=alias;
-        })
+        let {pageData}=await this.getInitPageData();
         
         // 人物（艺术家）列表
         pageData.listArtists = (await this.service.uploadFiles.cacheJSON(`${(process.cwd() + '/app/public')}/cache/listArtists.json`,{tar:this,fun:ctx.helper.reqJsonData, params:['artist/getList', {filesType:"navAvatar", pageSize: 0,isPaging:"0",}] },true,true)).docs;
@@ -96,11 +92,65 @@ class IndexController extends Controller {
         
         //最终渲染
         // 模板的真实路径
-        let pathTemplate = "2-stage-timeline" +"/" + "contentTimeline.html";//this.app.config.temp_view_forder + defaultTemp.alias + '/' + "2-stage-timeline" +"/" + "contentList.html";
-        pathTemplate="default.html";
+        let pathTemplate = "default.html";//this.app.config.temp_view_forder + defaultTemp.alias + '/' + "2-stage-timeline" +"/" + "contentList.html";
         // ctx.tempPage在ctx.renderPageData()中使用
-        ctx.tempPage=pathTemplate;
-        await ctx.renderPageData(pageData);
+        //ctx.tempPage=pathTemplate;
+        //await ctx.renderPageData(pageData);
+        try {
+            let dom=await ctx.renderView("dorawhite/"+pathTemplate,pageData);
+            return dom;
+        } catch (err) {
+            throw new Error("default模板渲染错误");
+            return false;
+        }
+    }
+    async getIndexPage(){
+        try {
+            //let dom = (await this.service.uploadFiles.cacheJSON(`${(process.cwd() + '/app/public')}/cache/dom/index.html`,{tar:this,fun:this.getDataForIndexPage, params:[] },true,true));
+            this.ctx.body=await this.getDataForIndexPage();
+            this.ctx.status = 200;
+        } catch (err) {
+            debugger;
+            throw err;
+        }
+    }
+    // 404
+    async getErrorPage(){
+        const console=this.logger;
+        const ctx = this.ctx;
+    
+        // 获取通用页面信息
+        let {pageData}=await this.getInitPageData();
+
+        // 底条用信息
+        pageData.listDateYear=[];
+        pageData.pageInfo={
+            yearNewest:parseInt(moment(new Date()).format("YYYY")),
+            yearTotal:parseInt("2015"),
+        }
+        try {
+            // 获取分类文档列表
+            let {
+                pageInfo,
+                listDateYear,
+                docs
+            } = await ctx.service.timeline.find({isRandom:true});//await ctx.helper.reqJsonData('timeline/getList', payload);
+            // debugger;
+            pageData.pageInfo = pageInfo;
+            pageData.listDateYear=listDateYear;
+            // 时间轴内容
+            pageData.posts=docs;
+        }catch(err){debugger}
+        
+        try{
+            let dom=await ctx.renderView("dorawhite/404.html",pageData);
+            this.ctx.body=dom;
+            this.ctx.status = 200;
+        } catch (err) {
+            debugger;
+            throw err;
+        }
+
     }
     async getDomSearch(){
         const ctx = this.ctx;

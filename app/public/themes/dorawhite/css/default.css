@@ -102,6 +102,25 @@ body.videos{ background-color: #00FFFE; }
     cursor:grabbing;
 }
 
+/* main显示控制 */
+
+/* #mainCover.loading #coverArtistsWrapper, */
+/* #mainCover.loading #timelineWrapper, */
+#mainCover.loading #errorMain,
+#mainCover.loading #coverWrapper,
+#mainCover loading{
+    display:none;
+}
+#mainCover.loading loading{
+    display:flex;
+    height:100%;
+}
+#mainCover #coverArtistsWrapper,
+#mainCover #timelineWrapper,
+#mainCover #errorMain,
+#mainCover #coverWrapper{
+    display:block;
+}
 
 
 /* body 用Flex方式全屏使用 */

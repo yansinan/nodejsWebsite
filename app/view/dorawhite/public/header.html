@@ -1,34 +1,25 @@
 <!--头部模板-->
 <script>
     if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
-        //document.write("<script src='{{staticThemePath}}/js/iscroll/iscroll.js'><" + '/' + "script>");
-        //$(function () {
-        //    new IScroll('#navWrapper', {
-        //        scrollX: true,
-        //        scrollY: false,
-        //        mouseWheel: true,
-        //        click: true
-        //    });
-        //})
         //阻止默认行为函数
         function isChildOf(child, parent, justChild = false) { 
-        // justChild为true则只判断是否为子元素，若为false则判断是否为本身或者子元素 默认为false
-        let parentNode;
-        if (justChild) {
-            parentNode = child.parentNode;
-        } else {
-            parentNode = child;
-        }
-        
-        if (child && parent) {
-            while (parentNode) {
-            if (parent === parentNode) {
-                return true;
+            // justChild为true则只判断是否为子元素，若为false则判断是否为本身或者子元素 默认为false
+            let parentNode;
+            if (justChild) {
+                parentNode = child.parentNode;
+            } else {
+                parentNode = child;
             }
-            parentNode = parentNode.parentNode;
+
+            if (child && parent) {
+                while (parentNode) {
+                if (parent === parentNode) {
+                    return true;
+                }
+                parentNode = parentNode.parentNode;
+                }
             }
-        }
-        return false;
+            return false;
         }
         function preventDefault(e) {
             let tar=e.target;
@@ -84,14 +75,7 @@
         document.documentElement.style.setProperty('--vh', `${vh}px`);
         {# if(this.slideCover)this.slideCover.refresh(); #}
     }
-    function loadTimeline(){
-        document.getElementById("coverArtistsWrapper").classList.remove("d-none");
-        document.getElementById("timelineWrapper").classList.remove("d-none");
-
-        refreshVH();
-    }
     refreshVH();
-    document.addEventListener('DOMContentLoaded', loadTimeline);
     {# window.addEventListener('load', loadTimeline); #}
     window.addEventListener('resize', refreshVH);
 </script>
@@ -395,7 +379,7 @@
         {# 如果有详情，打开详情 #}
         this.toggleDetail(this.header.objNavTo);
         {# 如果按钮点击，屏蔽后续事件 #}
-        if(window.event.type=="click"){
+        if(window.event && window.event.type=="click"){
             window.event.preventDefault();
             window.event.stopPropagation();
         }

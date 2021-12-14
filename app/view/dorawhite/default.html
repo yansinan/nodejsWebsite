@@ -2,6 +2,7 @@
 <html class="{{pageType}}">
 
 <head>
+    <meta name="x5-orientation" content="portrait">
     {# <meta name='viewport' content='initial-scale=1, viewport-fit=cover'> #}
     {% header adaptor="ie" %}
     <!-- 引入组件库 -->
@@ -46,7 +47,7 @@
     {% from "./public/compListTags.html" import listTags %}
     {% from "./public/compTimelineBar.html" import timelineBar %}
     {% from "./public/compTimelineBar.html" import timelineBarDocs %}
-    {% from "./public/compLoading.html" import loading %}
+    {% from "./public/compLoading.html" import njLoading %}
     <!-- 二次开发静态资源 -->
     {#  dora.front.js avatar.css  white.css #}
     {# 
@@ -72,25 +73,22 @@
     {% include "./public/overlay.html" %}
     {# 整屏容器 #}
     {% include "./public/header.html" %}
-    {% block footer %}
-        {% include "./public/footer.html" %}
-    {% endblock %}
+    {% include "./public/footer.html" %}
 
-    {% block cover %}
-        <div id="mainCover" class="paddingCoverTop paddingCoverTop-md">
-            {# <div class="w-100 heightNav"></div> #}
-            {# scroll #}
-            <div id="coverWrapper" class="bs-wrapper-cover heightMain">
-                <div id="bsMainContent"class="bs-content-cover bg-transparent text-dark">
-                    {# 空容器 #}
-                    {# <div class="d-none bg-transparent"></div> #}
-                    {# 横滚乐队名 #}
-                    {% include './public/compBSArtists.html' %}
+    <div id="mainCover" class="paddingCoverTop paddingCoverTop-md loading">
+        {% include "./public/compLoading.html" %}
+        {% block main %}
+        {# scroll #}
+        <div id="coverWrapper" class="bs-wrapper-cover heightMain">
+            <div id="bsMainContent" class="bs-content-cover bg-transparent text-dark">
+                {# 横滚乐队名 #}
+                {% include './public/compBSArtists.html' %}
 
-                    {# 时间轴内容区 #}
-                    {% include './public/compBSTimeline.html' %}
-                </div>
-                <script>
+                {# 时间轴内容区 #}
+                {% include './public/compBSTimeline.html' %}
+            </div>
+            <script>
+                this.initBSMain=function(){
                     this.slideCover=new BetterScroll.createBScroll('.bs-wrapper-cover', {
                         //specifiedIndexAsContent:1,
                         disableMouse: false,
@@ -144,9 +142,7 @@
                         this.stop();
                         this.goToPage(0,tar);
                     }
-                    {# //初始化slideCover后隐藏Cover，后面再判断是否显示 #}
-                    {# $('.bs-wrapper-cover').hide(); #}
-                    
+
                     this.slideCover.on('slideWillChange', (page) => {                        
                         if(page.pageY==1){
                             // 创建并分发事件
@@ -168,9 +164,6 @@
                             if(that.slideCover.enabled)that.goto("/artists/");{# 手动拖拽需要执行一遍goto #}
                         }
                     })
-                    //this.slideCover.on('scroll', (position) => {
-                    //    this.slideCover.refresh();
-                    //})
                     this.slideCover.on('slidePageChanged', (page) => {
                         if(page.pageY==1){
                             this.slideCover.disable();
@@ -192,9 +185,7 @@
                         setTimeout(()=>{clearInterval(timer)},1000);
                     })
                     {# slideCover初始化完成 #}
-                    this.dispatchEvent(new CustomEvent("BS_COVER_INIT"),{detail:this.slideCover});
-                </script>
-                <script>
+                    //this.dispatchEvent(new CustomEvent("BS_COVER_INIT"),{detail:this.slideCover});
                     {# 监听时间轴下拉事件 #}
                     this.addEventListener("BS_TIMELINE_PULL_DOWN",(e)=>{
                         console.info("BS_TIMELINE_PULL_DOWN=============>");
@@ -206,13 +197,21 @@
                         {# 如果是过程中，或者相同一级栏目下的二级或者detail则不触发 #}
                         this.slideCover.goto(e.detail.objNew.bsMain,e.detail.objNew.detail?false:true);
                     })
-
-                </script>
-            </div>
+                }
+            </script>
         </div>
-        
+        {% endblock %}
+    </div>
+    <script>
+        function loadTimeline(){
+            let $bsMain=document.getElementById("mainCover");
+            if($bsMain)$bsMain.classList.remove("loading");
+            refreshVH();
+            that.initBSMain && that.initBSMain();
+        }
+        document.addEventListener('DOMContentLoaded', loadTimeline);
+    </script>
 
-    {% endblock %}
     {# <script async src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.4.0/dist/lazyload.min.js"></script> #}
 </body>
 

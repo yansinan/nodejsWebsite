@@ -2,8 +2,8 @@
  * @Author: doramart 
  * @Date: 2019-11-02 18:38:55 
  * @Discription 404 filter
- * @Last Modified by: doramart
- * @Last Modified time: 2020-07-28 20:34:10
+ * @Last Modified by: dr
+ * @Last Modified time: 2021-12-14 00:51:57
  */
 const _ = require('lodash')
 module.exports = () => {
@@ -19,6 +19,8 @@ module.exports = () => {
                     ctx.redirect('/dr-admin');
                 } else {
                     try {
+                        ctx.redirect('/404');
+                        return;
                         let defaultTemp = await ctx.helper.reqJsonData('contentTemplate/getDefaultTempInfo');
                         let configs = await ctx.helper.reqJsonData('systemConfig/getConfig');
                         if (!_.isEmpty(defaultTemp) && !_.isEmpty(configs)) {
