@@ -1,7 +1,6 @@
 .detail.font-normal{
     font-size:calc(14 * 1rem / 26);
     line-height: 0.917rem;
-    /* font-family: PingFangSC-Regular, PingFang SC; */
     font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB", "Source Han Sans", "Noto Sans CJK Sc", "Microsoft YaHei", "Microsoft Jhenghei", sans-serif;
     font-weight: 400;
     color:black;
@@ -10,8 +9,6 @@
     display:flex;
     flex-direction: column;
     align-items: flex-start;
-    
-    /* background-color: white; */
 }
 
 .detail .album{
@@ -343,13 +340,6 @@
 }
 /* 试听 */
 #offcanvasDetail .nav ul li.player{
-    /* 
-    border-style: solid;
-    border-color: transparent transparent transparent rgba(255, 255, 255, 1);
-    border-radius: 0.1rem;
-    border-width: .4rem 0 .4rem 0.66rem;
-    transform: translateX(.2rem);
-     */
     min-width:1.5rem;
 }
 #offcanvasDetail .nav.artist .playList{
@@ -410,14 +400,7 @@
     align-items: center;
     display: flex;
 }
-/*
-#offcanvasDetail .nav.artist.show .playList ul li::before{
-    content: "\f104";
-}
-#offcanvasDetail .nav.artist.show .playList ul li::after{
-    content:"\f105";
-}
-*/
+
 /* 歌曲 */
 #offcanvasDetail .nav.artist.show .playList ul li span{
     height: 100%;
