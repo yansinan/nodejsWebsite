@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-01-28
  * @Last Modified by: dr
- * @Last Modified time: 2021-12-06 22:17:37
+ * @Last Modified time: 2021-12-14 22:16:23
  */
 
 'use strict';
@@ -162,13 +162,36 @@ class ServicePlugin extends Service {
     // message: "OK",
     // }
     async ncmURLMV(idNCMMV){
-        const console=this.logger;
+        // const console=this.logger;
         try{
             if(!idNCMMV)throw new Error("没有idNCMMV");
-            let resNCM=await this.ctx.service.webCrawler.api("/mv/url",{id:idNCMMV});
-            // 万一失去链接，直接返回，不影响
-            if(resNCM.error || !resNCM.data.url) throw new Error("webCrawler连接服务器错误,status:"+resNCM.status);
-            return resNCM.data.url;
+            // 优先检索本地文件
+            let pathURL="upload/videos/"+idNCMMV+".mp4";
+            let isLocal=this.ctx.service.uploadFiles.existsSync(pathURL);
+            if(isLocal){
+                console.info("video.ncmURLMV：找到本地mp4：",isLocal,pathURL);
+                return isLocal;
+            }else{
+                let resNCM=await this.ctx.service.webCrawler.api("/mv/url",{id:idNCMMV});
+                // 万一失去链接，直接返回，不影响
+                if(resNCM.error || !resNCM.data.url) throw new Error("webCrawler连接服务器错误,status:"+resNCM.status);
+                // 下载mp4到本地
+                this.ctx.runInBackground(async () => {
+                    console.info("video.ncmURLMV：后台下载mp4：开始",resNCM.data.url);
+                    try{
+                        let resDownload=await this.ctx.service.webCrawler.download(resNCM.data.url);
+                        console.info("video.ncmURLMV：后台下载mp4：完成",resNCM.data.url,resDownload.status);
+                        if(resDownload.status==200){
+                            let resSave=await this.ctx.service.uploadFiles.saveBinary(pathURL,resDownload.data);//  /app/upload/songs/idSong.mp3
+                            console.info("video.ncmURLMV：后台保存mp4：完成：",resSave.url);
+                        }else throw new Error("download出错,urlSongNCM:"+resNCM.data.url)       
+                    }catch(err){
+                        console.error("video.ncmURLMV：后台:错误：",resNCM.data.url,err);
+                        debugger
+                    }
+                });                
+                return resNCM.data.url;
+            }
         }catch(e){
             debugger
             console.error("ncmURLMV错误",e);

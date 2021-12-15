@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-01-26 
  * @Last Modified by: dr
- * @Last Modified time: 2021-12-14 05:59:25
+ * @Last Modified time: 2021-12-14 19:39:24
  */
 
 'use strict';
@@ -418,6 +418,21 @@ class ServicePlugin extends Service {
         res.pathFile=pathFile;
         res.url="/static/"+urlFile;
         return res;  
+    }
+    // 检查文件，无论是否存在都创建文件夹
+    existsSync(urlFile){
+        const console=this.logger;
+        const {
+            ctx,
+            app
+        } = this;   
+        let pathFile=this.joinPublic(urlFile)
+        let folder=path.dirname(pathFile);
+        if (!fs.existsSync(folder)) {
+            fs.mkdirSync(folder,{recursive: true});
+        }
+        if(fs.existsSync(pathFile))return path.join(app.config.static.prefix,urlFile)//`${app.config.static}/${uploadForder}/${nameServerFile}`;
+        else return false;
     }
     joinPublic(...params){return path.join(this.publicDir,...params)}
     get publicDir(){return (process.cwd() + '/app/public');}
