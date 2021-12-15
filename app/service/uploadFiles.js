@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-01-26 
  * @Last Modified by: dr
- * @Last Modified time: 2021-12-14 19:39:24
+ * @Last Modified time: 2021-12-14 23:41:52
  */
 
 'use strict';
@@ -356,6 +356,7 @@ class ServicePlugin extends Service {
             ctx,
             app
         } = this; 
+        let that=this;
         // const console=this.logger;
         const folder=path.dirname(pathFile);
         const strFile=path.basename(pathFile);
@@ -368,11 +369,11 @@ class ServicePlugin extends Service {
             data = app.cache.get(strFile);
             if(!_.isEmpty(data)){
                 //data=JSON.parse(data);
-                console.info("缓存from:memory:",strFile);
+                // console.info("缓存from:memory:",strFile);
             }else if (fs.existsSync(pathFile)) {
                 // 同步读取:TODO错误处理
                 data = JSON.parse(fs.readFileSync(pathFile, 'utf-8'));
-                console.info("缓存from:file:",strFile);
+                // console.info("缓存from:file:",strFile);
             }
         }
         if((!isLocalFirst || _.isEmpty(data))){// 如果强制更新，或者没有缓存，或者强制后更新             
@@ -383,7 +384,7 @@ class ServicePlugin extends Service {
                 ctx.helper.setMemoryCache(strFile, data, 1000 * 60 * 60 * 24);
                 // 写入缓存目录:TODO错误处理
                 res = fs.writeFileSync(pathFile, jsonData);
-                console.info("service.uploadFiles.cacheJSON 延迟缓存memory&file完成",strFile);
+                // console.info("service.uploadFiles.cacheJSON 延迟缓存memory&file完成",strFile);
             });
         }
         if(isUpdateAfter){
@@ -391,9 +392,15 @@ class ServicePlugin extends Service {
                 try{
                     // 这里面的异常都会统统被 Backgroud 捕获掉，并打印错误日志
                     res = await this.cacheJSON(pathFile,objCallBack,false,false);
-                    console.info("service.uploadFiles.cacheJSON 事后更新",strFile);
+                    // console.info("service.uploadFiles.cacheJSON 事后更新",strFile);
                 }catch(err){
                     debugger;
+                    that.logger.error("service.uploadFiles.cacheJSON 事后更新失败；清除所有缓存",strFile);
+                    ctx.helper.setMemoryCache(strFile, false, 0);
+                    // 文件是否存在;
+                    if (fs.existsSync(pathFile)) {
+                        fs.unlinkSync(pathFile);
+                    }
                     throw err;
                 }
             });

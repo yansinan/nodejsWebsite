@@ -229,6 +229,7 @@
                 })
             }
         }
+        {#- 
         ////初始化参数
         //rectWrapper:{get:()=>($bsTimelineBarWrapper.getBoundingClientRect())},
         //wWrapper:{get:()=>($bsTimelineBarWrapper.clientWidth)},
@@ -248,6 +249,7 @@
         //stopEndLast:{get:()=>(that.$footer.isRotated ? 0 : that.bsTimelineBarWrapper.wYear/2)},
         //
         //position:{get:()=>({x:that.bsTimelineBarWrapper.x,y:that.bsTimelineBarWrapper.y} )},
+        -#}
     })
     this.bsTimelineBarWrapper.updateTimelineBar=function(position={x:0}){
         that.bsTimelineBarWrapper.updateAllBnYears();

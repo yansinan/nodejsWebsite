@@ -18,7 +18,7 @@
     justify-content: stretch;
     flex-wrap: nowrap;
     padding:0;
-    background-color: white;
+    background-color: var(--color-bg-white,white);
     max-width: 100%;
     overflow: hidden;
 }
@@ -179,7 +179,7 @@ body.videos #dr-footer .scrollBar div{ background-color: #00FFFE; }
     y:calc(31px - 12px);
     width:2px;
     height:10px;
-    fill: #000;
+    fill:#231F20;
 }
 #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-d {
     width:3px;
@@ -287,7 +287,7 @@ body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s {
     justify-content: flex-start;
     align-items: flex-start;
     flex-wrap: wrap;
-    background-color: white;
+    background-color: var(--color-bg-white,white);;
     /* width: calc( (var(--width-timeline-bar-year-span-mobile) * 2)); */
     width:var(--width-timeline-bar-end-mobile);
 

@@ -35,9 +35,9 @@ html {
     /* font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,Helvetica,Arial,PingFang SC,Hiragino Sans GB,Microsoft YaHei UI,Microsoft YaHei,Source Han Sans CN,sans-serif; */
 
     font-size: 162.5%;/*292.5%;*/
-    --bs-font-sans-serif: "PingFang SC", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB", "Source Han Sans", "Noto Sans CJK Sc", "Microsoft YaHei", "Microsoft Jhenghei", sans-serif;
+    --bs-font-sans-serif: "PingFang SC", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB", "Source Han Sans", "Noto Sans CJK Sc", "Microsoft YaHei", "Microsoft Jhenghei", sans-serif!important;
     /* font-family: -apple-system,PingFangSC-Regular, Roboto, Helvetica Neue, Helvetica, Tahoma,Arial, PingFang SC-Light, Microsoft YaHei; */
-    /* font-family:var(); */
+    font-family:var(--bs-font-sans-serif);
 }
 
 body * {
@@ -46,10 +46,10 @@ body * {
 body{
     transition-property: background-color;
     transition-duration: 1s;
-    background-color: #FDFDFD;
-
+    background-color: var(--color-bg-white);
+    color: black;/*#212529;*/
 }
-body.news{ background-color: #FDFDFD; }
+body.news{ background-color: var(--color-bg-white); }
 body.records{ background-color: #FF4D3E; }
 body.shows{ background-color: #FFEC00; }
 /* body.shows{ background-color: #2A00FF; } */
@@ -129,7 +129,8 @@ body.flex{
     font-size:16px;
     font-size:1.2rem ;
     */
-/*  */
+    color: black;/*#212529;*/
+
     display:flex;
     flex-direction: column;
 
@@ -139,8 +140,14 @@ body.flex{
     justify-content: stretch;
     align-items: flex-start;
     /* overflow: hidden; */
-    
 } 
+/* iphoneX适配 */
+@media only screen and (width: 375px) and (min-height: 690px){
+    body {
+       height: 100vh;
+        border-bottom: 2px red solid;
+    }
+}
 body.flex #navHeader{
     order:1;
 }
