@@ -69,11 +69,13 @@
     // Then we set the value in the --vh custom property to the root of the document
     function refreshVH(){
         {# vh = window.innerHeight * 0.01; #}
-        {# if(slideListArtist)slideListArtist.refresh(); #}
-        vh = getBrowserInterfaceSize().pageHeight*0.01;
-        {# window.alert(getBrowserInterfaceSize().pageHeight) #}
-        document.documentElement.style.setProperty('--vh', `${vh}px`);
-        {# if(this.slideCover)this.slideCover.refresh(); #}
+        let{
+            pageWidth,pageHeight
+        } = getBrowserInterfaceSize();
+        {# alert("window.innerHeight:"+window.innerHeight+",document.documentElement:"+document.documentElement.clientHeight+" window.body:"+ (window.body && window.body.clientHeight)+" document.body:"+ (document.body && document.body.clientHeight)) #}
+        document.documentElement.style.setProperty('--vh', `${pageHeight*0.01}px`);
+        document.documentElement.style.setProperty('--vh-viewport', `max(${pageHeight*0.01}px , 1vh)`);
+        document.documentElement.style.setProperty('--vw', `max(${pageWidth*0.01}px , 1vw)`);
     }
     refreshVH();
     {# window.addEventListener('load', loadTimeline); #}
@@ -103,9 +105,9 @@
         if(testURL){
             Object.assign(objRouter,{
                 url:testURL[0],//0没有则不符合
-                bsMain:testURL[1] || regMain.exec(inURL)[1] || objRouter.bsMain,
+                bsMain:testURL[1] || regMain.exec(inURL) && regMain.exec(inURL)[1] || objRouter.bsMain,
                 bsTimeline:testURL[2] || objRouter.bsTimeline,
-                detail:testURL[3] || "",
+                detail:objRouter.detail || testURL[3] || "",
             })
         }
         objRouter.detail=objRouter.detail == "/" ? "": objRouter.detail;
@@ -150,8 +152,8 @@
             //let strAliasNav=path ? path.split("__")[0].split("/")[0] : this.funFindByURL().defaultUrl;
             let res=regTimeline.exec(window.location.pathname);
             let strAliasNav=(res ? res[1] : false ) || this.funFindByURL().defaultUrl;//   news/artists___KuvrGBz9e.html
-            if(this.strBSMain=="timeline" && typeof strAliasNav === "string")document.querySelector("body").classList.value="flex "+strAliasNav;
-            else document.querySelector("body").classList.value="flex";
+            if(this.strBSMain=="timeline" && typeof strAliasNav === "string")document.body.classList.value="flex "+strAliasNav;
+            else document.body.classList.value="flex";
             return strAliasNav;
         },
         {# 获取前台路由，timeline? #}

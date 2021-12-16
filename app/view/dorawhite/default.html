@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html class="{{pageType}}">
+<html class="portrait">
 
 <head>
     <meta name="x5-orientation" content="portrait">
+    <meta name="screen-orientation" content="portrait">
     <meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0, width=device-width, viewport-fit=cover" />
     {# <meta name='viewport' content='initial-scale=1, viewport-fit=cover'> #}
     {% header adaptor="ie" %}
@@ -19,7 +20,7 @@
     {% plugin name="popper twitter-bootstrap betterScroll" %} 
     {% endplugin %}
     #}
-    <script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.4.0/dist/lazyload.min.js"></script>  
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.4.0/dist/lazyload.min.js"></script>
     <script>
         {# // Set the options globally to make LazyLoad self-initialize #}
         //window.lazyLoadOptions = {
@@ -40,6 +41,14 @@
             isMobile:{
                 get:()=>(this.$footer.isRotated || false), // || this.$timelineContent.isMobile
             },
+            isPortrait:{
+                get:()=>{
+                    if(!this.isMobile)return true;
+                    if (this.isMobile && (window.orientation == 0 || window.orientation == 180))return true;;
+                    {# else if (window.orientation == 90 || window.orientation == -90) #}
+                    return false;
+                }
+            }
         })
     </script>
     {# 模块 #}
@@ -90,6 +99,11 @@
             </div>
             <script>
                 this.initBSMain=function(){
+                    if(this.slideCover && this.slideCover.refresh){
+                        console.debug("this.initBSMain.刷新refresh");
+                        this.slideCover.refresh();
+                        return;
+                    }
                     this.slideCover=new BetterScroll.createBScroll('.bs-wrapper-cover', {
                         //specifiedIndexAsContent:1,
                         disableMouse: false,
@@ -204,16 +218,29 @@
         {% endblock %}
     </div>
     <script>
-        function loadTimeline(){
+        function resetBSMain(){
+            if(that.isMobile && !that.isPortrait)return;
             let $bsMain=document.getElementById("mainCover");
             if($bsMain)$bsMain.classList.remove("loading");
             refreshVH();
             that.initBSMain && that.initBSMain();
         }
-        document.addEventListener('DOMContentLoaded', loadTimeline);
+        document.addEventListener('DOMContentLoaded', resetBSMain);
+        {# 横竖屏控制 #}
+        function eResetViewport(){
+            {# let $bsMain=document.getElementById("mainCover"); #}
+            {# this.slideCover && this.slideCover.disable(); #}
+            {# if($bsMain)$bsMain.classList.add("loading"); #}
+            {# window.location.reload(); #}
+            setTimeout(()=>{
+                resetBSMain();
+            },50)
+        }
+        this.addEventListener("RefreshViewport",eResetViewport)
     </script>
 
     {# <script async src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.4.0/dist/lazyload.min.js"></script> #}
+    <script src="/static/themes/dorawhite/js/preventRotate.js"></script>
 </body>
 
 </html>

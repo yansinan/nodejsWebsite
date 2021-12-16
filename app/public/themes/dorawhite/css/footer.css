@@ -18,8 +18,8 @@
     /* bottom: unset!important; */
     /* top: calc(15px - 100vh); */
     /* top: calc(var(--vh, 1vh) * -100 + var(--footer-size-mobile,16px) + 2px); */
-    top: calc(var(--vh, 1vh) * -100);
-
+    top: calc(var(--vh-viewport, 1vh) * -100);
+    
     /* left: calc(15px); */
     transform: rotate(90deg);
     transform-origin: calc(var(--footer-size-mobile,16px)/2) calc(var(--footer-size-mobile,16px)/2);

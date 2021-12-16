@@ -490,4 +490,8 @@
         {# 找到当前日期 #}
         that.bsTimelineBarWrapper.$docNow=that.bsTimelineBarWrapper.findDateNow();
     });
+    {# 停止渲染 #}
+    {# this.addEventListener("StopViewport",this.bsTimelineBarWrapper.offAll); #}
+    this.addEventListener("RefreshViewport",(e)=>{that.bsTimelineBarWrapper.refresh()});
+
 </script>

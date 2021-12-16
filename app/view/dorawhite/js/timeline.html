@@ -441,4 +441,7 @@
     //    //characterData: true, // 节点内容或节点文本的变动
     //    //subtree: true // 是否将观察器应用于该节点的所有后代节点
     //})
+    {# 停止渲染 #}
+    {# this.addEventListener("StopViewport",that.bsTimeline.disable); #}
+    this.addEventListener("RefreshViewport",that.resetSlideMain);
 </script>

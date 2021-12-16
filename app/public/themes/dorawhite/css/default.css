@@ -48,6 +48,9 @@ body{
     transition-duration: 1s;
     background-color: var(--color-bg-white);
     color: black;/*#212529;*/
+    max-width:100vmin;
+    min-height:max(100vmax,100vh, calc( 100 * var(--vh)) );
+    margin: 0 auto;
 }
 body.news{ background-color: var(--color-bg-white); }
 body.records{ background-color: #FF4D3E; }
@@ -141,13 +144,6 @@ body.flex{
     align-items: flex-start;
     /* overflow: hidden; */
 } 
-/* iphoneX适配 */
-@media only screen and (width: 375px) and (min-height: 690px){
-    body {
-       height: 100vh;
-        border-bottom: 2px red solid;
-    }
-}
 body.flex #navHeader{
     order:1;
 }
@@ -199,6 +195,7 @@ body.flex #dr-footer{
     }
 }
 
+/* html.landscape body, */
 body.debug{
     background-color: bisque;
 }
