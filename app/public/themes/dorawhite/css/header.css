@@ -13,7 +13,8 @@
 #navHeader .navbar{
     padding-top:0px;
     padding-bottom:0;
-    margin-top: var(--header-margin-top,28px)
+    margin-top: var(--header-margin-top,28px);
+    max-height:var(--header-btn-height,46px);
 }
 #navHeader .navbar .navOffsetLeft{
   transition-property: all;
@@ -64,7 +65,7 @@
     flex-direction: column;
     justify-content: flex-end;
 
-    /* transition-property: transform; */
+    transition-property: max-height,padding-left,margin-top,flex-basis;    
     transition-duration: .4s;
     transition-property: all;
     flex:0 0 0%;
@@ -77,13 +78,15 @@
   }
   #navHeader.listArtist #collapseNavbarMobile.navbar-collapse{
     /* 缩回用all,展开用max-height（ios） */
-    transition-property: all;
+    /* transition-property: all; */
     flex:0 0 0%;
+    flex-basis:0px;
     max-height: 0rem;
+    margin-top:0px;
   }
   #navHeader.timeline.done #collapseNavbarMobile.navbar-collapse{
     /* 缩回用all,展开用max-height（ios） */
-    transition-property: max-height,padding-left,margin-top;    
+    /* transition-property: max-height,padding-left,margin-top;     */
     flex:1 1 0%;
     max-height: 1.2rem; /*1.154rem */
     padding-bottom: 1px;

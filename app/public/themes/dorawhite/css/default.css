@@ -22,7 +22,8 @@
     --header-margin-right:0.5rem;
     --header-margin-top:0.5rem;
 
-    --header-btn-height:calc(53 * 1rem / 36);
+    --header-btn-height:calc(46 * 1rem / 26);
+    --header-height:calc(var(--header-margin-top) + var(--header-btn-height));
 
     --color-bg-white:#FDFDFD;
 }
@@ -49,7 +50,7 @@ body{
     background-color: var(--color-bg-white);
     color: black;/*#212529;*/
     max-width:100vmin;
-    min-height:max(100vmax,100vh, calc( 100 * var(--vh)) );
+    min-height:max(100vmax , calc( 100 * var(--vh)) );
     margin: 0 auto;
 }
 body.news{ background-color: var(--color-bg-white); }
@@ -168,7 +169,8 @@ body.flex #mainCover{
     
     order:20;
     flex:1 1 100%;
-    /* flex-basis: calc(var(--vh, 1vh) * 100 - var(--footer-size-pc,16px)); */
+    flex-basis: calc(var(--vh, 1vh) * 100 - var(--header-height));
+    max-height: calc(var(--vh, 1vh) * 100 - var(--header-height));
 }
 /* 隐藏占位 */
 body.flex #mainCover div.w-100.heightNav{
@@ -187,6 +189,9 @@ body.flex #dr-footer{
 }
 
 @media only screen and (min-width: 768px) {
+    body.flex #mainCover{
+        flex-basis: 100%;
+    }
     /* PC版Footer高度和位置 */
     body.flex #dr-footer{
         position:inherit!important;
@@ -195,19 +200,3 @@ body.flex #dr-footer{
     }
 }
 
-/* html.landscape body, */
-body.debug{
-    background-color: bisque;
-}
-
-/* 测试用 */
-body.debug #timelineContent .wapper-mm.now{
-    background-color:blanchedalmond;
-}
-
-body.debug #coverArtistsWrapper{
-    background-color: lawngreen;
-}
-body.debug #coverArtistsWrapper .bs-content-listArtist{
-    background-color:rgb(205, 255, 182);
-}

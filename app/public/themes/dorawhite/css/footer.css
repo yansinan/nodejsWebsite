@@ -1,7 +1,7 @@
 @import url('timelineBar.css');
 #dr-footer{
     position: absolute;
-    bottom: 0;
+    top: 0;
     /* 以上是flex版之前的 */
     transition-property: all;
     transition-duration: 0.5s;
@@ -14,12 +14,11 @@
     height:0px;
     max-height: var(--footer-size-mobile,16px);
 
-    position: relative;
+    /* position: relative; */
     /* bottom: unset!important; */
-    /* top: calc(15px - 100vh); */
     /* top: calc(var(--vh, 1vh) * -100 + var(--footer-size-mobile,16px) + 2px); */
-    top: calc(var(--vh-viewport, 1vh) * -100);
-    
+    /* top: calc(var(--vh-viewport, 1vh) * -100); */
+    /* top: calc(var(--vh, 1vh) * -100 - ); */
     /* left: calc(15px); */
     transform: rotate(90deg);
     transform-origin: calc(var(--footer-size-mobile,16px)/2) calc(var(--footer-size-mobile,16px)/2);
