@@ -515,7 +515,7 @@
   display:block;
 }
 #offcanvasSearch .offcanvas-body loading line{
-  filter: invert(1);
+  stroke:var(--color-bg-white);
 }
 
 /* 导航 */

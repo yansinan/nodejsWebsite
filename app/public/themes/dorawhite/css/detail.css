@@ -584,8 +584,9 @@
 .detail.artist .news .list .year{
     
 }
-.detail.artist  loading line{
-    filter: invert(1);
+#offcanvasDetailAll.artists  loading line{
+    /* filter: invert(1); */
+    stroke:var(--color-bg-white);
 }
 .detail.artist.error .bnBack{
     border: 1px solid #FDFDFD;
