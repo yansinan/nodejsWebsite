@@ -53,6 +53,7 @@ class IndexController extends Controller {
         // await ctx.renderPageData(discription);
     }
     // 艺术家详情
+    /*
     async getDataForArtistDetails() {
         const ctx = this.ctx;
         let contentId = ctx.params.id;
@@ -112,7 +113,7 @@ class IndexController extends Controller {
             ctx.redirect("/");
         }
     }
-
+    */
     // 通用文档详情
     async getDataForDocDetails() {
         const {ctx,service} = this;
@@ -137,12 +138,13 @@ class IndexController extends Controller {
                 ctx.redirect("/");
             } else {
                 // 挂载钩子
-                await this.app.hooks(ctx, 'messageBoard', {
-                    contentId
-                });
-                // ctx.pageType = "artist"
-                // 获取通用页面信息
-                //let {pageData,defaultTemp}=await ctx.getInitPageData("artist");//
+                //await this.app.hooks(ctx, 'messageBoard', {
+                //    contentId
+                //});
+                // 浏览次数+1
+                ctx.service[serviceName].inc && await ctx.service[serviceName].inc(ctx, contentId, { 'clickNum': 1 });
+                
+                //获取数据
                 let pageData={serviceName};
                 //数据提取、修改标题；需要根据post信息修改内容：pageData.post,pageData.site,pageData.ogData,ctx.tempPage
                 pageData.post = await ctx.service[serviceName].item(ctx, {
@@ -150,6 +152,7 @@ class IndexController extends Controller {
                     populate : [],
                     files : null
                 })
+                // 定义模板
                 if (!_.isEmpty(pageData.post)) {
                     // 根据serviceName，选用不同模板
                     if(serviceName=="record" || serviceName=="good"){

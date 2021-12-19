@@ -14,7 +14,13 @@ module.exports = app => {
 
     router.get(["/404"], controller.page.index.getErrorPage);
     // 测试新的复杂滚动首页
-    router.get(["/","/timeline/:bsTimeline?","/artists/:bsTimeline?", "/index/*" ,"/zh-CN", "/zh-TW", "/en"], controller.page.index.getIndexPage);//
+    router.get([
+        "/",
+        "/timeline/:bsTimeline?/:apiDetail",
+        "/artists/:bsTimeline?/:apiDetail", 
+        "/index/timeline/:bsTimeline?/:apiDetail" ,
+        "/index/artists/:bsTimeline?/:apiDetail" ,
+        "/zh-CN", "/zh-TW", "/en"], controller.page.index.getIndexPage);//
 
     // router.get("/page/:current.html", controller.page.home.getDataForIndexPage);
 
@@ -29,7 +35,7 @@ module.exports = app => {
     // 内容详情入口
     // router.get("/details/:id.html", controller.page.home.getDataForContentDetails);
     // 艺术家详情
-    router.get("/artist___:id.html", controller.page.detail.getDataForArtistDetails);
+    //router.get("/artist___:id.html", controller.page.detail.getDataForArtistDetails);
     router.get("/:service?___:id.html", controller.page.detail.getDataForDocDetails);
     //检索艺术家的专辑
     //20211210 router.get("/record/artist/:idArtist", controller.api.record.list);

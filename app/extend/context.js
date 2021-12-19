@@ -1,14 +1,23 @@
+/*
+ * @Author: dr 
+ * @Date: 2021-12-19 01:28:11 
+ * @Last Modified by: dr
+ * @Last Modified time: 2021-12-19 01:33:26
+ */
 'use strict';
 const _ = require('lodash');
 const fs = require('fs');
 const pkg = require('../../package.json')
 
 module.exports = {
-
+    async getSiteConfig(){
+        return await this.service.uploadFiles.cacheJSON(`${(process.cwd() + '/app/public')}/cache/objSite.json`,{tar:this,fun:this.helper.reqJsonData, params:['systemConfig/getConfig'] },true,true);
+    },
     async getSiteInfo() {
         let ctx = this;
         // console.log('--ctx.originalUrl--', ctx.originalUrl)
-        let configs = await ctx.helper.reqJsonData('systemConfig/getConfig');
+        // let configs = await ctx.helper.reqJsonData('systemConfig/getConfig');
+        let configs=await this.getSiteConfig();
         const {
             siteName,
             siteDiscription,
@@ -43,7 +52,19 @@ module.exports = {
         }
 
     },
+    //最终渲染:需要外部定义：ctx.tempPage，pageData.staticforder
+    async renderPageData(pageData){
+        let ctx = this;
+        if (ctx.tempPage.indexOf('users/') == '0') {
+            pageData.themePublicPath = `../${pageData.staticforder}/default.html`;
+            console.log('--pageData.themePublicPath--', pageData.themePublicPath)
+        } else {
+            ctx.tempPage=pageData.staticforder + '/' + ctx.tempPage;
+        }
+        await ctx.render(ctx.tempPage, pageData);
+    }
 
+    /*
     renderCateName(pageData) {
 
         let pageType = pageData.pageType;
@@ -58,8 +79,10 @@ module.exports = {
 
         pageData['list_title'] = title;
     },
-
+    */
+   
     // 获取类别或文档详情模板文件
+    /*
     getCateOrDetailTemp(defaultTemp, contentTemp = '', type) {
         let fileName = "contentList.html",
             currentPath = "";
@@ -92,6 +115,10 @@ module.exports = {
             }
         }
     },
+    */
+    
+    // 旧的获取单页页面数据
+    /*
     async getPageData() {
 
         let ctx = this;
@@ -258,8 +285,9 @@ module.exports = {
             await ctx.render(defaultTemp.alias + '/' + targetTempPage, pageData);
         }
     },
-
+    */
     //所有页面通用信息
+    /*
     async getInitPageData(inPageType="") {
 
         let ctx = this;
@@ -327,18 +355,6 @@ module.exports = {
         pageData.lsk = JSON.stringify(sysKeys);
         return {pageData,defaultTemp};
     },
-    //最终渲染
-    async renderPageData(pageData){
-        let ctx = this;
-        if (ctx.tempPage.indexOf('users/') == '0') {
-            pageData.themePublicPath = `../${pageData.staticforder}/default.html`;
-            console.log('--pageData.themePublicPath--', pageData.themePublicPath)
-        } else {
-            ctx.tempPage=pageData.staticforder + '/' + ctx.tempPage;
-        }
-        await ctx.render(ctx.tempPage, pageData);
-    }
-
-
-
+    */
+    
 };

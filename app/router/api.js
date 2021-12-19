@@ -22,12 +22,12 @@ module.exports = app => {
             controllerName: 'list',
             details: '获取文档列表',
         }, 
-        {
-            url: API + '/get',
-            method: 'get',
-            controllerName: 'getOne',
-            details: '获取单个文档信息',
-        },
+        //{
+        //    url: API + '/get',
+        //    method: 'get',
+        //    controllerName: 'getOne',
+        //    details: '获取单个文档信息',
+        //},
         {
             url: API + "/listRecords",
             method:"get",

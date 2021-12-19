@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-12-18 22:27:19 
  * @Last Modified by: dr
- * @Last Modified time: 2021-12-18 22:47:16
+ * @Last Modified time: 2021-12-19 01:21:55
  */
 const Controller = require('egg').Controller;
 const _ = require('lodash');
@@ -19,7 +19,7 @@ class RobotController extends Controller {
     async getSiteMapXML() {
         let payload = this.ctx.params;
         // 获取站点配置
-        let configs = await this.ctx.helper.reqJsonData('systemConfig/getConfig');
+        let configs = await this.ctx.getSiteConfig();
         let root_path = configs.siteDomain;
         let priority = 0.8;
         let freq = "weekly";

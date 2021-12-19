@@ -119,7 +119,9 @@
         {% for link in post.listNav %}
         <li class="hoverUnderline" ms-on-click="@eBnDetailNav(e,'{{link.tar}}')">{{link.name}}</li>
         {% endfor %}
+        {% if post.listHotMusics.length>0%}
         <li class="player" ms-on-click="@eAudioToggleNow(e)"><i class="fa" :class="@playerStatus"/></li>
+        {% endif %}
     </ul>
     {# 精选单曲 #}
     {% if post.listHotMusics.length>0%}

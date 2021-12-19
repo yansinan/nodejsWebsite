@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-24 13:20:49 
  * @Last Modified by: dr
- * @Last Modified time: 2021-02-07 08:35:54
+ * @Last Modified time: 2021-12-19 03:46:12
  */
 
 'use strict';
@@ -11,6 +11,7 @@ const path = require('path')
 const BaseService = require('./Doc');//require(path.join(process.cwd(), 'lib/plugin/egg-dora-artist/app/service/Artist'));
 const shortid = require('shortid');
 const _ = require('lodash')
+const moment = require("moment");
 // const Model_NAME=__filename.slice(__dirname.length + 1, -3);
 
 
@@ -30,6 +31,139 @@ class ServicePlugin extends BaseService {
     get model(){
         if(!this._model)this._model=this.ctx.model[__filename.slice(__dirname.length + 1, -3)];
         return this._model;
+    }
+    // 找到乐队对应的标签
+    async findIdTags(inListArtists){
+        const {
+            ctx,
+            app
+        } = this;
+        //let payload = inArtist.name;
+        //let fields = {
+        //    query : {},
+        //    searchKeys : ['name'],
+        //    populate : [],
+        //    files : null
+        //};
+        //fields=Object.assign(fields,ctx.request.body || {});
+        //let contentTagList = await ctx.service.contentTag.find(payload, fields);
+        let listNameArtists=inListArtists.map(v=>(v.name));
+        let tag=await ctx.service.contentTag.item(ctx, {
+            query: {
+                name: listNameArtists
+            }
+        })
+        return _.isEmpty(tag)?[]:[tag._id];
+    }
+    // 时间线：// 获取时间线:演出，唱片，新闻，视频，加入
+    async getListTimeline(inArtist){
+        const {
+            ctx,
+            app
+        } = this;
+        let targetId=inArtist._id;
+        try {
+            let listIdTags=await this.findIdTags([inArtist]);
+            let listTimeline=(await ctx.service.doc.find({
+                pageSize: 0,
+                isPaging:"0",
+                lean:false,
+            }, {
+                sort: {date: -1},
+                query: {                    
+                    state: '2',
+                    //$or:[
+                    //    {listRefs:targetId},
+                    //    {tags: {"$elemMatch":{name:[inArtist.name]}}},
+                    //    //{["tags.name"]:inArtist.name},
+                    //],
+                    $or:[
+                        {tags: {"$in" : listIdTags }},
+                        {listRefs: {"$in" : [targetId] }},
+                    ],
+
+                },
+                searchKeys: ['listRefs','sImg', 'title', 'date',"tags"],
+                //populate:[{
+                //    path: 'tags',
+                //    select: 'name url _id'
+                //},],
+                populate:[],
+                files: "sImg name title date url nameTimeline tags"
+            }));
+            listTimeline.push({
+                name:inArtist.nameTimeline,
+                dateTimeline:inArtist.dateStart,
+                url:inArtist.url,
+            })
+            return listTimeline.map(v=>{
+                //let source=v.url.split("/")[1];//artist,show,record,detail
+                //let strDefault=source == "record"?"发布：":"";
+                let strDefault=v.nameTimeline || v.name;
+                return {
+                    name: strDefault,
+                    dateTimeline: moment(new Date(v.date)).format("MM-DD"),
+                    dateYear:moment(new Date(v.date)).format("YYYY"),
+                    url:v.url,
+                }
+            })
+        } catch (err) {
+            ctx.helper.renderFail(ctx, {
+                message: err
+            });
+            debugger
+        }
+    }
+    async item(ctx,{
+        query = {},
+        populate = [],
+        files = null
+    } = {}){
+        let targetId=query._id;
+        if (!shortid.isValid(targetId)) {
+            throw new Error(ctx.__('validate_error_params'));
+        }
+        try{
+            let artist = await super.item(ctx,{query,populate,files});
+
+            // 获取唱片
+            artist.objDocsRecords=await ctx.service.record.find({isPaging:false,pageSize:0,},{
+                sort: {dateRelease: -1},
+                query:{                    
+                    listRefs:targetId,
+                    state: '2'
+                },
+                files: "sImg name listFormatTags date url"
+            });
+
+            // 获取时间线:演出，唱片，新闻，视频，加入
+            artist.listTimeline= await this.getListTimeline(artist);
+            
+            // 获取周边
+            artist.listDocsGoods=await ctx.service.good.find({isPaging:false,pageSize:0,},{
+                sort: {date: -1},
+                query:{                    
+                    $or:[
+                        //{tags: {"$in" : listIdTags }},
+                        {listRefs: {"$in" : [targetId] }},
+                    ],
+                    state: '2'
+                },
+                files: "sImg name date url listLinks"
+            });
+
+            // 构建详情的导航
+            artist.listNav=[{name:"关于",tar:".name"}];
+            if(!_.isEmpty(artist.objDocsRecords))artist.listNav.push({name:"专辑",tar:".records"});
+            if(!_.isEmpty(artist.listVideos))artist.listNav.push({name:"影像",tar:".videos"});
+            if(!_.isEmpty(artist.listTimeline))artist.listNav.push({name:"时间线",tar:".news"});
+            // if(!_.isEmpty(artist.listHotMusics))artist.listNav.push({name:"单曲",tar:".musics"});
+            if(!_.isEmpty(artist.listDocsGoods))artist.listNav.push({name:"周边",tar:".goods"});
+
+            return artist;
+        }catch(err){
+            throw err;
+        }
     }
     async find(payload, {
         sort = {

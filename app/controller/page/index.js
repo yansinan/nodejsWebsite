@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-08-08 06:31:51 
  * @Last Modified by: dr
- * @Last Modified time: 2021-12-19 00:43:30
+ * @Last Modified time: 2021-12-19 01:27:09
  */
 const Controller = require('egg').Controller;
 const _ = require('lodash');
@@ -43,7 +43,7 @@ class IndexController extends Controller {
         })
 
         // pageData.site = await this.getSiteInfo();
-        pageData.site = await this.service.uploadFiles.cacheJSON(`${(process.cwd() + '/app/public')}/cache/objSite.json`,{tar:ctx,fun:ctx.getSiteInfo, params:[] },true,true);
+        pageData.site = await ctx.getSiteInfo();
         pageData.staticRootPath = this.app.config.static.prefix;
         
         if (!_.isEmpty(pageData.site)) {
@@ -95,8 +95,6 @@ class IndexController extends Controller {
             yearTotal:pageInfo.yearTotal || parseInt("2015"),
             listDateYear,
         }
-        // await this.service.uploadFiles.cacheJSON(`${(process.cwd() + '/app/public')}/cache/objSite.json`,{tar:ctx,fun:ctx.getSiteInfo, params:[] },true,true);
-
         return pageData;
     }
     // 优先缓存读取
