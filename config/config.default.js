@@ -37,7 +37,8 @@ module.exports = appInfo => {
     },
 
     // 配置需要的中间件,数组顺序即为中间件的加载顺序
-    middleware: ['notfoundHandler', 'crossHeader', 'compress', 'authUserToken', 'authAdminToken', 'authAdminPower',"errorHandler"],
+    // middleware: ['notfoundHandler', 'crossHeader', 'compress', 'authUserToken', 'authAdminToken', 'authAdminPower',"errorHandler"],
+    middleware: ['notfoundHandler', 'crossHeader', 'compress', 'authAdminToken', 'authAdminPower',"errorHandler"],
     errorHandler:{
       match:[
         "/artist___:id.html",
@@ -45,6 +46,20 @@ module.exports = appInfo => {
         "/about___.html",
         "/about___:typeId?",
         "/about___:typeId?.html",
+      ]
+    },
+    authAdminPower:{
+      match:[
+        "/admin/",
+        "/manage",
+        "/dr-admin",
+      ]
+    },
+    authAdminToken:{
+      match:[
+        "/admin/",
+        "/manage",
+        "/dr-admin",
       ]
     },
     // 错误处理
