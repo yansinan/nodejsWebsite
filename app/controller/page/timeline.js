@@ -51,9 +51,23 @@ class IndexController extends Controller {
         //let listCates = await service.uploadFiles.cacheJSON(`${(process.cwd() + '/app/public')}/cache/objNavigation.json`,{tar:this,fun:ctx.helper.reqJsonData, params:['contentCategory/getList', payload] },true,true);
         //let objCate=listCates.find(v=>(v.name=cateName)) || false;
         // 
-
-        if(!dictService[cateName])objData = await ctx.service.timeline.getTestDocs();//await ctx.helper.reqJsonData('timeline/getList', payload);
-        else {
+        // 传入了错误的bsTimeline，重定向到404
+        if(!dictService[cateName]){
+            let message="栏目没找到";
+            let dom= await ctx.renderView("./dorawhite/error.html",{
+                err: new Error(message),
+                data:ctx.params,
+            });
+            ctx.body = {
+                status: 404,
+                data: {dom,pageInfo:{},domTimelineBar:{}},
+                message: message
+            }
+            ctx.status = 404;
+            return ;
+            throw Error("conroller.page.timlie::!dictService["+cateName+"]");
+            objData = await ctx.service.timeline.getTestDocs();//await ctx.helper.reqJsonData('timeline/getList', payload);
+        }else {
             // 从不同service获取数据的列表
             let files = '_id url name alias sImg date discription imageArr videoArr simpleComments comments state categories isTop listArtists listFormatTags dateRelease catalog listLinks dateYYMM dateYear dateTimeline'
 

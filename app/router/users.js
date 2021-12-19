@@ -1,4 +1,5 @@
 module.exports = app => {
+    /*
     const {
         router,
         controller
@@ -37,7 +38,8 @@ module.exports = app => {
 
     // 找回密码
     router.get('/users/confirmEmail', controller.page.user.getDataForResetPsdPage)
-
+    
+    */
 
 
 }

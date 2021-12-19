@@ -10,7 +10,7 @@ const qr = require('qr-image')
 const moment = require('moment')
 
 class HomeController extends Controller {
-
+/*
     // 获取页面基础信息
     async getSiteInfo(ctx, appConfig) {
         let configs = await ctx.helper.reqJsonData('systemConfig/getConfig');
@@ -279,7 +279,7 @@ class HomeController extends Controller {
         ctx.pageType = 'phone_list'
         await ctx.getPageData();
     }
-
+*/
 
 }
 

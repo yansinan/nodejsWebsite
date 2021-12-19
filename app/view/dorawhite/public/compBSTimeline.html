@@ -112,9 +112,13 @@
                                 }
                             }else{
                                 debugger
+                                if(objData.status==404)that.location.reload();
                                 reject({msg:"服务器返回错误 ", objData});
                                 throw new Error("timeline加载更多内容，服务器通信错误："+objData.status);
                             }
+                        }).catch(err=>{
+                            debugger
+                            reject(err);
                         })
                     }).then(res=>{
                         return Promise.resolve(res);

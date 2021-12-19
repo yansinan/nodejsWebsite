@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-08-08 06:31:51 
  * @Last Modified by: dr
- * @Last Modified time: 2021-12-14 06:41:48
+ * @Last Modified time: 2021-12-19 00:43:30
  */
 const Controller = require('egg').Controller;
 const _ = require('lodash');
@@ -101,6 +101,21 @@ class IndexController extends Controller {
     }
     // 优先缓存读取
     async getIndexPage(isDom=true){
+        // :bsTimeline?
+        let bsTimeline=this.ctx.params.bsTimeline || "news";
+        const dictAliasNav={
+            // "artists":"ARTIST",
+            "news":"NEWS",
+            "records":"ALBUM",
+            "shows":"SHOW",
+            "videos":"VIDEO",
+            "goods":"PRODUCT",
+        }
+        //强制转到news；
+        if(bsTimeline=="artists")return this.ctx.redirect("/artists/news");
+        if(!dictAliasNav[bsTimeline]){
+            return await this.getErrorPage();
+        }
         let pageData=await this.getDataForIndexPage();
         // 模板的真实路径
         let pathTemplate = "dorawhite/default.html";//this.app.config.temp_view_forder + defaultTemp.alias + '/' + "2-stage-timeline" +"/" + "contentList.html";

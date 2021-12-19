@@ -14,7 +14,7 @@ module.exports = app => {
 
     router.get(["/404"], controller.page.index.getErrorPage);
     // 测试新的复杂滚动首页
-    router.get(["/","/timeline/*","/artists/*", "/index/*" ,"/zh-CN", "/zh-TW", "/en"], controller.page.index.getIndexPage);//
+    router.get(["/","/timeline/:bsTimeline?","/artists/:bsTimeline?", "/index/*" ,"/zh-CN", "/zh-TW", "/en"], controller.page.index.getIndexPage);//
 
     // router.get("/page/:current.html", controller.page.home.getDataForIndexPage);
 
