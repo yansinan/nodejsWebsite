@@ -15,7 +15,7 @@ const mammoth = require("mammoth");
 const moment = require("moment");
 
 const SERVICE_NAME=__filename.slice(__dirname.length + 1, -3);
-
+/*
 let that={
     // 字段列表：
     getListFields (type = '') {
@@ -63,9 +63,8 @@ let that={
 
     },
 }
+*/
 let ControllerPlugin = {
-
-
     /**
      * @api {get} /api/xxxx/getList 查询帖子列表
      * @apiDescription 根据参数获取对应的帖子列表,默认按时间查询，可作为发现栏目列表
@@ -147,8 +146,8 @@ let ControllerPlugin = {
      * @apiSampleRequest http://localhost:8080/api/xxxx/getList
      * @apiVersion 1.0.0
      */
-
-     async list(ctx, app) {
+    /*
+    async list(ctx, app) {
         try {
 
             let payload = ctx.query;
@@ -197,6 +196,7 @@ let ControllerPlugin = {
 
             // 按乐队检索专辑
             if(idArtist){
+                debugger;
                 let target = await ctx.service.artist.item(ctx, {
                     query: {
                         _id: idArtist
@@ -244,50 +244,7 @@ let ControllerPlugin = {
             debugger
         }
     },
-
-    async getTopIndexContents(ctx, app) {
-
-        try {
-            let current = ctx.query.current || 1;
-            let pageSize = ctx.query.pageSize || 10;
-            let model = ctx.query.model || 'normal'; // 查询模式 full/normal/simple
-            let userInfo = ctx.session.user || {};
-            let payload = ctx.query;
-
-            let service=ctx.service[SERVICE_NAME];
-
-
-            // 条件配置
-            let queryObj = {
-                state: '2',
-                isTop: 1,
-                uAuthor: {
-                    $ne: null
-                }
-            };
-
-            let sortObj = {
-                roofPlacement: -1
-            };
-
-            let contents = await service.find(payload, {
-                query: queryObj,
-                files: that.getListFields(),
-                sort: sortObj
-            })
-            contents.docs = await that.renderList(ctx, userInfo._id, contents.docs);
-
-            ctx.helper.renderSuccess(ctx, {
-                data: contents
-            });
-            
-
-        } catch (err) {
-            ctx.helper.renderFail(ctx, {
-                message: err
-            });
-        }
-    },
+    */
 
     /**
      * @api {get} /api/content/getContent 查询帖子详情
@@ -392,6 +349,7 @@ let ControllerPlugin = {
      * @apiSampleRequest http://localhost:8080/api/content/getContent
      * @apiVersion 1.0.0
      */
+    /*
     async getOne(ctx, app) {
 
         try {
@@ -435,7 +393,9 @@ let ControllerPlugin = {
             });
         }
     },
-
+    */
+    
+    // 后台获取发行介质列表用
     async listAllFormats(ctx, app){
         try{
             let listRes=await ctx.service.contentTag.find({isPaging:0,pageSize:0},{query:{comments:"发行介质"}})
