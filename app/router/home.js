@@ -6,11 +6,11 @@ module.exports = app => {
 
     const authPage = app.middleware.authPage({});
     //配置站点地图和robots抓取
-    router.get("/sitemap.xml", controller.page.home.getSiteMapPage);
+    router.get("/sitemap.xml", controller.page.robot.getSiteMapXML);
 
-    router.get("/robots.txt", controller.page.home.getRobotsPage);
+    router.get("/robots.txt", controller.page.robot.getRobotsTXT);
 
-    router.get("/sitemap.html", controller.page.home.getDataForSiteMap);
+    // router.get("/sitemap.html", controller.page.home.getDataForSiteMap);
 
     router.get(["/404"], controller.page.index.getErrorPage);
     // 测试新的复杂滚动首页
