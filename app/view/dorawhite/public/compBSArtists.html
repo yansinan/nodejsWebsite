@@ -179,6 +179,8 @@
             if(e.isTrusted)return;
             slideListArtist.hideTootip(e);
         },false)
-        this.addEventListener("NAV_TO",slideListArtist.hideTootip);
+        that.addEventListener("NAV_TO",slideListArtist.hideTootip);
+        that.addEventListener("OPEN_OFFCANVAS_DETAIL",slideListArtist.hideTootip);
+        that.addEventListener("OPEN_OFFCANVAS_SEARCH",slideListArtist.hideTootip);
     </script>  
 </div>
