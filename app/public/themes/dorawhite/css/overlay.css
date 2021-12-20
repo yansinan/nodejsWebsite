@@ -2,7 +2,8 @@
     transition-property: background-color;
     transition-duration: 1s;
 
-    background: #FDFDFD;
+    /* background-color: inherit; */
+    background-color: #000000;
     color: black;
     --offsetcanvas-padding-right:0.77rem;
     --offsetcanvas-padding:0.77rem;

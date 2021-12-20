@@ -151,7 +151,7 @@
     color:white;
 }
 .detail.artist{
-    background-color: black;
+    background-color: inherit;
 }
 .detail.artist .name{
     flex: 0 0 3rem;    
