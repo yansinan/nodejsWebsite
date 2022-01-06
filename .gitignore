@@ -25,3 +25,4 @@ app/public/upload
 .ash_history
 .local
 /report.*.json
+app/public/cache
