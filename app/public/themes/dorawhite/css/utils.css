@@ -20,6 +20,15 @@
 .fa-play:before {
     content: "\f04b";
 }
+.fa-pause:before {
+    content: "\f04c";
+}
+.fa-angle-left::before{
+    content: "\f104";
+}
+.fa-angle-right::before{
+    content:"\f105";
+}
 .fa-music:before {
     content: "\f001";
 }
@@ -88,6 +97,9 @@ a:focus {
 ul li {
     list-style-type: none;
 }
+img:not([src]):not([srcset]) {
+    visibility: hidden;
+}
 
 .icon-arrow {
     z-index: 3;
@@ -107,20 +119,43 @@ ul li {
     width:0.427rem;
     height:0.427rem;
     border-radius: 0.11rem;/*0.25rem*/
+    background: url(/static/upload/images/icons/bnClose.svg) center no-repeat;
+    opacity: 1;
+}
+bn-search{
+    background: url(/static/upload/images/icons/bnSearch.svg) center no-repeat;
 }
 
 .list-inline-item{
     font-size: 0.444rem;
     margin: 0px;
     margin-right:0.278rem;
+    margin-right:0px;
     padding: 0.05rem 0.5rem;
     line-height: 0.6rem;
+    border:1px solid black;
 }
+.list-inline-item:not(:last-child) {
+    margin-right:0px;
+}
+.breadcrumb-item,
+.list-inline-word:hover,
+.list-inline-item:hover{
+    cursor: pointer;
+}
+.breadcrumb-item a,.breadcrumb-item a:active, .breadcrumb-item a:link, .breadcrumb-item a:visited,
+.list-inline-word a,.list-inline-word a:active, .list-inline-item a:link, .list-inline-item a:visited,
 .list-inline-item a:active, .list-inline-item a:link, .list-inline-item a:visited{
     color: inherit;
     text-decoration: none;
 }
-
+.list-inline-word:not(:last-child)::after{
+    content:"，";
+}
+.list-inline.artists{
+    display: flex;
+    flex-wrap: wrap;
+}
 /* offcanvas滚动条pc样式 */
 @media only screen and (min-width: 768px) {
     ::-webkit-scrollbar { /* 滚动条整体样式 */
@@ -165,6 +200,100 @@ ul li {
     width:0px;
 }
 */
+.offcanvas-header {
+    /* width: 0.667rem; */
+    /* height: 0.694rem; */
+    line-height: 0.56rem;
+    /* margin-top: calc(24 * 1rem / 26); */
+    margin-top:0px;
+    margin-bottom:2.1rem;
+    padding: 0px;
+    justify-content: space-between;
+    /* width: 0.667rem; */
+    /* height: 0.694rem; */
+    /* font-size: 0.668rem; */
+    /* line-height: 0.56rem; */
+    /* margin-top: 0.88rem; */
+    /* margin-bottom:2.1rem; */
+
+}
+.offcanvas-header .btn{
+    opacity: 1;
+    color:inherit;
+    flex:0;
+    min-width: 2.7rem;
+    min-height: 2.7rem;
+    margin: 0px;
+    padding: 0px;
+}
+/* 搜索按钮 */
+.offcanvas-header .btn-search{
+    overflow: visible;
+    height:0px;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+
+    /* width: 0.667rem;
+    height: 0.694rem;
+    font-size: 0.668rem;
+    line-height: 0.56rem; */
+
+}
+.offcanvas-header .btn-search::after{
+    content:"";
+    display:block;
+    padding-bottom: 100%;
+} 
+
+.offcanvas-header i.fa.fa-search{
+    width: 0.667rem;
+    height: 0.694rem;
+    /* font-size: 0.668rem; */
+    line-height: 0.56rem;
+}
+.offcanvas-header .btn-close{
+    /*
+    display:block;
+    padding: .214rem .214rem;
+    margin-top: -.214rem;
+    margin-right: -.214rem;
+    margin-bottom: -.214rem;
+    */
+    /* background:transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='white'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat */
+    cursor: pointer;
+    vertical-align: middle;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: auto;
+
+}
+.offcanvas-header .btn-close:active, 
+.offcanvas-header .btn-close:focus, 
+.offcanvas-header .btn-close:active:focus, 
+.offcanvas-header .btn-close.active:focus,
+.offcanvas-header .btn-close.focus, 
+.offcanvas-header .btn-close:active.focus, 
+.offcanvas-header .btn-close.active.focus {
+	outline: none;
+    box-shadow: none;
+}
+.offcanvas-body{
+    padding-top: 0px;
+}
+@media (min-width: 768px) {
+    .offcanvas-header {
+        line-height: 0.56rem;
+        /* margin-top: calc(30 * 1rem / 36); */
+        margin-bottom:2.1rem;
+      }
+
+    .offcanvas-header .btn{
+        min-width:var(--header-btn-height,53px);
+        min-height:var(--header-btn-height,53px);
+    }
+
+}
 
 
 /* 通用交互效果 */
@@ -174,8 +303,17 @@ ul li {
 .hoverUnderline:hover{
     text-decoration: underline;
 }
-
-
+.outUnderline:not(:hover){
+    text-decoration: underline!important;
+}
+.outUnderline:hover{
+    text-decoration: none!important;
+}
+.noSelect{
+    user-select: none;
+    -webkit-user-select: none;/*禁用手机浏览器的用户选择功能 */
+    -moz-user-select: none;
+}
 /* 通用视频播放按钮 */
 .videoWrapper{
     position: relative;
@@ -260,3 +398,74 @@ ul li {
     height:100%;
     object-fit: contain;
 }
+
+
+/* loading */
+loading{
+    display:flex;
+    flex-direction: column;
+    height:100%;
+    width:100%;
+    justify-content: center;
+    align-items: center;
+  }
+  loading::after{
+    content:"Loading...";
+    display:block;
+    font-size: 0.5rem;
+    line-height: 2rem;
+  }
+  loading line{
+    stroke:black;
+  }  
+
+
+  /* error */
+  .error .title{
+    font-size: 1rem;
+    letter-spacing: 0.1rem;
+    position: relative;
+    top: calc(50vh - 4rem);
+  }
+  .error .message.textJustify{
+    font-size: 0.3rem;
+    letter-spacing: 0.1rem;
+    /* width: 7.8rem; */
+    height: 0.8rem;
+    padding-right: 0.7rem;
+  }
+  .error .bnBack{
+    width: calc(180 * 1rem / 36);
+    height: calc(60 * 1rem / 36);
+    /* border: 1px solid #FDFDFD; */
+    border: 1px solid black;
+    border-radius: calc(60 * 1rem / 36 / 2);
+    margin-top: calc(44 * 1rem / 36);
+    margin-top: 24px;
+    margin-bottom: calc(44 * 1rem / 36);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* align-self: center; */
+    cursor: pointer;
+    position: relative;
+    top: calc(50vh - 4rem);
+  }
+
+/* 空白页面 文字两端对齐*/
+.textJustify{
+    text-align: justify;
+    width:100%;
+    height:100%;
+}
+.textJustify::after{
+    width: 100%;
+    display: inline-block;
+    height:0rpx;
+    content: ''; /*这三个都不可以少*/
+}
+
+/* logo图鼠标指针 */
+.navbar-brand{
+    cursor: pointer;
+}  

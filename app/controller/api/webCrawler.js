@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-02-16 22:53:59 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-31 09:54:53
+ * @Last Modified time: 2021-09-27 05:15:47
  */
 
 const Controller = require('egg').Controller;
@@ -154,6 +154,44 @@ class UserController extends Controller {
             });
         }        
     }
+
+    // 抓NCM歌曲
+    async ncmGetSong(){
+        const {
+            ctx,
+            app
+        } = this;
+        let service=ctx.service[SERVICE_NAME];
+        let idSong= ctx.params.idSong.split("song?id=")[1] || ctx.params.idSong;
+        try{
+            if (!idSong) throw new Error(ctx.__('validate_error_params')+"id");
+
+            let resInfoSong=await service.ncmGetSong(idSong);
+            if(resInfoSong.status=="200"){
+                if(resInfoSong.data.songs && resInfoSong.data.songs.length>0){
+                    Object.assign(resInfoSong.data,resInfoSong.data.songs[0]);
+                    // pic地址
+                    if(resInfoSong.data.songs[0].al && resInfoSong.data.songs[0].al.picUrl){
+                        resInfoSong.data.sImg=resInfoSong.data.songs[0].al.picUrl;
+                    }
+                }
+                // mp3地址：
+                let resURLSong=await service.ncmFetchSong(idSong);
+                if(resURLSong.status=="200"){
+                    resInfoSong.data.urlSongNCM=resURLSong.urlSongNCM;
+                    resInfoSong.data.urlSong=resURLSong.urlSong;
+                }
+            }else throw new Error("服务器status!=200")
+            
+            ctx.helper.renderSuccess(ctx,{
+                data: resInfoSong.data
+            });
+        } catch (err) {
+            debugger
+            ctx.helper.renderFail(ctx, { message: err });
+        }
+    }
+
 }
 
 module.exports = UserController;

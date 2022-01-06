@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2019/11/10 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-23 04:55:23
+ * @Last Modified time: 2021-12-06 01:46:26
  */
 /**
  * Created by Dr on 2019/11/10.
@@ -78,6 +78,8 @@ module.exports =app=>{
                 url:{type:String},
                 name:{type:String},
                 type:{type:String,default:"音乐"},
+                urlSongNCM:{type:String},
+                sImg:{type:String},
             }],//推荐热门歌曲
             listLinks:[{
                 url:{type:String},
@@ -87,12 +89,13 @@ module.exports =app=>{
             }],//相关链接
             listImages:[{
                 url:{type:String},
+                urlThumbsnail:{type:String},
                 name:{type:String},
                 type:{type:String,default:"link"},
             }],//相关照片
             listVideos:[{
                 // _id:{type:String,default:''},
-                // url:{type:String},
+                url:{type:String},
                 name:{type:String},
                 type:{type:String,default:"link"},
                 date:{type:Date,default:Date.now},
@@ -101,6 +104,7 @@ module.exports =app=>{
                 urlImg:{type:String,default:""},
                 urlVideo:{type:String,default:""},
                 link:{type:String},//外链网页，用于分析id数据
+                desc:{type:String},
             }],//相关视频
             idNCM:{
                 type:String,
@@ -180,17 +184,38 @@ module.exports =app=>{
             if(artist.sImg){
                 let objImage={
                     url:artist.sImg,
+                    urlThumbsnail:artist.sImg,
                     name:artist.name,
                     type:"link",
                 };
                 if(v){
+                    v.forEach(img=>{
+                        let listPath=img.url.split("/");
+                        listPath[listPath.length-1]="s" + listPath[listPath.length-1];
+                        if(img.url==artist.sImg)img.urlThumbsnail=img.url
+                        else img.urlThumbsnail=listPath.join("/");
+                    })
                     let isInList=v.find((img)=>(img.url == artist.sImg));
                     if(!isInList)v.unshift(objImage)
                 }else{                        
                     v = [objImage];
                 }
             }
+            v.forEach(v=>{
+                v.url=v.url.replace("http://wx.z-core.cn:8791","");
+                v.urlThumbsnail=v.urlThumbsnail.replace("http://wx.z-core.cn:8791","");
+            })
             return v;
+        })
+        // listVideos补齐属性
+        schema.path("listVideos").get(function(listV){
+            let artist=this;
+            return listV.map(v=>{
+                v.url="/video___"+v.idURL+".html";
+                v.sImg=v.urlImg;
+                v.nameTimeline="视频《"+v.name+ "》发布";
+                return v;
+            })
         })
         //首字母
         schema.virtual('firstLetter').get(function () {
@@ -198,6 +223,10 @@ module.exports =app=>{
         });
         schema.virtual('letters').get(function () {
             return getPinYin(this.name).toUpperCase();
+        });
+        // 搜索结果类名:
+        schema.virtual('docAliasSearch').get(function () {
+            return "签约";
         });
         let model=app.model.Artist || Doc.discriminator("Artist", schema);
         // app.model.Artist=model;

@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2019/11/10 20:30:53 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-26 06:26:13
+ * @Last Modified time: 2021-12-09 22:53:52
  */
 const INIT_DOC= app=>{
     //如果已经初始化过，则直接返回；
@@ -213,6 +213,37 @@ const INIT_DOC= app=>{
     schema.virtual('nameTimeline').get(function (){
         return this.name;
     })
+    // sImg链接改为相对路径
+    schema.path('sImg').get(function (v) {
+        return v?v.replace("http://wx.z-core.cn:8791",""):v;
+    });
+    // keywords兼容
+    schema.path('keywords').get(function (v) {
+        let listKeywords=v;//this.keywords;
+        let str=listKeywords ? listKeywords.join(",") : "";
+        let list=str.split(/\,|\s\,|，|\s，/ig) || [];
+        list=list.map(s=>{
+            return s.replace(/^(\,|\s\,|，|\s，)+/i,"");
+        })
+        return list.filter(k=>(!_.isEmpty(k)));
+    })
+    schema.path('keywords').set(function(v){
+        let list=[];
+        let str="";
+        if(Array.isArray(v) && v.length>0){
+            str=v.join(",");
+            if(!_.isEmpty(str)){
+                list=str.split(/\,|\s\,|，|\s，|,/ig);
+                list=list.map(s=>{
+                    return s.replace(/^(\,|\s\,|，|\s，)+/i,"");
+                })
+            }
+        }else if(typeof(v)=='string') {
+            str=v.replace(/^(\,|\s\,|，|\s，)+/i,"");
+            list=str.split(/\,|\s\,|，|\s，/ig);
+        }
+        return list.filter(k=>(!_.isEmpty(k)));
+    });
     app.model=app.model || {};
     let model=app.model.DocModel || mongoose.model("Doc", schema);
     app.model.DocModel=model;

@@ -1,18 +1,17 @@
 {% from "../public/compListTags.html" import tag as domTag %}
 {% from "../public/compListTags.html" import listTags as listTags %}
-{% from "../public/compAvatar.html" import avatar %}
 
 {# {% extends "../default.html" %}  #}
 
 
-
-<div class="detail artist font-normal">
+{# <link rel="stylesheet" href="/static/themes/dorawhite/css/detail.css"> #}
+<div class="detail {{serviceName}} font-normal" data-bs-main="{{post.docAlias}}">
     {# 乐队名 #}
     <div class="name">{{post.name}} {{post.alias if post.name!=post.alias else ""}}</div>
     {# 乐队图 #}
     <div class="album scrollerSnap">
         {% for image in post.listImages %}
-        <img src="{{image.url}}" height="100%" data-dr-url="{{image.url}}"/>{#  data-bs-toggle="modal" data-bs-target="#modalImagePreview"  #}
+        <img src="{{image.urlThumbsnail}}" height="100%" data-dr-url="{{image.url}}"/>{#  data-bs-toggle="modal" data-bs-target="#modalImagePreview"  #}
         {% endfor %}
     </div>
     {# 标签 #}
@@ -20,9 +19,9 @@
     {% if post.tags.length>0 and post.tags[0]%}
     <ul class="list-inline">
         {% for tag in post.tags %}
-            {{ domTag(tag.name+"   "+tag.alias,tag.url)  if tag else ""}}
+            {{ domTag(tag.name+"   "+tag.alias,'/search?q='+tag.name)  if tag else ""}}
         {% endfor %}
-        {{ domTag(post.from,post.url) if post.from!=""}}
+        {{ domTag(post.from,'/search?q='+post.from) if post.from!=""}}
     </ul>
     {% endif %}
     {# 介绍 #}
@@ -33,7 +32,7 @@
     {% if post.listLinks.length>0%}
     <ol class="breadcrumb">
         {% for link in post.listLinks %}
-        <li class="breadcrumb-item"><a href="{{link.url}}" target="_blank">{{link.name}}</a></li>
+        <li class="breadcrumb-item outUnderline"><a href="{{link.url}}" target="_blank">{{link.name}}</a></li>
         {% endfor %}
     </ol>
     {% endif %}
@@ -45,12 +44,12 @@
         <div class="list" style="--cnt-item:{{4 if post.objDocsRecords.length > 4 else post.objDocsRecords.length}}">      
             {% for item in post.objDocsRecords %}
                 {# 乐队详情页 #}
-                <a onclick="window.goto('{{item.url}}')" class="item {{'hide' if loop.index > 4}}">
+                <a onclick="window.goto('{{item.url}}')" class="item {{'hide' if loop.index > 4}} noSelect">
                     <img src="{{item.sImg}} " class="img-fluid" alt="{{item.title}} " />
                     <div class="intro">
                         <p class="title">{{item.dateTimeline}}<br><span class="hoverUnderline">{{item.name}}</span></p>
                         {# 标签 #}
-                        <div class="tags records">{{listTags(item.listFormatTags)}}</div>
+                        {% if item.listFormatTags.length > 0 %}<div class="tags records">{{listTags(item.listFormatTags)}}</div>{% endif %}
                     </div>
                 </a>
             {% endfor %} 
@@ -64,7 +63,7 @@
         <div class="list" style="--cnt-item:{{3 if post.listVideos.length > 3 else post.listVideos.length}}">      
             {% for item in post.listVideos %}
                 {# 乐队详情页 #}
-                <a href="{{item.link}} " target="_blank " class="item videoWrapper hoverUnderline">
+                <a onclick="window.goto('{{item.url}}') " class="item videoWrapper hoverUnderline">
                     <img src="{{item.urlImg}} " class="img-fluid" alt="{{item.title}} " />
                     <span class="title">{{item.name}}</span>
                 </a>
@@ -109,154 +108,34 @@
         </div>
     </div>
     {% if post.listDocsGoods.length >6 %}<div class="more hoverUnderline" data-dr-target="goods">更多</div>{% endif %}
-    {% endif %}
+    {% endif %}    
+    <div class="headEnd" :class="@playerStatus" style=""></div>
 
-    {# 精选单曲 #}
-    {% if false and post.listHotMusics.length>0%}
-        <div class="row border-2 border-bottom border-dark pt-5 pb-2">
-            <h2 class="">精选单曲</h2>
-        </div>
-        {% for link in post.listHotMusics %}
-        <div class="row border-bottom border-dark py-3" onclick="window.open('{{ link.url }}')">
-            <span class="col" >{{ link.name }}</span>
-            <span class="col-1 d-none d-sm-block fa fa-play"  aria-hidden="true" style="margin: 5px;" id="bn-{{ link.url }}"></span>
-        </div>
-        {% endfor %}                        
-        <div class="row border-2 border-bottom border-dark"></div>
-    {% endif %}
 </div>
 {# 浮动导航 #}
-<ul class="nav">
-    <div class="backTop" ms-on-click="@eBnDetailNav(e,'.name')"></div>
-    {% for link in post.listNav %}
-    <li class="hoverUnderline" ms-on-click="@eBnDetailNav(e,'{{link.tar}}')">{{link.name}}</li>
-    {% endfor %}
-</ul>
-
-{% block content %}
-{% if false %}
-<div class="container-fluid">
-    <div class="row"  ms-controller="documentInfo">
-        {# 头部 名称，标签，成员 #}
-        <div class="col-12">
-            <input type="hidden" value="{{post._id}}" id="contentId">
-            <div class="row">
-                <div class="col main-container">
-                    <div class="row">
-                        <div class="col">                        
-                            <h1 class="display-1">{{post.name}} {{post.alias}}</h1>
-                        </div>
-                        <div class="col-md-2 col-sm3">                        
-                            {{avatar(post,128)}}
-                        </div>
-                    </div>
-                    <div class="row">
-                        {# 风格 #}
-                        <ul class="list-inline">
-                            {% if post.tags.length>0%}
-                                {% for tag in post.tags %}
-                                    {{ domTag(tag.name+"   "+tag.alias,tag.url) }}
-                                {% endfor %}
-                            {% endif %}
-                            {{ domTag(post.from,post.url) }}
-                        </ul>
-                        {# 友链 #}
-                        <div class="col-xs-12">
-                        {% if post.listLinks.length>0%}
-                            {% for link in post.listLinks %}
-                                {{avatar(link,32,"bg-dark m-2")}}
-                            {% endfor %}
-                        {% endif %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {# 左侧 #}
-        <div class="col-md-4 col-sm-12">
-            {# 档案 #}
-            <div class="row border border-dark pt-2">              
-                <h2 class="">档案</h2>
-            </div>
-            <div class="row border border-top-0 border-dark">  
-                <article class="">
-                    {{post.comments | safe}}
-                </article>
-            </div>
-            {# 时间线 #}
-            {% if post.listTimeline.length>0%} 
-                <div class="row border border-top-0 border-dark pt-2"><h2 class="">时间线</h2></div>
-                <div class="row border border-top-0 border-dark pt-2">
-                    <div class="col">
-                        {% for item in post.listTimeline %}
-                        {%if post.listTimeline[loop.first]  or itme.dateYear!=post.listTimeline[loop.revindex0].dateYear %}
-                        <div class="row pt-4"><h3>{{ item.dateYear}}</h3></div>
-                        {% endif %}
-                        <div class="row">
-                            <span class="col-xs-2 col-md-2" >{{ item.dateTimeline}}</span>
-                            <span class="col" ><strong><u>{{ item.name }}</u></strong></span>
-                        </div>                            
-                        {% endfor %}
-                        {# 空行 #}
-                        <div class="row pt-4"></div>
-                    </div>
-                </div>
-            {% endif %}
-            {# 专辑 #}
-            <div class="row border border-top-0 border-light bg-dark text-light pt-2"><h2 class="">专辑</h2></div>
-            {# 视频/MV #}
-            <div class="row border border-top-0 border-light bg-dark text-light pt-2"><h2 class="">视频/MV</h2></div>
-            {# 周边 #}
-            <div class="row border border-top-0 border-light bg-dark text-light pt-2"><h2 class="">周边</h2></div>
-            {# 演出动态 #}
-            <div class="row border border-top-0 border-light bg-dark text-light pt-2"><h2 class="">演出/动态</h2></div>
-
-            {# 精选单曲 #}
-            {% if post.listHotMusics.length>0%}
-            <div class="row border-2 border-bottom border-dark pt-5 pb-2">
-                <h2 class="">精选单曲</h2>
-            </div>
+<div class="nav artist">
+    <ul>
+        <div class="backTop" ms-on-click="@eBnDetailNav(e,'.name')"></div>
+        {% for link in post.listNav %}
+        <li class="hoverUnderline" ms-on-click="@eBnDetailNav(e,'{{link.tar}}')">{{link.name}}</li>
+        {% endfor %}
+        {% if post.listHotMusics.length>0%}
+        <li class="player" ms-on-click="@eAudioToggleNow(e)"><i class="fa" :class="@playerStatus"/></li>
+        {% endif %}
+    </ul>
+    {# 精选单曲 #}
+    {% if post.listHotMusics.length>0%}
+    <div class="playList" :class="@playerStatus">
+        <ul>
             {% for link in post.listHotMusics %}
-            <div class="row border-bottom border-dark py-3" onclick="window.location.href= '{{ link.url }}';return false">
-                <span class="col" >{{ link.name }}</span>
-                <span class="col-1 d-none d-sm-block fa fa-play"  aria-hidden="true" style="margin: 5px;" id="bn-{{ link.url }}"></span>
-            </div>
-            {% endfor %}                        
-            <div class="row border-2 border-bottom border-dark"></div>
-            {% endif %}
-            {# 相似成员 #}
-            {% if post.listHotMusics.length>0%}
-            <div class="row border-2 border-bottom border-dark pt-5 pb-2">
-                <h2 class="">相似成员</h2>
-            </div>
-            {% endif %}
-        </div>
-        {# 右侧 #}
-        <div class="col">
-            {# 乐队图 #}
-            <div class="row">
-                <img src="{{post.sImg}}" class="img-fluid" alt="{{post.name}}">
-            </div>
-            {# 专辑 #}
-            {% if post.objDocsRecords.docs.length>0%}
-            <div class="row">
-                <h2 class="" style="line-height: 60px;">精选专辑</h2>                
-                {% for item in post.objDocsRecords.docs %}
-                    <div class="col-lg-4 col-md-6  col-sm-12" style="border: black solid 1px">
-                    {% include "../public/recordItem.html" %}
-                    </div>
-                {% endfor %}    
-            </div>
-            <div class="row" class="" style="border-bottom: black solid 2px;height: 40px;">
-                <div class="col-md-1 col-md-offset-11">
-                    <span class="glyphicon glyphicon-plus" />
-                </div>  
-            </div>
-            {% endif %}
-            {# 视频 #}
-            
-        </div>
+            <li class="song">
+                <span ms-on-click="@eAudioToggle($event,'{{loop.index}}')" data-link="{{link.url}}" data-current-time="0 : 0 / 0 : 0">
+                    {{link.name}}
+                    <audio src="{{link.url}}" preload="metadata">Your browser does not support the <code>audio</code> element.</audio>
+                </span>
+            </li>
+            {% endfor %}
+        </ul>
     </div>
+    {% endif %}
 </div>
-{% endif %}
-{% endblock %}

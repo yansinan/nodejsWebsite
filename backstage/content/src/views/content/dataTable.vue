@@ -26,7 +26,7 @@
       <el-table-column prop="title" :label="$t('contents.title')" min-width="350" show-overflow-tooltip>
         <template slot-scope="scope">
           <div v-if="scope.row.state =='2'">
-            <a :href="'/details/'+scope.row._id+'.html'" target="_blank">{{scope.row.title}}</a>
+            <a :href="'/timeline/news/'+scope.row.url" target="_blank">{{scope.row.title}}</a>
           </div>
           <div v-else>{{scope.row.title}}</div>
         </template>
@@ -68,7 +68,7 @@
       <el-table-column :label="$t('main.dataTableOptions')" width="200" fixed="right">
         <template slot-scope="scope">
           <el-button-group>
-            <el-button icon="el-icon-view" :type="scope.row.state?'':'info'" :disabled="!scope.row.state" size="large" @click="eLink('/'+nameMod+'/'+scope.row._id+'.html')" />
+            <el-button icon="el-icon-view" :type="scope.row.state?'':'info'" :disabled="!scope.row.state" size="large" @click="eLink('/timeline/news/'+scope.row.url)" />
             <el-button icon="el-icon-edit" size="large" type="success" @click="editContentInfo(scope.$index, dataList)" plain/>
             <el-button icon="el-icon-delete" size="large" type="danger" plain @click="deleteContent(scope.$index, dataList)" />
           </el-button-group>

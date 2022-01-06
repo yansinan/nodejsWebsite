@@ -2,7 +2,7 @@
   <div :class="classObj" class="dr-contentForm">
     <div class="main-container">
         <!--  @submit="eFormSubmit" -->
-        <ContentForm :nameMod="nameMod" v-model="formState">
+        <ContentForm :nameMod="nameMod" :aspectRatio="1.2278" v-model="formState">
           <template v-slot:leftTop>
             <!-- 乐队名 -->
             <el-form-item :label="$t(nameMod + '.name')" prop="name">

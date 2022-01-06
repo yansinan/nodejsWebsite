@@ -5,7 +5,7 @@ module.exports = appInfo => {
 
     return {
         // 插件路径
-        admin_root_path: "http://wx.z-core.cn:8084",//admin_root_path: '/static',//upstream/2.1.6//'https://cdn.html-js.cn/cms/plugins/static/admin',
+        admin_root_path: "http://wx.z-core.cn:8084",//"http://192.168.1.202:8084",//admin_root_path: '/static',//upstream/2.1.6//'https://cdn.html-js.cn/cms/plugins/static/admin',
         // 数据库连接
         mongoose: {
             client: {
@@ -33,8 +33,8 @@ module.exports = appInfo => {
             dir: '/home/doraData/logsdir/doracms',
         },
         // 服务地址配置
-        server_path: 'http://wx.z-core.cn:8084',
-        server_api: 'http://wx.z-core.cn:8084/api',
+        server_path: 'http://wx.z-core.cn:8084',//'http://192.168.1.202:8084',//
+        server_api: 'http://wx.z-core.cn:8084/api',//'http://192.168.1.202:8084/api',//
         server_neteaseCloudMusicApi:"http://192.168.1.202:3000",
 
     }

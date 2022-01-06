@@ -6,8 +6,8 @@ module.exports = app => {
     } = app;
 
 
-    router.get('/api/getImgCode', controller.page.home.getImgCode);
-    router.get('/api/createQRCode', controller.page.home.createQRCode);
+    //router.get('/api/getImgCode', controller.page.home.getImgCode);
+    //router.get('/api/createQRCode', controller.page.home.createQRCode);
     router.get(['/dr-admin', '/admin/login'], controller.api.admin.login);
     router.post('/api/admin/doLogin', controller.api.admin.loginAction);
     router.get('/api/systemConfig/getConfig', controller.api.systemConfig.list)
@@ -22,12 +22,12 @@ module.exports = app => {
             controllerName: 'list',
             details: '获取文档列表',
         }, 
-        {
-            url: API + '/get',
-            method: 'get',
-            controllerName: 'getOne',
-            details: '获取单个文档信息',
-        },
+        //{
+        //    url: API + '/get',
+        //    method: 'get',
+        //    controllerName: 'getOne',
+        //    details: '获取单个文档信息',
+        //},
         {
             url: API + "/listRecords",
             method:"get",
@@ -75,8 +75,8 @@ module.exports = app => {
     frontApi.forEach(obj=>router[obj.method]('/api/'+obj.url, controller.api[API][obj.controllerName]))
 
     // 专辑
-    router.get('/api/record/getList', controller.api.record.list);
-    router.get('/api/record/get', controller.api.record.getOne);
+    //router.get('/api/record/getList', controller.api.record.list);
+    //router.get('/api/record/get', controller.api.record.getOne);
     router.get('/api/record/listAllFormats', controller.api.record.listAllFormats);
 
     // 时间线列表
@@ -92,6 +92,9 @@ module.exports = app => {
     router.get("/api/content/fetchArticle/:site",controller.api.webCrawler.fetchArticle)
     // router.redirect('/getImg/', app.config.server_puppeteerApi);
     router.get('/getImg/:site/:path',controller.api.webCrawler.fetchImg)
+
+    // 抓网易云音乐歌曲
+    router.get('/api/fetchNCMSong/:idSong',controller.api.webCrawler.ncmGetSong)
 
     /**
      * 上传文件blocb 多文件管理

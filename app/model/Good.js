@@ -36,6 +36,7 @@ module.exports =app=>{
         });        
         // url地址
         schema.virtual('url').get(function () {
+            return `/good___${this._id}.html`;
             return this.listLinks && this.listLinks[0]?this.listLinks[0].url : `/good___${this._id}.html`;
         });
         schema.virtual('nameTimeline').get(function (){
@@ -44,10 +45,11 @@ module.exports =app=>{
         schema.virtual('listArtists').get(function () {
             return this.listRefs;
         });
-        schema.virtual('nameArtists').get(function () {
-            let listName=this.listRefs.map(v=>(v.name));
-            return listName.join();
+        // 搜索结果类名:
+        schema.virtual('docAliasSearch').get(function () {
+            return "周边";
         });
+    
         let model=app.model.Good || Doc.discriminator("Good", schema);
     
         return model

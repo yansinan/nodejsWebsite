@@ -1,10 +1,29 @@
-<!-- BEGIN CONTAINER -->
-<div class="container  min-hight margin-bottom-20 margin-top-20" style="background: #FFFFFF">
-    <div class="row">
-        <div class="col-md-12 page-404">
-            <script type="text/javascript" src="http://www.qq.com/404/search_children.js" charset="utf-8"
-                homePageUrl="{{domain}}" homePageName="{{siteName}}"></script>
+{% extends "./default.html" %} 
+{% block overylay %} {% endblock %}
+{% block footerUp %} {% endblock %}
+
+
+{% block main %}
+<div id="errorMain" class="container  min-hight margin-bottom-20 margin-top-20" style="background: #FFFFFF">
+    <div class="detail {{data.serviceName}} font-normal error" data-bs-main="{{data.serviceName}}s">
+        <div class="title">
+            <div class="message textJustify">{{err.message}}</div>
+            OOPS！出错了！
         </div>
+        <div class="bnBack bsClick" onclick="window.location.replace('/')">返回上一页</div>
     </div>
 </div>
-<!-- END CONTAINER -->
+<script>
+    {# goto替换为重定向 #}
+    this.goto=function(inObj){
+        let event = inObj.constructor === Object ? inObj : (window.event || {});
+        let $tar= event ? event.currentTarget : (window.event.currentTarget || {});
+
+        let inURL=(inObj.constructor === String) ? inObj : (($tar.dataset && $tar.dataset.drUrl) ? $tar.dataset.drUrl : false);
+        if(!inURL)throw new Error("goto():没有url");
+        let objRouter=getRouter(inURL);
+        window.location.replace(objRouter.url || "/");
+    };
+    window.removeEventListener('DOMContentLoaded', ePopStateHeader);
+</script>
+{% endblock %}

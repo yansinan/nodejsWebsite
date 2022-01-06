@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-01-26 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-04 12:49:08
+ * @Last Modified time: 2021-12-14 23:41:52
  */
 
 'use strict';
@@ -202,6 +202,7 @@ let getUploadConfig = (userUploadConfig) => {
 
 class ServicePlugin extends Service {
     async create() {
+        const console=this.logger;
         const {
             ctx,
             app
@@ -217,17 +218,19 @@ class ServicePlugin extends Service {
         let part;
         while ((part = await parts()) != null) {
             if (part.length) {
-                console.log("field: " + part[0]);
-                console.log("value: " + part[1]);
+                console.info("field: " + part[0]);
+                console.info("value: " + part[1]);
             } else {
                 if (!part.filename) {
                     continue;
                 }
-                console.log("uploadFiles.service=>uploading fileInfo from part: " , part);
+                console.info("uploadFiles.service=>uploading fileInfo from part: " , part);
                 // 在upload/images下，按控制器分文件夹
                 options.subdirMod=parts.field.nameMod?parts.field.nameMod:'';
                 //控制器文件夹下是否按id分文件夹
                 options.subPath=parts.field.subPath?parts.field.subPath:'';
+                // isKeepName按文件名保存
+                let isKeepName = parts.field.isKeepName || false; // 默认不保留原文件名，防止乱码
                 
                 let beforeUploadFileInfo = await getFileInfoByStream(ctx, options, part);                    
                 let {
@@ -236,13 +239,14 @@ class ServicePlugin extends Service {
                     fileName,
                     fileType
                 } = beforeUploadFileInfo;
-
+                // 可能原名保存，或者使用服务器端名称；
+                let nameServerFile=isKeepName?fileName:uploadFileName+fileType;
                 const publicDir = options.upload_path || (process.cwd() + '/app/public');
                 uploadPath = `${publicDir}/${uploadForder}`
                 if (!fs.existsSync(uploadPath)) {
                     fs.mkdirSync(uploadPath,{recursive: true});
                 }
-                const target = path.join(uploadPath, `${uploadFileName+fileType}`)
+                const target = path.join(uploadPath, `${nameServerFile}`)
                 const writeStream = fs.createWriteStream(target)
                
 
@@ -253,10 +257,11 @@ class ServicePlugin extends Service {
                     await sendToWormhole(part)
                     throw err
                 }
-                returnPath=`${app.config.server_path}${app.config.static.prefix}/${uploadForder}/${uploadFileName+fileType}`;
+                returnPath=`${app.config.static.prefix}/${uploadForder}/${nameServerFile}`;//${app.config.server_path}
                 listReturenPath.push(returnPath);
                 listObjImage.push({
-                    name:fileName+fileType,
+                    name:fileName,//+fileType,
+                    nameServerFile:`${nameServerFile}`,
                     url:returnPath,
                     type:part.mime,
                 })
@@ -296,7 +301,7 @@ class ServicePlugin extends Service {
         if(urlFile){
             res.urlFile=urlFile;
             // 文件本地路径：
-            let pathFile=urlFile.split(`${app.config.server_path}${app.config.static.prefix}/`);
+            let pathFile=urlFile.split(`${app.config.static.prefix}/`);//${app.config.server_path}
             pathFile=`${publicDir}/`+pathFile[1];
 
             res.pathFile=pathFile;
@@ -336,7 +341,7 @@ class ServicePlugin extends Service {
                 if(stats.isDirectory()){
                     getListFile(fullpath,list);
                 }else{
-                    let urlRoot=`${app.config.server_path}${app.config.static.prefix}/upload/images`;
+                    let urlRoot=`${app.config.static.prefix}/upload/images`;//${app.config.server_path}
                     list.push(fullpath.replace(root,urlRoot));
                 }
             });
@@ -344,37 +349,100 @@ class ServicePlugin extends Service {
         }
         return listFilePathTree;
     }
-    
+
     //缓存json数据
     async cacheJSON(pathFile,objCallBack,isLocalFirst=true,isUpdateAfter=true){
-        let folder=path.dirname(pathFile);
+        const {
+            ctx,
+            app
+        } = this; 
+        let that=this;
+        // const console=this.logger;
+        const folder=path.dirname(pathFile);
+        const strFile=path.basename(pathFile);
+        if (!fs.existsSync(folder)) fs.mkdirSync(folder,{recursive: true});
         let data=false;
         let res = false;
-        if (!fs.existsSync(folder)) {
-            fs.mkdirSync(folder,{recursive: true});
-        }
         // 强制更新
-        if(isLocalFirst){            
-            if (fs.existsSync(pathFile)) {
+        if(isLocalFirst){
+            // 优先用内存缓存
+            data = app.cache.get(strFile);
+            if(!_.isEmpty(data)){
+                //data=JSON.parse(data);
+                // console.info("缓存from:memory:",strFile);
+            }else if (fs.existsSync(pathFile)) {
                 // 同步读取:TODO错误处理
                 data = JSON.parse(fs.readFileSync(pathFile, 'utf-8'));
-            }            
+                // console.info("缓存from:file:",strFile);
+            }
         }
-        if((!isLocalFirst || !data)){// 如果强制更新，或者没有缓存，或者强制后更新 
-            
+        if((!isLocalFirst || _.isEmpty(data))){// 如果强制更新，或者没有缓存，或者强制后更新             
             data=await objCallBack.fun.call(objCallBack.tar || this,...(objCallBack.params || []));//:TODO错误处理
-            // 写入缓存目录:TODO错误处理
-            res = fs.writeFileSync(pathFile, JSON.stringify(data));
+            ctx.runInBackground(async () => {
+                let jsonData=JSON.stringify(data);
+                // 写入内存缓存
+                ctx.helper.setMemoryCache(strFile, data, 1000 * 60 * 60 * 24);
+                // 写入缓存目录:TODO错误处理
+                res = fs.writeFileSync(pathFile, jsonData);
+                // console.info("service.uploadFiles.cacheJSON 延迟缓存memory&file完成",strFile);
+            });
         }
         if(isUpdateAfter){
-            new Promise((resolve,reject)=>{
-                return this.cacheJSON(pathFile,objCallBack,false,false);
-            }).then(res=>{
-                console.info("service.uploadFiles.cacheJSON 事后更新",res);
-            })
+            ctx.runInBackground(async () => {
+                try{
+                    // 这里面的异常都会统统被 Backgroud 捕获掉，并打印错误日志
+                    res = await this.cacheJSON(pathFile,objCallBack,false,false);
+                    // console.info("service.uploadFiles.cacheJSON 事后更新",strFile);
+                }catch(err){
+                    debugger;
+                    that.logger.error("service.uploadFiles.cacheJSON 事后更新失败；清除所有缓存",strFile);
+                    ctx.helper.setMemoryCache(strFile, false, 0);
+                    // 文件是否存在;
+                    if (fs.existsSync(pathFile)) {
+                        fs.unlinkSync(pathFile);
+                    }
+                    throw err;
+                }
+            });
+            //new Promise((resolve,reject)=>{
+            //    return this.cacheJSON(pathFile,objCallBack,false,false);
+            //}).then(res=>{
+            //    console.info("service.uploadFiles.cacheJSON 事后更新",res);
+            //})
         }
         return data || res;
     }
+    // 保存二进制文件:return=>{pathFile:服务器绝对路径,url:访问的相对}
+    async saveBinary(urlFile,data){
+        let pathFile=this.joinPublic(urlFile)
+        let folder=path.dirname(pathFile);
+        if (!fs.existsSync(folder)) {
+            fs.mkdirSync(folder,{recursive: true});
+        }
+        // 写入缓存目录:TODO错误处理
+        let res = fs.writeFileSync(pathFile, data ,"binary");
+        res=res || {};
+        res.pathFile=pathFile;
+        res.url="/static/"+urlFile;
+        return res;  
+    }
+    // 检查文件，无论是否存在都创建文件夹
+    existsSync(urlFile){
+        const console=this.logger;
+        const {
+            ctx,
+            app
+        } = this;   
+        let pathFile=this.joinPublic(urlFile)
+        let folder=path.dirname(pathFile);
+        if (!fs.existsSync(folder)) {
+            fs.mkdirSync(folder,{recursive: true});
+        }
+        if(fs.existsSync(pathFile))return path.join(app.config.static.prefix,urlFile)//`${app.config.static}/${uploadForder}/${nameServerFile}`;
+        else return false;
+    }
+    joinPublic(...params){return path.join(this.publicDir,...params)}
+    get publicDir(){return (process.cwd() + '/app/public');}
     get model(){
         if(!this._model)this._model=this.ctx.model[__filename.slice(__dirname.length + 1, -3)];
         return this._model;

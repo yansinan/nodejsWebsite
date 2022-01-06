@@ -45,6 +45,10 @@ module.exports =app=>{
         schema.virtual('listArtists').get(function () {
             return this.listRefs;
         });
+        // 搜索结果类名:
+        schema.virtual('docAliasSearch').get(function () {
+            return "影像";
+        });
 
         let model=app.model.Video || Doc.discriminator("Video", schema);
     

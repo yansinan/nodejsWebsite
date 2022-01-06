@@ -68,8 +68,17 @@
   /* background-color: gainsboro; */
   transform :translateY(-100%) translateZ(0);
 }
-#timelineContent .loading{
-  display: none;
+#timelineWrapper loading{
+  display:none;
+}
+#timelineWrapper.loading loading{
+  display:flex;
+}
+#timelineContent loading line{
+  stroke:#000000;
+}
+#timelineContent .container-mm .pulldown-tip{
+  display:none;
 }
 /* 占位列2个 */
 #timelineContent .container-mm.end{
@@ -97,7 +106,8 @@
   margin-bottom: 0.77rem;
   font-size: 1rem;/*18px*/
   line-height:calc(30 * 1rem / 26);
-  font-family: NHaasGroteskTXPro-Rg, NHaasGroteskTXPro;
+  /* font-family: NHaasGroteskTXPro-Rg, NHaasGroteskTXPro; */
+  font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB", "Source Han Sans", "Noto Sans CJK Sc", "Microsoft YaHei", "Microsoft Jhenghei", sans-serif;
   position: relative;
   /* 摘自row */
   --bs-gutter-x: 1.5rem;
@@ -146,13 +156,19 @@
   margin-top: var(--bs-gutter-y);
 }
 #timelineContent .wapper-mm .item .imgContainer{
-  display:none;
+  display:flex;
   flex:1;
   position:relative;
   width:100%;
   overflow:hidden;
-  min-height:max(calc(34.7vw - 3rem) , 6rem);
+  /* min-height:max(calc(34.7vw - 3rem) , 6rem); */
+  min-height:max(calc(34.7vw - 5rem) , 6rem);
   cursor: pointer;
+  background-color: var(--color-placeholder,#aaa);
+  padding-right:0px;
+}
+#timelineContent .wapper-mm .item .imgContainer.left{
+  display:none;
 }
 #timelineContent .wapper-mm .item img.img-fluid{
   display:block;
@@ -179,7 +195,7 @@
   margin-bottom: 0.61rem;
   padding-left: 0px;
 }
-#timelineContent .wapper-mm .item .title .nameArtists{
+#timelineContent .wapper-mm .item .title .list-inline.artists{
   display:none;
 }
 #timelineContent .wapper-mm .item .title a{
@@ -200,36 +216,57 @@
   display:flex;
 }
 /* 唱片列表 */
+#timelineContent.goods .wapper-mm .item .imgContainer,
 #timelineContent.records .wapper-mm .item .imgContainer{
   display:flex;
   margin-right: calc(var(--bs-gutter-x) * .5);
+  min-height:auto;
+  height: max-content;
 }
+#timelineContent.goods .wapper-mm .item .titleContainer,
 #timelineContent.records .wapper-mm .item .titleContainer{
   flex: 0 0 6.54rem;
   font-size:calc(18 * 1rem / 26);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
-#timelineContent.records .wapper-mm .item .title .nameArtists{
-  display:block;
+#timelineContent.goods .wapper-mm .item .list-inline.artists,
+#timelineContent.records .wapper-mm .item .title .list-inline.artists{
+  display:flex;
+  font-size:0.4444rem;
 }
+#timelineContent.goods .wapper-mm .item .titleContainer .imgContainer,
 #timelineContent.records .wapper-mm .item .titleContainer .imgContainer{
   display:none;
 }
+#timelineContent.goods .titleContainer .tags,
 #timelineContent.records .titleContainer .tags{
   display:none;
 }
+#timelineContent.goods .titleContainer .tags.goods,
 #timelineContent.records .titleContainer .tags.records{
   display:flex;
+  font-size:0.444rem;
+  margin-bottom:0px;
 }
-#timelineContent.records .titleContainer .tags.records .list-inline-item{
-  border:1px solid black!important;
-  border-radius: 0px!important;
+#timelineContent.goods .titleContainer .tags.goods.breadcrumb .breadcrumb-item,
+#timelineContent.records .titleContainer .tags.records.breadcrumb .breadcrumb-item{
+  padding-left:0.25rem;
 }
+#timelineContent.goods .titleContainer .tags.goods.breadcrumb .breadcrumb-item::before,
+#timelineContent.records .titleContainer .tags.records.breadcrumb .breadcrumb-item::before{
+  padding-right:0.25rem;
+  color: inherit;
+}
+#timelineContent.goods .imgContainer::after,
 #timelineContent.records .imgContainer::after{
   content:"";
   display:block;
   padding-bottom:100%;
   height:0px;
 }
+#timelineContent.goods .imgContainer img.img-fluid,
 #timelineContent.records .imgContainer img.img-fluid{
   height:100%;
   position: absolute;
@@ -259,7 +296,9 @@
     height:100%;
     display: inline-flex;
   }
-  
+  #timelineContent .pulldown-tip{
+    display:block;
+  }
   /* #timelineContent .container-mm.show{ */
   #timelineContent.records .container-mm.records,
   #timelineContent.news .container-mm.artists,
@@ -270,6 +309,9 @@
     max-width: 40.7vw;
     overflow: visible;
     transform: translateY(0%);
+  }
+  #timelineContent.goods .container-mm.goods{
+    max-width: 23.6vw;
   }
   #timelineContent .container-mm{
     transition-property: max-width,transform;
@@ -297,7 +339,6 @@
     transform: translateX(calc(100% + 1rem)) translateZ(0);
   }
   #timelineContent .loading{
-    display:block;
     flex: 0 0 calc(100vw - (40.7vw));
     min-width: calc(100vw - (40.7vw));
   }
@@ -306,12 +347,18 @@
     width:34.7vw;
     margin-right:6vw;
   }
+  #timelineContent.goods .wapper-mm-md{
+    width:22vw;
+    margin-right:1.6vw;
+    min-width:22vw;
+  }
   #timelineContent .wapper-mm-md .item{
     margin-bottom: 1.42rem;
     margin-right: calc(var(--bs-gutter-x) * -.5);
     font-size: calc(32 * 1rem / 36);
+    font-weight: 500;
     line-height: calc(42 * 1rem / 36);
-
+    max-height: max(18rem,calc( 9rem + ( 34.7vw - 6vw ) * 4 / 4));;
     /* 隐藏动画 */
     /* 
     transition-property: max-height,margin-bottom;
@@ -322,11 +369,17 @@
     transition-duration: .7s;
      */
   }
+  #timelineContent.goods .wapper-mm .item,
+  #timelineContent.records .wapper-mm .item{
+    max-height: none;
+  }
+
   #timelineContent .wapper-mm .item .titleContainer{
     padding-left: 0px;
     /* padding-left: calc(var(--bs-gutter-x) * .5); */
     flex: 1 0 auto;
   }
+  #timelineContent.goods .wapper-mm .item .titleContainer,
   #timelineContent.records .wapper-mm .item .titleContainer{
     color: white;
     font-size: calc(32 * 1rem / 36);
@@ -342,11 +395,24 @@
     /* padding-bottom: calc(41 * 100% / 403); */
     padding-left: 6%;
     padding-right: 6%;
-    transition-property: opacity;
+    transition-property: background-color,opacity;
     transition-duration: .5s;
   }
+  #timelineContent.goods .wapper-mm .item:hover .titleContainer:hover,
   #timelineContent.records .wapper-mm .item:hover .titleContainer:hover {
-    opacity: .8;
+    background-color: rgba(0,0,0,0.5);
+    opacity:1;
+  }
+  #timelineContent .wapper-mm .item.videos .imgContainer {
+    min-height:auto;
+  }
+  #timelineContent .wapper-mm .item .imgContainer {
+    transition-property: filter;
+    transition-duration: .5s;
+    filter:saturate(0);
+  }
+  #timelineContent .wapper-mm .item:hover .imgContainer{
+    filter:saturate(1);
   }
   /*
   #timelineContent.records .titleContainer .title,
@@ -354,12 +420,17 @@
     display:none;
   }
   */
+  #timelineContent.goods .tags.goods
   #timelineContent.records .tags.records{
     display:flex;
   }
+  #timelineContent.goods .titleContainer .tags.goods .list-inline-item
   #timelineContent.records .titleContainer .tags.records .list-inline-item{
     border:1px solid white!important;
   }
 }
-
+@media (min-width: 1024px) {
+  #timelineContent .wapper-mm-md .item{
+  }
+}
 /*# sourceMappingURL=avatar.css.map */

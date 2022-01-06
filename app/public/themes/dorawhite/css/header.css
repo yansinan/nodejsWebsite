@@ -1,12 +1,3 @@
-/* 导航样式 */
-/* #navHeader .logo{
-  
-  min-width:98px;
-  max-width:131px;
-  min-height:30px;
-  max-height:40px;
-  flex:1 1 9.1vw;
-} */
 /* 按钮按下时的边框 */
 .navbar-toggler:focus {
   box-shadow: 0 0 0 1px;
@@ -20,8 +11,10 @@
   align-items: stretch;
 }
 #navHeader .navbar{
-    padding-top:0.08rem;
+    padding-top:0px;
     padding-bottom:0;
+    margin-top: var(--header-margin-top,28px);
+    max-height:var(--header-btn-height,46px);
 }
 #navHeader .navbar .navOffsetLeft{
   transition-property: all;
@@ -39,14 +32,18 @@
   display: flex;
   height: 100%;
   flex:0 1 3.7rem;
+  /* flex:0 1 calc(163 * 1rem /36); */
   margin-right:0px;
   /* flex:1 0 9.1vw; */
+  padding-top: 0rem;
+  padding-bottom: 0px;
 }
 #navHeader .navbar-brand img{
     min-width:98px;
     max-width:131px;
+    max-width:163px;
     min-height:30px;
-    max-height:40px;
+    max-height: 100%;
     width: 100%;
     height: auto;
     object-fit: contain;
@@ -56,27 +53,19 @@
     width:auto;
     height:100%;
     flex:1 1 100%;
+    margin-right: calc( 20 * 1rem / 36 );
     justify-content: flex-end;
     align-items: center;
     flex-wrap: nowrap;
     overflow: hidden;
   }
-  /* 菜单及搜索按钮打开 */
-  /*
-  #navHeader .navbar-expand-md .navbar-collapse.collapsing{
-    width:100%;
-  }
-  #navHeader .navbar-expand-md .navbar-collapse.show{
-    width:100%;
-  }  
-  */
   /* 移动端，timeline导航菜单 */
   #navHeader #collapseNavbarMobile.navbar-collapse{
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
 
-    /* transition-property: transform; */
+    transition-property: max-height,padding-left,margin-top,flex-basis;    
     transition-duration: .4s;
     transition-property: all;
     flex:0 0 0%;
@@ -89,31 +78,32 @@
   }
   #navHeader.listArtist #collapseNavbarMobile.navbar-collapse{
     /* 缩回用all,展开用max-height（ios） */
-    transition-property: all;
+    /* transition-property: all; */
     flex:0 0 0%;
+    flex-basis:0px;
     max-height: 0rem;
+    margin-top:0px;
   }
   #navHeader.timeline.done #collapseNavbarMobile.navbar-collapse{
     /* 缩回用all,展开用max-height（ios） */
-    transition-property: max-height,padding-left;    
+    /* transition-property: max-height,padding-left,margin-top;     */
     flex:1 1 0%;
     max-height: 1.2rem; /*1.154rem */
     padding-bottom: 1px;
+    margin-top: 1rem;
   }  
   #navHeader #collapseNavbarMobile.navbar-collapse ul{
     display: flex;
     justify-content: space-between;
     transition-property: all;
-    transition-duration: .4s;
+    transition-duration: .6s;
   }
   /* ul上移动画 */
   #navHeader.listArtist #collapseNavbarMobile.navbar-collapse ul{
     transform: translateY(-1.15rem);
-    /* animation:slideUpOut .4s ease 0s 1 normal both;  */
   }
   #navHeader.timeline #collapseNavbarMobile.navbar-collapse ul{
     transform: translateY(0%);
-    /* animation:slideDownIn .4s ease 0s 1 normal both;  */
   }
   /* 子元素最少间距 */
   #navHeader #collapseNavbarMobile.navbar-collapse ul li{
@@ -178,22 +168,36 @@
     padding: 0.131rem 0.616rem;
     line-height: 0.6rem;
   }
-  #navHeader .input-group.search{
+  #navHeader .btn{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
     aspect-ratio: 1 / 1;
     width: auto;
     height:100%;
     /* max-height: 68px; */
+    padding: 0px;
+    /* IOS下有默认的按钮渲染方式 */
+    /* -webkit-appearance:unset; */
+    /* font-size: 1.25rem; */
+    /* line-height: 1; */
+    /* background-color: transparent; */
+    /* border-color: transparent; */
+    /* border: 1px solid transparent; */
+    /* border-radius: .25rem; */
+    /* transition: box-shadow .15s ease-in-out; */
+    cursor: pointer;
+    vertical-align: middle;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: auto;
+    /* background-size: 0.827rem 0.56rem; */
+    /* background-size: calc(46 * 1rem /36); */
+
+
   }
-  #navHeader .input-group.search .input-group-text
-  {
-    /* font-size: 0.5rem; */
-    padding: 0;/*0.7rem;*/
-    font-size: 25px;
-    border: none;
-    background-color: transparent;
-  }
- 
+
   /* 手机菜单按钮 */
   #navHeader .navbar .btnWrapper{
 
@@ -206,42 +210,16 @@
     min-height: 46px;
     max-height: 100%;
     overflow: hidden;
+    margin-right: var(--header-margin-right,0.5rem)!important;
   }
     #navHeader bn-menu-toggler{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    aspect-ratio: 1 / 1;
-    width: auto;
-    height:100%;
-    /* max-height: 68px; */
-    padding: 0px;
-    /* IOS下有默认的按钮渲染方式 */
-    /* -webkit-appearance:unset; */
-    /* font-size: 1.25rem; */
-    /* line-height: 1; */
-    /* background-color: transparent; */
-    /* border-color: transparent; */
-    /* border: 1px solid transparent; */
-    /* border-radius: .25rem; */
-    /* transition: box-shadow .15s ease-in-out; */
-    cursor: pointer;
-
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 0, 0, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-    vertical-align: middle;
-    background-repeat: no-repeat;
-    background-position: center;
-    /* background-size: 100%; */
-    background-size: 0.827rem 0.56rem;
-
-    position: relative;
-    top: -100%;
-    left: 0;
-    bottom:0;
-    right:0;
-  }
+      background: url(/static/upload/images/icons/bnMenu.svg) center no-repeat;
+      position: relative;
+      top: -100%;
+      left: 0;
+      bottom:0;
+      right:0;
+    }
   #navHeader.listArtist bn-menu-toggler{
     animation:slideDownIn .3s ease 0s 1 normal both; 
   }
@@ -249,37 +227,6 @@
     animation:slideUpOut .3s ease 0s 1 normal both; 
   }
 
-
-
-  #navHeader .navbar .btn-close{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    aspect-ratio: 1 / 1;
-    width: auto;
-    height:100%;
-    /* max-height: 68px; */
-    padding: 0px;
-    /* IOS下有默认的按钮渲染方式 */
-    /* -webkit-appearance:unset; */
-    /* font-size: 1.25rem; */
-    /* line-height: 1; */
-    /* background-color: transparent; */
-    /* border-color: transparent; */
-    /* border: 1px solid transparent; */
-    /* border-radius: .25rem; */
-    /* transition: box-shadow .15s ease-in-out; */
-    cursor: pointer;
-
-    background-image: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
-    vertical-align: middle;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 0.74rem 0.74rem;
-    opacity: 0.5;
-  }
   #navHeader.timeline .navbar .btn-close{
     /* @keyframes name | duration | easing-function | delay |
     iteration-count | direction | fill-mode | play-state |  */
@@ -324,9 +271,22 @@
     flex: 0 0 calc(var(--main-offset-left-pc,46px))!important;
     min-width: calc(var(--main-offset-left-pc,46px))!important;
   }
+  #navHeader .navbar-brand{
+    flex:0 1 calc(163 * 1rem /36);
+    padding-top: 0rem;
+    padding-bottom: 0rem;
+  }
+  .navbar-brand img{
+      max-width:163px;
+      min-height:var(--header-btn-height,53px)!important;
+      width: auto;
+      height: 100%;
+      object-fit: contain;
+  }
   /* #navHeader.timeline .navbar .navOffsetLeft-md */
   /* #navHeader.timeline.done .navbar .navOffsetLeft-md */
-  #navHeader .navbar .navOffsetRight-md{
+  #navHeader.timeline .navbar .navOffsetRight,
+  #navHeader .navbar .navOffsetRight{
     flex: 1 1 0;
   }
 
@@ -336,17 +296,21 @@
   }
   #navHeader #collapseNavbarPC.navbar-collapse-md ul{
     display: flex;
+    margin-right:2rem;
     transition-property: transform;
     transition-duration: .3s;
-    transform:translateY(109%);
+    transform:translateY(135%);
   }
   #navHeader.timeline #collapseNavbarPC.navbar-collapse-md ul{
-    /* animation:slideUpIn .3s ease 0s 1 normal both; */
     transform:translateY(0px);
   }
   #navHeader.listArtist #collapseNavbarPC.navbar-collapse-md ul{
-    /* animation:slideOut .3s ease 0s 1 normal both; */
-    transform:translateY(109%);
+    transform:translateY(135%);
+  }
+  #navHeader #collapseNavbarPC.navbar-collapse-md ul li{
+    margin:0rem calc(4.5 * 1rem / 36) 0rem calc(4.5 * 1rem / 36) ;
+    height: calc( 42 * 1rem / 36);
+    padding: 0 calc( 5.5 * 1rem / 36 );
   }
   #navHeader .navbar .navbar-collapse.navbar-collapse-md ul li a
   {
@@ -385,117 +349,27 @@
     transform:translateY(-100%);
   }
 }
-@keyframes rollIn {
-  0%{
-    opacity:0;
-    transform:translateX(0%) rotate(-120deg) scale(.5);
-  }
-  100%{
-    opacity:.5;
-    transform:translateX(0px) rotate(0deg) scale(1);
-  }
-}
-@keyframes rollOut {
-  0%{
-    opacity:.5;
-    transform:translateX(0px) rotate(0deg) scale(1);
-  }
-  100%{
-    opacity:0;
-    transform:translateX(0%) rotate(120deg) scale(0.5);
-  }
-}
-@keyframes flipOut{
-  0%{
-    transform:perspective(400px) rotateY(0deg);
-    opacity:1;
-  }
-  100%{
-    transform:perspective(400px) rotateY(90deg);
-    opacity:0;
-  }
-}
-@keyframes flipIn{
-  0%{
-    transform:perspective(400px) rotateY(90deg);
-    opacity:0;
-  }
-  40%{transform:perspective(400px) rotateY(-10deg)}
-  70%{transform:perspective(400px) rotateY(10deg)}
-  100%{
-    transform:perspective(400px) rotateY(0deg);
-    opacity:1
-  }
-}
-@keyframes openOut{
-  0%{
-    overflow: hidden;
-    height:auto;
-    background-color: black;
-  }
-  100%{
-    height:0px;
-  }
-}
-@keyframes openIn{
-  0%{
-    overflow: hidden;
-    /* height:0px; */
-    flex:0 1 0px;
-    max-height: 0;
-  }
-  100%{
-    /* height:auto; */
-    flex:1;
-    max-height: 100%;
-  }
-}
 /* 菜单打开 */
 #offcanvasRightMenu{
   background-color: #000000;
   color: rgba(255, 255, 255, 1);
-  /* font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB", "Source Han Sans", "Noto Sans CJK Sc", "Microsoft YaHei", "Microsoft Jhenghei", sans-serif;*//*SourceHanSansCN-Normal, SourceHanSansCN,NHaasGroteskTXPro-Rg; */
 
   width:100vw;
-  padding-left: 0.711rem;
-  padding-right: 0.711rem;
-  /* padding-left:4.6vw; */
+}
+#offcanvasRightMenu .offcanvas-header .btn{
+  filter: invert(1);
 }
 
   /* 搜索按钮 */
-  #offcanvasRightMenu .offcanvas-header {
-    /* width: 0.667rem; */
-    /* height: 0.694rem; */
-    font-size: 0.668rem;
-    line-height: 0.56rem;
-    margin-top: 0.88rem;
-    margin-bottom:2.1rem;
-  }
-  #offcanvasRightMenu .offcanvas-header .btn-close{
-    opacity: 1;
-    background:transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='white'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat
-  }
-  #offcanvasRightMenu .offcanvas-header i.fa.fa-search{
-      width: 0.667rem;
-      height: 0.694rem;
-      font-size: 0.668rem;
-      line-height: 0.56rem;
-  }
   #offcanvasRightMenu .offcanvas-body .menuItem{
       font-weight: 400;
-
       font-size: 0.85rem;      
       width: auto;
       align-self: flex-start;
-  
       line-height: 1.27rem;
       margin-bottom: 0.154rem;
+      cursor: pointer;
   }
-  /* 
-  #offcanvasRightMenu .offcanvas-body .language{
-
-  }
-  */
   #offcanvasRightMenu .offcanvas-body .menuFoot{
     /* width: 8.347rem; */    
 
@@ -533,19 +407,19 @@
     word-break: keep-all;
     margin-top: 0.88rem;
     text-align: left;
-    align-self: center;
     line-height: 0.56rem;
     margin-bottom:8px;
   }    
 
 @media (min-width: 768px) {
-  #offcanvasRightMenu .offcanvas-header {
+  #offcanvasRightMenu.offcanvas-end .offcanvas-header {
     margin-bottom:1.333rem;
+    justify-content: space-between;
+    padding-left: 20px;
   }
   #offcanvasRightMenu.offcanvasRightMenu-md{
     width: 35.42vw;
     min-width:13.6rem;
-    padding-left:1rem ;
   }
   #offcanvasRightMenu.offcanvasRightMenu-md .menuItem-md{
     font-size:0.667rem;
@@ -563,3 +437,160 @@
     margin-bottom:60px;
   }
 }
+/* 搜索&标签 */
+#offcanvasSearch{
+  background-color: #000000;
+  color: rgba(255, 255, 255, 1);
+  width:100vw;
+}
+#offcanvasSearch .offcanvas-header{
+  flex-wrap: wrap;
+  align-items: flex-start;
+  height: calc( 75px + var(--header-btn-height，53px) );
+  margin-bottom: 0px;
+}
+#offcanvasSearch .offcanvas-header .btn{
+  filter:invert(1);
+}
+  #offcanvasSearch input{
+      border:none;
+      border-bottom: solid white 1px;
+      background-color: transparent;
+      color: inherit;
+      line-height: 2.5rem;
+      font-size: 1rem;
+      outline: none;
+      position: relative;
+      bottom: 0.5rem;
+  }
+  #offcanvasSearch input:focus{
+      border:none;
+      border-bottom: solid white 1px;
+  }
+  #offcanvasSearch .offcanvas-header input{
+    display:flex;
+    flex: 1;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    order: 3;
+    /* flex-basis: calc(100% - 2rem); */
+  }
+  #offcanvasSearch .offcanvas-header bn-search{
+    margin-right: calc( 20 * 1rem / 36 );
+  }
+  
+#offcanvasSearch .offcanvas-body{
+  font-size: calc(22 * 1rem / 26);
+  line-height: calc(29 * 1rem / 26);
+  font-weight: 400;
+  color:inherit;
+}
+#offcanvasSearch .offcanvas-body #listSearchResult{
+  display:flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  flex: 1 1 auto;
+}
+#offcanvasSearch .offcanvas-body ul li{
+  margin-bottom: calc(21 * 1rem / 26);
+  display:none;
+}
+/*
+*/
+#offcanvasSearch .offcanvas-body #listSearchResult.records li:not(.records),
+#offcanvasSearch .offcanvas-body #listSearchResult.videos li:not(.videos),
+#offcanvasSearch .offcanvas-body #listSearchResult.goods li:not(.goods),
+#offcanvasSearch .offcanvas-body #listSearchResult.artists li:not(.artists),
+#offcanvasSearch .offcanvas-body #listSearchResult.shows li:not(.shows),
+#offcanvasSearch .offcanvas-body #listSearchResult.news li:not(.news){
+  display:none;
+}
+#offcanvasSearch .offcanvas-body #listSearchResult.records li.records,
+#offcanvasSearch .offcanvas-body #listSearchResult.videos li.videos,
+#offcanvasSearch .offcanvas-body #listSearchResult.goods li.goods,
+#offcanvasSearch .offcanvas-body #listSearchResult.artists li.artists,
+#offcanvasSearch .offcanvas-body #listSearchResult.shows li.shows,
+#offcanvasSearch .offcanvas-body #listSearchResult.news li.news{
+  display:block;
+}
+#offcanvasSearch .offcanvas-body loading line{
+  stroke:var(--color-bg-white);
+}
+
+/* 导航 */
+#offcanvasSearch .offcanvas-body .nav{
+  position: absolute;
+  z-index: 2000;
+  bottom:0px;/* var(--offsetcanvas-padding, 0.77rem);  */  
+  left: 0;
+  /* right:0; */
+  display:flex;
+  flex-wrap: nowrap;
+  justify-content:flex-start;
+  align-items: center;
+  /* max-width:calc(100% - var(--offsetcanvas-padding, 0.77rem) - var(--offsetcanvas-padding-right, 0.77rem) ); */
+  opacity: .9;
+  /* transition: transform; */
+  /* transition-duration: 1s; */
+  /* transform:translateY(3rem); */
+}
+#offcanvasSearch .offcanvas-body .nav::before,
+#offcanvasSearch .offcanvas-body .nav::after{
+  content:"";
+  display:block;
+  flex: 0 0 1rem;
+}
+#offcanvasSearch .offcanvas-body .nav li{
+  /* flex: 1 1 calc(59 * 1rem / 26); */
+  min-width:calc(75 * 1rem / 26);
+  height:calc(30 * 1rem / 26);
+  white-space: nowrap;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  background-color: black;
+  margin-right: 0rem;
+  font-size: 0.5rem;
+
+  /* cursor: pointer; */
+  /* border-radius: 5rem; */
+  /* border:1px solid white; */
+}
+#offcanvasSearch.loading .offcanvas-body #listSearchResult,
+#offcanvasSearch .offcanvas-body loading{
+  display:none;
+}
+#offcanvasSearch.loading .offcanvas-body loading{
+  display:flex;
+}
+
+#offcanvasSearch .offcanvas-body .nav li.off{
+  filter:brightness(0.5);
+}
+  @media (min-width: 768px) {
+    #offcanvasSearch .offcanvas-header input{
+      display:flex;
+      flex: 1;
+      margin-left: 1.5rem;
+      order:0;
+    }
+    #offcanvasSearch .offcanvas-body{
+      font-size: calc(32 * 1rem / 36);
+      line-height: calc(42 * 1rem / 36);
+      padding:1.5rem;
+    }
+    #offcanvasSearch .offcanvas-body ul li{
+      margin-bottom: calc(51 * 1rem / 36);
+      cursor: pointer;
+    }
+    #offcanvasSearch .offcanvas-body .nav::before,
+    #offcanvasSearch .offcanvas-body .nav::after{
+      flex: 0 0 1.5rem;
+    }
+    #offcanvasSearch .offcanvas-body .nav li{
+      height:calc(40 * 1rem / 36);
+      min-width: 120px;
+    }
+  }

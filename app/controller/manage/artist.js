@@ -269,7 +269,7 @@ class APIController extends BaseController {
             let resFinal={
                 path: resUpload.path,
                 listPath:resUpload.listPath,
-                listInfoImage:resUpload.listObjImage,
+                listInfoImage:resUpload.listInfoImage,
                 _doc:resQuery._doc
             }
             console.info("updateAlbum.artist.controller:更新图集结果:",resFinal)
@@ -319,6 +319,14 @@ class APIController extends BaseController {
             // }
             // 未找到文件或者文件删除成功
             if(resDelete.status=="success" || resDelete.status=="fail:no-exist"){
+                // 尝试删除缩略图
+                let listPath=payload.url.split("/");
+                listPath[listPath.length-1]="s" + listPath[listPath.length-1];
+                let resDeletThumbnail=await ctx.service.uploadFiles.delete({_id:payload._id,url:listPath.join("/")});
+                if(!resDeletThumbnail.status=="success" || resDeletThumbnail.status=="fail:no-exist"){
+                    console.warn("乐队相册：",payload.url,"的缩略图没有找到；可能是乐队主图或错误");
+                    debugger
+                }
                 //检索最新listImages
                 let target = await service.item(ctx, {
                     query: {

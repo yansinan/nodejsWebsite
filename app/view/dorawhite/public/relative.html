@@ -1,0 +1,12 @@
+{% from "../public/compListTags.html" import tag as domTag %}
+{% from "../public/compListTags.html" import listTags as listTags %}
+{% if posts.length>0 -%}
+    <div class="headEnd"></div>
+    <div class="relative list" style="--cnt-item:{{4 if posts.length > 4 else posts.length}}">      
+        {% for doc in posts %}
+        <a class="item hoverUnderline" onclick="window.goto('{{doc.url}}')">
+            {{doc.docAliasSearch+"|" if doc.docAliasSearch else ""}}{{doc.name}}
+        </a>                            
+        {% endfor %}
+    </div>
+{%- endif %}

@@ -99,7 +99,7 @@
 <script>
 import '@/set-public-path'
 import request from '@root/publicMethods/request'
-
+import { imgFit } from "@root/publicMethods/imgFit";
 export default {
     name: "Album",
     props: {
@@ -170,21 +170,103 @@ export default {
     mounted () {
     },
     methods: {
+        // 图片读取完成，开始裁切、缩小
+        eImgLoaded(e){
+            let that=this;
+
+            let img=e.target;
+            img.removeEventListener("load",that.eImgLoaded);
+            let ratio=img.naturalWidth/img.naturalHeight;
+            let targetWidth=Math.min(640,img.naturalWidth);
+            let targetHeight=img.naturalWidth >640 ? 640 * img.naturalHeight/ img.naturalWidth: img.naturalHeight;
+            if(ratio<1){
+                targetWidth=img.naturalHeight > 640 ? 640 * img.naturalWidth/img.naturalHeight : img.naturalWidth;
+                targetHeight=Math.min(640,img.naturalHeight);
+            }
+            let time=new Date();
+            let srcOrg=img.src;
+            img.type='image/jpeg';
+            
+            imgFit(img,targetWidth,targetHeight).then(resSrc=>{
+                img.srcOrg=img.src;
+                img.crossOrigin=undefined;
+                img.src=resSrc.src;
+                img.blob=resSrc.blob;
+                console.log("图片裁切完成",img.src,(new Date()-time));
+                that.uploadBlob(img,resSrc.blob,img.nameFile);
+            });//网易云MV图尺寸628,353
+            
+        },
+        // 上传blob到后台
+        async uploadBlob($img,blob,nameFile=""){
+          let _this=this;
+          const params = new FormData()
+          // 路径相关:
+          let objData=_this.getObjField();
+          params.append("nameMod",objData.nameMod);
+          params.append("isKeepName",true);//uploadImageWithName按文件名保存
+          params.append("subPath",objData.subPath);
+          params.append("_id",objData._id)
+          params.append('upload_file', blob, nameFile)
+          let uploadFileRequest = new Request("/manage/dr/uploadFiles", {
+              method: 'post',
+              //指定header会eggjs接收不到multipart
+              // headers: {'Content-Type': 'multipart/form-data'},
+              body:params,
+          })
+          fetch(uploadFileRequest).then(response => {
+              return response.text();
+          }).then(res => {
+              // 在这个then里面我们能拿到最终的数据
+              let objData=JSON.parse(res);
+              debugger;
+              if(objData.status==200){
+                console.log("缩略图",objData.path,"上传完成::",objData);
+                $img.dispatchEvent(new CustomEvent("uploaded",objData));
+                $img.dispose();
+              }
+          }).catch(e=>{
+            debugger
+          })
+        },
         handleSuccess(res, file,fileList){
             let _this=this;
             //传一个更新一遍,在服务器端完成;
             //服务器返回路径，返回listImages么？
             // res.data._doc是文档最新数据
+            //上传缩略图：
+            // listInfoImage[x]={
+            //        name:fileName,
+            //        nameServerFile:`${uploadFileName+fileType}`,
+            //        url:returnPath,
+            //        type:part.mime,
+            //}
+            Promise.all(res.data.listInfoImage.map(v=>{
+                    return new Promise((resolve, reject) => {
+                        let $img=new Image();
+                        $img.addEventListener("load",this.eImgLoaded);
+                        $img.addEventListener("uploaded",resolve);
+                        $img.addEventListener('error', (e)=>{
+                            console.error("图片读取失败:",img.src,JSON.stringify(e));
+                            resolve();
+                        });
+                        $img.nameFile="s"+v.nameServerFile;
+                        $img.src=v.url;
+                    })
+                })
+            ).then(resAll=>{
+                if(typeof _this["onSuccess"] === "function")_this["onSuccess"](res,file,fileList)
+                // 
+                if(!fileList.find(v=>(v.status!="success"))){//合规的图片已全部上传完成                
+                    // if(typeof _this["onComplete"] === "function")_this["onComplete"](res, file,fileList);
+                    _this.handleClose();
+                    _this.infoImageUploading.isLoading=false;
 
-            if(typeof _this["onSuccess"] === "function")_this["onSuccess"](res,file,fileList)
-            // 
-            if(!fileList.find(v=>(v.status!="success"))){//合规的图片已全部上传完成                
-                // if(typeof _this["onComplete"] === "function")_this["onComplete"](res, file,fileList);
-                _this.handleClose();
-                _this.infoImageUploading.isLoading=false;
-
-                // 上传按钮变浏览?
-            }
+                    // 上传按钮变浏览?
+                }                
+            }).catch(e=>{
+                debugger;
+            })
         },
 
         handleRemove(file,fileList) {
@@ -192,6 +274,19 @@ export default {
         },
         handleBeforeRemove(file,fileList){
             const _this = this;
+            if(file.url==this.dialogState.formData.sImg){
+                // this.$message.error("主形象图：请勿删除");
+                this.$confirm(
+                    "主形象图：请勿删除",
+                    "提示：",
+                    {
+                        confirmButtonText: "知道了",
+                        // cancelButtonText: this.$t("main.cancelBtnText"),
+                        type: "warning"
+                    }
+                )
+                return false;
+            }
             return new Promise((resolve, reject) => {
                 // 已经上传过的文件删除
                 if(file.status=="success"){

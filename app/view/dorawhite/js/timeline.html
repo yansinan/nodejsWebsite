@@ -56,6 +56,9 @@
             observeDOM: true ,// 开启 observe-dom 插件
             stopPropagation: false,
             probeType: 3,
+            preventDefaultException:{ 
+                className:/(^|\s)bsClick(\s|$)/
+            }
         }
         //if( that.bsTimeline.destroy ){
         //    that.bsTimeline.destroy();
@@ -255,7 +258,10 @@
         that.bsTimeline.scroller.actionsHandler.hooks.on('beforeStart', (e)=>{
             if(that.bsTimeline.pending)that.bsTimeline.stop()
             that.bsTimeline.enable();
+
         })
+        that.bsTimeline.scroller.actionsHandler.hooks.on("move",()=>{ that.dispatchEvent(new CustomEvent("BS_MAIN_TOUCH_MOVE")); })
+        that.bsTimeline.scroller.actionsHandler.hooks.on("end",()=>{ that.dispatchEvent(new CustomEvent("BS_MAIN_TOUCH_END")); })
         that.bsTimeline.on('scroll', that.bsTimeline.eUpdateTimeline);
 
         that.bsTimeline.scroller.animater.hooks.on('end', () => {
@@ -270,39 +276,82 @@
         //    //that.dispatchEvent(new CustomEvent("BS_TIMELINE_SCROLL_END"));
         //})
         {# 筛选内容，根据动画结束监听，重新计算当前月，并触发同步底条 #}
+        that.bsTimeline.eNAV_AT_PC=function(e){
+            let bsTimeline=e.detail.bsTimeline;
+            {# 移动端没动画 时间轴没动画，在NAV_AT直接同步#}
+            if(that.bsTimeline.isMobile || !bsTimeline)return;
+            {# PC等月份缩小动画结束：强制同步timelineBar==>循环等待直到that.bsTimeline初始化完成； that.bsTimeline初始化在BS_COVER_TIMELINE#}
+            function eTransitionEndForSync(eTransition){
+                if(eTransition.target.classList.contains("container-mm",bsTimeline?bsTimeline:"")  && eTransition.propertyName=="transform"|| (eTransition.target.classList.contains("item"))){
+                    {# 通知时间轴bar缩放 #}
+                    //that.dispatchEvent(new CustomEvent("BS_TIMELINE_NAV_AT",{detail:e.detail}));
+                    that.bsTimeline.scroller.animater.hooks.once('end', () => {
+                        if(that.bsTimeline.eUpdateTimeline)that.bsTimeline.eUpdateTimeline.call(that.bsTimeline,{},true);//触发同步底条
+                        console.debug("《PC》时间轴::eNAV_AT动画结束:已触发timelineBar同步:eTransition.target:",eTransition.target.dataset.mm,eTransition.target.classList);
+                        {# 更新lazyLoad , 有可能筛选后没触发scroll？ #}
+                        that.bsTimeline.$listMMNow
+                    })
+                    that.bsTimeline.scrollTo(1,1,0);
+                    $timelineContent.removeEventListener("transitionend",eTransitionEndForSync);
+                }
+            }
+            $timelineContent.addEventListener("transitionend", eTransitionEndForSync, {capture:false,once:false});
+            that.bsTimeline.filterMM(e);
+        }
+        that.bsTimeline.eNAV_AT_MOBILE=function(e){
+            {# 移动端：时间轴没动画，直接同步 #}
+            if(!that.bsTimeline.isMobile)return;
+
+            that.bsTimeline.scrollTo(1,1,0);
+            let isDispatched=that.bsTimeline.eUpdateTimeline.call(that.bsTimeline,{},true);
+            {# 更新lazyLoad , 有可能筛选后没触发scroll？ #}
+            that.bsTimeline.$listMMNow
+            console.debug("《移动端》时间轴：强制同步=@NAV_AT=>",e.detail,isDispatched);            
+        }
+        {# 筛选内容，根据动画结束监听,当前屏幕范围内激活lazyLoad #}
         that.bsTimeline.filterMM=function(e){
             let bsTimeline=e.detail.bsTimeline;
             {# 移动端没动画 时间轴没动画，在NAV_AT直接同步#}
             if(that.bsTimeline.isMobile)return;
+            {# !bsTimeline是详情的NAV_AT,忽略 #}
+            {# if(e.type=="NAV_AT" && !bsTimeline)return; #}
             {# PC等月份缩小动画结束：强制同步timelineBar==>循环等待直到that.bsTimeline初始化完成； that.bsTimeline初始化在BS_COVER_TIMELINE#}
             function eTransitionEnd(eTransition){
                 if(eTransition.target.classList.contains("container-mm",bsTimeline?bsTimeline:"")  && eTransition.propertyName=="transform"|| (eTransition.target.classList.contains("item"))){
-                    //if(that.bsTimeline.eUpdateTimeline)that.bsTimeline.eUpdateTimeline.call(that.bsTimeline,{},true);
-                    //else throw new Error("bsTimeline.eUpdateTimeline未定义");
-                    if(e.type=="NAV_AT"){
-                        {# 通知时间轴bar缩放 #}
-                        //that.dispatchEvent(new CustomEvent("BS_TIMELINE_NAV_AT",{detail:e.detail}));
-                        that.bsTimeline.scroller.animater.hooks.once('end', () => {
-                            if(that.bsTimeline.eUpdateTimeline)that.bsTimeline.eUpdateTimeline.call(that.bsTimeline,{},true);//触发同步底条
-                            console.debug("时间轴::eNAV_AT动画结束:已触发timelineBar同步:eTransition.target:",eTransition.target.dataset.mm,eTransition.target.classList);
-                            {# 更新lazyLoad , 有可能筛选后没触发scroll？ #}
-                            that.bsTimeline.$listMMNow
-                        })
-                        that.bsTimeline.scrollTo(1,1,0);
-                    }
+                    //if(e.type=="NAV_AT"){
+                    //    {# 通知时间轴bar缩放 #}
+                    //    //that.dispatchEvent(new CustomEvent("BS_TIMELINE_NAV_AT",{detail:e.detail}));
+                    //    that.bsTimeline.scroller.animater.hooks.once('end', () => {
+                    //        if(that.bsTimeline.eUpdateTimeline)that.bsTimeline.eUpdateTimeline.call(that.bsTimeline,{},true);//触发同步底条
+                    //        console.debug("时间轴::eNAV_AT动画结束:已触发timelineBar同步:eTransition.target:",eTransition.target.dataset.mm,eTransition.target.classList);
+                    //        {# 更新lazyLoad , 有可能筛选后没触发scroll？ #}
+                    //        that.bsTimeline.$listMMNow
+                    //    })
+                    //    that.bsTimeline.scrollTo(1,1,100);
+                    //    console.debug("时间轴::eNAV_AT滚动到初始位置")
+                    //}
                     {# 更新lazyLoad , 有可能筛选后没触发scroll？ #}
                     that.bsTimeline.$listMMNow
-                    console.debug("时间轴::animater.end停止:一次性更新lazyLoad",eTransition.target.dataset.mm,eTransition.target.classList);
+                    console.debug("时间轴::animater.end停止:一次性更新lazyLoad",e.type,eTransition.target.dataset.mm,eTransition.target.classList);
                     $timelineContent.removeEventListener("transitionend",eTransitionEnd);
                 }
             }
             $timelineContent.addEventListener("transitionend", eTransitionEnd, {capture:false,once:false});
         }
+        this.addEventListener("NAV_AT", (e)=>{//BS_COVER_TIMELINE
+            {# !bsTimeline是详情的NAV_AT,忽略 #}
+            if(!e.detail.bsTimeline)return;
+            {# 通知底条，根据栏目判断是否缩放 #}
+            that.dispatchEvent(new CustomEvent("BS_TIMELINE_NAV_AT",{detail:e.detail}));
+            {# PC处理 在此初始化，否则filterMM没有定义#}
+            that.bsTimeline.eNAV_AT_PC(e);
+            {# 移动端处理通知底条 #}
+            that.bsTimeline.eNAV_AT_MOBILE(e);
+        });
         {# 标记当前月 #}
         that.bsTimeline.funFindDateNow({x:0},true);
         {# timeline加载完成 新加载的内容需要筛选；#}
         this.addEventListener("BS_TIMELINE_DOM_LOADED",that.bsTimeline.filterMM)
-        this.addEventListener("NAV_AT",that.bsTimeline.filterMM);
     }
 
     this.eDateChange=function(e){
@@ -348,7 +397,7 @@
             that.bsTimeline.idxMMScrollingTo=$mmTo.idxMM;
             if(that.bsTimeline.pending)that.bsTimeline.stop();
             that.bsTimeline.disable();
-            that.bsTimeline.scrollBy(xScrollTimeline,yScrollTimeline,Math.max(500,Math.abs(yScrollTimeline),Math.abs(xScrollTimeline)));
+            that.bsTimeline.scrollBy(xScrollTimeline,yScrollTimeline,Math.min(2000,(Math.abs(yScrollTimeline)+Math.abs(xScrollTimeline))*0.5));
         };
 
         return $mmTo;
@@ -375,19 +424,6 @@
     this.addEventListener("BS_TIMELINE_BAR_DATE_CHANGE_FINAL",this.eDateChangeFinal)
     {# 保留月份滚----end #}
     this.addEventListener("BS_COVER_WILL_TIMELINE",that.resetSlideMain);
-    this.addEventListener("NAV_AT", (e)=>{//BS_COVER_TIMELINE
-        let bsTimeline=e.detail.bsTimeline;
-        {# 通知底条，根据栏目判断是否缩放 #}
-        that.dispatchEvent(new CustomEvent("BS_TIMELINE_NAV_AT",{detail:e.detail}));
-        {# 移动端：时间轴没动画，直接同步 #}
-        if(that.bsTimeline.isMobile){
-            that.bsTimeline.scrollTo(1,1,0);
-            let isDispatched=that.bsTimeline.eUpdateTimeline.call(that.bsTimeline,{},true);
-            {# 更新lazyLoad , 有可能筛选后没触发scroll？ #}
-            that.bsTimeline.$listMMNow
-            console.debug("《移动端》时间轴：强制同步=@NAV_AT=>",e.detail,isDispatched);
-        }
-    });
     //var mutationObserver = new MutationObserver(function (mutations) {
     //    let status=window.getComputedStyle($timelineWrapper).getPropertyValue('display');
     //    {# //显示时初始化内容 #}
@@ -405,4 +441,7 @@
     //    //characterData: true, // 节点内容或节点文本的变动
     //    //subtree: true // 是否将观察器应用于该节点的所有后代节点
     //})
+    {# 停止渲染 #}
+    {# this.addEventListener("StopViewport",that.bsTimeline.disable); #}
+    this.addEventListener("RefreshViewport",that.resetSlideMain);
 </script>

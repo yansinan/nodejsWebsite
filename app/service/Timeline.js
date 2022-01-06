@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-08-04 05:26:38 
  * @Last Modified by: dr
- * @Last Modified time: 2021-09-03 11:21:57
+ * @Last Modified time: 2021-12-02 19:58:22
  */
 'use strict';
 const { debug } = require('console');
@@ -41,6 +41,7 @@ const docTemplate={// 生成文档种子
 
 class ServicePlugin extends Service {
     async getDoc(yearStart=""){
+        let console=this.logger;
         let {ctx,service}=this;
         let query={
             state: '2',
@@ -65,7 +66,7 @@ class ServicePlugin extends Service {
                     lean:false,
                 },{
                     query,
-                    files:"_id date listDateDur dateYear dateYYYYM dateTimeline percentDateOfYear docAlias name title nameTimeline alias listRefs listLinks listFormatTags nameArtists sImg tags url",
+                    files:"_id date listDateDur dateYear dateYYYYM dateTimeline percentDateOfYear docAlias name title nameTimeline alias listRefs listLinks listFormatTags sImg tags url",
                     populate:[{
                         path: 'tags listRefs listFormatTags',
                         select: 'name _id alias comments'
@@ -131,6 +132,7 @@ class ServicePlugin extends Service {
                 let docFind=listDocsOfYear[idxFindDoc];
                 //listDocFind.push(doc);
                 posX=Math.abs((cntDays*100/cntDaysFullYear)-docFind.percentDateOfYear).toFixed(3) ;
+                posX=(posX/(cntDays/cntDaysFullYear)).toFixed(3) ;
                 let strDate=moment(docFind.date).format("YYYY-MM-DD");
                 // listIdxDays.push(posX);
                 // 去重
@@ -159,6 +161,14 @@ class ServicePlugin extends Service {
                 //}else{
                 //    listIdxDaysGroup.findIndex()
                 //}
+
+                //全年天数;
+                let cntDaysFullYear=Math.abs(moment(dateTmp).startOf("year").diff(moment(dateTmp).endOf("year"),"days"));
+                //当前第几天
+                let idxDayOfYear=Math.abs(moment(dateTmp).startOf("year").diff(moment(dateTmp),"days"));
+                let percentDateOfYear= Math.abs(idxDayOfYear*100/cntDaysFullYear).toFixed(3);
+                posX=Math.abs((cntDays*100/cntDaysFullYear) - percentDateOfYear).toFixed(3) ;
+                posX=(posX/(cntDays/cntDaysFullYear)).toFixed(3) ;
                 listTmpYearDocs.push({
                     posX,
                     date:strDate
@@ -213,6 +223,7 @@ class ServicePlugin extends Service {
     // 获取时间轴按年的日期数组//payload.yearCurrent
     async getListDateYear(payload={}){
         let that=this;
+        let console=this.logger;
         let {
             yearCurrent,
             isRandom,
@@ -247,7 +258,7 @@ class ServicePlugin extends Service {
                     if(idxVideo !=-1){
                         let listVideoToAdd=listVideos.splice(0,idxVideo+1);
                         if(listVideoToAdd.length>0){
-                            console.log("在doc.",idxDoc,doc.dateFull,"之前添加了，",listVideoToAdd.length,"个 视频：",listVideoToAdd[0].dateFull,"，剩余视频:",listVideos.length);
+                            // console.info("在doc.",idxDoc,doc.dateFull,"之前添加了，",listVideoToAdd.length,"个 视频：",listVideoToAdd[0].dateFull,"，剩余视频:",listVideos.length);
                             listDocs.splice(idxDoc,0,...listVideoToAdd);
                         }                    
                     }
@@ -320,7 +331,7 @@ class ServicePlugin extends Service {
         //    pageInfo.yearNewest=parseInt(moment(listDocs[0].date).format("YYYY"));
         //}
         if(!yearCurrent)pageInfo.yearNewest=parseInt(moment(listYear[0]).format("YYYY"));
-        console.log(listYear,pageInfo)
+        console.info(listYear,pageInfo)
         return {pageInfo,listDateYear,listDocs};
     }
     // 获取虚拟docs,payload.yearCurrent

@@ -49,6 +49,8 @@
           <el-col :lg="12" :xl="10">
             <Cropper 
             :nameMod="nameMod"
+            :subPath="formState.formData._id || ''"
+            :aspectRatio="aspectRatio"
             v-model="formState.formData.sImg" 
             :label="$t('contents.sImg')" 
             prop="sImg"></Cropper>
@@ -158,7 +160,11 @@
             type:String,
             default:"contents",
         },
-
+        // sImg比例:
+        aspectRatio:{
+          type:Number,
+          default:1,
+        },
     },
     data() {
       return {

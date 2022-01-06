@@ -80,10 +80,16 @@
             })
             tooltipTriggerEl.addEventListener('show.bs.tooltip', function (e) {
                 this.classList.add("now");
+                $container.tooltipList.forEach((tooltip)=>{
+                    if(tooltip && tooltip!=this && tooltip.tip && !tooltip.tip.hidden){
+                        tooltip.hide();
+                    }
+                });
             })
             tooltipTriggerEl.addEventListener("touchstart",eShow);
             tooltipTriggerEl.addEventListener("mouseenter",eShow);
-
+            {# tooltipTriggerEl.addEventListener("touchend",eHide); #}
+            tooltipTriggerEl.addEventListener("mouseup",eHide);
             tooltipTriggerEl.addEventListener("mouseleave",(e)=>{
                 setTimeout(()=>{
                     if(!e.target.tooltip.tip.isOnTooltip)eHide(e);
@@ -106,44 +112,13 @@
     </div>
 </div>
 <script>
-let $modalImagePreview = document.getElementById('modalImagePreview');
-$modalImagePreview.addEventListener('show.bs.modal', function (event) {
-    var $img = event.relatedTarget;
-    $modalImagePreview.querySelector("img").src=$img.dataset.drUrl;
-})
+    let $modalImagePreview = document.getElementById('modalImagePreview');
+    $modalImagePreview.addEventListener('show.bs.modal', function (event) {
+        var $img = event.relatedTarget;
+        $modalImagePreview.querySelector("img").src=$img.dataset.drUrl;
+    })
 </script>
 
-
-
-{# 侧边导航菜单 #}
-<div id="offcanvasRightMenu" class="offcanvas offcanvas-end offcanvasRightMenu-md" tabindex="-1" aria-labelledby="offcanvasRightMenuLabel">
-    <div class="offcanvas-header">
-        {# <h5 id="offcanvasRightLabel">Offcanvas right</h5> #}
-        <div class="d-flex flex-column" data-bs-dismiss="offcanvas"><i ms-click='@searchMe' class="fa fa-search"></i></div>
-        {# <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button> #}
-        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body offcanvas-body-md d-flex flex-column  justify-content-end">
-        {# 导航菜单 #}
-        <ul class=" flex-fill d-flex flex-column justify-content-start flex-wrap">
-            {% for cate in navigation %} {% if cate.parentId == '0' %}
-            <li class="menuItem menuItem-md text-nowrap">
-                <a class=" hoverUnderline" style="color: inherit" tabindex="-1" alt="{{site.altkey}}{{cate.name}}" onclick="eBnNav('{{cate.defaultUrl}}')" name="{{cate.defaultUrl}}" data-bs-toggle="offcanvas" href="#offcanvasRightMenu" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">{{cate.name}}  {{cate.alias if cate.alias else ""}}</a>
-            </li>
-            {% endif %} {% endfor %}
-        </ul>
-        {# 链接和其他 #}
-        <ul class="menuFoot">
-            <li>网易云音乐</li>
-            <li>豆瓣</li>
-            <li>Facebook</li>
-            <li>订阅</li>
-            <li>联系我们</li>
-
-        </ul>
-        <div class="menuFootCopyright">赤瞳音乐&nbsp;&nbsp;RUBY&nbsp;EYES&nbsp;RECORDS&nbsp;&nbsp;&nbsp;&nbsp;Copyright©2021</div>
-    </div>
-</div>
 
 <div id="offcanvasDetailAll" class="">
     {# 详细内容页左侧列表 #}
@@ -153,19 +128,35 @@ $modalImagePreview.addEventListener('show.bs.modal', function (event) {
             {# <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button> #}
         {# </div> #}
         <div id="offcanvasListArtists" class="offcanvas-body listArtists">
+                <div class="artist d-flex align-items-center ">
+                    <button class="name hoverUnderline btn btn-link" data-dr-url="/about___.html"  onclick="window.goto('/about___.html')">
+                        赤瞳音乐
+                    </button>
+                    {% if artistRubyEyes.listNotices.length > 0%}
+                    <button 
+                        tabindex="0"
+                        class="noticeCnt" 
+                        data-bs-toggle="tooltip" 
+                        data-bs-html="true" 
+                        title=' '>
+                        +{{artistRubyEyes.listNotices.length}}
+                    </button>
+                    {% for doc in artistRubyEyes.listNotices %}<div class="notice hoverUnderline d-none" data-dr-url="{{doc.url}}">{{doc.nameTimeline}}</div>{% endfor %}
+                    {% endif %}
+                </div >
             {% for letter,artistItems in listArtists|sort(false,false,"letters")|groupby("firstLetter") %}
                 <div class="firstLetter">{{letter}}</div>
                 {% for artist in artistItems %}
                 {# 乐队名列表 #}
                 {# <h1 class="display-1">RUBY</h1> #}
-                <div class="artist artist-md d-flex align-items-center ">
+                <div class="artist d-flex align-items-center ">
                     <button class="name hoverUnderline btn btn-link" data-dr-url="{{artist.url}}"  onclick="window.goto('{{artist.url}}')">
                         {{artist.name}}
                     </button>
                     {% if artist.listNotices.length > 0%}
                     <button 
                         tabindex="0"
-                        class="noticeCnt d-flex flex-shrink-0 justify-content-center border border-1 border-dark rounded-circle" 
+                        class="noticeCnt" 
                         data-bs-toggle="tooltip" 
                         data-bs-html="true" 
                         title=' '>
@@ -185,15 +176,23 @@ $modalImagePreview.addEventListener('show.bs.modal', function (event) {
     {# 详细内容页框架 #}
     <div id="offcanvasRight"  class="offcanvas offcanvas-end" tabindex="-1" aria-labelledby="offcanvasRightLabel">
         <div class="offcanvas-header">
-            {# <h5 id="offcanvasRightLabel">Offcanvas right</h5> #}
-            <div class="icon-arrow left flex-column" data-bs-dismiss="offcanvas"></div>
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            {# <h5 id="offcanvasRightLabel">Offcanvas right</h5> data-bs-dismiss="offcanvas" #}
+            <div class="navbar-brand">
+                <img class="img-fluid" src="{{site.logo}}" alt="{{site.title}}" onclick="window.goto('/about___.html')"/>
+            </div>
+            <div class="btn icon-arrow left flex-column" onclick="history.back()"></div>
+            <bn-close class="btn btn-close"  aria-label="Close" onclick="window.goto('/')" aria-label="Close"></bn-close>
+
         </div>
-        <div id="offcanvasDetail" class="offcanvas-body" ms-controller="offcanvasDetail" ms-on-scroll="@eScrollDetail">
-            <div :visible="!@loadingState" ms-html="@dom" style="background-color: inherit;"></div>
-            <div :visible="@loadingState" class="loading w-100 justify-content-center align-items-center ">
+        <div id="offcanvasDetail" class="offcanvas-body loading" ms-controller="offcanvasDetail" ms-on-scroll="@eScrollDetail">
+            <div class="content" :visible="!@loadingState" ms-html="@dom" style="background-color: inherit;"></div>
+            {# 
+            <div class="loading w-100 justify-content-center align-items-center ">
                 <i class="fa fa-spin fa-spinner"></i>
             </div>
+             #}
+            {{njLoading()}}
+
         </div>
     </div>
     <script>
@@ -215,19 +214,117 @@ $modalImagePreview.addEventListener('show.bs.modal', function (event) {
             eScrollDetail:function(e){                
                 let $nav=$offcanvasDetail.querySelector(".nav");
                 if($nav){
-                    let $name =$offcanvasDetail.querySelector(".name");
-                    let isShow=$name?$name.getBoundingClientRect().bottom < 0 :  e.currentTarget.scrollTop > $offcanvasDetail.clientHeight;
+                    let $album =$offcanvasDetail.querySelector(".album");
+                    let isShow=$album?$album.getBoundingClientRect().top < 0 :  e.currentTarget.scrollTop > $offcanvasDetail.clientHeight;
                     if(!$nav.classList.contains("show") && isShow)$nav.classList.add("show");
                     else if($nav.classList.contains("show") && !isShow)$nav.classList.remove("show");
                 }
             },
+            {# 详情页导航&试听 #}
+            playerStatus:"fa-play",
+            isList:false,
+            idxAudioNow:0,
+            {# 初始化时更新歌曲时间 #}
+            initAudio:function(){
+                let $listAudios=$offcanvasDetail.querySelectorAll(".nav .playList ul audio");
+                $listAudios.forEach($audio=>{
+                    {# 更新播放时间 #}
+                    $audio.addEventListener('durationchange', (e) => {
+                        let $song=e.currentTarget.parentElement;
+                        $song.dataset.currentTime=this.getPlayerTime(e.currentTarget.currentTime) + " / " + this.getPlayerTime(e.currentTarget.duration);                    
+                    },{once:true});
+
+                })                
+            },
+            {# 停止播放 #}
+            stopAudioAll:function(){
+                let $listAudios=$offcanvasDetail.querySelectorAll(".nav .playList ul audio,video");
+                $listAudios.forEach($a=>{
+                        $a.pause();
+                        $a.currentTime=0;
+                        $a.parentElement.classList.value="";
+                })
+                
+            },
+            {# 导航按钮 #}
+            eAudioToggleNow:function(e){
+                let $audio=this.getCurrentAudio();
+                this.audioToggle($audio);
+            },
+            {# 歌曲 #}
+            eAudioToggle:function(e){
+                let $audio=e.currentTarget.querySelector("audio");
+                {# 重新排序 #}
+                {# let $ulSong=$offcanvasDetail.querySelector(".nav .playList ul"); #}
+                let $lastAudio=this.getCurrentAudio();
+                if($lastAudio!=$audio)$lastAudio.parentElement.parentElement.before($audio.parentElement.parentElement);
+                this.audioToggle($audio);
+            },
+            {# 播放控制 #}
+            audioToggle:function($audio){
+                if(!$audio)return;
+                let that=this;
+                {# 播放控制 #}
+                let $listAudios=$offcanvasDetail.querySelectorAll(".nav .playList ul audio");
+                $listAudios.forEach($a=>{
+                    if($a!=$audio){
+                        $a.pause();
+                        $a.currentTime=0;
+                        $a.parentElement.classList.value="";
+                    }
+                })
+                let resToggle=false;
+                if($audio.paused){
+                    $audio.play();
+                    resToggle=true;
+                }else $audio.pause();
+
+
+                {# 显示控制 #}
+                this.playerStatus=!$audio.paused ? "fa-pause" : "fa-play";
+                {# 当前歌曲标记 #}
+                let $song=$audio.parentElement;
+                let $playerList=$song.parentElement;
+                $song.classList.value="now";
+
+                {# 更新播放时间 #}
+                $audio.addEventListener('timeupdate', (e) => {
+                    {# let $audio=e.currentTarget; #}
+                    let $song=e.currentTarget.parentElement;
+                    $song.dataset.currentTime=this.getPlayerTime(e.currentTarget.currentTime) + " / " + this.getPlayerTime(e.currentTarget.duration);                    
+                });
+                return resToggle;
+            },
+            getPlayerTime:function(v){
+                let sec=Math.round(v);
+                let minutes=Math.floor(v/60);
+                sec=sec-minutes*60;
+                return minutes + ":" + sec;
+            },
+            getCurrentAudio:function(){
+                let $song=$offcanvasDetail.querySelector(".nav .playList ul li");
+                if(!$song)return false;
+                return $song.querySelector("audio");
+            }
         })
         {# modal 图片预览 #}
         
         var bsModalImagePreview = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalImagePreview'));
+        {# 改变文章css #}
+        this.setDetailStyle=function($detail){
+            $detail.querySelectorAll("span,p,img").forEach($dom=>{
+                $dom.style.removeProperty("font-size");
+                $dom.style.removeProperty("font-family");
+                $dom.style.removeProperty("width");
+                $dom.style.removeProperty("white-space");
+            });
+            
+        }
         this.setDetailDom=function($detail){
             {# 获取基础数据 #}
-            let title=$offcanvasDetail.querySelector(".name").innerText;
+            let $name=$offcanvasDetail.querySelector(".name");
+            let title="";
+            if($name) title=$offcanvasDetail.querySelector(".name").innerText;
             let objDetail={title};
             {# 详情页更多按钮 #}
             $offcanvasDetail.querySelectorAll("div.more").forEach($bn=>{$bn.addEventListener("click",$offcanvasDetail.eBnMore)});
@@ -306,42 +403,107 @@ $modalImagePreview.addEventListener('show.bs.modal', function (event) {
 
                 })
             })
+            {# 试听播放器 #}
+            aOffcanvasBody.initAudio();
             return objDetail;
         }
+        {# 根据内容改变 #offcanvasDetailAll 的class 控制样式 #}
+        this.setDetailClassList=function(inStrServiceName){
+            //let $detail = $offcanvasDetail.querySelector(".content .detail");
+            //let classList=$detail.dataset && $detail.dataset.bsMain?$detail.dataset.bsMain : "news about";
+            //$offcanvasDetailAll.classList.value=classList;
+            //return classList;
+            $offcanvasDetailAll.classList.value=inStrServiceName;
+        }
+        {# 检索相关文档 #}
+        this.addRelativeDocs=function(inData){
+            {# 关于和乐队没有相关 #}
+            if(!inData.pageData || inData.pageData.post.docAlias == "artists")return;
+            let listKeywords=inData.pageData.post.keywords || [];
+            let listRefs=inData.pageData.post.listRefs || [];
+            listKeywords=listKeywords.concat(listRefs.map(v=>(v.name)));
+            let strSearch=listKeywords.join(" ");
+            {# let listTags=inData.pageData.post.tags || []; #}
+            {# listTags=listTags.map(tag=>(tag.name)); #}
+            {# strSearch+=" "+listTags.join(" "); #}
+            fetch("/relative?id="+inData.pageData.post.id+"&q="+strSearch)
+            .then(function(data){
+                return data.text();
+            }).then(function (data) {
+                // 在这个then里面我们能拿到最终的数据
+                let objData=JSON.parse(data);
+                if(objData.status==200){
+                    try{                        
+                        //aOffcanvasBody.dom += objData.data.dom;//
+                        let $detail = $offcanvasDetail.querySelector(".content .detail");
+                        let domToAppend=document.createRange().createContextualFragment(objData.data.dom);
+                        $detail.appendChild(domToAppend);
+                    }catch(e){
+                        debugger;
+                        throw new Error("detail加载relative内容,通信正常，返回结果错误"+JSON.stringfy(e));
+                    }
+                }else{
+                    debugger
+                    throw new Error("detail加载relative内容，服务器通信错误："+objData.status);
+                }
+            }).catch(err=>{
+                debugger
+                return Promise.reject(err);
+            });    
+        }
         this.addEventListener("OPEN_OFFCANVAS_DETAIL",function(e){
-            let url=e.detail.apiDetail || e.detail.relatedTarget.attributes["data-dr-url"].value ||  "/about___.html";
+            let url=e.detail.apiDetail;// || e.detail.relatedTarget.attributes["data-dr-url"].value ||  "/about___.html";
+            if(!url)debugger;
             {# 如果是乐队列表详情 #}
-            if(url.indexOf("/artist___")!=-1){
-                $offcanvasDetailAll.classList.add("artistDetailColor");
-            }else{
-                $offcanvasDetailAll.classList.remove("artistDetailColor");
-            }
+            //if(url.indexOf("/artist___")!=-1){
+            //    $offcanvasDetailAll.classList.add("artistDetailColor");
+            //}else{
+            //    $offcanvasDetailAll.classList.remove("artistDetailColor");
+            //}
             console.info("event:详情即将打开：",url);
             {# let cateId="8hIKx4Ulz"; #}
             aOffcanvasBody.loadingState=true;
+            function appendDom(res){
+                {# 先根据内容改变 #offcanvasDetailAll 的class 控制样式 #}
+                let strDocAlias=res.data.pageData && res.data.pageData.post.docAlias ?res.data.pageData.post.docAlias : (res.data.params && res.data.params.serviceName? (res.data.params.serviceName+"s"):"news about")
+                that.setDetailClassList(strDocAlias);
+                window.offcanvasRight.classList.remove("loading");
+                aOffcanvasBody.dom="";
+                aOffcanvasBody.dom = res.data.comments || res.data.dom;
+                {# 样式处理完再显示 #}
+                aOffcanvasBody.loadingState = false;
+            }
             function error(d) {
                 console.error('error:', url,d);
-                aOffcanvasBody.loadingState = false;
-                aOffcanvasBody.dom = d.msg? d.msg : "网络故障，内容获取失败：" + d.toString();
+                appendDom(d.responseJSON);
+                that.dispatchEvent(new CustomEvent("NAV_AT", { detail:{apiDetail:url,titleDetail:"出错了"}, }));
                 debugger;
             }
+            window.offcanvasRight.classList.add("loading");
             $.ajax({
                 type: 'GET',
                 url,//url: '/about___' + cateId + '.html',
                 success: function (res) {
-                    if (res.status == 200) {
-                        aOffcanvasBody.loadingState = false;
-                        aOffcanvasBody.dom = res.data.comments || res.data;
-                        let objDetail=that.setDetailDom($offcanvasDetail);
+                    if (res.status == 200 || res.status==500) {
+                        appendDom(res);
+                        let objDetail= {title:"出错了"}
+                        if(res.status == 200){
+                            objDetail=that.setDetailDom($offcanvasDetail);
+                            {# 改变详情style #}
+                            that.setDetailStyle($offcanvasDetail);
+                            {# 添加相关文档 #}
+                            that.addRelativeDocs(res.data);
+                        }
                         that.dispatchEvent(new CustomEvent("NAV_AT", { detail:{apiDetail:url,titleDetail:objDetail.title}, }));
                     }else{
+                        debugger;
                         error({msg:"服务器连接成功；返回错误:status=="+res.status,res,url})
                     }
                 },
                 error,
             })
         });
-
+        this.addEventListener( "CLOSE_OFFCANVAS_DETAIL", aOffcanvasBody.stopAudioAll );
     </script>
     {# 详情页更多按钮 #}
     <script type="text/javascript">
@@ -354,13 +516,11 @@ $modalImagePreview.addEventListener('show.bs.modal', function (event) {
         }
         
     </script>
-
 </div>
 
 <div class="foot-float back-to-top" id="bnRubyEyes">
     {# <img class="btnRubyEyes glyphicon glyphicon-chevron-up" src=""></i> #}
-    <div class="btnRubyEyes btnRubyEyes-md glyphicon glyphicon-chevron-up" data-bs-toggle="offcanvas" href="#offcanvasRight" data-dr-url="/about___.html"></div>
-
+    <div class="btnRubyEyes btnRubyEyes-md glyphicon glyphicon-chevron-up"  onclick="window.goto('/about___.html')"></div>
 </div>
 
 <button id="bnArrowTimeline" class="foot-float bnTest" onclick="eClickTest()">

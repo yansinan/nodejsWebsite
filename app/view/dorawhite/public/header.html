@@ -1,22 +1,34 @@
 <!--头部模板-->
 <script>
     if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
-        //document.write("<script src='{{staticThemePath}}/js/iscroll/iscroll.js'><" + '/' + "script>");
-        //$(function () {
-        //    new IScroll('#navWrapper', {
-        //        scrollX: true,
-        //        scrollY: false,
-        //        mouseWheel: true,
-        //        click: true
-        //    });
-        //})
         //阻止默认行为函数
+        function isChildOf(child, parent, justChild = false) { 
+            // justChild为true则只判断是否为子元素，若为false则判断是否为本身或者子元素 默认为false
+            let parentNode;
+            if (justChild) {
+                parentNode = child.parentNode;
+            } else {
+                parentNode = child;
+            }
+
+            if (child && parent) {
+                while (parentNode) {
+                if (parent === parentNode) {
+                    return true;
+                }
+                parentNode = parentNode.parentNode;
+                }
+            }
+            return false;
+        }
         function preventDefault(e) {
-            e.preventDefault();
+            let tar=e.target;
+            let isScrollble=isChildOf(tar,window.offcanvasDetailAll)
+            if(!isScrollble)e.preventDefault();
         }
 
         // 禁用触摸滚动页面
-        //document.addEventListener('touchmove', preventDefault, {passive: false});
+        document.addEventListener('touchmove', preventDefault, {passive: false});
 
     }
     {# 监听Element变化 #}
@@ -57,24 +69,50 @@
     // Then we set the value in the --vh custom property to the root of the document
     function refreshVH(){
         {# vh = window.innerHeight * 0.01; #}
-        {# if(slideListArtist)slideListArtist.refresh(); #}
-        vh = getBrowserInterfaceSize().pageHeight*0.01;
-        {# window.alert(getBrowserInterfaceSize().pageHeight) #}
-        document.documentElement.style.setProperty('--vh', `${vh}px`);
-        {# if(this.slideCover)this.slideCover.refresh(); #}
-    }
-    function loadTimeline(){
-        document.getElementById("coverArtistsWrapper").classList.remove("d-none");
-        document.getElementById("timelineWrapper").classList.remove("d-none");
-
-        refreshVH();
+        let{
+            pageWidth,pageHeight
+        } = getBrowserInterfaceSize();
+        {# alert("window.innerHeight:"+window.innerHeight+",document.documentElement:"+document.documentElement.clientHeight+" window.body:"+ (window.body && window.body.clientHeight)+" document.body:"+ (document.body && document.body.clientHeight)) #}
+        document.documentElement.style.setProperty('--vh', `${pageHeight*0.01}px`);
+        document.documentElement.style.setProperty('--vh-viewport', `max(${pageHeight*0.01}px , 1vh)`);
+        document.documentElement.style.setProperty('--vw', `max(${pageWidth*0.01}px , 1vw)`);
     }
     refreshVH();
-    document.addEventListener('DOMContentLoaded', loadTimeline);
-    {# window.addEventListener('load', loadTimeline); #}
     window.addEventListener('resize', refreshVH);
-
-
+</script>
+<script>
+    {# 地址路由 #}
+    const regAllowed=/(?:(?:\/((?!index)(?:timeline|artists))(?=\/){1}\/([a-z]+){1})|^)((?:\/\w+___(?:\w|.)*.html)|(?:\/search\?q\=.+)|\/|$)/i
+    const regMain=/\/(timeline|artists)(?:\/)/i
+    const regTimeline=/\/(?:timeline|artists)\/([a-z]+){1}(?:\/|)/i
+    const regDetail=/(?:\/)((?:\w+___(?:\w|.)*.html)|(?:search\?q\=.+))/i
+    const regPathName=/\/(?:timeline|artists)\/[a-z]+((?:\/\w+___(?:\w|.)*.html)|\/search|\/|$|)/i
+    const regSearch=/\?.+\=.*/i    
+    function getRouter(inURL){
+        let objRouter={
+            input:inURL,
+            url:"/"+this.header.strBSMain+"/"+this.header.strAliasNav+"/",
+            pathname:"/"+this.header.strBSMain+"/"+this.header.strAliasNav+"/",
+            bsMain:this.header.strBSMain,
+            bsTimeline:this.header.strAliasNav,
+        };
+        let hasDetail=regDetail.exec(inURL);
+        if(hasDetail)objRouter.detail=hasDetail[1];
+        let hasPathName=regPathName.exec(inURL);
+        if(hasPathName)objRouter.pathname=hasPathName[0];
+        let testURL=regAllowed.exec(inURL);
+        if(testURL){
+            Object.assign(objRouter,{
+                url:testURL[0],//0没有则不符合
+                bsMain:testURL[1] || regMain.exec(inURL) && regMain.exec(inURL)[1] || objRouter.bsMain,
+                bsTimeline:testURL[2] || objRouter.bsTimeline,
+                detail:objRouter.detail || testURL[3] || "",
+            })
+        }
+        objRouter.detail=objRouter.detail == "/" ? "": objRouter.detail;
+        console.log("路由拆解测试：",objRouter,testURL,)
+        return objRouter;
+    }
     {# 更新导航状态 #}
     this.header={
         funSetNav:function(strAliasNav="news"){
@@ -109,23 +147,30 @@
             {% endif %} {% endfor %}
         ],
         get strAliasNav(){
-            let path=window.location.pathname.split("/timeline/")[1] || window.location.pathname.split("/artists/")[1];///artists___KuvrGBz9e
-            let strAliasNav=path ? path.split("__")[0].split("/")[0] : this.funFindByURL().defaultUrl;
-            if(this.strBSMain=="timeline" && typeof strAliasNav === "string")document.querySelector("body").classList.value="flex "+strAliasNav;
-            else document.querySelector("body").classList.value="flex";
+            //let path=window.location.pathname.split("/timeline/")[1] || window.location.pathname.split("/artists/")[1];///artists___KuvrGBz9e
+            //let strAliasNav=path ? path.split("__")[0].split("/")[0] : this.funFindByURL().defaultUrl;
+            let res=regTimeline.exec(window.location.pathname);
+            let strAliasNav=(res ? res[1] : false ) || this.funFindByURL().defaultUrl;//   news/artists___KuvrGBz9e.html
+            if(this.strBSMain=="timeline" && typeof strAliasNav === "string")document.body.classList.value="flex "+strAliasNav;
+            else document.body.classList.value="flex";
             return strAliasNav;
         },
         {# 获取前台路由，timeline? #}
         get strBSMain(){
-            let path=window.location.pathname.split("/index/")[1];
-            path=path.split("/")[0];
-            return path =="timeline" ? path : "artists";
+            //let path=window.location.pathname.split("/index/")[1] || window.location.pathname || "artists/";
+            //path=path.split("/")[0];
+            //return path =="timeline" ? path : "artists";
+            const res=regMain.exec(window.location.pathname);
+            return res ? res[1] : "artists";
         },
         get strDetail(){
-            let path=window.location.pathname.split("/timeline/")[1] || window.location.pathname.split("/artists/")[1];// news/xxx.html
-            return path.split("/")[1];
+            //let path=window.location.pathname.split("/timeline/")[1] || window.location.pathname.split("/artists/")[1];// news/xxx.html
+            //return path.split("/")[1];
+            let hasDetail=regDetail.exec(window.location.pathname);
+            debugger;//只有get objNavAt用
+            return hasDetail ? hasDetail[1] : "";
         },
-        get idDetail(){return this.strDetail.split(".html")[0] || this.strDetail.split("___")[0] || ""},
+        //get idDetail(){return this.strDetail.split(".html")[0] || this.strDetail.split("___")[0] || ""},
         get idxNav(){let idx=this.listNav.findIndex(v=>(v.defaultUrl==this.strAliasNav));return idx==-1?0:idx;},
         get objNav(){return this.listNav[this.idxNav]},
         get objNavTo(){
@@ -133,7 +178,7 @@
                 this._objNavTo = {};
                 Object.defineProperties(this._objNavTo,{
                     url:{
-                        get:()=>("/index/" + this._objNavTo.bsMain + "/" + ( this._objNavTo.bsTimeline || this.funFindByURL(this._objNavTo.bsTimeline).defaultUrl) + "/" + (this._objNavTo.detail?this._objNavTo.detail : "")),
+                        get:()=>("/" + this._objNavTo.bsMain + "/" + ( this._objNavTo.bsTimeline || this.funFindByURL(this._objNavTo.bsTimeline).defaultUrl) + "/" + (this._objNavTo.detail?this._objNavTo.detail : "")),
                     },
                     title:{
                         get:()=>{
@@ -172,6 +217,7 @@
             Object.assign(this._objNavTo,obj);
         },
         get objNavAt(){
+            debugger;//好像没有用
             return {
                 bsMain:this.strBSMain,
                 bsTimeline:this.strAliasNav,
@@ -190,6 +236,140 @@
             window.history.pushState(this.objNavTo, document.title, this.objNavTo.url);//设置状态
         },
     };
+</script>
+{# 核心控制 #}
+<script>
+
+    {# 页面切换完成 #}
+    function eNavAt(e){
+        {# history路由 #}
+        let obj={
+            bsMain:e.detail.bsMain || this.header.strBSMain,
+            bsTimeline:e.detail.bsTimeline || this.header.strAliasNav || false,
+        }
+        Object.assign(obj,e.detail);
+        this.header.objNavAt=obj;//objNavAt会保存在objNavTo
+    }
+    this.addEventListener("NAV_AT",eNavAt);
+
+    {# 详情页设置 #}
+    let $offcanvasLeft=document.getElementById("offcanvasLeft");
+    let $offcanvasRight=document.getElementById("offcanvasRight");
+    this.toggleDetail=function(e={}){
+        if(!$offcanvasLeft || !$offcanvasRight)return;
+        let bsOffcanvasLeft=bootstrap.Offcanvas.getOrCreateInstance($offcanvasLeft) ;
+        let bsOffcanvasRight=bootstrap.Offcanvas.getOrCreateInstance($offcanvasRight);
+        let bsOffcanvasSearch=bootstrap.Offcanvas.getOrCreateInstance(window.offcanvasSearch);
+        let detail=e;
+
+        if(e.type=='hide.bs.offcanvas'){//按钮触发的要补一个关闭
+            that.dispatchEvent(new CustomEvent("CLOSE_OFFCANVAS_DETAIL", {detail}));
+            {# 清除左侧乐队列表 #}
+            if($offcanvasLeft.classList.contains("show") && e.currentTarget!=$offcanvasLeft)bsOffcanvasLeft.hide();
+        }else if(e.apiDetail){
+            {# 搜索或详情 #}
+            if(e.apiDetail.indexOf("/search?q=")==0){
+                {# bsOffcanvasRight.hide(); #}
+                bsOffcanvasSearch.show();
+                that.dispatchEvent(new CustomEvent("OPEN_OFFCANVAS_SEARCH", {detail}));
+            }else{//详情或关于
+                bsOffcanvasRight.show();
+                bsOffcanvasLeft.show();
+                if(window.offcanvasSearch.classList.contains("show"))bsOffcanvasSearch.hide();
+                that.dispatchEvent(new CustomEvent("OPEN_OFFCANVAS_DETAIL", {detail}));
+            }
+        }else if(!e.apiDetail || e.apiDetail === ""){ {# apiDetail ===""关闭详情 #}
+            bsOffcanvasRight.hide();
+            bsOffcanvasSearch.hide();
+            that.dispatchEvent(new CustomEvent("NAV_AT", { detail: Object.assign({},detail,{apiDetail:false,titleDetail:""}) }));
+        }else{ {# 没有detail.relatedTarget，也没有apiDetail 手动触发bs->show触发的事件 是不需要监听的 #}
+            return;
+        }
+    }
+    $offcanvasRight && $offcanvasRight.addEventListener('hide.bs.offcanvas', this.toggleDetail)
+
+    {# 驱动页面切换：所有页内跳转统一按url例如："/timeline/records/xxxxx.html" #}
+    this.goto=function(inObj){ // inObj = inURL || e 
+        let event = inObj.constructor === Object ? inObj : (window.event || {});
+        let $tar= event ? event.currentTarget : (window.event.currentTarget || {});
+
+        let inURL=(inObj.constructor === String) ? inObj : (($tar.dataset && $tar.dataset.drUrl) ? $tar.dataset.drUrl : false);
+        if(!inURL)throw new Error("goto():没有url");
+        let objRouter=getRouter(inURL);
+        const isFullURL=(inURL.split("/").length>2 || (inURL.split("/").length==2 && inURL.indexOf(".html")==-1 && inURL.indexOf("/search?q=")==-1));//2级以上，或者2级且没有有html或search?q="/artist"
+        //const isDetailOld=(inURL.split("/").length==2 && inURL.indexOf(".html")!=-1);
+        //const isSearchOld=(inURL.split("/").length==2 && inURL.indexOf("/search?q=")!=-1);
+        {# 绝对地址为外部链接 #}
+        if(inURL.search(/^http:|^https:/gi)!=-1){ {# let isAbsoluteLink=(inURL.split("/")[0].indexOf("http:")!=-1 || inURL.split("/")[0].indexOf("https:")!=-1); #}
+            window.open(inURL);
+            return;
+        }else if(inURL=="/"){
+            this.header.objNavTo={apiDetail:""};
+            {# window.history.back(); #}
+        }else if(isFullURL){//2级以上，或者2级且没有有html或search?q="/artist"
+            if(!objRouter.url)debugger;
+            inURL="/index"+inURL;
+            let listURL=inURL.split("/");
+            let bsMain=listURL[2] == "timeline" ? "timeline" : "artists";//不是timeline就是artists;
+            let detail = listURL[listURL.length-1] || "";
+            detail = (detail.indexOf(".html") !=-1 || detail.indexOf("search?q=")!=-1) ? detail : "";//没有.html则无效;
+            let obj={
+                bsMain,
+                bsTimeline:listURL[3] || this.header.strAliasNav,// || this.header.funFindByURL().defaultUrl,
+                detail,
+            }
+            if(objRouter.bsMain!=obj.bsMain || objRouter.detail!=obj.detail || objRouter.bsTimeline!=obj.bsTimeline)debugger
+            else{
+                obj={
+                    bsMain:objRouter.bsMain,
+                    bsTimeline:objRouter.bsTimeline,
+                    detail:objRouter.detail,
+                }
+            }
+            this.header.objNavTo=obj;
+            this.dispatchEvent(new CustomEvent("NAV_TO", {
+                detail:{objNew:this.header.objNavTo,objOld:this.header.objNavOld},
+            }))
+        }else if(regDetail.test(inURL)){  //if(inURL.split("/").length==2 && inURL.indexOf(".html")!=-1){
+            //含html为详情{# 如果只传入/aaaaa___xxx.html为单独跳转detail #}
+            //含/search?q=为搜索{# 如果只传入//search?q=为单独跳转search #}
+            this.header.objNavTo={apiDetail:inURL};
+        }else{
+            debugger
+            throw new Error("goto(inURL)格式错误:"+inURL);
+        }
+        {# 如果有详情，打开详情 #}
+        this.toggleDetail(this.header.objNavTo);
+        {# 如果按钮点击，屏蔽后续事件 #}
+        if(window.event && window.event.type=="click"){
+            window.event.preventDefault();
+            window.event.stopPropagation();
+        }
+    }
+            
+
+    {# 在时间轴页，再次导航objNew #}
+    this.addEventListener("BS_COVER_TIMELINE_FINAL",(e)=>{
+        if(e.detail.bsMain!="artists" && this.header.objNavTo.bsTimeline){
+            this.dispatchEvent(new CustomEvent("NAV_TO_TIMELINE", {
+                detail:{objNew:Object.assign({},this.header.objNavTo,e.detail),objOld:this.header.objNavOld},
+            }))
+        }else {
+            debugger
+            throw new Error("再次导航objNew到时间轴，但是" + JSON.stringify(this.header.objNavTo));
+        }
+    })
+    {#-
+    this.addEventListener("BS_TIMELINE_DOM_READY",(e)=>{
+        this.isInit=true;
+    })
+    const eBnNav=function(strAliasNav){
+        let currentPageIndex=this.header.listNav.findIndex(v=>(v.defaultUrl==strAliasNav));
+        if(currentPageIndex>=0){
+            this.goto("/timeline/"+ this.header.listNav[currentPageIndex].defaultUrl +"/");
+        }
+    }
+    -#}
 </script>
 {# 导航相关控制&监听 #}
 <script>
@@ -214,8 +394,19 @@
     window.addEventListener('DOMContentLoaded', ePopStateHeader, false);
 
     function ePopStateHeader(event){
-        console.info("history::",event.type,"window.history.state:",window.history.state,";event.state",event.state,"strAliasNav=",this.header.strAliasNav);
+        console.info("history::",event.type,window.location.pathname,"window.history.state:",window.history.state,";event.state",event.state,"strAliasNav=",this.header.strAliasNav);
         {# 非首页需要跳转相应页 #}
+        //let path=window.location.pathname.split("/index")[1] || window.location.pathname || "/";
+
+        //let isStartOfIndex=/^\/index/g
+        //isStartOfIndex=isStartOfIndex.test(window.location.pathname);
+        //let isStartOfBSMain=/^\/timeline|^\/artists/gi
+        //isStartOfBSMain=isStartOfBSMain.test(window.location.pathname)
+        //let path="/artists/news";        
+        //if(!isStartOfIndex && isStartOfBSMain)path=window.location.pathname;
+
+        let path=getRouter(window.location.pathname).pathname;
+
         if(event.type =="DOMContentLoaded" || event.type =="Load"){
             {# 等待sliceCover初始化完成？ #}
             //function eTimelineReady(e){
@@ -223,113 +414,162 @@
             //    this.removeEventListener("BS_TIMELINE_DOM_READY",eTimelineReady);
             //}
             //this.addEventListener("BS_TIMELINE_DOM_READY",eTimelineReady)
-            this.goto(window.location.pathname.split("/index")[1]);
+            this.goto(path+decodeURI(window.location.search));
         }else{
             {# 浏览器返回按钮或者手动=》更新导航状态 #}
             if(event.type=="popstate" || event.state){
-                this.goto(window.location.pathname.split("/index")[1]);                
+                this.goto(path+decodeURI(window.location.search));                
             }else{
                 this.header.funSetNav(this.header.strAliasNav);
             }
         }
     }
-    {# 页面切换完成 #}
-    function eNavAt(e){
-        {# history路由 #}
-        let obj={
-            bsMain:e.detail.bsMain || this.header.strBSMain,
-            bsTimeline:e.detail.bsTimeline || this.header.strAliasNav || false,
-        }
-        Object.assign(obj,e.detail);
-        this.header.objNavAt=obj;//objNavAt会保存在objNavTo
-    }
-    this.addEventListener("NAV_AT",eNavAt);
-
-    {# 详情页设置 #}
-    let $offcanvasLeft=document.getElementById("offcanvasLeft");
-    let $offcanvasRight=document.getElementById("offcanvasRight");
-    this.toggleDetail=function(e={}){
-
-        let bsOffcanvasLeft=bootstrap.Offcanvas.getOrCreateInstance($offcanvasLeft);
-        let bsOffcanvasRight=bootstrap.Offcanvas.getOrCreateInstance($offcanvasRight);
-        let detail=e;
-        
-        if(e.type=='hide.bs.offcanvas'){
-            {# 清除导航 #}
-            bsOffcanvasLeft.hide();
-            that.dispatchEvent(new CustomEvent("NAV_AT", { detail:{apiDetail:false,titleDetail:""}, }));
-        }else if(e.relatedTarget || e.apiDetail){
-            if(e.apiDetail){
-                bsOffcanvasRight.show();
-            }else if(e.type=='show.bs.offcanvas' && e.relatedTarget){
-
-            }
-            bsOffcanvasLeft.show();
-            that.dispatchEvent(new CustomEvent("OPEN_OFFCANVAS_DETAIL", {detail}));
-        }else if(e.apiDetail === ""){ {# 没有detail.relatedTarget，apiDetail ===""关闭详情 #}
-            bsOffcanvasRight.hide();
-        }else{ {# 没有detail.relatedTarget，也没有apiDetail 手动触发bs->show触发的事件 是不需要监听的 #}
-            return;
-        }
-    }
-    $offcanvasRight.addEventListener('show.bs.offcanvas', this.toggleDetail)
-    $offcanvasRight.addEventListener('hide.bs.offcanvas', this.toggleDetail)
-
-    {# 驱动页面切换：所有页内跳转统一按url例如："/timeline/records/xxxxx.html" #}
-    this.goto=function(inObj){ // inObj = inURL || e 
-        let event = inObj.constructor === Object ? inObj : (window.event || {});
-        let $tar= event ? event.currentTarget : (window.event.currentTarget || {});
-
-        let inURL=(inObj.constructor === String) ? inObj : (($tar.dataset && $tar.dataset.drUrl) ? $tar.dataset.drUrl : false);
-        if(!inURL)throw new Error("goto():没有url");
-        {# 绝对地址为外部链接 #}
-        if(inURL.split("/")[0].indexOf("http:")!=-1 || inURL.split("/")[0].indexOf("https:")!=-1){
-            window.open(inURL);
-            return;
-        }else if(inURL.split("/").length>2 || (inURL.split("/").length==2 && inURL.indexOf(".html")==-1)){
-            inURL="/index"+inURL;
-            let listURL=inURL.split("/");
-            let bsMain=listURL[2] == "timeline" ? "timeline" : "artists";//不是timeline就是artists;
-            let detail = listURL[listURL.length-1] || "";
-            detail = detail.indexOf(".html") !=-1 ? detail : "";//没有.html则无效;
-            let obj={
-                bsMain,
-                bsTimeline:listURL[3] || this.header.strAliasNav,// || this.header.funFindByURL().defaultUrl,
-                detail,
-            }
-            this.header.objNavTo=obj;
-            this.dispatchEvent(new CustomEvent("NAV_TO", {
-                detail:{objNew:this.header.objNavTo,objOld:this.header.objNavOld},
-            }))
-        }else if(inURL.split("/").length==2 && inURL.indexOf(".html")!=-1){//含html为详情{# 如果只传入/aaaaa___xxx.html为单独跳转detail #}
-            this.header.objNavTo={apiDetail:inURL};            
-        }else{
-            debugger
-            throw new Error("goto(inURL)格式错误:"+inURL);
-        }
-        {# 如果有详情，打开详情 #}
-        this.toggleDetail(this.header.objNavTo);
-    }
-            
-
-    {# 在时间轴页，再次导航objNew #}
-    this.addEventListener("BS_COVER_TIMELINE_FINAL",(e)=>{
-        if(this.header.objNavTo.bsMain!="artists" && this.header.objNavTo.bsTimeline){
-            this.dispatchEvent(new CustomEvent("NAV_TO_TIMELINE", {
-                detail:{objNew:this.header.objNavTo,objOld:this.header.objNavOld},
-            }))
-        }else throw new Error("再次导航objNew到时间轴，但是" + toString(this.header.objNavTo));
-    })
-    //this.addEventListener("BS_TIMELINE_DOM_READY",(e)=>{
-    //    this.isInit=true;
-    //})
-    const eBnNav=function(strAliasNav){
-        let currentPageIndex=this.header.listNav.findIndex(v=>(v.defaultUrl==strAliasNav));
-        if(currentPageIndex>=0){
-            this.goto("/timeline/"+ this.header.listNav[currentPageIndex].defaultUrl +"/");
-        }
-    }
 </script>
+
+{# 浮层：菜单 #}
+
+{# 侧边导航菜单 #}
+<div id="offcanvasRightMenu" class="offcanvas offcanvas-end offcanvasRightMenu-md" tabindex="-1" aria-labelledby="offcanvasRightMenuLabel">
+    <div class="offcanvas-header">
+        {# <h5 id="offcanvasRightLabel">Offcanvas right</h5> #}
+        {# <div class="btn btn-search" onclick='window.eBnSearch(event)'><i class="fa fa-search"></i></div> #}
+        <bn-search class="btn" onclick="window.eBnSearch(event)"></bn-search>
+        <bn-close class="btn btn-close"  aria-label="Close" data-bs-dismiss="offcanvas" aria-label="Close"></bn-close>
+        {# <button type="button" class="btn btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button> #}
+    </div>
+    <div class="offcanvas-body offcanvas-body-md d-flex flex-column  justify-content-end">
+        {# 导航菜单 #}
+        <ul class=" flex-fill d-flex flex-column justify-content-start flex-wrap">
+            {% for cate in navigation %} {% if cate.parentId == '0' %}
+            <li class="menuItem menuItem-md text-nowrap hoverUnderline" onclick="goto('/timeline/{{cate.defaultUrl}}/')" data-bs-toggle="offcanvas" href="#offcanvasRightMenu">
+                {{cate.name}}  {{cate.alias if cate.alias else ""}}
+                {# <a class="" style="color: inherit" tabindex="-1" alt="{{site.altkey}}{{cate.name}}" name="{{cate.defaultUrl}}" data-bs-toggle="offcanvas" href="#offcanvasRightMenu" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">{{cate.name}}  {{cate.alias if cate.alias else ""}}</a> #}
+            </li>
+            {% endif %} {% endfor %}
+        </ul>
+        {# 链接和其他 #}
+        <ul class="menuFoot">
+            <li>网易云音乐</li>
+            <li>豆瓣</li>
+            <li>Facebook</li>
+            <li>订阅</li>
+            <li>联系我们</li>
+
+        </ul>
+        <div class="menuFootCopyright">赤瞳音乐&nbsp;&nbsp;RUBY&nbsp;EYES&nbsp;RECORDS&nbsp;&nbsp;&nbsp;&nbsp;Copyright©2021</div>
+    </div>
+    <script>
+        window.eBnSearch=function(e){
+            let $offcanvasSearch=document.getElementById("offcanvasSearch")
+            let bsOffcanvasSearch=bootstrap.Offcanvas.getOrCreateInstance($offcanvasSearch);
+            let bsOffcanvasMenu=bootstrap.Offcanvas.getOrCreateInstance("#offcanvasRightMenu");
+            bsOffcanvasSearch.show();
+            bsOffcanvasMenu.hide();
+            {# 自动获取焦点 #}
+            $offcanvasSearch.addEventListener("shown.bs.offcanvas",(e)=>{
+                setTimeout(function(){
+                    window.offcanvasSearch.querySelector(".offcanvas-header input").focus();
+                },100);
+            },{once:true})
+        }
+    </script>
+</div>
+
+{# 搜索建议 #}
+<datalist id="listInputSearchSuggest">
+    {% for letter,artistItems in listArtists|sort(false,false,"letters")|groupby("firstLetter") %}
+        {% for artist in artistItems %}
+        <option>{{artist.name}}</option>
+        {% endfor %}
+    {% endfor %}
+</datalist>
+
+{# 搜索菜单 #}
+<div id="offcanvasSearch" class="offcanvas offcanvas-end" tabindex="-1" aria-labelledby="offcanvasSearchLabel">
+    <div class="offcanvas-header">
+        <input id="inputSearch" placeholder="搜索" autocomplete="on" list="listInputSearchSuggest" max-length="50" onchange="eSearch(event)"></input>
+
+        {# <div class="btn btn-search" onclick="eSearch(event)"><i class="fa fa-search"></i></div> #}
+        <bn-search class="btn" onclick="eSearch(event)"></bn-search>
+        <bn-close class="btn btn-close"  aria-label="Close" onclick="window.goto('/')" aria-label="Close"></bn-close>
+    </div>
+    <div class="offcanvas-body offcanvas-body-md d-flex flex-column">
+        {# 导航菜单 #}
+        <ul id="listSearchResult" class="">
+
+        </ul>
+        {{njLoading()}}
+        {# 浮动导航 #}
+        <ul class="nav">
+        </ul>
+    </div>
+    <script>
+        window.eSearch=function(e){
+            let that=this;
+            {# 如果是从tag链接过来，填充搜索词 #}
+            if(e.detail && e.detail.apiDetail)window.inputSearch.value=e.detail.apiDetail.split("search?q=")[1];
+            let v=window.inputSearch.value;//e.currentTarget.value || e;
+            if(v=="")return;
+            window.offcanvasSearch.classList.add("loading");
+            {# 检索 #}
+            fetch("/search?q="+v)
+            .then(function(data){
+                return data.text();
+            }).then(function (data) {
+                {# vm.isLoading=false; #}
+                // 在这个then里面我们能拿到最终的数据
+                let objData=JSON.parse(data);
+                if(objData.status==200){
+                    window.offcanvasSearch.classList.remove("loading");
+                    try{                        
+                        let domToAppend = document.createRange().createContextualFragment(objData.data.dom);
+                        {# vm.$loading.before(domToAppend.cloneNode(true)); #}
+                        window.listSearchResult.replaceChildren(domToAppend.cloneNode(true));
+                        {# 触发事件更新懒加载图片 #}
+                        console.debug("eSearch=>appendDOM:done",objData);
+                        {# resolve({msg:"succ",isEnd:vm.yearTotal<=vm.yearCurrent}); #}
+                        that.dispatchEvent(new CustomEvent("NAV_AT", { detail:{apiDetail:"/search?q="+v,titleDetail:"搜索：" + v}, }));
+                        {# 前端生成浮动导航 #}
+                        let objNav=objData.data.pageInfo.objCnt;
+                        if(objNav){
+                            let $nav=window.offcanvasSearch.querySelector(".nav");
+                            $nav.replaceChildren();
+                            window.listSearchResult.classList.value="";
+                            function eBnNav(e){
+                                {# window.listSearchResult.classList.value=e.currentTarget.dataset.docAlias; #}
+                                window.listSearchResult.classList.toggle(e.currentTarget.dataset.docAlias);
+                                e.currentTarget.classList.toggle("off");
+                            }
+                            for(let k in objNav){
+                                let domBnNav=document.createElement("li");
+                                domBnNav.classList.add("list-inline-item","rounded-pill","border","text-truncate","hoverUnderline");
+                                domBnNav.innerText=objNav[k].name+" "+ Math.min(999,objNav[k].cnt);
+                                domBnNav.setAttribute("data-doc-alias",k);
+                                domBnNav.addEventListener("click",eBnNav)
+                                $nav.appendChild(domBnNav);
+                                window.listSearchResult.classList.add(k);
+                            }
+                        }
+                    }catch(e){
+                        {# $timelineContent.dataset["strNoticeEnd"] = "加载错误"; #}
+                        debugger;
+                        throw new Error("timeline加载更多内容,通信正常，返回结果错误"+JSON.stringfy(e));
+                        {# reject({msg:"timeline加载更多内容,通信正常，返回结果错误 ", objData}); #}
+                    }
+                }else{
+                    debugger
+                    throw new Error("timeline加载更多内容，服务器通信错误："+objData.status);
+                }
+            }).catch(err=>{
+                debugger
+                return Promise.reject(err);
+            });    
+        }
+        this.addEventListener("OPEN_OFFCANVAS_SEARCH",window.eSearch);
+    </script>
+</div>
+
+
 
 <input type="hidden" value="{{userInfo._id}}" id="userId">
 <input type="hidden" value="{{logined}}" id="logined">
@@ -345,39 +585,13 @@
 {# <header class="clearfix" id="header" ms-controller="headerCtr"> #}
 {# <div id="navHeader" class="container-fluid position-absolute heightNav" style="" > #}
 <div id="navHeader" class="listArtist done" >
-
-    {# PC版显示 #}
-    <!--
-    <div class="row d-none d-md-block " ms-controller="headerCtr">
-        <div class="row justify-content-between p-4">
-            {# <h1 class="display-6 text-white">赤瞳音乐</h1> #}
-            <div class="col-4 ms-4">
-                <a class="logo d-flex" href="#"><img class="img-fluid" src="{{site.logo}}" alt="{{site.title}}"/></a>
-                {# <span class="text-muted">Toggleable via the navbar brand.</span> #}
-            </div>
-            {# 中部菜单 #}
-            <div id="navMenuBnGroup" class="col d-flex flex-row justify-content-center align-items-center">
-                <span class="px-3 rounded-pill border text-truncate">中文</span>
-                <span class="px-3 rounded-pill border text-truncate">EN</span>
-            </div>
-
-            {# search #}
-            <div class="col-3 input-group input-group-lg w-auto" :class="['input-area',(@activeSearch? 'active':'')]">
-                {# <input ms-on-keyup="@onKeyUp" type="text" class="form-control" ms-duplex="@searchkey" placeholder="Search">                             #}
-                <span class="input-group-text"><i ms-click='@searchMe' class="fa fa-search"></i></span>
-            </div>
-        </div>
-    </div>
-    -->
-
-
     {# toggle内容上部分 #}
     <nav id="headerNav" class="navbar d-flex flex-nowrap justify-content-between navbar-light bg-transparent sticky-top" ms-controller="headerCtr" style="">
         {# <div class="row"> #}
             <div class="navOffset navOffsetLeft navOffsetLeft-md d-flex"></div>
             {# logo&name #}
             <div class="navbar-brand">
-                <a class="d-flex" data-bs-toggle="offcanvas" data-dr-url="/about___.html" href="#offcanvasRight"><img class="img-fluid" src="{{site.logo}}" alt="{{site.title}}"/></a>
+                <a class="d-flex" onclick="window.goto('/about___.html')"><img class="img-fluid" src="{{site.logo}}" alt="{{site.title}}"/></a>
             </div>
             {# 手机缩略菜单 #}
             {# 
@@ -386,39 +600,33 @@
             </button>
              #}
              {# 占位挤占logo #}
-            <div class="navOffset navOffsetRight navOffsetRight-md d-flex d-md-flex">
+            <div class="navOffset navOffsetRight d-flex d-md-flex">
                 {# collapse  nav&search #}
                 <div id="collapseNavbarPC" class="d-none d-md-flex navbar-collapse navbar-collapse-md">
-                    <ul>
-                        {% for cate in navigation %} {% if cate.parentId == '0' %}
+                    <ul>{% for cate in navigation %} {% if cate.parentId == '0' %}                        
                         <li class="nav-item text-nowrap rounded-pill hoverUnderline" role="presentation" dr-dom-nav-bn="{{cate.defaultUrl}}">
                             <a class="nav-link" style="" role="menuitem" tabindex="-1" alt="{{site.altkey}}{{cate.name}}"
-                                href="javascript:void(0)" onclick="eBnNav('{{cate.defaultUrl}}')" name="{{cate.defaultUrl}}">{{cate.name}}</a>
-                        </li>
-                        {% endif %} {% endfor %}
+                                href="javascript:void(0)" onclick="goto('/timeline/{{cate.defaultUrl}}/')" name="{{cate.defaultUrl}}">{{cate.name}}</a>
+                        </li>{% endif %} {% endfor %}                        
                     </ul>
                     {# search #}
-                    <div class="input-group input-group-lg search" type="button" :class="['input-area',(@activeSearch? 'active':'')]">
-                        {# <input ms-on-keyup="@onKeyUp" type="text" class="form-control" ms-duplex="@searchkey" placeholder="Search">                             #}
-                        <span class="input-group-text"><i ms-click='@searchMe' class="fa fa-search"></i></span>
-                    </div> 
+                    {# <div class="btn btn-search" onclick="window.eBnSearch(event)"><i class="fa fa-search"></i></div> #}
+                    <bn-search class="btn" onclick="window.eBnSearch(event)"></bn-search>
                 </div>
                 <div class="btnWrapper">
                 {# <button type="button" class="btn-close text-reset" aria-label="Close" onclick="eClickTimelineClose()"></button> #}
-                <bn-close class="btn-close"  aria-label="Close" onclick="eClickTimelineClose()"></bn-close>
-                <bn-menu-toggler class="show"  data-bs-toggle="offcanvas" href="#offcanvasRightMenu" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation"></bn-menu-toggler>
+                <bn-close class="btn btn-close"  aria-label="Close" onclick="eClickTimelineClose()"></bn-close>
+                <bn-menu-toggler class="btn show"  data-bs-toggle="offcanvas" href="#offcanvasRightMenu" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation"></bn-menu-toggler>
                 </div>
             </div>
         {# </div> #}
     </nav>
     <div id="collapseNavbarMobile" class="navbar-collapse navbar-collapse-md">
-        <ul>
-            {% for cate in navigation %} {% if cate.parentId == '0' %}
+        <ul>{% for cate in navigation %} {% if cate.parentId == '0' %}            
             <li class="nav-item text-nowrap rounded-pill hoverUnderline" role="presentation" dr-dom-nav-bn="{{cate.defaultUrl}}">
                 <a class="nav-link" role="menuitem" tabindex="-1" alt="{{site.altkey}}{{cate.name}}"
-                    href="javascript:void(0)" onclick="eBnNav('{{cate.defaultUrl}}')" name="{{cate.defaultUrl}}">{{cate.name}}</a>
-            </li>
-            {% endif %} {% endfor %}
+                    href="javascript:void(0)" onclick="goto('/timeline/{{cate.defaultUrl}}/')" name="{{cate.defaultUrl}}">{{cate.name}}</a>
+            </li>{% endif %} {% endfor %}            
         </ul>
     </div>
 </div>

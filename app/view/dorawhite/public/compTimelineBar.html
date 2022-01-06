@@ -18,7 +18,7 @@
 
 {% macro timelineBarDocs(objTimeline,isExpend=false) %}
     {# {% if objTimeline.length>0%} width="82.3%" #}
-            <svg id="svgTimelineBar{{objTimeline.listIdxYears[0].strTitle}}" class="svgTimelineBar timelineBarClose" xmlns="http://www.w3.org/2000/svg" style="--width-timeline-bar-year:{{objTimeline.widthPercent}}">
+            <svg id="svgTimelineBar{{objTimeline.listIdxYears[0].strTitle}}" class="svgTimelineBar timelineBarClose" xmlns="http://www.w3.org/2000/svg" style="--width-timeline-bar-year:{{objTimeline.widthPercent}}" data-year="{{objTimeline.listIdxYears[0].strTitle}}">
                 {# <defs> #}
                     {# <rect id="svgD" width="4px" height="16px" fill="#231F20" /> #}
                 {# </defs> #}
@@ -28,13 +28,13 @@
                 {# {% endfor %} #}
                 {% if isExpend %}
                     {% for year in objTimeline.listIdxYears %}
-                        <g id="timelineBarYearGroup{{year.strTitle}}" width-year={{year["width-year"]}} width="4px" height="16px" fill="#231F20">
+                        <g data-year="{{year.strTitle}}" width-year={{year["width-year"]}} width="4px" height="16px" fill="#231F20">
                             {% for season in year.listIdxSeasons %}
-                                <g id="timelineSeasonGroup{{season.strTitle}}" class="groupSeason">
-                                    <rect id="timelineSeason{{season.strTitle}}" x="{{season.x}}%" class="b-s {{'b-y' if season.strTitle=='12月'}}" />
+                                <g data-season="{{year.strTitle}}{{season.strTitle}}" class="groupSeason">
+                                    <rect id="{{year.strTitle}}年{{season.strTitle}}" x="{{season.x}}%" class="b-s {{'b-y' if season.strTitle=='12月'}}" />
                                     {% for doc in season.listIdxDocs %}
                                         {# <rect x="{{idxDays}}%" width="{{objTimeline.widthPercent*0.5}}%" height="16px" fill="#231F20" /> #}
-                                        <rect class="b-d {{doc.docAlias}}" x="{{doc.posX}}%" id="b{{doc.date}}"/>
+                                        <rect class="b-d {{doc.docAlias if doc.docAlias else 'news'}}" x="{{doc.posX}}%" id="b{{doc.date}}"/>
                                     {% endfor %}
                                 </g>
                             {% endfor %}

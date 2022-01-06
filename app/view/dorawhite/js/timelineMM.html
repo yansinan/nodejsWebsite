@@ -79,6 +79,9 @@
             },
             scrollbar: true,
             //observeDOM: true // 开启 observe-dom 插件
+            preventDefaultException:{ 
+                className:/(^|\s)bsClick(\s|$)/
+            }
         }
         {# class按所有doc的栏目，统计并标注类 #}
         let $listDoc=$bsMM.querySelectorAll(".item");
@@ -102,7 +105,8 @@
                         let $listDocs=$mmNow.querySelectorAll("[dr-date-doc]");
                         $mmNow.$docLast=$mmNow._$docNow || false;
                         $mmNow._$docNow=Array.from($listDocs).find(($doc,idx)=>{
-                            return $doc.getBoundingClientRect().top >= topMM;
+                            const rect=$doc.getBoundingClientRect();
+                            return rect.height>0 && rect.top >= topMM;
                         });
                         if(!$mmNow._$docNow)$mmNow._$docNow=$listDocs[$listDocs.length-1];
                         return $mmNow._$docNow;

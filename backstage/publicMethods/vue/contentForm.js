@@ -54,7 +54,7 @@ export function initData(that){
                         contentObj.categories = categoryIdArr;
                     }
                     if (contentObj.tags)contentObj.tags = contentObj.tags.map(v=>(v && v._id));
-                    if (contentObj.keywords)contentObj.keywords = contentObj.keywords.join();
+                    if (contentObj.keywords)contentObj.keywords = contentObj.keywords.join(",");
                     if (contentObj.listRefs)contentObj.listRefs=contentObj.listRefs.map(v=>{return v._id});
                     if (contentObj.listMembers)contentObj.listMembers = contentObj.listMembers.map(v=>{return v._id});
 
@@ -151,7 +151,7 @@ export let methods={
     // 20210131 输入改为单个字符串，或name字符串数组
     updateKeywords(newVal,isDelete=false){
         //两处自动复制：乐队成员，标签
-        let listTmp=this.formState.formData.keywords.split(",");
+        let listTmp=this.formState.formData.keywords!=""?this.formState.formData.keywords.split(","):[];
         let listName=[];
         if(newVal && newVal!="" && newVal instanceof String)listName=[newVal];
         if(newVal && newVal.length>0 && newVal instanceof Array){
@@ -165,7 +165,7 @@ export let methods={
           listTmp=listTmp.filter(v=>(listName.indexOf(v)===-1))
         }
         listTmp = [...(new Set(listTmp))];
-        this.formState.formData.keywords=listTmp.join();
+        this.formState.formData.keywords=listTmp.filter(v=>(v && v!="")).join();
         return this.formState.formData.keywords;
     },    
   

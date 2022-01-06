@@ -1,14 +1,24 @@
 
 {% macro tag(name,href) %}
-    <li class="list-inline-item px-3 rounded-pill border text-truncate"><a href="{{href}}" class="">{{name}}</a></li>
+    <li class="list-inline-item px-3 rounded-pill text-truncate hoverUnderline bsClick" onclick="window.goto('{{href}}')">{{name}}</li>
 {% endmacro %}
 
 {% macro listTags(listTags,class="") %}
     {% if listTags.length>0%}
         <ul class="list-inline">
             {% for tag in listTags %}
-                <li class="list-inline-item rounded-pill border text-truncate"><a href="{{tag.url}}" class="{{class}}">{{tag.name}}</a></li>
+                <li class="list-inline-item rounded-pill text-truncate hoverUnderline bsClick" onclick="window.goto('/search?q={{tag.name}}')">{{tag.name}}</li>
             {% endfor %}
         </ul>
+    {% endif %}
+{% endmacro %}
+
+{% macro listArtists(listArtists,class="") %}
+    {% if listArtists.length>0%}
+        <ol class="list-inline artists">
+            {% for artist in listArtists %}
+                <li class="list-inline-word"><a class=" bsClick hoverUnderline" onclick="window.goto('{{artist.url}}')">{{artist.name}}</a></li>
+            {% endfor %}
+        </ol>
     {% endif %}
 {% endmacro %}

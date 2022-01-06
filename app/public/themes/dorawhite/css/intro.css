@@ -7,7 +7,9 @@
     /* height: 34.214rem; */
     overflow-wrap: break-word;
     margin-top: 1.307rem;
+    margin-top: 0px;
     font-size: 0;
+    width: 90%;
   }
 .section span{
     font-size: calc(24 * 1rem / 26);

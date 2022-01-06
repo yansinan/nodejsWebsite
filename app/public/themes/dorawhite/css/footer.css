@@ -1,6 +1,7 @@
+@import url('timelineBar.css');
 #dr-footer{
     position: absolute;
-    bottom: 0;
+    top: 0;
     /* 以上是flex版之前的 */
     transition-property: all;
     transition-duration: 0.5s;
@@ -13,12 +14,11 @@
     height:0px;
     max-height: var(--footer-size-mobile,16px);
 
-    position: relative;
+    /* position: relative; */
     /* bottom: unset!important; */
-    /* top: calc(15px - 100vh); */
     /* top: calc(var(--vh, 1vh) * -100 + var(--footer-size-mobile,16px) + 2px); */
-    top: calc(var(--vh, 1vh) * -100);
-
+    /* top: calc(var(--vh-viewport, 1vh) * -100); */
+    /* top: calc(var(--vh, 1vh) * -100 - ); */
     /* left: calc(15px); */
     transform: rotate(90deg);
     transform-origin: calc(var(--footer-size-mobile,16px)/2) calc(var(--footer-size-mobile,16px)/2);
@@ -26,7 +26,7 @@
 
 /* 测试用：悬浮按钮 */
 .foot-float.bnTest{
-    background-color: #fff;
+    background-color: #FDFDFD;
     position: fixed;
     width: 1.25rem;
     height: 1.25rem;
@@ -35,23 +35,21 @@
     -webkit-transition: .3s;
     transition: .3s;
     z-index: 1001;
-    right:0.534rem;
-    bottom:1.25rem;
-    
+    right: calc(0.534rem + 0.25rem);
+    bottom: 0.75rem;
     display:flex;
     justify-content: center;
     align-items: center;
-    background: url(/static/themes/images/bnArrowLine.svg) center/1.25rem auto no-repeat ;
+    background: url("/static/upload/images/icons/arrow-down.svg") center/1.25rem auto no-repeat ;
 
     box-shadow: none;
     border: none;
     overflow: visible;
 }
 .foot-float.back-to-top{
-    background-color: #fff;
+    background-color: #FDFDFD;
     position: fixed;
-    bottom: 150px;
-    border-radius: 20px;
+    border-radius: 50%;
     cursor: pointer;
     -webkit-transition: .3s;
     transition: .3s;
@@ -61,7 +59,10 @@
     width: min-content;
     height: min-content;
     right:0.534rem;
+    right: calc(0.534rem + 0.25rem);
+    bottom: 150px;
     top:50vh;
+    top: calc(50vh - 1rem );
     display:flex;
     justify-content: center;
     align-items: center;
@@ -83,9 +84,17 @@
     #dr-footer{
         overflow: hidden;
     }
+    .foot-float.back-to-top{
+        right:calc(0.534rem + 18px);
+        top:calc(50vh - ( 40 * 1rem /36 ) );
+    }
+    .foot-float.bnTest{
+        right:calc(0.534rem + 18px);
+        bottom:3rem;
+    }
     .foot-float .btnRubyEyes-md{
-        width: 2rem;
-        height: 2rem;
-        background: url(/static/upload/images/defaultlogo.png) center/1.5rem auto no-repeat ;
+        width: calc(80 * 1rem / 36);
+        height: calc(80 * 1rem / 36);
+        background: url(/static/upload/images/defaultlogo.png) center/1.55rem auto no-repeat ;
     }
 }

@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-01-28
  * @Last Modified by: dr
- * @Last Modified time: 2021-09-01 11:35:17
+ * @Last Modified time: 2021-12-14 22:16:23
  */
 
 'use strict';
@@ -70,10 +70,11 @@ class ServicePlugin extends Service {
                         dateMM:" "+moment(objVideo.date).format("MM"),
                         dateFull:moment(objVideo.date).format("YYYY-MM-DD"),
                         dateTimeline:moment(objVideo.date).format("MM/DD"),
-                        nameTimeline:objVideo.name,
+                        nameTimeline:"视频《"+objVideo.name+ "》发布",//objVideo.nameTimeline,
+                        name:objVideo.name,
                         sImg:objVideo.urlImg,
-                        nameArtists:artist.name,
-                        url:objVideo.link,
+                        nameArtist:artist.name,
+                        url:objVideo.url,//"/video___"+objVideo.idURL+".html",//objVideo.link,
 
                         percentDateOfYear:percentDateOfYear(objVideo.date),
                     }
@@ -111,6 +112,32 @@ class ServicePlugin extends Service {
         if(dateRange)listSortedDocs=listSortedDocs.filter(docV=>(dateRange &&  moment(docV.date).isBetween(dateRange.dateStart,dateRange.dateEnd)));
         return listSortedDocs;
     }
+
+    // 根据contentId从webcrawl获取&组合单个视频数据
+    async item(ctx,{
+        query = {},
+        populate = [],
+        files = null
+    } = {}){
+        let idNCMMV=query._id;
+        const console=this.logger;
+        let res=false;
+        try{
+            if(!idNCMMV)throw new Error("没有idNCMMV");
+            res=await this.ncmMV(idNCMMV);
+            res.comments=res.desc;
+            res.sImg=res.urlImg;//前端使用
+            res.dateFull=moment(res.date).format("YYYY-MM-DD"),
+            res.urlVideo=await this.ncmURLMV(idNCMMV);
+            res.docAlias="videos";
+            return res;
+        }catch(e){
+            debugger
+            console.error("错误：视频item",e);
+            return "";
+        }  
+        
+    }
     // 再取视频播放地址/mv/url
     // let resNCM=await this.ctx.service.webCrawler.api("/mv/url",{id:idNCMMV});
     // {
@@ -135,15 +162,39 @@ class ServicePlugin extends Service {
     // message: "OK",
     // }
     async ncmURLMV(idNCMMV){
+        // const console=this.logger;
         try{
             if(!idNCMMV)throw new Error("没有idNCMMV");
-            let resNCM=await this.ctx.service.webCrawler.api("/mv/url",{id:idNCMMV});
-            // 万一失去链接，直接返回，不影响
-            if(resNCM.error || !resNCM.data.url) throw new Error("webCrawler连接服务器错误,status:"+resNCM.status);
-            return resNCM.data.url;
+            // 优先检索本地文件
+            let pathURL="upload/videos/"+idNCMMV+".mp4";
+            let isLocal=this.ctx.service.uploadFiles.existsSync(pathURL);
+            if(isLocal){
+                console.info("video.ncmURLMV：找到本地mp4：",isLocal,pathURL);
+                return isLocal;
+            }else{
+                let resNCM=await this.ctx.service.webCrawler.api("/mv/url",{id:idNCMMV});
+                // 万一失去链接，直接返回，不影响
+                if(resNCM.error || !resNCM.data.url) throw new Error("webCrawler连接服务器错误,status:"+resNCM.status);
+                // 下载mp4到本地
+                this.ctx.runInBackground(async () => {
+                    console.info("video.ncmURLMV：后台下载mp4：开始",resNCM.data.url);
+                    try{
+                        let resDownload=await this.ctx.service.webCrawler.download(resNCM.data.url);
+                        console.info("video.ncmURLMV：后台下载mp4：完成",resNCM.data.url,resDownload.status);
+                        if(resDownload.status==200){
+                            let resSave=await this.ctx.service.uploadFiles.saveBinary(pathURL,resDownload.data);//  /app/upload/songs/idSong.mp3
+                            console.info("video.ncmURLMV：后台保存mp4：完成：",resSave.url);
+                        }else throw new Error("download出错,urlSongNCM:"+resNCM.data.url)       
+                    }catch(err){
+                        console.error("video.ncmURLMV：后台:错误：",resNCM.data.url,err);
+                        debugger
+                    }
+                });                
+                return resNCM.data.url;
+            }
         }catch(e){
             debugger
-            console.warn("ncmURLMV错误",e);
+            console.error("ncmURLMV错误",e);
             return "";
         }        
     }
@@ -201,6 +252,7 @@ class ServicePlugin extends Service {
     //     message: "OK",
     // }
     async ncmMV(idNCMMV){
+        const console=this.logger;
         try{
             if(!idNCMMV)throw new Error("没有idNCMMV");
             let resNCM=await this.ctx.service.webCrawler.api("/mv/detail",{mvid:idNCMMV});
@@ -217,11 +269,13 @@ class ServicePlugin extends Service {
                 urlImg:resNCM.data.cover,//ncmMV.imgurl,
                 urlVideo:"",
                 link:"https://music.163.com/#/mv?id="+resNCM.data.id,
+                desc:resNCM.data.desc || "",
             }
+            // res.desc=res.desc.replace(/^\s*|\s*$/g,"");
             return res;
         }catch(e){
             debugger
-            console.warn("ncmMV错误",e);
+            console.error("ncmMV错误",e);
             return false;
         }        
     }

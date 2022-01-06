@@ -96,6 +96,10 @@ module.exports =app=>{
         schema.virtual('listArtists').get(function () {
             return this.listRefs;
         });
+        // 搜索结果类名:
+        schema.virtual('docAliasSearch').get(function () {
+            return "演出";
+        });
 
         let model=app.model.Show || Doc.discriminator("Show", schema);
     

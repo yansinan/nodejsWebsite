@@ -115,16 +115,16 @@ class APIController extends Controller {
         }
 
         // 关键字
-        let targetKeyWords = [];
-        if (fields.keywords) {
-            if ((fields.keywords).indexOf(',') >= 0) {
-                targetKeyWords = (fields.keywords).split(',');
-            } else if ((fields.keywords).indexOf('，') >= 0) {
-                targetKeyWords = (fields.keywords).split('，');
-            } else {
-                targetKeyWords = fields.keywords;
-            }
-        }
+        //let targetKeyWords = [];
+        //if (fields.keywords) {
+        //    if ((fields.keywords).indexOf(',') >= 0) {
+        //        targetKeyWords = (fields.keywords).split(',');
+        //    } else if ((fields.keywords).indexOf('，') >= 0) {
+        //        targetKeyWords = (fields.keywords).split('，');
+        //    } else {
+        //        targetKeyWords = fields.keywords;
+        //    }
+        //}
         // 作者
         
         let formObj = {

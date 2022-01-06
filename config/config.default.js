@@ -37,8 +37,57 @@ module.exports = appInfo => {
     },
 
     // 配置需要的中间件,数组顺序即为中间件的加载顺序
-    middleware: ['notfoundHandler', 'crossHeader', 'compress', 'authUserToken', 'authAdminToken', 'authAdminPower'],
-
+    // middleware: ['notfoundHandler', 'crossHeader', 'compress', 'authUserToken', 'authAdminToken', 'authAdminPower',"errorHandler"],
+    middleware: ['notfoundHandler', 'crossHeader', 'compress', 'authAdminToken', 'authAdminPower',"errorHandler"],
+    errorHandler:{
+      match:[
+        "/artist___:id.html",
+        "/:service?___:id.html",
+        "/about___.html",
+        "/about___:typeId?",
+        "/about___:typeId?.html",
+      ]
+    },
+    authAdminPower:{
+      match:[
+        "/admin/",
+        "/manage",
+        "/dr-admin",
+      ]
+    },
+    authAdminToken:{
+      match:[
+        "/admin/",
+        "/manage",
+        "/dr-admin",
+      ]
+    },
+    // 错误处理
+    onerror: {
+      all(err, ctx) {
+        // 在此处定义针对所有响应类型的错误处理方法
+        // 注意，定义了 config.all 之后，其他错误处理方法不会再生效
+        ctx.body = err;
+        ctx.status = 500;
+        debugger;
+        ctx.redirect("/404");
+      },
+      html(err, ctx) {
+        // html hander
+        ctx.body = '<h3>error</h3>';
+        ctx.status = 500;
+        debugger;
+      },
+      json(err, ctx) {
+        // json hander
+        ctx.body = { message: 'error' };
+        ctx.status = 500;
+        debugger;
+      },
+      jsonp(err, ctx) {
+        // 一般来说，不需要特殊针对 jsonp 进行错误定义，jsonp 的错误处理会自动调用 json 错误处理，并包装成 jsonp 的响应格式
+      },
+    },
     // gzip压缩
     compress: {
       threshold: 2048,

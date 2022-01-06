@@ -1,10 +1,26 @@
 <!DOCTYPE html>
-<html class="{{pageType}}">
+<html class="portrait">
 
 <head>
+    <meta name="x5-orientation" content="portrait">
+    <meta name="screen-orientation" content="portrait">
+    <meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0, width=device-width, viewport-fit=cover" />
     {# <meta name='viewport' content='initial-scale=1, viewport-fit=cover'> #}
     {% header adaptor="ie" %}
-    <script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.4.0/dist/lazyload.min.js"></script>  
+    <!-- 引入组件库 -->
+    <!-- Production version -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/avalon.js/2.2.7/avalon.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/popper.js/2.6.0/umd/popper.min.js"></script>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.0.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.0.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/better-scroll/2.4.1/better-scroll.min.js"></script>
+    {#  font-awesome #}
+    {# 
+    {% plugin name="popper twitter-bootstrap betterScroll" %} 
+    {% endplugin %}
+    #}
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.4.0/dist/lazyload.min.js"></script>
     <script>
         {# // Set the options globally to make LazyLoad self-initialize #}
         //window.lazyLoadOptions = {
@@ -21,25 +37,34 @@
         //this.addEventListener("BS_TIMELINE_DOM_LOADED",(e)=>{
         //    //if(window.lazyLoadInstance)window.lazyLoadInstance.update();
         //})
+        Object.defineProperties(this,{
+            isMobile:{
+                get:()=>(this.$footer.isRotated || false), // || this.$timelineContent.isMobile
+            },
+            isPortrait:{
+                get:()=>{
+                    if(!this.isMobile)return true;
+                    if (this.isMobile && (window.orientation == 0 || window.orientation == 180))return true;;
+                    {# else if (window.orientation == 90 || window.orientation == -90) #}
+                    return false;
+                }
+            }
+        })
     </script>
-    <!-- 引入组件库 -->
-    <!-- Production version -->
-    {# <script src="https://unpkg.com/@popperjs/core@2"></script> #}
-    {# <script src="https://cdn.bootcdn.net/ajax/libs/popper.js/2.6.0/umd/popper.min.js"></script> #}
-    {# <script src="https://unpkg.com/better-scroll@latest/dist/better-scroll.js"></script> #}
-    {#  font-awesome #}
-    {% plugin name="popper twitter-bootstrap betterScroll" %}
-    {% endplugin %}
     {# 模块 #}
     {# {% from "./public/compNavAvatar.html" import navAvatar %} #}
     {# {% from "./public/compContainerList.html" import containerOfList %} #}
     {% from "./public/compListTags.html" import listTags %}
     {% from "./public/compTimelineBar.html" import timelineBar %}
     {% from "./public/compTimelineBar.html" import timelineBarDocs %}
+    {% from "./public/compLoading.html" import njLoading %}
     <!-- 二次开发静态资源 -->
     {#  dora.front.js avatar.css  white.css #}
-    {% assets 'default.css detail.css header.css footer.css timelineBar.css artist.css timeline.css utils.css' %}
+    {# 
+    {% assets 'default.css' %}
     {% endassets %}
+    #}
+    <link rel="stylesheet" href="/static/themes/dorawhite/css/default.css">
 
     {% endheader %}
 
@@ -55,28 +80,30 @@
 
 <body class="flex">
     {# 各种浮动层 #}
-    {% include "./public/overlay.html" %}
+    {% block overylay %} {% include "./public/overlay.html" %} {% endblock %}
     {# 整屏容器 #}
     {% include "./public/header.html" %}
-    {% block footer %}
-        {% include "./public/footer.html" %}
-    {% endblock %}
+    {% block footer %} {% include "./public/footer.html" %} {% endblock %}
 
-    {% block cover %}
-        <div id="mainCover" class="paddingCoverTop paddingCoverTop-md">
-            {# <div class="w-100 heightNav"></div> #}
-            {# scroll #}
-            <div id="coverWrapper" class="bs-wrapper-cover heightMain">
-                <div id="bsMainContent"class="bs-content-cover bg-transparent text-dark">
-                    {# 空容器 #}
-                    {# <div class="d-none bg-transparent"></div> #}
-                    {# 横滚乐队名 #}
-                    {% include './public/compBSArtists.html' %}
+    <div id="mainCover" class="paddingCoverTop paddingCoverTop-md loading">
+        {% include "./public/compLoading.html" %}
+        {% block main %}
+        {# scroll #}
+        <div id="coverWrapper" class="bs-wrapper-cover heightMain">
+            <div id="bsMainContent" class="bs-content-cover bg-transparent text-dark">
+                {# 横滚乐队名 #}
+                {% include './public/compBSArtists.html' %}
 
-                    {# 时间轴内容区 #}
-                    {% include './public/compBSTimeline.html' %}
-                </div>
-                <script>
+                {# 时间轴内容区 #}
+                {% include './public/compBSTimeline.html' %}
+            </div>
+            <script>
+                this.initBSMain=function(){
+                    if(this.slideCover && this.slideCover.refresh){
+                        console.debug("this.initBSMain.刷新refresh");
+                        this.slideCover.refresh();
+                        return;
+                    }
                     this.slideCover=new BetterScroll.createBScroll('.bs-wrapper-cover', {
                         //specifiedIndexAsContent:1,
                         disableMouse: false,
@@ -102,7 +129,9 @@
                         bounce: false,
                         stopPropagation: false,
                         probeType: 3,
-                    
+                        preventDefaultException:{ 
+                            className:/(^|\s)bsClick(\s|$)/
+                        }
                     })
                     {# 创建自定义事件 #}
                     Object.defineProperties(this.slideCover,{
@@ -116,8 +145,8 @@
                         let page=that.slideCover.getCurrentPage();
                         if( page.pageY == tar){
                             if(inPage!="artists"){
-                                that.dispatchEvent(new CustomEvent("BS_COVER_TIMELINE", {page:this.getCurrentPage(),bsMain:this.strNow}));
-                                that.dispatchEvent(new CustomEvent("BS_COVER_TIMELINE_FINAL", {page:this.getCurrentPage(),bsMain:this.strNow}));
+                                that.dispatchEvent(new CustomEvent("BS_COVER_TIMELINE", {detail:{page:this.getCurrentPage(),bsMain:this.strNow}}));
+                                that.dispatchEvent(new CustomEvent("BS_COVER_TIMELINE_FINAL", {detail:{page:this.getCurrentPage(),bsMain:this.strNow}}));
                             }else if(inPage=="artists" && isNavAt ){ {# 当前页是artist并且goto(artists),也要触发NAV_AT #}
                                 that.dispatchEvent(new CustomEvent("NAV_AT", {detail:{bsMain:inPage}}));
                             }
@@ -128,9 +157,7 @@
                         this.stop();
                         this.goToPage(0,tar);
                     }
-                    {# //初始化slideCover后隐藏Cover，后面再判断是否显示 #}
-                    {# $('.bs-wrapper-cover').hide(); #}
-                    
+
                     this.slideCover.on('slideWillChange', (page) => {                        
                         if(page.pageY==1){
                             // 创建并分发事件
@@ -142,7 +169,7 @@
                                     e.currentTarget.removeEventListener("transitionend", eTransitionEnd);
                                     //that.header.objNavTo.bsMain=this.strNow;
                                     //detail={page,objNew:that.header.objNavTo,objOld:that.header.objNavOld};
-                                    that.dispatchEvent(new CustomEvent("BS_COVER_TIMELINE_FINAL", {detail:{page,bsMain:that.slideCover.strNow}}));
+                                    that.dispatchEvent(new CustomEvent("BS_COVER_TIMELINE_FINAL", {detail:{page,bsMain:"timeline"}}));
                                 }
                             }
                             document.querySelector("#navHeader").addEventListener("transitionend", eTransitionEnd, {capture:false,once:false});                    
@@ -152,9 +179,6 @@
                             if(that.slideCover.enabled)that.goto("/artists/");{# 手动拖拽需要执行一遍goto #}
                         }
                     })
-                    //this.slideCover.on('scroll', (position) => {
-                    //    this.slideCover.refresh();
-                    //})
                     this.slideCover.on('slidePageChanged', (page) => {
                         if(page.pageY==1){
                             this.slideCover.disable();
@@ -176,9 +200,7 @@
                         setTimeout(()=>{clearInterval(timer)},1000);
                     })
                     {# slideCover初始化完成 #}
-                    this.dispatchEvent(new CustomEvent("BS_COVER_INIT"),{detail:this.slideCover});
-                </script>
-                <script>
+                    //this.dispatchEvent(new CustomEvent("BS_COVER_INIT"),{detail:this.slideCover});
                     {# 监听时间轴下拉事件 #}
                     this.addEventListener("BS_TIMELINE_PULL_DOWN",(e)=>{
                         console.info("BS_TIMELINE_PULL_DOWN=============>");
@@ -190,14 +212,35 @@
                         {# 如果是过程中，或者相同一级栏目下的二级或者detail则不触发 #}
                         this.slideCover.goto(e.detail.objNew.bsMain,e.detail.objNew.detail?false:true);
                     })
-
-                </script>
-            </div>
+                }
+            </script>
         </div>
-        
+        {% endblock %}
+    </div>
+    <script>
+        function resetBSMain(){
+            if(that.isMobile && !that.isPortrait)return;
+            let $bsMain=document.getElementById("mainCover");
+            if($bsMain)$bsMain.classList.remove("loading");
+            refreshVH();
+            that.initBSMain && that.initBSMain();
+        }
+        document.addEventListener('DOMContentLoaded', resetBSMain);
+        {# 横竖屏控制 #}
+        function eResetViewport(){
+            {# let $bsMain=document.getElementById("mainCover"); #}
+            {# this.slideCover && this.slideCover.disable(); #}
+            {# if($bsMain)$bsMain.classList.add("loading"); #}
+            {# window.location.reload(); #}
+            setTimeout(()=>{
+                resetBSMain();
+            },50)
+        }
+        this.addEventListener("RefreshViewport",eResetViewport)
+    </script>
 
-    {% endblock %}
     {# <script async src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.4.0/dist/lazyload.min.js"></script> #}
+    <script src="/static/themes/dorawhite/js/preventRotate.js"></script>
 </body>
 
 </html>

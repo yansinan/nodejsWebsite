@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-01-31 07:33:16 
  * @Last Modified by: dr
- * @Last Modified time: 2021-01-31 07:47:24
+ * @Last Modified time: 2021-12-05 23:35:33
  */
 const Controller = require('egg').Controller;
 const SERVICE_NAME=__filename.slice(__dirname.length + 1, -3);
@@ -22,6 +22,9 @@ class UserController extends Controller {
 
             let data=await service.ncmMV(idNCMMV);
             if(!data)throw new Error(ctx.__("resdata_getlist_error","网易云音乐MV详情",idNCMMV));
+            // 顺便获取当时的播放地址：
+            data.urlVideo=await service.ncmURLMV(idNCMMV);
+
             // 设置响应内容和响应状态码
             ctx.helper.renderSuccess(ctx, {data});
 

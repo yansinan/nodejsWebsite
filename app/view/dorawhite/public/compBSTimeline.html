@@ -7,9 +7,9 @@
     {% include './compBSTimelineColumn.html' %}
 {% endset %}
 {# {{containerOfList(infoPagination,tempList)}} #}
-<div id="timelineWrapper" class="d-none bs-wrapper-main">
+<div id="timelineWrapper" class="bs-wrapper-main loading">
     {# 不指定高：手机纵向自适应高，PC在定义高度  dr-dom-append="{{infoPagination.idDOM}}"#}
-    <div id="timelineContent" class="" style="" data-str-notice-end="正在加载中">
+    <div id="timelineContent" class="" style="" data-str-notice-end="">
         {% include '../js/timelineMM.html' %}
         <div class="pulldown-tip"></div>
         {# 每月纵向 #}
@@ -17,7 +17,7 @@
         {# 最后两个空列占位:TODO待解决 #}
         {# 月份行 手机隐藏#}
         {# <div class="container-mm end d-flex flex-column"></div> #}
-        <div class="loading"></div>
+        {{njLoading()}}
     </div>
     {% include '../js/timeline.html' %}
     <script>
@@ -52,7 +52,8 @@
                         //that.bsTimeline.content.setAttribute("data-str-notice-end", "没有更多了");
                         //that.bsTimeline.content.dataset["strNoticeEnd"] = "就这个了";
                         vm.isLoading=true;
-                        $timelineContent.dataset["strNoticeEnd"] = "正在加载";
+                        window.timelineWrapper.classList.add("loading");
+                        $timelineContent.dataset["strNoticeEnd"] = "";
                         fetch(vm.urlApi+'?type=dom' + (!document.getElementById("scriptTimeline")?'|script':'') + '&typeId=' + vm.cateId + '&cateName='+ vm.namePage +'&yearCurrent=' + next)
                         .then(function(data){
                             return data.text();
@@ -62,7 +63,8 @@
                             // 在这个then里面我们能拿到最终的数据
                             let objData=JSON.parse(data);
                             if(objData.status==200){
-                                $timelineContent.dataset["strNoticeEnd"] = "加载完成";
+                                window.timelineWrapper.classList.remove("loading");
+                                $timelineContent.dataset["strNoticeEnd"] = "";
                                 try{
                                     {# 按年检索 #}
                                     vm.yearCurrent=objData.data.pageInfo.yearCurrent;
@@ -103,15 +105,20 @@
                                     }))
                                     resolve({msg:"succ",isEnd:vm.yearTotal<=vm.yearCurrent});
                                 }catch(e){
+                                    window.timelineWrapper.classList.remove("loading");
                                     $timelineContent.dataset["strNoticeEnd"] = "加载错误";
                                     throw new Error("timeline加载更多内容,通信正常，返回结果错误");
                                     reject({msg:"timeline加载更多内容,通信正常，返回结果错误 ", objData});
                                 }
                             }else{
                                 debugger
+                                if(objData.status==404)that.location.reload();
                                 reject({msg:"服务器返回错误 ", objData});
                                 throw new Error("timeline加载更多内容，服务器通信错误："+objData.status);
                             }
+                        }).catch(err=>{
+                            debugger
+                            reject(err);
                         })
                     }).then(res=>{
                         return Promise.resolve(res);
@@ -122,20 +129,21 @@
                 }  
             }
         })
-        {# that["vm-"+"{{infoPagination.page}}"].init().then(console.info); #}
+        {# that["vm-"+"{{infoPagination.page}}"].init().then(res=>console.debug); #}
         {# window.addEventListener('DOMContentLoaded', ()=>{that["vm-"+"{{infoPagination.page}}"].init().then(res=>console.warn);}, false); #}
     </script>
     <script>
-        {# 页面跳转 #}
+        {# 页面跳转 完成切换时，更新导航#}
         function eNavToTimeline(e){
             let {objNew,objOld}=e.detail;
-            {# 完成切换时，更新导航 #}
-            console.log("compBSTimeline::eNavToTimeline,触发NAV_AT");
             {# 移动端需要先改变样式，再触发 #}
             if(that.bsTimeline.isMobile)$timelineContent.classList.value = objNew.bsTimeline;
+            console.debug("compBSTimeline::eNavToTimeline,触发NAV_AT");
             window.dispatchEvent(new CustomEvent("NAV_AT", { detail:objNew, }));
             {# 改变class,控制显示隐藏,NAV_AT先监听，之后让初始进入timeline有动画效果 #}
             $timelineContent.classList.value = objNew.bsTimeline;
+            {# loading #}
+            window.timelineWrapper.classList.remove("loading");
         }
         this.addEventListener("NAV_TO",(e)=>{
             let vm=this["vm-"+"{{infoPagination.page}}"];
@@ -143,6 +151,8 @@
             {# objNew.bsMain=="artists"和timeline无关，恢复timeline的栏目筛选;否则会造成监听两次 #}
             if(objNew.bsMain=="artists"){
                 $timelineContent.classList.value="";
+                {# loading #}
+                window.timelineWrapper.classList.add("loading");
                 that.removeEventListener("NAV_TO_TIMELINE", eNavToTimeline);
                 return;
             }

@@ -27,7 +27,7 @@
       <el-table-column prop="sImg" :label="$t(nameMod+'.sImg')"  min-width="350" show-overflow-tooltip>
         <el-row :gutter="20" slot-scope="scope">
           <el-col :span="12">
-            <el-avatar :src="scope.row.sImg" fit="cover" :size="128"  shape="square" @click="eLink('/'+nameMod+'/'+scope.row._id+'.html')" />
+            <el-avatar :src="scope.row.sImg" fit="cover" :size="128"  shape="square" />
           </el-col>
           <el-col :span="12" style="text-align:left">
             <el-button type="text" size="large" @click="editContentInfo(scope.$index, dataList)">{{scope.row.name}}  <i class="el-icon-edit" /></el-button>
@@ -87,7 +87,7 @@
       <el-table-column :label="$t('main.dataTableOptions')" width="200" fixed="right">
         <template slot-scope="scope">
           <el-button-group>
-            <el-button icon="el-icon-view" :type="scope.row.state?'':'info'" :disabled="!scope.row.state" size="large" @click="eLink('/'+nameMod+'/'+scope.row._id+'.html')" />
+            <el-button icon="el-icon-view" :type="scope.row.state?'':'info'" :disabled="!scope.row.state" size="large" @click="eLink('/timeline/shows/'+scope.row.url)" />
             <el-button icon="el-icon-edit" size="large" type="success" @click="editContentInfo(scope.$index, dataList)" plain/>
             <el-button icon="el-icon-delete" size="large" type="danger" plain @click="deleteContent(scope.$index, dataList)" />
           </el-button-group>

@@ -1,15 +1,31 @@
 /* :root{
     font-size: 37.5px;
 } */
+
+@import url('utils.css');
+@import url('header.css');
+@import url('footer.css');
+@import url('artist.css');
+@import url('timeline.css');
+@import url('overlay.css');
+@import url('detail.css');
 :root{
-    --main-offset-left-mobile:0.76rem;
+    --main-offset-left-mobile:0.85rem;
     --main-offset-left-pc:1.25rem; 
 
     --footer-size-mobile: 16px;
     --footer-size-pc: 16px;
+    --footer-size-up-pc:72px;
     --footer-size-open-mobile:54px;
     --footer-size-open-pc:106px;
 
+    --header-margin-right:0.5rem;
+    --header-margin-top:0.5rem;
+
+    --header-btn-height:calc(46 * 1rem / 26);
+    --header-height:calc(var(--header-margin-top) + var(--header-btn-height));
+
+    --color-bg-white:#FDFDFD;
 }
 
 html {
@@ -17,10 +33,12 @@ html {
     -moz-osx-font-smoothing: grayscale;
     line-height: 1.8;
     /* background: #f5f5f5; */
-    font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,Helvetica,Arial,PingFang SC,Hiragino Sans GB,Microsoft YaHei UI,Microsoft YaHei,Source Han Sans CN,sans-serif;
+    /* font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,Helvetica,Arial,PingFang SC,Hiragino Sans GB,Microsoft YaHei UI,Microsoft YaHei,Source Han Sans CN,sans-serif; */
 
     font-size: 162.5%;/*292.5%;*/
-    font-family: -apple-system,PingFangSC-Regular, Roboto, Helvetica Neue, Helvetica, Tahoma,Arial, PingFang SC-Light, Microsoft YaHei;
+    --bs-font-sans-serif: "PingFang SC", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB", "Source Han Sans", "Noto Sans CJK Sc", "Microsoft YaHei", "Microsoft Jhenghei", sans-serif!important;
+    /* font-family: -apple-system,PingFangSC-Regular, Roboto, Helvetica Neue, Helvetica, Tahoma,Arial, PingFang SC-Light, Microsoft YaHei; */
+    font-family:var(--bs-font-sans-serif);
 }
 
 body * {
@@ -29,23 +47,32 @@ body * {
 body{
     transition-property: background-color;
     transition-duration: 1s;
-    background-color: #FFFFFF;
+    background-color: var(--color-bg-white);
+    color: black;/*#212529;*/
+    max-width:100vmin;
+    min-height:max(100vmax , calc( 100 * var(--vh)) );
+    max-height:calc( 100 * var(--vh));
+    margin: 0 auto;
 }
-body.records{
-    background-color: #FF4D3E;
-}
-body.shows{
-    background-color: #cccc00;
-}
-body.shows{
-    background-color: #5400ff;
-}
-body.goods{
-    background-color: #ad49f0;
-}
+body.news{ background-color: var(--color-bg-white); }
+body.records{ background-color: #FF4D3E; }
+body.shows{ background-color: #FFEC00; }
+/* body.shows{ background-color: #2A00FF; } */
+body.goods{ background-color: #00FF2E; }
+body.videos{ background-color: #00FFFE; }
+
 @media only screen and (min-width: 768px) {
     html {
         font-size: 225%!important;
+    }
+    :root{
+        --header-margin-right:calc(36 * 1rem / 36);
+        --header-margin-top:calc(27 * 1rem / 36);    
+        --header-btn-height:calc(53 * 1rem / 36);
+    }
+    body{
+        max-width:100vw;
+        min-height:calc( 100 * var(--vh));
     }
 }
 
@@ -84,6 +111,25 @@ body.goods{
     cursor:grabbing;
 }
 
+/* main显示控制 */
+
+/* #mainCover.loading #coverArtistsWrapper, */
+/* #mainCover.loading #timelineWrapper, */
+#mainCover.loading #errorMain,
+#mainCover.loading #coverWrapper,
+#mainCover loading{
+    display:none;
+}
+#mainCover.loading loading{
+    display:flex;
+    height:100%;
+}
+#mainCover #coverArtistsWrapper,
+#mainCover #timelineWrapper,
+#mainCover #errorMain,
+#mainCover #coverWrapper{
+    display:block;
+}
 
 
 /* body 用Flex方式全屏使用 */
@@ -92,7 +138,8 @@ body.flex{
     font-size:16px;
     font-size:1.2rem ;
     */
-/*  */
+    color: black;/*#212529;*/
+
     display:flex;
     flex-direction: column;
 
@@ -102,7 +149,6 @@ body.flex{
     justify-content: stretch;
     align-items: flex-start;
     /* overflow: hidden; */
-    
 } 
 body.flex #navHeader{
     order:1;
@@ -113,12 +159,13 @@ body.flex #mainCover.paddingCoverTop{
     /* height:46px; */
     /* flex:0 0 46px; */
     padding-top:46px;
+    padding-top:1rem;
 }
 @media only screen and (min-width: 768px) {
     body.flex #mainCover.paddingCoverTop-md{
         /* height:74px; */
         /* flex:0 0 74px; */
-        padding-top:74px;
+        padding-top:2.2rem;
         padding-left: calc(var(--main-offset-left-pc,46px));
     }
 }
@@ -127,7 +174,8 @@ body.flex #mainCover{
     
     order:20;
     flex:1 1 100%;
-    /* flex-basis: calc(var(--vh, 1vh) * 100 - var(--footer-size-pc,16px)); */
+    flex-basis: calc(var(--vh, 1vh) * 100 - var(--header-height));
+    max-height: calc(var(--vh, 1vh) * 100 - var(--header-height));
 }
 /* 隐藏占位 */
 body.flex #mainCover div.w-100.heightNav{
@@ -138,7 +186,7 @@ body.flex #mainCover div.bs-wrapper-cover.heightMain{
 }
 
 /* 移动端:乐队列表页footer无尺寸，避免下方空白 */
-body.flex #dr-footer.footerContainer{
+body.flex #dr-footer{
     order:30;
     flex:0 0 0px;
     flex-basis: 0px;
@@ -146,26 +194,14 @@ body.flex #dr-footer.footerContainer{
 }
 
 @media only screen and (min-width: 768px) {
+    body.flex #mainCover{
+        flex-basis: 100%;
+    }
     /* PC版Footer高度和位置 */
-    body.flex #dr-footer.footerContainer-md{
+    body.flex #dr-footer{
         position:inherit!important;
         bottom:inherit!important;
         flex-basis: var(--footer-size-pc,16px);
     }
 }
 
-body.debug{
-    background-color: bisque;
-}
-
-/* 测试用 */
-body.debug #timelineContent .wapper-mm.now{
-    background-color:blanchedalmond;
-}
-
-body.debug #coverArtistsWrapper{
-    background-color: lawngreen;
-}
-body.debug #coverArtistsWrapper .bs-content-listArtist{
-    background-color:rgb(205, 255, 182);
-}

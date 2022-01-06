@@ -60,50 +60,48 @@
     {# 找到当前日期 #}
     this.bsTimelineBarWrapper.findDateNow=function(position){
         let $listYears=$bsTimelineBarWrapper.querySelectorAll(".svgTimelineBar");
-        let $docNow=false;
-        let idxYearNow=Array.from($listYears).findIndex(($year,idx,$list)=>{
-            let isFind=$year.getBoundingClientRect().right >= that.$footer.paddingNow - 1;
-            if(that.$footer.isRotated)isFind=$year.getBoundingClientRect().bottom >= that.$footer.paddingNow - 1;
-            if(isFind){
-                let idxSeason=Array.from($year.querySelectorAll(".groupSeason")).findIndex(($s)=>{
-                    let isFindSeason=$s.getBoundingClientRect().right >= that.$footer.paddingNow - 1;
-                    if(that.$footer.isRotated)isFindSeason=$s.getBoundingClientRect().bottom >= that.$footer.paddingNow - 1;
-                    if(isFindSeason){
-                        let $listDocs=$s.querySelectorAll(".b-d");
-                        let $docFind=Array.from($listDocs).find(($doc,idx,$list)=>{
-                            //return $doc.x.baseVal.value >= -position.x -1 ;// + ( that.$footer.isRotated ? $bsTimelineBarWrapper.getBoundingClientRect().top : $bsTimelineBarWrapper.getBoundingClientRect().left);//动画导致对齐存在误差，保留1像素
-                            //let isFind=$doc.getBoundingClientRect().left >= $bsTimelineBarWrapper.querySelector(".bsTimelineBarContent .left").clientWidth -1;
-                            let isFind=$doc.getBoundingClientRect().left >= that.$footer.paddingNow - 1;
-                            if(that.$footer.isRotated)isFind=$doc.getBoundingClientRect().top >= that.$footer.paddingNow - 1;
-                            return isFind;
-                        })
-                        if($docFind)$docNow=$docFind;
-                        isFindSeason = $docFind ? true :false;
-                    }
-                    return isFindSeason;
-                })
-                isFind = idxSeason != -1? true : false;
+        let $docNow=that.bsTimelineBarWrapper.$docFindNow;
+        if(!$docNow)throw new Error("底条:没有找到$docNow");
+        else{
+            {# 是否需要改变class #}
+            that.bsTimelineBarWrapper.$docLast=that.bsTimelineBarWrapper.$docLast || $docNow;
+            {# $docNow有变化 #}
+            if($docNow != that.bsTimelineBarWrapper.$docLast){                
+                that.bsTimelineBarWrapper.$docLast.classList.remove("now");
+                const $docLastNow=$bsTimelineBarWrapper.querySelector(".svgTimelineBar .b-d.now");
+                if($docLastNow)$docLastNow.classList.remove("now");
+                //that.bsTimelineBarWrapper.$docLast=$docNow;
             }
-            return isFind;
-        })
-        let $yearNow=$listYears[idxYearNow];
-        if(!$yearNow)throw new Error("底条:没有找到$yearNow:x="+that.bsTimelineBarWrapper.x+";y="+that.bsTimelineBarWrapper.y);
-
-        if(!$docNow)throw new Error("底条:没有找到$docNow"+$listYears[idxYearNow].id);
-        
+            {# 改变样式 #}
+            $docNow.classList.add("now");
+            {# 年份按钮状态 #}
+            const $year=$docNow.parentElement.parentElement.parentElement;
+            that.bsTimelineBarWrapper.updateYearButton($year,$listYears);
+        }
         return $docNow;
+    }
+    {# 设置翻年按钮 #}
+    this.bsTimelineBarWrapper.updateYearButton=function($year,$listYears){
+        if(!$year)throw new Error("底条:updateYearButton没有找到$year");
+        {# 最新年，不能前翻 #}
+        if(parseInt($year.dataset.year) >= parseInt($listYears[0].dataset.year) )that.$footer.classList.add("newestYear");
+        else that.$footer.classList.remove("newestYear");
+        if(parseInt($year.dataset.year) <= parseInt($listYears[$listYears.length-1].dataset.year) )that.$footer.classList.add("oldesttYear");
+        else that.$footer.classList.remove("oldestYear");
     }
     {# 设置class标记，并恢复上一个 #}
     this.bsTimelineBarWrapper.getNewStrDate=function(){
         if(that.bsTimelineBarWrapper.$docNow){
             let strDate=that.bsTimelineBarWrapper.$docNow.id.replace("b","");
-            that.bsTimelineBarWrapper.$docNow.classList.add("now");
 
             {# 是否需要改变class #}
             that.bsTimelineBarWrapper.$docLast=that.bsTimelineBarWrapper.$docLast || that.bsTimelineBarWrapper.$docNow;
             {# $docNow有变化 #}
             if(that.bsTimelineBarWrapper.$docNow != that.bsTimelineBarWrapper.$docLast){                
                 that.bsTimelineBarWrapper.$docLast.classList.remove("now");
+                const $docLastNow=$bsTimelineBarWrapper.querySelector(".svgTimelineBar .b-d.now");
+                if($docLastNow)$docLastNow.classList.remove("now");
+                that.bsTimelineBarWrapper.$docNow.classList.add("now");
                 that.bsTimelineBarWrapper.$docLast=that.bsTimelineBarWrapper.$docNow;                
                 return strDate;
             }else return false;
@@ -218,6 +216,20 @@
                 return -scrollStartX
             },
         },
+        strBodyBSMain:{
+            get:()=>( document.body.classList.value.replace(/flex\s|flex/g,"") || "news" ),
+        },
+        $listDocsNow:{
+            get:()=>( Array.from($bsTimelineBarWrapper.querySelectorAll(".svgTimelineBar .b-d."+that.bsTimelineBarWrapper.strBodyBSMain) || []) ),
+        },
+        $docFindNow:{
+            get:()=>{
+                return that.bsTimelineBarWrapper.$listDocsNow.find(($doc)=>{
+                    return !that.$footer.isRotated ? $doc.getBoundingClientRect().left - (that.$footer.paddingNow - 1) >=0 : $doc.getBoundingClientRect().top - ( that.$footer.paddingNow - 1 ) >=0;
+                })
+            }
+        }
+        {#- 
         ////初始化参数
         //rectWrapper:{get:()=>($bsTimelineBarWrapper.getBoundingClientRect())},
         //wWrapper:{get:()=>($bsTimelineBarWrapper.clientWidth)},
@@ -229,7 +241,7 @@
         //end:{get:()=>(0)},
         //endRight:{get:()=>(that.bsTimelineBarWrapper.wYear)},
         //endLast:{get:()=>(that.bsTimelineBarWrapper.wYear*2)},
-//
+        //
         //stopStart:{get:()=>(that.$footer.isRotated?-that.bsTimelineBarWrapper.wWrapper : (-that.bsTimelineBarWrapper.wWrapper + 95))},
         //stopStartLeft:{get:()=>(that.$footer.isRotated ? (-that.bsTimelineBarWrapper.wWrapper - that.bsTimelineBarWrapper.wYear) : (-that.bsTimelineBarWrapper.wWrapper - that.bsTimelineBarWrapper.wYear + 95))},
         //stopEnd:{get:()=>(that.$footer.isRotated ? -that.bsTimelineBarWrapper.wYear *2 : -that.bsTimelineBarWrapper.wYear*3/2)},
@@ -237,12 +249,15 @@
         //stopEndLast:{get:()=>(that.$footer.isRotated ? 0 : that.bsTimelineBarWrapper.wYear/2)},
         //
         //position:{get:()=>({x:that.bsTimelineBarWrapper.x,y:that.bsTimelineBarWrapper.y} )},
+        -#}
     })
     this.bsTimelineBarWrapper.updateTimelineBar=function(position={x:0}){
         that.bsTimelineBarWrapper.updateAllBnYears();
         {# 如果不是在时间轴页，不执行 #}
         if(!that.slideCover || that.slideCover.getCurrentPage().pageY==0)return;
 
+        if(that.bsTimelineBarWrapper.timerUpdate && Date.now() - that.bsTimelineBarWrapper.timerUpdate<500)return;
+        that.bsTimelineBarWrapper.timerUpdate=Date.now();
         {# 找到当前日期 #}
         that.bsTimelineBarWrapper.$docNow=that.bsTimelineBarWrapper.findDateNow(position);
         {# 如果已经到位 #}
@@ -251,21 +266,27 @@
     this.bsTimelineBarWrapper.eAnimaterEnd=function(position={x:0}){
         that.bsTimelineBarWrapper.$docNow=that.bsTimelineBarWrapper.findDateNow({x:that.bsTimelineBarWrapper.x,y:that.bsTimelineBarWrapper.y});
         let strNowDate=that.bsTimelineBarWrapper.$docNow.id.replace("b","");
-        if(that.bsTimelineBarWrapper.$dateTo && that.bsTimelineBarWrapper.$docNow != that.bsTimelineBarWrapper.$dateTo){
+        let offsetNowScroll=that.bsTimelineBarWrapper.calcPosX(that.bsTimelineBarWrapper.$docNow);
+        let offsetToScroll=that.bsTimelineBarWrapper.$dateTo ? that.bsTimelineBarWrapper.calcPosX(that.bsTimelineBarWrapper.$dateTo) : false;
+
+        if(that.bsTimelineBarWrapper.$dateTo && offsetToScroll && that.bsTimelineBarWrapper.$docNow != that.bsTimelineBarWrapper.$dateTo && Math.abs(offsetToScroll)<0.5){
             {# 有$dateTo,且没完成，是被动滚，继续完成 #}
-            console.log("底条animater.end停止:修正需要:",that.bsTimelineBarWrapper.$docNow.id,"==>",that.bsTimelineBarWrapper.$dateTo.id,that.bsTimelineBarWrapper.calcPosX(that.bsTimelineBarWrapper.$dateTo));//,that.bsTimelineBarWrapper.$dateTo.id
+            console.log("底条animater.end停止:修正需要:",that.bsTimelineBarWrapper.$docNow.id,"==>",that.bsTimelineBarWrapper.$dateTo.id,offsetToScroll);//,that.bsTimelineBarWrapper.$dateTo.id
             that.bsTimelineBarWrapper.scrollToElement(that.bsTimelineBarWrapper.$dateTo);
         }else if(that.bsTimelineBarWrapper.$docNow == that.bsTimelineBarWrapper.$dateTo){
             {# 有dateTo并且docNow相等，被动移动真正完成 #}
             that.bsTimelineBarWrapper.enable();
             {# 触发事件 #}
-            console.log("底条animater.end停止:修正后:",that.bsTimelineBarWrapper.$docNow.id,that.bsTimelineBarWrapper.calcPosX(that.bsTimelineBarWrapper.$docNow));//,that.bsTimelineBarWrapper.$dateTo.id
+            console.log("底条animater.end停止:修正后:",that.bsTimelineBarWrapper.$docNow.id,offsetNowScroll);//,that.bsTimelineBarWrapper.$dateTo.id
             {# that.dispatchEvent(new CustomEvent("BS_TIMELINE_BAR_DATE_CHANGE_FINAL", { detail:{ strDateNow:strNowDate, } })) #}
             that.bsTimelineBarWrapper.$dateTo=false;
+        }else if(!that.bsTimelineBarWrapper.enabled){
+            {# 被动移动的延续动画完成 #}
+            console.log("底条animater.end停止:被动:",that.bsTimelineBarWrapper.$docNow.id,that.bsTimelineBarWrapper.$dateTo?that.bsTimelineBarWrapper.$dateTo.id:false);//,that.bsTimelineBarWrapper.$dateTo.id
         }else if(strNowDate){
             {# 手滑动动画完成 #}
             that.bsTimelineBarWrapper.enable();
-            console.log("底条animater.end停止:手滑:",that.bsTimelineBarWrapper.$docNow.id,that.bsTimelineBarWrapper.calcPosX(that.bsTimelineBarWrapper.$docNow));
+            console.log("底条animater.end停止:手滑:",that.bsTimelineBarWrapper.$docNow.id,offsetNowScroll);
             that.dispatchEvent(new CustomEvent("BS_TIMELINE_BAR_DATE_CHANGE_FINAL", { detail:{ strDateNow:strNowDate, } }))
         }
     }
@@ -274,7 +295,8 @@
         let strNowDate=that.bsTimelineBarWrapper.$docNow.id.replace("b","");
         if(strNowDate && that.bsTimelineBarWrapper.enabled){
             {# 手滑动完成 #}
-            console.log("底条scrollEnd手滑:",that.bsTimelineBarWrapper.$docNow.id);
+            console.log("底条scrollEnd手滑:",that.bsTimelineBarWrapper.$docNow.id,that.bsTimelineBarWrapper.calcPosX(that.bsTimelineBarWrapper.$docNow));
+            that.bsTimelineBarWrapper.scrollToElement(that.bsTimelineBarWrapper.$docNow);
             that.dispatchEvent(new CustomEvent("BS_TIMELINE_BAR_DATE_CHANGE_FINAL", { detail:{ strDateNow:strNowDate, } }))
         }
     }
@@ -286,22 +308,32 @@
         }
     })
     this.bsTimelineBarWrapper.calcPosX=function($date){
+        let rect={};
+        try{
+            rect=$date.getBoundingClientRect();
+        }catch(e){debugger;}
         //pc端计算
         //let posX=-1 * ($date.getBoundingClientRect().left - that.bsTimelineBarWrapper.content.querySelector(".left").getBoundingClientRect().right);
-        let posX=-1 * ($date.getBoundingClientRect().left - that.$footer.paddingNow)
+        let posX=-1 * (rect.left - that.$footer.paddingNow)
         //mobile
         //if(that.$footer.isRotated)posX=-1 * ($date.getBoundingClientRect().top - that.bsTimelineBarWrapper.content.querySelector(".left").getBoundingClientRect().bottom);
-        if(that.$footer.isRotated)posX=-1 * ($date.getBoundingClientRect().top - that.$footer.paddingNow);
-        return posX;
+        if(that.$footer.isRotated)posX=-1 * (rect.top - that.$footer.paddingNow);
+        return Math.round(posX);
     }
-    this.bsTimelineBarWrapper.scrollToElement=function($dateTo){
+    this.bsTimelineBarWrapper.scrollToElement=function($dateTo,isSync=false){
         //let posX=-$dateTo.x.baseVal.value;// + ( that.$footer.isRotated ? $bsTimelineBarWrapper.getBoundingClientRect().top : $bsTimelineBarWrapper.getBoundingClientRect().left);//-$dateTo.x*$svgTimelineBar.clientWidth;
         let posX=that.bsTimelineBarWrapper.calcPosX($dateTo);
+        if(Math.abs(posX)==0)return;
         let vScroll=Math.floor(Math.min(1000,Math.max(100,Math.abs(posX)*50)));
+        vScroll = Math.abs(vScroll) <= 100 ? 0 : vScroll;
         if(that.bsTimelineBarWrapper.pending)that.bsTimelineBarWrapper.stop();
         that.bsTimelineBarWrapper.disable();
         that.bsTimelineBarWrapper.scrollBy(posX,0,vScroll);
+        {# 一定时间后恢复可交互 #}
+        if(that.bsTimelineBarWrapper.timerEnable || vScroll==0)clearTimeout(that.bsTimelineBarWrapper.timerEnable);
+        that.bsTimelineBarWrapper.timerEnable=setTimeout(()=>{that.bsTimelineBarWrapper.enable()} , vScroll+100);
     }
+    {# 跟随时间轴从动 #}
     this.bsTimelineBarWrapper.eTimelineDateChange=function(e){
         let strDateNow=false;
         {# 如果日期没变化，不额外触发，防止循环控制 #}
@@ -325,15 +357,55 @@
         if(that.bsTimelineBarWrapper.pending)that.bsTimelineBarWrapper.stop();
         that.bsTimelineBarWrapper.off('scroll', that.bsTimelineBarWrapper.updateTimelineBar);
         that.bsTimelineBarWrapper.scroller.animater.hooks.off('end', that.bsTimelineBarWrapper.eAnimaterEnd)
-        that.bsTimelineBarWrapper.scroller.hooks.off("scrollEnd", that.bsTimelineBarWrapper.eScrollEnd)
+        {# that.bsTimelineBarWrapper.scroller.hooks.off("scrollEnd", that.bsTimelineBarWrapper.eScrollEnd) #}
+        that.bsTimelineBarWrapper.scroller.actionsHandler.hooks.off("end",that.bsTimelineBarWrapper.eScrollEnd)
         {# 清除$dateNow #}
         that.bsTimelineBarWrapper.$docNow=false;
+        {# 取消动画延时恢复的交互 #}
+        if(that.bsTimelineBarWrapper.timerEnable)clearTimeout(that.bsTimelineBarWrapper.timerEnable);
     }
     this.bsTimelineBarWrapper.onAll=function(){
         that.bsTimelineBarWrapper.on('scroll', that.bsTimelineBarWrapper.updateTimelineBar);
         that.bsTimelineBarWrapper.scroller.animater.hooks.on('end', that.bsTimelineBarWrapper.eAnimaterEnd)
         {# scrollEnd被动主动都触发，但手动时只有scrollEnd #}
-        that.bsTimelineBarWrapper.scroller.hooks.on("scrollEnd", that.bsTimelineBarWrapper.eScrollEnd);
+        {# that.bsTimelineBarWrapper.scroller.hooks.on("scrollEnd", that.bsTimelineBarWrapper.eScrollEnd); #}
+        that.bsTimelineBarWrapper.scroller.actionsHandler.hooks.on("end",that.bsTimelineBarWrapper.eScrollEnd)
+    }
+    {# 移动到年 #}
+    this.bsTimelineBarWrapper.gotoYear=function(strYear){
+        let yearTo="";
+        let $yearNow=false;
+        if(strYear=="prev" || strYear=="next"){
+            that.bsTimelineBarWrapper.$docNow=that.bsTimelineBarWrapper.findDateNow();
+            {# if(!that.bsTimelineBarWrapper.$docNow)throw Error("当前年份未找到"); #}
+            {# let yearNow=that.bsTimelineBarWrapper.$docNow.id.replace("b","").split("-")[0]; #}
+            {# debugger; #}
+            $yearNow=that.bsTimelineBarWrapper.$docNow.parentElement.parentElement;
+            if(!$yearNow)throw Error("当前年份未找到");
+            if(strYear=="prev")yearTo=parseInt($yearNow.dataset.year)-1;
+            if(strYear=="next")yearTo=parseInt($yearNow.dataset.year)+1;
+            console.debug("底条翻年to:",yearTo);
+        }
+        let $yearTo=$bsTimelineBarWrapper.querySelector(".svgTimelineBar [data-year='"+yearTo+"']");
+        if(!$yearTo){
+            that.$footer.classList.add("oldestYear");
+            throw Error("目标年份:"+yearTo+",年份dom未找到");
+        }
+        $listDocs=Array.from($yearTo.querySelectorAll(".b-d."+that.bsTimelineBarWrapper.strBodyBSMain));
+        if($listDocs && $listDocs.length>0){
+            {# 是否需要同步到时间轴 #}
+            let strNowDate=$listDocs[0].id.replace("b","");
+            //that.bsTimelineBarWrapper.scroller.hooks.once("scrollEnd", ()=>{
+            //    that.dispatchEvent(new CustomEvent("BS_TIMELINE_BAR_DATE_CHANGE_FINAL", { detail:{ strDateNow:strNowDate, } }))
+            //});
+            that.dispatchEvent(new CustomEvent("BS_TIMELINE_BAR_DATE_CHANGE", { detail:{ strDateNow:strNowDate, } }))
+            that.bsTimelineBarWrapper.scrollToElement($listDocs[0]);
+        }
+        else{
+            {# 已经最早年份了 #}
+            that.$footer.classList.add("oldestYear");
+            throw Error("目标年份:"+yearTo+",已经是最早有内容的年份");
+        }
     }
     {# 开始先移动到最新日期 #}
     //this.bsTimelineBarWrapper.scrollTo(that.bsTimelineBarWrapper.scrollStartX,0,0);
@@ -354,7 +426,8 @@
         },300);
     })
     this.addEventListener("BS_COVER_TIMELINE_FINAL", (page)=>{
-        that.bsTimelineBarWrapper.onAll()
+        {# setTimeout(()=>{that.bsTimelineBarWrapper.onAll();} , 500);         #}
+        that.bsTimelineBarWrapper.onAll();
     })
     this.addEventListener("BS_COVER_LISTARTISTS", (page)=>{
         this.removeEventListener("BS_MAIN_DATE_CHANGE",this.bsTimelineBarWrapper.eTimelineDateChange);
@@ -374,10 +447,10 @@
     {# timeline切换栏目 #}
     this.addEventListener("BS_TIMELINE_NAV_AT",(e)=>{
         let bsTimeline=e.detail.bsTimeline;
-        if(bsTimeline=="records"){
+        if(bsTimeline=="records" || bsTimeline=="goods" || bsTimeline=="videos"){
             that.bsTimelineBarWrapper.offAll();
             function eTransitionEnd(eTransition){
-                if(eTransition.target.classList.contains("svgTimelineBar")){
+                if(eTransition && eTransition.target.classList.contains("svgTimelineBar")){
                     that.bsTimelineBarWrapper.disable();
                     that.bsTimelineBarWrapper.scrollTo(0,0,0);
                     that.bsTimelineBarWrapper.onAll();
@@ -389,8 +462,8 @@
                 }
             }
             {# PC端有动画 移动端没有动画，直接跳转 #}
-            if(!that.bsTimelineBarWrapper.isRotated)$bsTimelineBarWrapper.addEventListener("transitionend", eTransitionEnd, {capture:false,once:false});
-            else eTransitionEnd(eTransition);
+            if(!that.$footer.isRotated)$bsTimelineBarWrapper.addEventListener("transitionend", eTransitionEnd, {capture:false,once:false});
+            else that.bsTimelineBarWrapper.onAll();//eTransitionEnd(false);
             {# 缩放 #}
             let $listSVG=$bsTimelineBarWrapper.querySelectorAll(".svgTimelineBar");
             $bsTimelineBarWrapper.style.setProperty('--scale-timeline-bar-svg', Math.max(1/($listSVG.length+1),1/4));
@@ -398,4 +471,27 @@
             $bsTimelineBarWrapper.style.setProperty('--scale-timeline-bar-svg', "1"); 
         }
     })
+
+    {# 翻年按钮 #}
+    {# let bnPrev=this.document.getElementById("bnYearPrev"); #}
+    {# let bnNext=this.document.getElementById("bnYearNext"); #}
+    function eClickBnYear(strYear){
+        this.bsTimelineBarWrapper.gotoYear(strYear);
+    }
+
+    {# 主时间轴手指拖动 #}
+    this.addEventListener("BS_MAIN_TOUCH_MOVE",()=>{
+        that.bsTimelineBarWrapper.disable();
+        {# 找到当前日期 #}
+        that.bsTimelineBarWrapper.$docNow=that.bsTimelineBarWrapper.findDateNow();
+    });
+    this.addEventListener("BS_MAIN_TOUCH_END",()=>{
+        {# that.bsTimelineBarWrapper.enable(); #}
+        {# 找到当前日期 #}
+        that.bsTimelineBarWrapper.$docNow=that.bsTimelineBarWrapper.findDateNow();
+    });
+    {# 停止渲染 #}
+    {# this.addEventListener("StopViewport",this.bsTimelineBarWrapper.offAll); #}
+    this.addEventListener("RefreshViewport",(e)=>{that.bsTimelineBarWrapper.refresh()});
+
 </script>

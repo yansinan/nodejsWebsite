@@ -19,6 +19,7 @@ const SERVICE_NAME=__filename.slice(__dirname.length + 1, -3);
 
 class APIController extends Controller {
     // 找到乐队对应的标签
+    /*
     async findIdTags(inListArtists){
         const {
             ctx,
@@ -41,7 +42,10 @@ class APIController extends Controller {
         })
         return _.isEmpty(tag)?[]:[tag._id];
     }
+    */
+
     // 时间线：// 获取时间线:演出，唱片，新闻，视频，加入
+    /*
     async getListTimeline(inArtist){
         const {
             ctx,
@@ -100,7 +104,9 @@ class APIController extends Controller {
             debugger
         }
     }
-        // 字段列表：
+    */
+
+    // 字段列表：
     getListFields(type = '') {
 
         let files = null;
@@ -115,7 +121,7 @@ class APIController extends Controller {
         } else if (type == 'navAvatar') {
             files = '_id url name alias sImg roofPlacement isTop '
         } else {
-            files = '_id url name firstLetter letters alias sImg date discription clickNum roofPlacement type appShowType imageArr videoArr duration simpleComments comments videoImg state dismissReason categories isTop from listHotMusics listLinks listMembers listDateDur listVideos listImages dateStart dateEnd dateYear'
+            files = '_id url name firstLetter letters alias sImg date discription keywords clickNum roofPlacement type appShowType imageArr videoArr duration simpleComments comments videoImg state dismissReason categories isTop from listHotMusics listLinks listMembers listDateDur listVideos listImages dateStart dateEnd dateYear'
         }
         // console.log('--files----', files)
         return files;
@@ -396,7 +402,7 @@ class APIController extends Controller {
             // 乐队推荐&置顶消息
             let listIdArtists=listRes.map(v=>(v.id));
             let listNameArtists=listRes.map(v=>(v.name));
-            let listIdTags=await this.findIdTags(listNameArtists);
+            let listIdTags=await service.findIdTags(listNameArtists);
 
             let listDocNotice = await ctx.service.doc.find(
                 {
@@ -413,7 +419,7 @@ class APIController extends Controller {
                         ],
                         $or:[{isTop:1},{roofPlacement: "1"}],
                     },
-                    files:"_id date listDateDur dateTimeline name title nameTimeline alias tags nameArtists sImg url listRefs",
+                    files:"_id date listDateDur dateTimeline name title nameTimeline alias tags sImg url listRefs",
                     populate:[{
                         path: 'tags',
                         select: 'name url'
@@ -554,6 +560,8 @@ class APIController extends Controller {
      * @apiSampleRequest http://localhost:8080/api/content/getContent
      * @apiVersion 1.0.0
      */
+    
+    /*
     async getOne() {
         const {
             ctx,
@@ -642,6 +650,7 @@ class APIController extends Controller {
             });
         }
     }
+    */
     //同步网易云音乐;
     async ncmGetAtistMV(){
         const {

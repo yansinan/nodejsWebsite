@@ -1,8 +1,8 @@
 /*
  * @Author: doramart 
  * @Date: 2019-06-20 18:55:40 
- * @Last Modified by: doramart
- * @Last Modified time: 2020-08-02 00:15:44
+ * @Last Modified by: dr
+ * @Last Modified time: 2021-12-18 23:24:59
  */
 const Controller = require('egg').Controller;
 const {
@@ -214,12 +214,12 @@ class AdminResourceController extends Controller {
 
 
     async updateParentId() {
-
-        try {
             const {
                 ctx,
                 service
             } = this;
+
+        try {
 
             let fields = ctx.request.body || {};
 

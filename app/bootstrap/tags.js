@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-18 17:27:24 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-04 11:19:46
+ * @Last Modified time: 2021-12-10 04:37:46
  */
 
 'use strict';
@@ -421,11 +421,11 @@ global.HeaderExtension = function () {
         metaArr.push(`<meta property="og:description" content="${_ctx.site.discription}" />`);
         metaArr.push(`<meta property="og:image" content="${_ctx.ogData.img}">`);
         metaArr.push(`<meta property="og:url" content="${_ctx.ogData.url}">`);
-        metaArr.push(`<meta name="author" content="DoraCMS">`);
+        metaArr.push(`<meta name="author" content="DrFilro">`);
 
         // 默认插件支持
-        metaArr.push(`<script src="${_ctx.staticRootPath}/plugins/avalon.js/2.2.7/avalon.min.js?version=${_ctx.site.version}"></script>`);
-        metaArr.push(`<script src="${_ctx.staticRootPath}/plugins/jquery/1.10.2/jquery.min.js?version=${_ctx.site.version}"></script>`);
+        // metaArr.push(`<script src="${_ctx.staticRootPath}/plugins/avalon.js/2.2.7/avalon.min.js?version=${_ctx.site.version}"></script>`);
+        // metaArr.push(`<script src="${_ctx.staticRootPath}/plugins/jquery/1.10.2/jquery.min.js?version=${_ctx.site.version}"></script>`);
         // metaArr.push(`<script src="${_ctx.staticRootPath}/plugins/layer/layer.js?version=${_ctx.site.version}"></script>`);
         // metaArr.push(`<script src="${_ctx.staticRootPath}/themes/users/js/dora.front.js?version=${_ctx.site.version}"></script>\n`)
         // metaArr.push(`<link rel="stylesheet" href="${_ctx.staticRootPath}/plugins/layer/theme/default/layer.css">`);

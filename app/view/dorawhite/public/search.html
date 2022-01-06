@@ -1,0 +1,8 @@
+{% from "../public/compListTags.html" import tag as domTag %}
+{% from "../public/compListTags.html" import listTags as listTags %}
+{% for doc in posts%}
+    <li class="{{doc.docAlias}}">
+        <div>{{doc.dateFull}}</div>
+        <div class="hoverUnderline" onclick="window.goto('{{doc.url}}')">{{doc.docAliasSearch+"|" if doc.docAliasSearch else ""}}{{doc.name}}</div>
+    </li>
+{% endfor %}
