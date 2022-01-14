@@ -3,6 +3,7 @@
     "fileheader.LastModifiedBy": "dr",
     "fileheader.Author": "dr",
     "files.watcherExclude": {
-        "**/backstage/*/node_modules/**": true
+        "**/backstage/*/node_modules/**": true,
+        "**/node_modules/**":true
     }
 }
