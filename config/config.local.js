@@ -3,8 +3,8 @@ const path = require('path')
 const isDocker = process.env.BUILD_ENV == 'docker' ? true : false;
 const mongohost = isDocker ? 'mongo:27017' : 'mongo:27017';//isDocker ? 'mongodb' : '127.0.0.1:27017';
 const mongobin = isDocker ? '' : '/Users/dora/Documents/dora/softs/mongodb/bin/';
-const domainRoot="http://wx.z-core.cn";//"http://192.168.1.202";//'http://serverhome.local',//'http://wx.z-core.cn',
-const port="8791";//"8084";
+const domainRoot="http://rubyeyes.taihe.com";//"http://192.168.1.202";//'http://serverhome.local',//'http://wx.z-core.cn',
+const port="80";//"8084";
 module.exports = appInfo => {
 
     return {
@@ -72,7 +72,7 @@ module.exports = appInfo => {
         },
         server_path: domainRoot+":"+port,
         server_api: domainRoot+":"+port+'/api',//'http://wx.z-core.cn:8791/api',//
-        server_neteaseCloudMusicApi:"http://192.168.1.202:3000",
+        server_neteaseCloudMusicApi:"http://ncm.node:3000",
         server_puppeteerApi:"http://puppeteer:8080",
     }
 };
