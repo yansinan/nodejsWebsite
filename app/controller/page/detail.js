@@ -47,8 +47,30 @@ class IndexController extends Controller {
         
         listDocs=listDocs.docs;
         let post = (await ctx.helper.reqJsonData('content/getContent', { id: listDocs[0]._id }));
+        // 设置about单独的样式参数
+        post.docAlias="news about"
+        //汇总数据
+        let pageData={serviceName:"about",post};
+        // 定义模板
+        if (!_.isEmpty(pageData.post)) {
+            //数据提取、修改标题；需要根据post信息修改内容：pageData.post,pageData.site,pageData.ogData,ctx.tempPage
+            
+            // 模板路径
+            let tempPage="../view/dorawhite/2-stage-about/detail.html";
+            // 渲染
+            try {
+                let dom=await ctx.renderView(tempPage, pageData);
+                ctx.helper.renderSuccess(ctx,{data:{pageData,dom}});
+            } catch (err) {
+                ctx.throw(500,"模板渲染错误");
+            }
+        } else {
+            ctx.throw(500,"关于赤瞳的内容未找到");
+            throw new Error(ctx.__('label_page_no_power_content'));
+        }
+
         //最终渲染
-        ctx.helper.renderSuccess(ctx,{data:post});
+        // ctx.helper.renderSuccess(ctx,{data:post});
         //ctx.body=post.comments;
         // await ctx.renderPageData(discription);
     }
