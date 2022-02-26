@@ -109,27 +109,27 @@
     </div>
     {% if post.listDocsGoods.length >6 %}<div class="more hoverUnderline" data-dr-target="goods">更多</div>{% endif %}
     {% endif %}    
-    <div class="headEnd" :class="@playerStatus" style=""></div>
+    <div class="headEnd fa-play" dr-class="@playerStatus" style=""></div>
 
 </div>
 {# 浮动导航 #}
 <div class="nav artist">
     <ul>
-        <div class="backTop" ms-on-click="@eBnDetailNav(e,'.name')"></div>
+        <div class="backTop" onclick="ctrNavDetail.eBnDetailNav(event,'.album')"></div>
         {% for link in post.listNav %}
-        <li class="hoverUnderline" ms-on-click="@eBnDetailNav(e,'{{link.tar}}')">{{link.name}}</li>
+        <li class="hoverUnderline" onclick="ctrNavDetail.eBnDetailNav(event,'{{link.tar}}')">{{link.name}}</li>
         {% endfor %}
         {% if post.listHotMusics.length>0%}
-        <li class="player" ms-on-click="@eAudioToggleNow(e)"><i class="fa" :class="@playerStatus"/></li>
+        <li class="player" onclick="ctrNavDetail.eAudioToggleNow(event)"><i class="fa fa-play" dr-class="@playerStatus"></i></li>
         {% endif %}
     </ul>
     {# 精选单曲 #}
     {% if post.listHotMusics.length>0%}
-    <div class="playList" :class="@playerStatus">
+    <div class="playList fa-play" dr-class="@playerStatus">
         <ul>
             {% for link in post.listHotMusics %}
             <li class="song">
-                <span ms-on-click="@eAudioToggle($event,'{{loop.index}}')" data-link="{{link.url}}" data-current-time="0 : 0 / 0 : 0">
+                <span onclick="ctrNavDetail.eAudioToggle(event,'{{loop.index}}')" data-link="{{link.url}}" data-current-time="0 : 0 / 0 : 0">
                     {{link.name}}
                     <audio src="{{link.url}}" preload="metadata">Your browser does not support the <code>audio</code> element.</audio>
                 </span>
@@ -139,3 +139,88 @@
     </div>
     {% endif %}
 </div>
+<script>
+window.ctrNavDetail={
+    eBnDetailNav:function(e,strTarget){
+        let offset=$offcanvasDetail.querySelector('#offcanvasDetail .detail '+ strTarget).getBoundingClientRect().top;
+        offset=offset - $offcanvasDetail.getBoundingClientRect().top;
+        $($offcanvasDetail)[0].scrollBy({
+                top      : offset,
+                left     : 0,
+                behavior : 'smooth'
+        });
+    },
+    {# 详情页导航&试听 #}
+    {# playerStatus:"fa-play", #}
+
+    {# 导航按钮 #}
+    eAudioToggleNow:function(e){
+        let that=window.ctrNavDetail;
+        let $audio=that.getCurrentAudio();
+        that.audioToggle($audio);
+    },
+    {# 歌曲 #}
+    eAudioToggle:function(e){
+        let that=window.ctrNavDetail;
+        let $audio=e.currentTarget.querySelector("audio");
+        {# 重新排序 #}
+        {# let $ulSong=$offcanvasDetail.querySelector(".nav .playList ul"); #}
+        let $lastAudio=that.getCurrentAudio();
+        if($lastAudio!=$audio)$lastAudio.parentElement.parentElement.before($audio.parentElement.parentElement);
+        that.audioToggle($audio);
+    },
+    {# 播放控制 #}
+    audioToggle:function($audio){
+        if(!$audio)return;
+        let that=window.ctrNavDetail;
+        {# 播放控制 #}
+        let $listAudios=$offcanvasDetail.querySelectorAll(".nav .playList ul audio");
+        $listAudios.forEach($a=>{
+            if($a!=$audio){
+                $a.pause();
+                $a.currentTime=0;
+                $a.parentElement.classList.value="";
+            }
+        })
+        let resToggle=false;
+        if($audio.paused){
+            $audio.play();
+            resToggle=true;
+        }else $audio.pause();
+
+
+        {# 显示控制 #}
+        that.playerStatus=!$audio.paused ? "fa-pause" : "fa-play";
+        {# 当前歌曲标记 #}
+        let $song=$audio.parentElement;
+        let $playerList=$song.parentElement;
+        $song.classList.value="now";
+
+        {# 更新播放时间 #}
+        $audio.addEventListener('timeupdate', (e) => {
+            {# let $audio=e.currentTarget; #}
+            let $song=e.currentTarget.parentElement;
+            $song.dataset.currentTime=ctlOffcanvasBody.getPlayerTime(e.currentTarget.currentTime) + " / " + ctlOffcanvasBody.getPlayerTime(e.currentTarget.duration);                    
+        });
+        return resToggle;
+    },
+    getCurrentAudio:function(){
+        let $song=$offcanvasDetail.querySelector(".nav .playList ul li");
+        if(!$song)return false;
+        return $song.querySelector("audio");
+    }
+}
+Object.defineProperties(window.ctrNavDetail,{
+    playerStatus:{
+        set:(v)=>{
+            if($offcanvasDetail){
+                let $listEleToChangeClass=$offcanvasDetail.querySelectorAll('[dr-class="@playerStatus"]');
+                $listEleToChangeClass.forEach($ele=>{
+                    $ele.classList.replace("fa-pause", v);
+                    $ele.classList.replace("fa-play", v);
+                })
+            }
+        }
+    }
+})
+</script>

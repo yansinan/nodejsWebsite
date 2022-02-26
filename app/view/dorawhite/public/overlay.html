@@ -184,8 +184,8 @@
             <bn-close class="btn btn-close"  aria-label="Close" onclick="window.goto('/')" aria-label="Close"></bn-close>
 
         </div>
-        <div id="offcanvasDetail" class="offcanvas-body loading" ms-controller="offcanvasDetail" ms-on-scroll="@eScrollDetail">
-            <div class="content" :visible="!@loadingState" ms-html="@dom" style="background-color: inherit;"></div>
+        <div id="offcanvasDetail" class="offcanvas-body loading" ms-controller="offcanvasDetail" onscroll="ctlOffcanvasBody.eScrollDetail(event)">
+            <div class="content" style="background-color: inherit;"></div>
             {# 
             <div class="loading w-100 justify-content-center align-items-center ">
                 <i class="fa fa-spin fa-spinner"></i>
@@ -198,19 +198,7 @@
     <script>
         let $offcanvasDetailAll=document.getElementById("offcanvasDetailAll");
         let $offcanvasDetail=document.getElementById("offcanvasDetail");
-        let aOffcanvasBody = avalon.define({
-            $id: 'offcanvasDetail',
-            dom: "",
-            loadingState: false,
-            eBnDetailNav:function(e,strTarget){
-                let offset=$offcanvasDetail.querySelector('#offcanvasDetail .detail '+ strTarget).getBoundingClientRect().top;
-                offset=offset - $offcanvasDetail.getBoundingClientRect().top;
-                $($offcanvasDetail)[0].scrollBy({
-                        top      : offset,
-                        left     : 0,
-                        behavior : 'smooth'
-                });
-            },
+        let ctlOffcanvasBody={
             eScrollDetail:function(e){                
                 let $nav=$offcanvasDetail.querySelector(".nav");
                 if($nav){
@@ -220,10 +208,6 @@
                     else if($nav.classList.contains("show") && !isShow)$nav.classList.remove("show");
                 }
             },
-            {# 详情页导航&试听 #}
-            playerStatus:"fa-play",
-            isList:false,
-            idxAudioNow:0,
             {# 初始化时更新歌曲时间 #}
             initAudio:function(){
                 let $listAudios=$offcanvasDetail.querySelectorAll(".nav .playList ul audio");
@@ -231,7 +215,7 @@
                     {# 更新播放时间 #}
                     $audio.addEventListener('durationchange', (e) => {
                         let $song=e.currentTarget.parentElement;
-                        $song.dataset.currentTime=this.getPlayerTime(e.currentTarget.currentTime) + " / " + this.getPlayerTime(e.currentTarget.duration);                    
+                        $song.dataset.currentTime=ctlOffcanvasBody.getPlayerTime(e.currentTarget.currentTime) + " / " + ctlOffcanvasBody.getPlayerTime(e.currentTarget.duration);                    
                     },{once:true});
 
                 })                
@@ -246,65 +230,26 @@
                 })
                 
             },
-            {# 导航按钮 #}
-            eAudioToggleNow:function(e){
-                let $audio=this.getCurrentAudio();
-                this.audioToggle($audio);
-            },
-            {# 歌曲 #}
-            eAudioToggle:function(e){
-                let $audio=e.currentTarget.querySelector("audio");
-                {# 重新排序 #}
-                {# let $ulSong=$offcanvasDetail.querySelector(".nav .playList ul"); #}
-                let $lastAudio=this.getCurrentAudio();
-                if($lastAudio!=$audio)$lastAudio.parentElement.parentElement.before($audio.parentElement.parentElement);
-                this.audioToggle($audio);
-            },
-            {# 播放控制 #}
-            audioToggle:function($audio){
-                if(!$audio)return;
-                let that=this;
-                {# 播放控制 #}
-                let $listAudios=$offcanvasDetail.querySelectorAll(".nav .playList ul audio");
-                $listAudios.forEach($a=>{
-                    if($a!=$audio){
-                        $a.pause();
-                        $a.currentTime=0;
-                        $a.parentElement.classList.value="";
-                    }
-                })
-                let resToggle=false;
-                if($audio.paused){
-                    $audio.play();
-                    resToggle=true;
-                }else $audio.pause();
-
-
-                {# 显示控制 #}
-                this.playerStatus=!$audio.paused ? "fa-pause" : "fa-play";
-                {# 当前歌曲标记 #}
-                let $song=$audio.parentElement;
-                let $playerList=$song.parentElement;
-                $song.classList.value="now";
-
-                {# 更新播放时间 #}
-                $audio.addEventListener('timeupdate', (e) => {
-                    {# let $audio=e.currentTarget; #}
-                    let $song=e.currentTarget.parentElement;
-                    $song.dataset.currentTime=this.getPlayerTime(e.currentTarget.currentTime) + " / " + this.getPlayerTime(e.currentTarget.duration);                    
-                });
-                return resToggle;
-            },
             getPlayerTime:function(v){
                 let sec=Math.round(v);
                 let minutes=Math.floor(v/60);
                 sec=sec-minutes*60;
                 return minutes + ":" + sec;
             },
-            getCurrentAudio:function(){
-                let $song=$offcanvasDetail.querySelector(".nav .playList ul li");
-                if(!$song)return false;
-                return $song.querySelector("audio");
+
+
+        }
+        Object.defineProperties(ctlOffcanvasBody,{
+            //loadingState:{},
+            dom:{
+                set:(strDom)=>{
+                    let $content = $offcanvasDetail.querySelector(".content");
+                    $content.firstChild && $content.removeChild($content.firstChild);
+                    let domToAppend=document.createRange().createContextualFragment(strDom);
+                    $content.replaceChildren(domToAppend);
+                    console.log("dom added~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                },
+
             }
         })
         {# modal 图片预览 #}
@@ -404,7 +349,7 @@
                 })
             })
             {# 试听播放器 #}
-            aOffcanvasBody.initAudio();
+            ctlOffcanvasBody.initAudio();
             return objDetail;
         }
         {# 根据内容改变 #offcanvasDetailAll 的class 控制样式 #}
@@ -462,16 +407,13 @@
             //}
             console.info("event:详情即将打开：",url);
             {# let cateId="8hIKx4Ulz"; #}
-            aOffcanvasBody.loadingState=true;
             function appendDom(res){
                 {# 先根据内容改变 #offcanvasDetailAll 的class 控制样式 #}
                 let strDocAlias=res.data.pageData && res.data.pageData.post.docAlias ?res.data.pageData.post.docAlias : (res.data.params && res.data.params.serviceName? (res.data.params.serviceName+"s"):"news about")
                 that.setDetailClassList(strDocAlias);
-                window.offcanvasRight.classList.remove("loading");
-                aOffcanvasBody.dom="";
-                aOffcanvasBody.dom = res.data.comments || res.data.dom;
+                ctlOffcanvasBody.dom = res.data.comments || res.data.dom;
                 {# 样式处理完再显示 #}
-                aOffcanvasBody.loadingState = false;
+                window.offcanvasRight.classList.remove("loading");
             }
             function error(d) {
                 console.error('error:', url,d);
@@ -503,7 +445,7 @@
                 error,
             })
         });
-        this.addEventListener( "CLOSE_OFFCANVAS_DETAIL", aOffcanvasBody.stopAudioAll );
+        this.addEventListener( "CLOSE_OFFCANVAS_DETAIL", ctlOffcanvasBody.stopAudioAll );
     </script>
     {# 详情页更多按钮 #}
     <script type="text/javascript">
