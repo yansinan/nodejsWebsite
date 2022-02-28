@@ -1,0 +1,178 @@
+<link href="/static/themes/dorawhite/css/default.css" rel="stylesheet">
+<link href="/static/themes/dorawhite/css/intro.css" rel="stylesheet">
+<style>
+body{
+    max-width:100vw;
+    width:100%;
+    background-color:transparent;
+}
+.d-none{
+    display:none;
+}
+</style>
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+{# <script src="/static/themes/dorawhite/js/jquery.transit.js"></script> #}
+{# <script src="//cdnjs.cloudflare.com/ajax/libs/velocity/2.0.6/velocity.min.js"></script> #}
+<script src="https://cdn.bootcdn.net/ajax/libs/velocity/2.0.6/velocity.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/better-scroll/2.4.1/better-scroll.min.js"></script>
+
+    <div id="$aboutStaffs" class="staffs">
+        <div class="container animation">
+            {% for p in listPeople %}
+            <div class="people" data-staff-start="{{p.dateStart}}" data-staff-end="{{p.dateEnd}}" style="--y_new:50%;--x_new:50%;--depth_new:1;">
+            {#  style="top: {{range(15,85) | random}}% ;left: {{range(10,90) | random}}%" #}
+                <span>{{p.firstName}}</span><img class="lazy" src="{{p.avatar}}" onerror="this.parentElement.classList.add('error');" onload="this.parentElement.classList.remove('error');" />
+            </div>
+            {% endfor %}
+        </div>
+        {# 时间线 #}
+        <div class="timeWrapper">
+            {# <div class="time"> #}
+            <div class="timeline">
+                {% for year in listYears %}
+                <div id="idxYearGroup{{loop.index0}}" class="yearGroup" data-str-year="{{year.strYear}}">
+                    {% for objEle in year.listEle %}
+                    <div class="line"></div>
+                    {% endfor %}
+                    <div class="year tag"><span>{{year.strYear}}</span></div>
+                </div>
+                {% endfor %}
+            </div>
+            {# </div> #}
+            <div class="bar"></div>
+            {# <div class="year bn" onclick="eChangeDateSearch()"><span>{{year.strYear}}</span></div> #}
+        </div>
+
+    </div>
+    <div class="staffsEnd" style=""></div>
+
+
+<script>
+    {# iframe高度自适应 #}
+    function resetAboutStaffs(){
+        if(parent.document.getElementById("$iframeAboutStaffs"))parent.document.getElementById("$iframeAboutStaffs").height=document.body.getBoundingClientRect().height;
+    }
+    window.addEventListener("resize",resetAboutStaffs);
+    window.addEventListener("load",resetAboutStaffs);
+    //parent.document.getElementById("$iframeAboutStaffs").style.height=document.body.scrollHeight; 
+    //parent.document.getElementById("$iframeAboutStaffs").style["flex-basis"]=document.body.scrollHeight; 
+    {# parent.document.getElementById("$iframeAboutStaffs").style.width=document.body.scrollWidth;  #}
+    {# window.$aboutStaffs=document.getElementById("aboutStaffs"); #}
+
+    {# 更新坐标，查找符合条件的人 #}
+    function updateStaffs(dateSearch,isAllMove=false){
+        let $yearBn=document.querySelector(".staffs .timeWrapper .year.bn");
+        if($yearBn)$yearBn.innerText=dateSearch
+        //function getRandomIntInclusive(min, max) { //区间内的随机整数
+        //    min = Math.ceil(min);
+        //    max = Math.floor(max);
+        //    return Math.floor(Math.random() * (max - min + 1)) + min; //含最大值，含最小值 
+        //}
+
+        function randomBoth(offset=0.5){return (2*(Math.random()-offset))}//-1 ~ 1 随机数,偏向0.2 偏向正0.8
+        function setXY(v,dateSearch){
+            let z=Math.abs(dateSearch-(parseInt(v.dataset.staffStart)));
+
+            let scale=z*0.4;
+            let x=Math.random()<=0.5 ? (1.5*10 + (Math.random()-0.0)*30) :  (8.5*10 - (Math.random()-0.1)*30) ;
+            let dy=Math.sin((0 * Math.PI) + (x * Math.PI / 100 )) ;
+            dy=Math.abs(Math.max(dy,0.5))*randomBoth() ;
+            let y=(50 + 40*dy) ;
+            //x= (( x - 50 ) * scale * 0.1 ) + x;
+            //y=(( y - 50 ) * scale * 0.5 ) + y;
+            //v.setAttribute("style",`--depth:${z};--y:calc( ${y}% - (var(--size_staffs_people) / 2) );--x:calc( ${x}% - (var(--size_staffs_people) / 2) );`);
+            //v.setAttribute("style",`--y:calc( ${y}% - (var(--size_staffs_people) / 2) );--x:calc( ${x}% - (var(--size_staffs_people) / 2) );`);
+            //console.log(v.style.getPropertyValue("--x_new"),v.style.getPropertyValue("--x"))
+            //v.style.setProperty("--x",v.style.getPropertyValue("--x_new"));
+            //v.style.setProperty("--y",v.style.getPropertyValue("--y_new"));
+            v.style.setProperty("--x",`calc( ${x}% - (var(--size_staffs_people) / 2) )`);
+            v.style.setProperty("--y",`calc( ${y}% - (var(--size_staffs_people) / 2) )`);
+            //v.style.setProperty("top:",`${y}%`);
+            //v.style.setProperty("left:",`${x}%`);
+
+        }
+        let $listP=window.$aboutStaffs.querySelectorAll(".staffs .container .people");
+
+        $listP.forEach(v=>{
+           let z=Math.abs(dateSearch-(parseInt(v.dataset.staffStart)));
+    
+           //v.style.setProperty("transform:",`translate3D(-50%,-50%, ${z*-100+100}px) scale(1.3)`);
+           {# 显示当前 #}
+           let isAfterJoin=(v.dataset.staffStart && parseInt(v.dataset.staffStart)<=dateSearch);
+           let isBeforeLeft=(v.dataset.staffEnd && parseInt(v.dataset.staffEnd)>=dateSearch) || !v.dataset.staffEnd;
+           if(isAfterJoin && isBeforeLeft){
+               {# 调整分布:已有的不移动，新的移动 #}
+               if(!v.classList.contains("now"))setXY(v,dateSearch);
+               {# 在职的人最远不能太远 #}
+               z=Math.min(1,z);
+               v.classList.add("now");
+           }else{
+               {# 当前此人不在；重设坐标：全体移动 || 之前在刚刚开 #}
+               if(isAllMove || v.classList.contains("now")){
+                   {# 调整分布 #}
+                   setXY(v,dateSearch);
+               }
+               {# 不在的人总比在的人更远 #}
+               z=Math.max(z,2);
+               v.classList.remove("now");
+           }
+
+           {# v.style.setProperty("--depth",v.style.getPropertyValue("--depth_new")); #}
+           {# v.style.setProperty("--depth",z); #}
+           {# v.style.setProperty("transform",`translate3D(-50%,-50%,${(z*-100+100) }px) scale(1.3)`); #}
+           $(v).velocity({ translateZ: 1 ,}, 1);
+           $(v).velocity({ transform: `translateZ(${((z*-100)+100+(Math.random()*50))+"px"})`  }, { duration: 500 ,});
+         
+        })
+     
+    }
+
+    let dateSearch="2020";
+    function eChangeDateSearch(e){
+        dateSearch=parseInt(dateSearch)-1
+        updateStaffs(dateSearch);
+        console.log("搜索日期",dateSearch);
+    }
+
+</script>
+<script>
+    if(window.$aboutStaffs){
+        updateStaffs(dateSearch,true);
+    }
+    //init betterScroll
+    const bs = new BetterScroll.createBScroll('.timeWrapper',{
+        scrollY: true,
+        disableTouch:false,
+        disableMouse:false,
+        slide: {
+            threshold: 100,
+            loop:false,
+            autoplay:true,
+            interval:30000,
+            {# speed:1000, #}
+            //easing:{
+            //    style: 'cubic-bezier(0.165, 0.84, 0.44, 1)',
+            //}
+        },
+        useTransition: false,
+        momentum: false, //设置为 false，用来避免惯性动画带来的快速滚动时的闪烁的问题和快速滑动时一次滚动多页的问题
+        bounce: true, //设置为 false，否则会在循环衔接的时候出现闪烁
+        {# eventPassthrough: 'vertical', // 保持纵向的原生浏览器滚动 #}
+        {# stopPropagation: true, #}
+        probeType: 3, //通过监听 slideWillChange 事件，在用户拖动 slide 时，实时获取到 slide 的 PageIndex 的改变，需要设置 probeType 值为 2 或者 3。
+        {# click: true, #}
+    })
+    bs.on('slideWillChange', (page) => {
+        const idxPageNew = page.pageY;
+        let $yearGroupNew=document.getElementById("idxYearGroup"+idxPageNew);
+        let intYearNew=parseInt($yearGroupNew.dataset.strYear);
+        console.log("slidePageWillChanged~~~~~~~~~~",intYearNew);
+        updateStaffs(intYearNew);
+    })
+
+    let $debug=document.querySelector(".staffsEnd")
+    function debugT(str){
+        console.log(str)
+        $debug.innerText= $debug.innerText+"\n" +str;
+    }
+</script>

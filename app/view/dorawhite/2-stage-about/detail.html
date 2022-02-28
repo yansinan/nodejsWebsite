@@ -1,10 +1,15 @@
+{# <link href="/static/themes/dorawhite/css/intro.css" rel="stylesheet"> #}
 
-{# <link rel="stylesheet" href="/static/themes/dorawhite/css/detail.css"> #}
-<div class="detail {{serviceName}} font-normal" data-bs-main="{{post.docAlias}} about">
 
-    <div class="headEnd"></div>
+
+<div id="detailAbout"class="detail {{serviceName}} font-normal" data-bs-main="{{post.docAlias}} about">
+    <div class="title section">赤瞳音乐 RUBY EYES RECORDS            </div>
+
+    <iframe id="$iframeAboutStaffs" class="iframeAboutStaffs" src="http://rubyeyes.taihe.com/staffs___.html" width="100%" scrolling="no" frameborder="0"></iframe>
+    {# <div class="headEnd"></div> #}
     {# 介绍 #}
     {# <article class=""> #}
         {{post.comments | safe | trim}}
     {# </article> #}
 </div>
+

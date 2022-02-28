@@ -31,7 +31,12 @@ module.exports = app => {
         "/about___:typeId?",
         "/about___:typeId?.html",
     ],controller.page.detail.getDataAbout);
-
+    // 静态介绍入口
+    router.get([
+        "/staffs___.html",
+        "/staffs___:typeId?",
+        "/staffs___:typeId?.html",
+    ],controller.page.detail.getStaffs);
     // 内容详情入口
     // router.get("/details/:id.html", controller.page.home.getDataForContentDetails);
     // 艺术家详情

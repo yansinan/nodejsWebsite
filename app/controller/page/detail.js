@@ -49,8 +49,16 @@ class IndexController extends Controller {
         let post = (await ctx.helper.reqJsonData('content/getContent', { id: listDocs[0]._id }));
         // 设置about单独的样式参数
         post.docAlias="news about"
+        // 计算时间轴
+        let dateEnd="20220204";
+        let dateStart="20150507";
+        // 年份&日期
+        let listYears=this.getTestDateByYear(dateEnd,dateStart,[]);
+        // 成员数据
+        let listPeople=await this.getTestListPeople(50,dateEnd,dateStart);
         //汇总数据
-        let pageData={serviceName:"about",post};
+        let pageData={serviceName:"about",post,listYears,listPeople};
+        
         // 定义模板
         if (!_.isEmpty(pageData.post)) {
             //数据提取、修改标题；需要根据post信息修改内容：pageData.post,pageData.site,pageData.ogData,ctx.tempPage
@@ -73,6 +81,94 @@ class IndexController extends Controller {
         // ctx.helper.renderSuccess(ctx,{data:post});
         //ctx.body=post.comments;
         // await ctx.renderPageData(discription);
+    }
+    async getStaffs(){
+        const ctx = this.ctx;
+        // 计算时间轴
+        let dateEnd="20220204";
+        let dateStart="20150507";
+        // 年份&日期
+        let listYears=this.getTestDateByYear(dateEnd,dateStart,[]);
+        // 成员数据
+        let listPeople=await this.getTestListPeople(50,dateEnd,dateStart);
+        //汇总数据
+        let pageData={serviceName:"about",listYears,listPeople};
+        
+        // 定义模板
+            
+        // 模板路径
+        let tempPage="../view/dorawhite/2-stage-about/staffs.html";
+        // 渲染
+        try {
+            let dom=await ctx.render(tempPage, pageData);
+            // ctx.helper.renderSuccess(ctx,{data:dom});
+        } catch (err) {
+            ctx.throw(500,"模板渲染错误");
+        }
+    }
+    // 伪人员信息
+    async getTestListPeople(cntPeople,inDateEnd,inDateStart){
+        const {ctx,service} = this;
+        const text='我们给这场演出取名“Two Sides，One Man”是的这场演出由Ricky而来但它不仅是一个拼场演出还浓缩了一段跨越十年爱恨交织的旧事12月24日杭州大麦66Live两个Ricky人生中最重要的乐队将在这一天同台他的过去与现在也将在这一天这个舞台上重叠';
+        let listImgs=await service.uploadFiles.listUrlImg();
+
+        let listPeople=[];
+        for(let i=0;i<cntPeople;i++){
+            // 随机名字
+            let idxSubstring=Math.floor(Math.random()*text.length)
+            let name=text.substring(idxSubstring,idxSubstring+2+Math.round(Math.random()*2));
+            // 随即日期
+            let cntDays=moment(inDateEnd).diff(inDateStart,"days");
+            let dateStart=moment(inDateEnd).subtract(Math.random()*cntDays,"days").format("YYYY-MM-DD");
+            // 到今天
+            let cntDaysStart=moment().diff(dateStart,"days");
+            let dateEnd= Math.random() < 0.9 ? (moment().subtract(Math.floor(Math.random()*cntDaysStart),"days")) : "";
+            let avatar=listImgs[Math.floor(Math.random()*listImgs.length)];
+            let objPeople={
+                name:name,
+                firstName:name.substring(0,1),
+                dateStart:moment(dateStart).format("YYYY"),
+                dateEnd:dateEnd!="" ? moment(dateEnd).format("YYYY") : "",
+                avatar:Math.random()<0.1 ? "" :avatar,
+            }
+            listPeople.push(objPeople);
+        }
+        return listPeople;
+    }
+    // 按日期生成伪数据
+    getTestDateByYear(dateEnd,dateStart,inListDocsOfYear=[]){
+        let listRes=[];
+        // 年份对象;
+        let objForYear={
+            listEle:[],
+            strYear:moment(dateEnd).format("YYYY"),
+        }
+        let cntDays=moment(dateEnd).diff(moment(dateStart),"days");//Math.round(timeRange/(1000*60*60*24));
+        for(let i=0 ;i<=cntDays;i++){
+            let dateTmp=moment(dateEnd).subtract(i, 'days');
+
+            // 月份第一天，划线
+            if(dateTmp.format("D")=="1"){
+                // 单位节点：可能是月份或季度
+                let objEle={
+                    name:"",
+                    isStartOfYear:"",
+                }
+                objEle.name=dateTmp.format("YYYY-MM");
+                // 添加到当年份
+                objForYear.listEle.push(objEle);
+                if(dateTmp.format("MMDD")=="0101"){
+                    objEle.isStartOfYear=dateTmp.format("YYYY");
+                    
+                    listRes.push(objForYear)
+                    objForYear={
+                        listEle:[],
+                        strYear:dateTmp.subtract(1, 'years').format("YYYY"),
+                    }
+                }
+            }
+        }
+        return listRes;
     }
     // 艺术家详情
     /*
