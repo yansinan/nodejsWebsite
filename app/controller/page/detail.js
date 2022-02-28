@@ -90,7 +90,18 @@ class IndexController extends Controller {
         // 年份&日期
         let listYears=this.getTestDateByYear(dateEnd,dateStart,[]);
         // 成员数据
-        let listPeople=await this.getTestListPeople(50,dateEnd,dateStart);
+        let listPeople=await this.service.user.find({
+            filesType:"timeline", 
+            pageSize: 2000,
+            isPaging:"0",
+            lean:false,
+        },{
+            query:{group: ['工作人员','乐手']},
+            // files:files,
+            sort:{dateIn: -1},
+        })
+        listPeople=JSON.parse(JSON.stringify(listPeople));
+        listPeople=listPeople.concat(await this.getTestListPeople(50,dateEnd,dateStart));
         //汇总数据
         let pageData={serviceName:"about",listYears,listPeople};
         
@@ -109,14 +120,14 @@ class IndexController extends Controller {
     // 伪人员信息
     async getTestListPeople(cntPeople,inDateEnd,inDateStart){
         const {ctx,service} = this;
-        const text='我们给这场演出取名“Two Sides，One Man”是的这场演出由Ricky而来但它不仅是一个拼场演出还浓缩了一段跨越十年爱恨交织的旧事12月24日杭州大麦66Live两个Ricky人生中最重要的乐队将在这一天同台他的过去与现在也将在这一天这个舞台上重叠';
+        const text='赵钱孙李周吴郑王严陈赵钱孙李周吴郑王严陈';
         let listImgs=await service.uploadFiles.listUrlImg();
 
         let listPeople=[];
         for(let i=0;i<cntPeople;i++){
             // 随机名字
-            let idxSubstring=Math.floor(Math.random()*text.length)
-            let name=text.substring(idxSubstring,idxSubstring+2+Math.round(Math.random()*2));
+            let idxSubstring=Math.floor(Math.random()*(text.length-4))
+            let name=text.substr(idxSubstring,2+Math.round(Math.random()*2));
             // 随即日期
             let cntDays=moment(inDateEnd).diff(inDateStart,"days");
             let dateStart=moment(inDateEnd).subtract(Math.random()*cntDays,"days").format("YYYY-MM-DD");
@@ -126,9 +137,9 @@ class IndexController extends Controller {
             let avatar=listImgs[Math.floor(Math.random()*listImgs.length)];
             let objPeople={
                 name:name,
-                firstName:name.substring(0,1),
-                dateStart:moment(dateStart).format("YYYY"),
-                dateEnd:dateEnd!="" ? moment(dateEnd).format("YYYY") : "",
+                avatarName:name.substring(0,1),//firstName
+                dateInYYYYMM:moment(dateStart).format("YYYYMM"),//dateStart
+                dateOutYYYYMM:dateEnd!="" ? moment(dateEnd).format("YYYYMM") : "",//dateEnd
                 avatar:Math.random()<0.1 ? "" :avatar,
             }
             listPeople.push(objPeople);

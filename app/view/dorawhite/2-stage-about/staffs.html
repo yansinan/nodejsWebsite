@@ -19,9 +19,9 @@ body{
     <div id="$aboutStaffs" class="staffs">
         <div class="container animation">
             {% for p in listPeople %}
-            <div class="people" data-staff-start="{{p.dateStart}}" data-staff-end="{{p.dateEnd}}" style="--y_new:50%;--x_new:50%;--depth_new:1;">
+            <div class="people" data-staff-start="{{p.dateInYYYYMM}}" data-staff-end="{{p.dateOutYYYYMM}}" style="--y_new:50%;--x_new:50%;--depth_new:1;">
             {#  style="top: {{range(15,85) | random}}% ;left: {{range(10,90) | random}}%" #}
-                <span>{{p.firstName}}</span><img class="lazy" src="{{p.avatar}}" onerror="this.parentElement.classList.add('error');" onload="this.parentElement.classList.remove('error');" />
+                <span>{{p.avatarName}}</span><img class="lazy" src="{{p.avatar}}" onerror="this.parentElement.classList.add('error');" onload="this.parentElement.classList.remove('error');" />
             </div>
             {% endfor %}
         </div>
@@ -60,7 +60,7 @@ body{
     {# window.$aboutStaffs=document.getElementById("aboutStaffs"); #}
 
     {# 更新坐标，查找符合条件的人 #}
-    function updateStaffs(dateSearch,isAllMove=false){
+    function updateStaffs(yearSearch,isAllMove=false){
         let $yearBn=document.querySelector(".staffs .timeWrapper .year.bn");
         if($yearBn)$yearBn.innerText=dateSearch
         //function getRandomIntInclusive(min, max) { //区间内的随机整数
@@ -71,13 +71,15 @@ body{
 
         function randomBoth(offset=0.5){return (2*(Math.random()-offset))}//-1 ~ 1 随机数,偏向0.2 偏向正0.8
         function setXY(v,dateSearch){
-            let z=Math.abs(dateSearch-(parseInt(v.dataset.staffStart)));
 
-            let scale=z*0.4;
             let x=Math.random()<=0.5 ? (1.5*10 + (Math.random()-0.0)*30) :  (8.5*10 - (Math.random()-0.1)*30) ;
             let dy=Math.sin((0 * Math.PI) + (x * Math.PI / 100 )) ;
             dy=Math.abs(Math.max(dy,0.5))*randomBoth() ;
             let y=(50 + 40*dy) ;
+            
+            {# 如果改YYYYMM记得要/100 #}
+            //let z=Math.abs(dateSearch-(parseInt(v.dataset.staffStart)));
+            //let scale=z*0.4;
             //x= (( x - 50 ) * scale * 0.1 ) + x;
             //y=(( y - 50 ) * scale * 0.5 ) + y;
             //v.setAttribute("style",`--depth:${z};--y:calc( ${y}% - (var(--size_staffs_people) / 2) );--x:calc( ${x}% - (var(--size_staffs_people) / 2) );`);
@@ -92,7 +94,9 @@ body{
 
         }
         let $listP=window.$aboutStaffs.querySelectorAll(".staffs .container .people");
-
+        
+        {# 年转YYYYMM #}
+        let dateSearch=parseInt(yearSearch+"12");
         $listP.forEach(v=>{
            let z=Math.abs(dateSearch-(parseInt(v.dataset.staffStart)));
     
@@ -121,13 +125,13 @@ body{
            {# v.style.setProperty("--depth",z); #}
            {# v.style.setProperty("transform",`translate3D(-50%,-50%,${(z*-100+100) }px) scale(1.3)`); #}
            $(v).velocity({ translateZ: 1 ,}, 1);
-           $(v).velocity({ transform: `translateZ(${((z*-100)+100+(Math.random()*50))+"px"})`  }, { duration: 500 ,});
+           $(v).velocity({ transform: `translateZ(${((z*-1)+100+(Math.random()*50))+"px"})`  }, { duration: 500 ,});
          
         })
      
     }
 
-    let dateSearch="2020";
+    let dateSearch="2022";
     function eChangeDateSearch(e){
         dateSearch=parseInt(dateSearch)-1
         updateStaffs(dateSearch);
