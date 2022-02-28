@@ -11,7 +11,8 @@ export default {
     email: "邮箱",
     integral: "积分",
     group: "角色",
-    category: "行业分类"
+    category: "行业分类",
+    dateInOut:"日期信息"
   },
   //LangEnd
 }

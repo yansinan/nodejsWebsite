@@ -14,47 +14,95 @@
         :model="dialogState.formData"
         :rules="rules"
         ref="ruleForm"
-        label-width="120px"
+        label-width="auto"
         class="demo-ruleForm"
         :label-position="device == 'mobile' ? 'top' : 'right'"
       >
-        <el-form-item :label="$t('regUser.userName')" prop="userName">
-          <el-input size="small" v-model="dialogState.formData.userName"></el-input>
+        <el-form-item prop="userName">
+          <el-input size="small" v-model="dialogState.formData.userName" maxlength="50" show-word-limit><template slot="suffix" style="color:red;">{{$t('regUser.userName')}}</template></el-input>
         </el-form-item>
-        <el-form-item :label="$t('regUser.name')" prop="name">
-          <el-input size="small" v-model="dialogState.formData.name"></el-input>
+        <el-form-item prop="name">
+          <el-input size="small" v-model="dialogState.formData.name" maxlength="50" show-word-limit><template slot="suffix" style="color:red;">{{$t('regUser.name')}}</template></el-input>
         </el-form-item>
-        <el-form-item label="头像" prop="logo">
-          <el-upload
-            class="avatar-uploader"
-            action="/api/upload/files"
-            :show-file-list="false"
-            :on-success="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload"
-            :data="{action:'uploadimage'}"
-          >
-            <img v-if="dialogState.formData.logo" :src="dialogState.formData.logo" class="avatar" />
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-          </el-upload>
+
+        <el-form-item prop="dateInOut">
+          <el-row :gutter="5" type="flex" justify="space-around"  align="middle" style="flex-wrap: nowrap;min-width: min-content;max-width: fit-content;">
+            <el-col :span="11">
+                <el-date-picker
+                  v-model="dialogState.formData.dateIn"
+                  type="date"
+                  :span="12"
+                  placeholder="加入日期">
+                </el-date-picker>
+            </el-col> 
+            <el-col :span="1" style="min-width: min-content;">
+              <icon class="el-icon-minus"/>
+            </el-col> 
+            <el-col :span="11">
+              <el-date-picker
+                v-model="dialogState.formData.dateOut"
+                :span="12"
+                type="date"
+                placeholder="退出日期">
+              </el-date-picker>
+            </el-col> 
+          </el-row>
         </el-form-item>
-        <el-form-item :label="$t('regUser.group')" prop="group">
-          <el-radio class="radio" v-model="dialogState.formData.group" label="0">普通用户</el-radio>
-        </el-form-item>
-        <el-form-item :label="$t('regUser.enable')" prop="enable">
-          <el-switch
-            :on-text="$t('main.radioOn')"
-            :off-text="$t('main.radioOff')"
-            v-model="dialogState.formData.enable"
-          ></el-switch>
-        </el-form-item>
-        <el-form-item :label="$t('regUser.phoneNum')" prop="phoneNum">
-          <el-input size="small" v-model="dialogState.formData.phoneNum"></el-input>
-        </el-form-item>
-        <el-form-item :label="$t('regUser.email')" prop="email">
-          <el-input :disabled="true" size="small" v-model="dialogState.formData.email"></el-input>
-        </el-form-item>
-        <el-form-item :label="$t('regUser.comments')" prop="comments">
-          <el-input size="small" type="textarea" v-model="dialogState.formData.comments"></el-input>
+
+        <el-row :gutter="5" type="flex" justify="space-around"  align="middle" style="flex-wrap: nowrap;min-width: min-content;max-width: fit-content;">
+          <el-col :span="12">
+            <el-form-item prop="group">
+              <!-- <el-radio class="radio" v-model="dialogState.formData.group" label="0">普通用户</el-radio> -->
+              <el-select
+                v-model="dialogState.formData.group"
+                filterable
+                allow-create
+                default-first-option
+                :placeholder="$t('regUser.group')">
+                <el-option
+                  v-for="item in groups"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item prop="enable">
+              <el-switch
+                active-text="激活"
+                inactive-text=""
+                v-model="dialogState.formData.enable"
+              ></el-switch>
+            </el-form-item>
+            <el-form-item prop="phoneNum">
+              <el-input size="small" v-model="dialogState.formData.phoneNum"><template slot="suffix">{{$t('regUser.phoneNum')}}</template></el-input>
+            </el-form-item>
+            <el-form-item prop="email">
+              <el-input size="small" v-model="dialogState.formData.email"><template slot="suffix">{{$t('regUser.email')}}</template></el-input>
+            </el-form-item>
+          </el-col> 
+
+          <el-col :span="12">
+            <el-form-item label="头像" prop="logo">
+              <el-upload
+                class="avatar-uploader"
+                action="/api/upload/files"
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload"
+                :data="{action:'uploadimage'}"
+              >
+                <img v-if="dialogState.formData.logo" :src="dialogState.formData.logo" class="avatar" />
+                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              </el-upload>
+            </el-form-item>
+          </el-col> 
+        </el-row>
+
+        <el-form-item prop="comments">
+          <el-input size="small" type="textarea" v-model="dialogState.formData.comments" maxlength="300" show-word-limit :autosize="{minRows: 4, maxRows: 10 }"></el-input>
+          <div class="el-select-suffix el-input--small el-input__suffix"><span class=" el-input__suffix-inner">{{$t('regUser.comments')}}</span></div>
+
         </el-form-item>
         <el-form-item>
           <el-button
@@ -127,7 +175,7 @@ export default {
         ],
         phoneNum: [
           {
-            required: true,
+            // required: false,
             message: this.$t("validate.inputNull", {
               label: this.$t("regUser.phoneNum")
             }),
@@ -135,7 +183,7 @@ export default {
           },
           {
             validator: (rule, value, callback) => {
-              if (!checkPhoneNum(value)) {
+              if (value && !checkPhoneNum(value)) {
                 callback(
                   new Error(
                     this.$t("validate.inputCorrect", {
@@ -215,7 +263,9 @@ export default {
               phoneNum,
               email,
               comments,
-              _id
+              _id,
+              dateIn,
+              dateOut,
             } = params;
             let currentParams = {
               _id,
@@ -227,7 +277,9 @@ export default {
               enable,
               phoneNum,
               email,
-              comments
+              comments,
+              dateIn,
+              dateOut,
             };
             updateRegUser(currentParams).then(result => {
               if (result.status === 200) {

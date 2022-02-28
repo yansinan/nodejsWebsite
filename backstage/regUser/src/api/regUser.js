@@ -24,7 +24,14 @@ export function updateRegUser(data) {
     data
   })
 }
-
+// 按姓名增加
+export function addRegUserByName(data) {
+  return request({
+    url: '/manage/regUser/addOneName',
+    method: 'post',
+    data
+  })
+}
 export function deleteRegUser(params) {
   return request({
     url: '/manage/regUser/deleteUser',

@@ -8,10 +8,25 @@
       tooltip-effect="dark"
       style="width: 100%"
       @selection-change="handleUserSelect"
+      class="tableBox"
     >
-      <el-table-column type="selection" width="55"></el-table-column>
+      <el-table-column type="selection" width="30"></el-table-column>
+      <!-- 
       <el-table-column prop="userName" :label="$t('regUser.userName')" width="120"></el-table-column>
-      <el-table-column prop="phoneNum" :label="$t('regUser.phoneNum')" width="180">
+      <el-table-column prop="enable" :label="$t('regUser.enable')" show-overflow-tooltip width="60">
+        <template slot-scope="scope">
+          <svg-icon v-show="scope.row.enable" :style="green" icon-class="check-circle-fill" />
+          <svg-icon v-show="!scope.row.enable" :style="red" icon-class="minus-circle-fill" />
+        </template>
+      </el-table-column>
+      -->
+      <el-table-column prop="name" :label="$t('regUser.name')" min-width="250">
+        <template slot-scope="scope">
+          <el-avatar :src="scope.row.logo" fit="cover" size="large" :style="scope.row.enable ? '' : 'filter: opacity(0.5) grayscale(1);'"/>
+          <el-button type="text" size="large" @click="editUserInfo(scope.$index, dataList)" :style="scope.row.enable ? '' : 'filter: opacity(0.5) grayscale(1);'">{{scope.row.name}}  <i class="el-icon-edit" /></el-button>
+        </template>
+      </el-table-column>
+      <!-- <el-table-column prop="phoneNum" :label="$t('regUser.phoneNum')" width="180">
         <template slot-scope="scope">
           <div
             v-if="scope.row.countryCode&&scope.row.phoneNum"
@@ -20,20 +35,21 @@
           <div v-else></div>
         </template>
       </el-table-column>
-      <el-table-column prop="group" :label="$t('regUser.group')">
+       -->
+      <el-table-column 
+        prop="group" 
+        :label="$t('regUser.group')" 
+        width="auto"      
+        :filters="groups"
+        :filter-method="filterHandler">
         <template slot-scope="scope">
           <span v-if="scope.row.group == '0'">普通用户</span>
+          <span v-else >{{scope.row.group}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="enable" :label="$t('regUser.enable')" show-overflow-tooltip>
-        <template slot-scope="scope">
-          <svg-icon v-show="scope.row.enable" :style="green" icon-class="check-circle-fill" />
-          <svg-icon v-show="!scope.row.enable" :style="red" icon-class="minus-circle-fill" />
-        </template>
-      </el-table-column>
-      <el-table-column prop="date" :label="$t('regUser.date')" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="email" :label="$t('regUser.email')" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="integral" :label="$t('regUser.integral')" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="dateInOut" :label="$t('regUser.dateInOut')" show-overflow-tooltip width="auto"></el-table-column>
+      <!-- <el-table-column prop="email" :label="$t('regUser.email')" show-overflow-tooltip></el-table-column> -->
+      <!-- <el-table-column prop="integral" :label="$t('regUser.integral')" show-overflow-tooltip></el-table-column> -->
       <el-table-column :label="$t('main.dataTableOptions')" width="150">
         <template slot-scope="scope">
           <el-button
@@ -60,6 +76,9 @@
     </el-table>
   </div>
 </template>
+<style lang="scss">
+  @import "@root/publicMethods/sass/dataTable.scss";
+</style>
 
 <script>
 import { getOneRegUser, deleteRegUser } from "@/api/regUser";
@@ -67,7 +86,8 @@ import { getOneRegUser, deleteRegUser } from "@/api/regUser";
 export default {
   props: {
     dataList: Array,
-    pageInfo: Object
+    pageInfo: Object,
+    groups:Array,
   },
   data() {
     return {
@@ -154,6 +174,10 @@ export default {
             message: this.$t("regUser.scr_modal_del_error_info")
           });
         });
+    },
+    // 表格筛选
+    filterHandler(value, row, column) {
+        return row.group === value;
     }
   }
 };

@@ -1,17 +1,27 @@
 <template>
   <div class="dr-toolbar">
-    <el-col :xs="12" :md="18" class="option-button">
+    <!-- 新建用户 -->
+    <el-col :xs="19" :md="6">
+        <el-input
+          size="small"
+          placeholder="人员姓名或昵称"
+          v-model="pageInfo.searchkey"
+          suffix-icon="el-icon-plus"
+          @keyup.enter.native="addPeople"
+        ><template slot="suffix" style="color:green;">{{"新增人员"}}</template></el-input>
+    </el-col>
+    <el-col :xs="2" :md="11" class="option-button">
       <el-button size="small" type="danger" plain round @click="branchDelete('user')">
         <svg-icon icon-class="icon_delete" />
       </el-button>
       <!-- TOPBARLEFT -->
     </el-col>
-    <el-col :xs="12" :md="6">
+    <el-col :xs="24" :md="6">
       <div class="dr-toolbar-right">
         <el-input
           class="dr-searchInput"
           size="small"
-          placeholder="用户名/手机号/邮箱"
+          placeholder="搜索用户名/手机号/邮箱"
           v-model="pageInfo.searchkey"
           suffix-icon="el-icon-search"
           @keyup.enter.native="searchResult"
@@ -21,13 +31,14 @@
   </div>
 </template>
 <script>
-import { deleteRegUser } from "@/api/regUser";
+import { deleteRegUser,addRegUserByName } from "@/api/regUser";
 export default {
   props: {
     device: String,
     pageInfo: Object,
     type: String,
-    ids: Array
+    ids: Array,
+    groups:Array,//人员分类
   },
   data() {
     return {
@@ -36,6 +47,30 @@ export default {
     };
   },
   methods: {
+    // 新建人员;
+    addPeople(e){
+      let that=this;
+      let strName=e.target.value;
+      const objNewPeople = {
+          name: strName,
+          // userName:getPinYin(strName),
+          group:this.groups[0].value,
+      }
+      // 增加
+      addRegUserByName(objNewPeople).then(result=>{
+        if (result.status === 200) {
+          // if(result.status)
+          // TODO:如果重名怎么处理
+          this.$store.dispatch("regUser/getRegUserList");
+          that.$message({
+              message: that.$t("main.addSuccess"),
+              type: "success"
+          });
+        } else {
+          this.$message.error(result.message);
+        }
+      });
+    },
     branchDelete(target) {
       let _this = this;
       if (_.isEmpty(_this.ids)) {
@@ -93,4 +128,10 @@ export default {
 };
 </script>
 <style lang="scss">
+.dr-toolbar .option-button{
+  margin-left: 2rem;
+}
+.dr-toolbar .el-col{
+  margin-bottom:1rem;
+}
 </style>

@@ -150,6 +150,9 @@ module.exports = app => {
   UserSchema.path('birth').get(function (v) {
     return moment(v).format("YYYY-MM-DD");
   });
+  UserSchema.virtual('dateInOut').get(function () {
+    return moment(this.dateIn).format("YYYY年MM月DD日") + " 至 " + (this.dateOut?moment(this.dateOut).format("YYYY年MM月DD日"):"今");
+  });
 
   return mongoose.model('User', UserSchema, 'users');
 };

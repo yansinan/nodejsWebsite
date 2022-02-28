@@ -138,8 +138,11 @@ let RegUserController = {
             if (fields.userName) {
                 userObj.userName = fields.userName;
             }
-            if (fields.phoneNum) {
+            if (fields.phoneNum || fields.phoneNum==="") {
                 userObj.phoneNum = fields.phoneNum;
+            }
+            if (fields.email || fields.email==="") {
+                userObj.email = fields.email;
             }
             if (fields.name) {
                 userObj.name = fields.name;

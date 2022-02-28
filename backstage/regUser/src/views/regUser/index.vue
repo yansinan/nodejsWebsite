@@ -1,7 +1,7 @@
 <template>
   <div :class="classObj" class="regUser">
     <div class="main-container">
-      <UserForm :device="device" :dialogState="formState"></UserForm>
+      <UserForm :device="device" :dialogState="formState" :groups="groups"></UserForm>
       <el-row class="dr-datatable">
         <el-col :span="24">
           <TopBar
@@ -9,11 +9,13 @@
             type="regUser"
             :ids="selectlist"
             :pageInfo="regUserList.pageInfo"
+            :groups="groups"
           ></TopBar>
           <DataTable
             :pageInfo="regUserList.pageInfo"
             :dataList="regUserList.docs"
             @changeUserSelectList="changeSelect"
+            :groups="groups"
           ></DataTable>
           <Pagination :device="device" :pageInfo="regUserList.pageInfo" pageType="regUser"></Pagination>
         </el-col>
@@ -35,7 +37,12 @@ export default {
     return {
       sidebarOpened: true,
       device: "desktop",
-      selectlist: []
+      selectlist: [],
+      groups:[
+        {text:"工作人员",value:"工作人员",label:"工作人员"},
+        {text:"乐手"    ,value:"乐手"    ,label:"乐手"   },
+        {text:"网站管理",value:"网站管理",label:"网站管理"},
+        {text:"注册用户",value:"注册用户",label:"注册用户"}],//分类名称
     };
   },
   components: {

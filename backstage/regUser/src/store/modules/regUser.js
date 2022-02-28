@@ -22,7 +22,10 @@ const state = {
       comments: '',
       phoneNum: '',
       enable: true,
-      integral: 0
+      integral: 0,
+      dateIn:null,
+      dateOut:null,
+
     }
   },
   userList: {
