@@ -186,6 +186,44 @@ module.exports = app => {
      * 
      */
     router.post('/manage/dr/uploadFiles', controller.manage.uploadFiles.create)
+
+    /**
+     * 后台regUser管理
+     * 
+     */
+     let regUserManageApi= [{
+        url: 'regUser/addOneName',
+        method: 'post',
+        controllerName: "addOneName",
+        details: '按名称添加用户',
+    },{
+        url: 'regUser/findByName',
+        method: 'get',
+        controllerName: 'findByName',
+        details: '按名称查找用户',
+    },{
+        url: 'regUser/getList',
+        method: 'get',
+        controllerName: 'list',
+        details: '获取会员列表',
+    }, {
+        url: 'regUser/getOne',
+        method: 'get',
+        controllerName: 'getOne',
+        details: '获取单条会员信息',
+    }, {
+        url: 'regUser/updateOne',
+        method: 'post',
+        controllerName: 'update',
+        details: '更新会员信息',
+    }, {
+        url: 'regUser/deleteUser',
+        method: 'get',
+        controllerName: 'removes',
+        details: '删除会员',
+    }];
+    regUserManageApi.forEach(obj=>router[obj.method]('/manage/'+obj.url, controller.manage.regUser[obj.controllerName]))
+    
     //ManageRouters
 
 }

@@ -46,11 +46,11 @@ exports.doraUploadFile = {
 // PLUGIN_NORMALPLUGIN_BEGIN
 
 // doraRegUserPluginBegin
-exports.doraRegUser = {
-    enable: true,
-    package: 'egg-dora-reguser',
-    path: path.join(__dirname, "../lib/plugin/egg-dora-reguser")
-};
+// exports.doraRegUser = {
+//     enable: true,
+//     package: 'egg-dora-reguser',
+//     path: path.join(__dirname, "../lib/plugin/egg-dora-reguser")
+// };
 // doraRegUserPluginEnd
 
 // doraAdsPluginBegin

@@ -188,9 +188,9 @@ module.exports = appInfo => {
     // CONFIG_NORMALPLUGIN_BEGIN
 
     // doraRegUserPluginBegin
-    regUserRouter: {
-      match: [ctx => ctx.path.startsWith('/manage/regUser'), ctx => ctx.path.startsWith('/api/user')],
-    },
+    // regUserRouter: {
+    //   match: [ctx => ctx.path.startsWith('/manage/regUser'), ctx => ctx.path.startsWith('/api/user')],
+    // },
     // doraRegUserPluginEnd
 
     // doraAdsPluginBegin
