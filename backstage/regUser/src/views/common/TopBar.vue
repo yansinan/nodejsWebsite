@@ -1,7 +1,7 @@
 <template>
   <div class="dr-toolbar">
     <!-- 新建用户 -->
-    <el-col :xs="19" :md="6">
+    <el-col :xs="19" :sm="6">
         <el-input
           size="small"
           placeholder="人员姓名或昵称"
@@ -10,13 +10,13 @@
           @keyup.enter.native="addPeople"
         ><template slot="suffix" style="color:green;">{{"新增人员"}}</template></el-input>
     </el-col>
-    <el-col :xs="2" :md="11" class="option-button">
+    <el-col :xs="2" :sm="11" class="option-button">
       <el-button size="small" type="danger" plain round @click="branchDelete('user')">
         <svg-icon icon-class="icon_delete" />
       </el-button>
       <!-- TOPBARLEFT -->
     </el-col>
-    <el-col :xs="24" :md="6">
+    <el-col :xs="24" :sm="6">
       <div class="dr-toolbar-right">
         <el-input
           class="dr-searchInput"

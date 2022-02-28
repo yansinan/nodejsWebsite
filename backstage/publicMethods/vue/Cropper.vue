@@ -17,7 +17,8 @@
       width="80%"
       :visible.sync="dialogVisible"
       :before-close="handleClose"
-      @opened="initCropper">
+      @opened="initCropper"
+      :append-to-body="isInnerDialog">
       <div class="cropper" style="width: 100%; height: auto; border: dashed #cacaca 1px; text-align: center;">
           <img :src="src" style="max-width: 100%" ref="img">
       </div>
@@ -92,6 +93,10 @@ export default {
       value: {
           type:String,
           default:"",
+      },
+      isInnerDialog:{  //是否为嵌套dialog
+        type:Boolean,
+        default:false,
       },
       cropSetting:{
         type:Object,

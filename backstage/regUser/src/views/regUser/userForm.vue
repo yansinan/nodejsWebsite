@@ -3,10 +3,11 @@
     <el-dialog
       :xs="20"
       :sm="20"
-      :md="6"
-      :lg="6"
-      :xl="6"
-      :title="$t('regUser.form_title')"
+      :md="16"
+      :lg="16"
+      :xl="16"
+      width="65%"
+      :title="$t('regUser.form_title')+' : '+dialogState.formData._id"
       :visible.sync="dialogState.show"
       :close-on-click-modal="false"
     >
@@ -18,11 +19,8 @@
         class="demo-ruleForm"
         :label-position="device == 'mobile' ? 'top' : 'right'"
       >
-        <el-form-item prop="userName">
-          <el-input size="small" v-model="dialogState.formData.userName" maxlength="50" show-word-limit><template slot="suffix" style="color:red;">{{$t('regUser.userName')}}</template></el-input>
-        </el-form-item>
         <el-form-item prop="name">
-          <el-input size="small" v-model="dialogState.formData.name" maxlength="50" show-word-limit><template slot="suffix" style="color:red;">{{$t('regUser.name')}}</template></el-input>
+          <el-input size="small" v-model="dialogState.formData.name" maxlength="30" show-word-limit><template slot="suffix" style="color:red;">{{$t('regUser.name')}}</template></el-input>
         </el-form-item>
 
         <el-form-item prop="dateInOut">
@@ -49,7 +47,7 @@
           </el-row>
         </el-form-item>
 
-        <el-row :gutter="5" type="flex" justify="space-around"  align="middle" style="flex-wrap: nowrap;min-width: min-content;max-width: fit-content;">
+        <el-row :gutter="20" type="flex" justify="space-between"  align="start" style="flex-wrap: nowrap;min-width: min-content;">
           <el-col :span="12">
             <el-form-item prop="group">
               <!-- <el-radio class="radio" v-model="dialogState.formData.group" label="0">普通用户</el-radio> -->
@@ -67,6 +65,15 @@
                 </el-option>
               </el-select>
             </el-form-item>
+            <el-form-item prop="phoneNum">
+              <el-input size="small" v-model="dialogState.formData.phoneNum"><template slot="suffix">{{$t('regUser.phoneNum')}}</template></el-input>
+            </el-form-item>
+            <el-form-item prop="email">
+              <el-input size="small" v-model="dialogState.formData.email"><template slot="suffix">{{$t('regUser.email')}}</template></el-input>
+            </el-form-item>
+            <el-form-item prop="userName">
+              <el-input size="small" v-model="dialogState.formData.userName" maxlength="30" show-word-limit><template slot="suffix" style="color:red;">{{$t('regUser.userName')}}</template></el-input>
+            </el-form-item>
             <el-form-item prop="enable">
               <el-switch
                 active-text="激活"
@@ -74,16 +81,11 @@
                 v-model="dialogState.formData.enable"
               ></el-switch>
             </el-form-item>
-            <el-form-item prop="phoneNum">
-              <el-input size="small" v-model="dialogState.formData.phoneNum"><template slot="suffix">{{$t('regUser.phoneNum')}}</template></el-input>
-            </el-form-item>
-            <el-form-item prop="email">
-              <el-input size="small" v-model="dialogState.formData.email"><template slot="suffix">{{$t('regUser.email')}}</template></el-input>
-            </el-form-item>
           </el-col> 
 
           <el-col :span="12">
-            <el-form-item label="头像" prop="logo">
+            <!-- <el-form-item label="头像" prop="logo"> -->
+              <!-- 
               <el-upload
                 class="avatar-uploader"
                 action="/api/upload/files"
@@ -95,7 +97,16 @@
                 <img v-if="dialogState.formData.logo" :src="dialogState.formData.logo" class="avatar" />
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
-            </el-form-item>
+               -->
+              <Cropper 
+                nameMod="regUser"
+                :subPath="dialogState.formData._id || ''"
+                :aspectRatio="1"
+                v-model="dialogState.formData.logo" 
+                :label="头像"
+                prop="logo"
+                isInnerDialog="false"></Cropper>
+            <!-- </el-form-item> -->
           </el-col> 
         </el-row>
 
@@ -141,7 +152,7 @@ export default {
               if (!isRegularCharacter(value)) {
                 callback(
                   new Error(
-                    this.$t("validate.rangelength", { min: 2, max: 30 })
+                    this.$t("validate.rangelength", { min: 1, max: 30 })
                   )
                 );
               } else {
@@ -163,7 +174,7 @@ export default {
               if (!isRegularCharacter(value)) {
                 callback(
                   new Error(
-                    this.$t("validate.rangelength", { min: 2, max: 20 })
+                    this.$t("validate.rangelength", { min: 1, max: 30 })
                   )
                 );
               } else {
@@ -217,6 +228,9 @@ export default {
         ]
       }
     };
+  },
+  components:{
+    Cropper: () => import('@root/publicMethods/vue/Cropper.vue'),
   },
   methods: {
     handleAvatarSuccess(res, file) {
@@ -306,6 +320,10 @@ export default {
 </script>
 
 <style lang="scss">
+.el-select{
+  width:100%;
+}
+/*
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
@@ -329,4 +347,5 @@ export default {
   height: 158px;
   display: block;
 }
+*/
 </style>
