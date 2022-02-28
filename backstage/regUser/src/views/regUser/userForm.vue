@@ -105,7 +105,8 @@
                 v-model="dialogState.formData.logo" 
                 :label="头像"
                 prop="logo"
-                isInnerDialog="false"></Cropper>
+                isInnerDialog="false"
+                :cropSetting="cropSetting"></Cropper>
             <!-- </el-form-item> -->
           </el-col> 
         </el-row>
@@ -138,6 +139,14 @@ export default {
   },
   data() {
     return {
+      cropSetting:{
+        height:128,
+        width:128,
+        minWidth: 64,
+        minHeight: 64,
+        maxWidth: 256,
+        maxHeight: 256,
+      },
       rules: {
         userName: [
           {

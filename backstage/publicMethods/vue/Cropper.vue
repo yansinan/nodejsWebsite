@@ -62,7 +62,17 @@ img{
 <script>
 import Cropper from 'cropperjs'
 import 'cropperjs/dist/cropper.min.css'
- 
+const cropSettingDefault={
+  width: 512,
+  height: 512,
+  minWidth: 256,
+  minHeight: 256,
+  maxWidth: 1024,
+  maxHeight: 1024,
+  fillColor: '#fff',
+  imageSmoothingEnabled: false,
+  imageSmoothingQuality: 'high',
+}
 export default {
     name: "ImgCropper",
     props: {
@@ -100,17 +110,7 @@ export default {
       },
       cropSetting:{
         type:Object,
-        default:{
-          width: 512,
-          height: 512,
-          minWidth: 256,
-          minHeight: 256,
-          maxWidth: 1024,
-          maxHeight: 1024,
-          fillColor: '#fff',
-          imageSmoothingEnabled: false,
-          imageSmoothingQuality: 'high',
-        }
+        default:cropSettingDefault,
       },
       // 用户浏览图片，外部验证
       "before-crop":{

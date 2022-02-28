@@ -22,7 +22,7 @@
       -->
       <el-table-column prop="name" :label="$t('regUser.name')" min-width="250">
         <template slot-scope="scope">
-          <el-avatar :src="scope.row.logo" fit="cover" size="large" :style="scope.row.enable ? '' : 'filter: opacity(0.5) grayscale(1);'"/>
+          <el-avatar :src="scope.row.avatar" fit="cover" size="large" :style="scope.row.enable ? '' : 'filter: opacity(0.5) grayscale(1);'">{{scope.row.avatarName}}</el-avatar>
           <el-button type="text" size="large" @click="editUserInfo(scope.$index, dataList)" :style="scope.row.enable ? '' : 'filter: opacity(0.5) grayscale(1);'">{{scope.row.name}}  <i class="el-icon-edit" /></el-button>
         </template>
       </el-table-column>

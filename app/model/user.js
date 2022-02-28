@@ -153,6 +153,12 @@ module.exports = app => {
   UserSchema.virtual('dateInOut').get(function () {
     return moment(this.dateIn).format("YYYY年MM月DD日") + " 至 " + (this.dateOut?moment(this.dateOut).format("YYYY年MM月DD日"):"今");
   });
+  UserSchema.virtual('avatar').get(function () {
+    return (this.logo=="/static/upload/images/defaultlogo.png" || !this.logo) ?false:this.logo;
+  });
+  UserSchema.virtual('avatarName').get(function () {
+    return (this.name || this.userName).substring(0,1);
+  });
 
   return mongoose.model('User', UserSchema, 'users');
 };
