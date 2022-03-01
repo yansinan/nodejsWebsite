@@ -315,8 +315,13 @@
 } */
 
 .staffs .container .people img.loading,
+.staffs .container .people.error.now img,
 .staffs .container .people.error img {
     opacity: 0;
+}
+.staffs .container .people.error.now img,
+.staffs .container .people.error img{
+    display:none;
 }
 /* 有图，非当前隐藏头像字 */
 .staffs .container .people span{

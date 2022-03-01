@@ -32,12 +32,12 @@
             //    autoplay:false,
             //    listenFlick:false,
             //},
-            useTransition: true,
+            useTransition: false,
             momentum: true,
             //momentumLimitTime:100,//{# 快速滑动的时间小于xx开启#}
             //momentumLimitDistance:50,//{# 快速滑动的距离大于xx开启#}
-            deceleration:0.005,//{# momentum 动画的减速度 #}
-            //swipeTime:300,//{# momentum 动画时长 #}
+            //deceleration:0.005,//{# momentum 动画的减速度 #}
+            //swipeTime:1000,//300,//{# momentum 动画时长 #}
             bounce: {
                 top: true,
                 bottom: true,
@@ -66,7 +66,7 @@
         //    that.bsTimeline={};
         //}
         if(that.bsTimeline.refresh){
-            console.debug("bsTimeline::resetSlideMain.刷新refresh");
+            console.debug("bsTimeline::resetSlideMain.刷新refresh",$timelineWrapper.style["pointer-event"]);
             that.bsTimeline.refresh();
             return;
         }
@@ -82,7 +82,8 @@
         }
         that.bsTimeline = new BetterScroll.createBScroll($timelineWrapper, Object.assign({},objInitBSTimeline,objOption));
         {# console.warn("高度差？",that.bsTimeline.wrapper.getBoundingClientRect().height,that.bsTimeline.content.getBoundingClientRect().height,) #}
-        console.debug("bsTimeline::resetSlideMain.初始化"); 
+        $timelineWrapper.style.setProperty("pointer-events","auto");
+        console.debug("bsTimeline::resetSlideMain.初始化;points-event:",that.bsTimeline.pending,$timelineWrapper.style.getPropertyValue("pointer-events")); 
         Object.defineProperties(that.bsTimeline,{
             $listMM:{
                 get:()=>(that.$listBSMM),//($timelineWrapper.querySelectorAll(".wapper-mm") ),
@@ -254,12 +255,12 @@
             {# 日期变化，且用户操作产生的，才触发同步通知 #}
             return that.bsTimeline.checkEvent(isSync);
         }
-        {# 防止动画中不能拖动，体验差 #}
-        that.bsTimeline.scroller.actionsHandler.hooks.on('beforeStart', (e)=>{
+        {# 防止动画中不能拖动，体验差;$timelineWrapper的pointer-events,在main滑动中设为none,但不知为何未能恢复，曾导致无效 #}
+        that.bsTimeline.eStopAniAndDrap=function(e){
             if(that.bsTimeline.pending)that.bsTimeline.stop()
             that.bsTimeline.enable();
-
-        })
+        }
+        that.bsTimeline.scroller.actionsHandler.hooks.on('beforeStart', that.bsTimeline.eStopAniAndDrap)
         that.bsTimeline.scroller.actionsHandler.hooks.on("move",()=>{ that.dispatchEvent(new CustomEvent("BS_MAIN_TOUCH_MOVE")); })
         that.bsTimeline.scroller.actionsHandler.hooks.on("end",()=>{ that.dispatchEvent(new CustomEvent("BS_MAIN_TOUCH_END")); })
         that.bsTimeline.on('scroll', that.bsTimeline.eUpdateTimeline);
