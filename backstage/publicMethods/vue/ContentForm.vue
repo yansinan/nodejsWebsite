@@ -3,7 +3,7 @@
         :model="formState.formData"
         :rules="rules"
         ref="ruleForm"
-        label-width="120px"
+        label-width="auto"
         class="demo-ruleForm"
         size="medium"
         :label-position="device == 'mobile' ? 'top' : 'top'"

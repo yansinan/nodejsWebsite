@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-01-26 
  * @Last Modified by: dr
- * @Last Modified time: 2021-12-14 23:41:52
+ * @Last Modified time: 2022-02-28 22:16:42
  */
 
 'use strict';
@@ -224,7 +224,7 @@ class ServicePlugin extends Service {
                 if (!part.filename) {
                     continue;
                 }
-                console.info("uploadFiles.service=>uploading fileInfo from part: " , part);
+                // console.info("uploadFiles.service=>uploading fileInfo from part: " , part);
                 // 在upload/images下，按控制器分文件夹
                 options.subdirMod=parts.field.nameMod?parts.field.nameMod:'';
                 //控制器文件夹下是否按id分文件夹
@@ -274,6 +274,7 @@ class ServicePlugin extends Service {
             listInfoImage:listObjImage,
             field:ctx.request.body,
         }
+        console.info("create.uploadFiles.service=>uploading success: " , res);
         // 设置响应内容和响应状态码
         return res
     }

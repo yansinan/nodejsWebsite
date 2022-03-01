@@ -34,7 +34,7 @@ module.exports = appInfo => {
             // 'contentTags',
             // 'contentCategory',
             // 'contentMessage',
-            // 'regUser',
+            //'regUser', //8899
             // 'helpCenter',
             // 'renderCms',
             // 'cmsTemplate',
