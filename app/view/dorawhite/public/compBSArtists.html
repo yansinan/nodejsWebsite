@@ -38,11 +38,16 @@
         <div class="artist d-flex align-items-center"></div>
         <script>
         let $listArtists=document.getElementById("coverArtistsWrapper").querySelectorAll(".artist");
+        {# 显示乐队形象图：移动端不使用 #}
         $listArtists.forEach($artist=>{
             var $listNameArtists = $artist.querySelectorAll('.name [data-bs-toggle="tooltip"]');
             if(!$listNameArtists)return;
+            {# 加这个，否则IOS乐队列表页不动作；不知道为何 #}
+            $artist.addEventListener("touchstart",(e)=>{
+                e.target.style.setProperty("pointer-events","auto");
+            });
             $listNameArtists.forEach(function ($nameArtist) {
-                {# 移动端不做操作 #}
+                {# 移动端不显示乐队形象图 #}
                 if(that.isMobile)return;
                 if($nameArtist.tooltip && $nameArtist.tooltip.dispose)$nameArtist.tooltip.dispose();
                 let strClass=Math.random()>0.5 ? "sImg verticle" : "sImg";
@@ -144,7 +149,7 @@
             //    autoplay:false,
             //    listenFlick:false,
             //},
-            useTransition: true,
+            useTransition: false,
             momentum: true,
             bounce: true,
             //stopPropagation: true,
