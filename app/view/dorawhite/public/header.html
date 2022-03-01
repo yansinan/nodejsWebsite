@@ -110,7 +110,7 @@
             })
         }
         objRouter.detail=objRouter.detail == "/" ? "": objRouter.detail;
-        console.log("路由拆解测试：",objRouter,testURL,)
+        {# console.debug("路由拆解测试：",objRouter,testURL,) #}
         return objRouter;
     }
     {# 更新导航状态 #}
@@ -394,7 +394,7 @@
     window.addEventListener('DOMContentLoaded', ePopStateHeader, false);
 
     function ePopStateHeader(event){
-        console.info("history::",event.type,window.location.pathname,"window.history.state:",window.history.state,";event.state",event.state,"strAliasNav=",this.header.strAliasNav);
+        {# console.info("history::",event.type,window.location.pathname,"window.history.state:",window.history.state,";event.state",event.state,"strAliasNav=",this.header.strAliasNav); #}
         {# 非首页需要跳转相应页 #}
         //let path=window.location.pathname.split("/index")[1] || window.location.pathname || "/";
 

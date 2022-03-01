@@ -86,15 +86,15 @@
                     }
                 });
             })
-            tooltipTriggerEl.addEventListener("touchstart",eShow);
-            tooltipTriggerEl.addEventListener("mouseenter",eShow);
-            {# tooltipTriggerEl.addEventListener("touchend",eHide); #}
-            tooltipTriggerEl.addEventListener("mouseup",eHide);
+            tooltipTriggerEl.addEventListener("touchstart",eShow,{passive: true});
+            tooltipTriggerEl.addEventListener("mouseenter",eShow,{passive: true});
+            {# tooltipTriggerEl.addEventListener("touchend",eHide,{passive: true}); #}
+            tooltipTriggerEl.addEventListener("mouseup",eHide,{passive: true});
             tooltipTriggerEl.addEventListener("mouseleave",(e)=>{
                 setTimeout(()=>{
                     if(!e.target.tooltip.tip.isOnTooltip)eHide(e);
                 },500);
-            });
+            },{passive: true});
             //tooltipTriggerEl.addEventListener("touchcancel",tooltipTriggerEl.tooltip.show);
             
             return tooltip;

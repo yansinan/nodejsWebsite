@@ -45,7 +45,7 @@
             {# 加这个，否则IOS乐队列表页不动作；不知道为何 #}
             $artist.addEventListener("touchstart",(e)=>{
                 e.target.style.setProperty("pointer-events","auto");
-            });
+            },{passive: true});
             $listNameArtists.forEach(function ($nameArtist) {
                 {# 移动端不显示乐队形象图 #}
                 if(that.isMobile)return;
@@ -99,18 +99,18 @@
                     if(tooltip && !tooltip.tip.classList.contains("show")){
                         tooltip.tip.classList.add("show");
                     }
-                });
+                },{passive: true});
                 $nameArtist.addEventListener("mouseenter",(e)=>{
                     let tooltip=e.target.tooltip
                     if(tooltip){
                         tooltip.show();
                     }
-                });
+                },{passive: true});
 
                 $nameArtist.addEventListener("mouseleave",(e)=>{
                     let tooltip=e.target.tooltip
                     if(tooltip)tooltip.hide();
-                });
+                },{passive: true});
                 return tooltip;
             })
 

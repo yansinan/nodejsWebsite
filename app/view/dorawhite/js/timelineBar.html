@@ -271,22 +271,22 @@
 
         if(that.bsTimelineBarWrapper.$dateTo && offsetToScroll && that.bsTimelineBarWrapper.$docNow != that.bsTimelineBarWrapper.$dateTo && Math.abs(offsetToScroll)<0.5){
             {# 有$dateTo,且没完成，是被动滚，继续完成 #}
-            console.log("底条animater.end停止:修正需要:",that.bsTimelineBarWrapper.$docNow.id,"==>",that.bsTimelineBarWrapper.$dateTo.id,offsetToScroll);//,that.bsTimelineBarWrapper.$dateTo.id
+            console.debug("底条animater.end停止:修正需要:",that.bsTimelineBarWrapper.$docNow.id,"==>",that.bsTimelineBarWrapper.$dateTo.id,offsetToScroll);//,that.bsTimelineBarWrapper.$dateTo.id
             that.bsTimelineBarWrapper.scrollToElement(that.bsTimelineBarWrapper.$dateTo);
         }else if(that.bsTimelineBarWrapper.$docNow == that.bsTimelineBarWrapper.$dateTo){
             {# 有dateTo并且docNow相等，被动移动真正完成 #}
             that.bsTimelineBarWrapper.enable();
             {# 触发事件 #}
-            console.log("底条animater.end停止:修正后:",that.bsTimelineBarWrapper.$docNow.id,offsetNowScroll);//,that.bsTimelineBarWrapper.$dateTo.id
+            console.debug("底条animater.end停止:修正后:",that.bsTimelineBarWrapper.$docNow.id,offsetNowScroll);//,that.bsTimelineBarWrapper.$dateTo.id
             {# that.dispatchEvent(new CustomEvent("BS_TIMELINE_BAR_DATE_CHANGE_FINAL", { detail:{ strDateNow:strNowDate, } })) #}
             that.bsTimelineBarWrapper.$dateTo=false;
         }else if(!that.bsTimelineBarWrapper.enabled){
             {# 被动移动的延续动画完成 #}
-            console.log("底条animater.end停止:被动:",that.bsTimelineBarWrapper.$docNow.id,that.bsTimelineBarWrapper.$dateTo?that.bsTimelineBarWrapper.$dateTo.id:false);//,that.bsTimelineBarWrapper.$dateTo.id
+            console.debug("底条animater.end停止:被动:",that.bsTimelineBarWrapper.$docNow.id,that.bsTimelineBarWrapper.$dateTo?that.bsTimelineBarWrapper.$dateTo.id:false);//,that.bsTimelineBarWrapper.$dateTo.id
         }else if(strNowDate){
             {# 手滑动动画完成 #}
             that.bsTimelineBarWrapper.enable();
-            console.log("底条animater.end停止:手滑:",that.bsTimelineBarWrapper.$docNow.id,offsetNowScroll);
+            console.debug("底条animater.end停止:手滑:",that.bsTimelineBarWrapper.$docNow.id,offsetNowScroll);
             that.dispatchEvent(new CustomEvent("BS_TIMELINE_BAR_DATE_CHANGE_FINAL", { detail:{ strDateNow:strNowDate, } }))
         }
     }
@@ -295,7 +295,7 @@
         let strNowDate=that.bsTimelineBarWrapper.$docNow.id.replace("b","");
         if(strNowDate && that.bsTimelineBarWrapper.enabled){
             {# 手滑动完成 #}
-            console.log("底条scrollEnd手滑:",that.bsTimelineBarWrapper.$docNow.id,that.bsTimelineBarWrapper.calcPosX(that.bsTimelineBarWrapper.$docNow));
+            console.debug("底条scrollEnd手滑:",that.bsTimelineBarWrapper.$docNow.id,that.bsTimelineBarWrapper.calcPosX(that.bsTimelineBarWrapper.$docNow));
             that.bsTimelineBarWrapper.scrollToElement(that.bsTimelineBarWrapper.$docNow);
             that.dispatchEvent(new CustomEvent("BS_TIMELINE_BAR_DATE_CHANGE_FINAL", { detail:{ strDateNow:strNowDate, } }))
         }
@@ -348,7 +348,7 @@
             throw new Error("e:底条::",e.type,"无效==>",strDateNow,"==>",e.detail.strDateNow,"未找到id：","b"+e.detail.strDateNow);
             return;
         }
-        console.warn("e:底条::",e.type,"有效==>scrollToElement",strDateNow,"==>",e.detail.strDateNow);
+        console.debug("e:底条::",e.type,"有效==>scrollToElement",strDateNow,"==>",e.detail.strDateNow);
         that.bsTimelineBarWrapper.$dateTo=$dateTo;
         that.bsTimelineBarWrapper.scrollToElement($dateTo);
     }
