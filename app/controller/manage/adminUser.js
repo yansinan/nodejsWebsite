@@ -1,8 +1,8 @@
 /*
  * @Author: doramart 
  * @Date: 2019-06-20 18:55:40 
- * @Last Modified by: doramart
- * @Last Modified time: 2020-07-27 16:58:55
+ * @Last Modified by: dr
+ * @Last Modified time: 2022-03-02 01:22:40
  */
 const Controller = require('egg').Controller;
 const {
@@ -244,7 +244,8 @@ class AdminUserController extends Controller {
     async getBasicSiteInfo() {
         const {
             ctx,
-            app
+            app,
+            service
         } = this;
         try {
 
@@ -259,6 +260,47 @@ class AdminUserController extends Controller {
                 messages = [],
                 regUsers = [],
                 loginLogs = [];
+
+            let listArtists=[],
+                listStaffs=[],
+                totalRecords=0,
+                totalGoods=0,
+                totalShows=0,
+                totalVideos=0,
+                totalDocs=0,
+                listDocs=[];
+
+            // 工作人员
+            listStaffs=await service.user.find({
+                isPaging: '0',
+                pageSize: 0,
+            }, {
+                query:{group: ['工作人员'],state: '1'},
+                sort:{dateIn: -1},
+            })
+            // 乐队
+            listArtists=await service.artist.find({
+                isPaging: '0',
+                pageSize: 0,
+            }, {
+                files:"id sImg name firstLetter updateDate url",
+                sort:{updateDate:-1,firstLetter: 1},
+            })
+            // 唱片总计
+            totalRecords=await service.record.count();
+            // 周边总计
+            totalGoods=await service.good.count();
+            // 视频统计
+            totalVideos=await service.video.count();
+            // 最新文档
+            listDocs=await service.doc.find({
+                isPaging: '0',
+                pageSize: 15,
+            }, {
+                files:"id doc sImg name updateDate url date dateFull",
+                sort:{updateDate:-1},
+            })
+            
 
             adminUserCount = await ctx.service.adminUser.count({
                 state: '1'
@@ -357,7 +399,14 @@ class AdminUserController extends Controller {
                 messageCount,
                 messages,
                 loginLogs,
-                resources: newResources
+                resources: newResources,
+                // dr新增
+                listStaffs,
+                listArtists,
+                totalRecords,
+                totalGoods,
+                totalVideos,
+                listDocs,
             }
 
             ctx.helper.renderSuccess(ctx, {

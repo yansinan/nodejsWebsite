@@ -13,7 +13,7 @@ module.exports = appInfo => {
         // DEV_CONFIG_MODULES_BEGIN
         dev_modules: [
             // 'navbar',
-            // 'dashboard',
+            //'dashboard', //8899
             // 'adminGroup',
             // 'adminUser',
             // 'adminResource',

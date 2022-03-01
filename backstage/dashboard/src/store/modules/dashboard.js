@@ -2,8 +2,8 @@ import * as types from '../types.js';
 import {
   getSiteBasicInfo,
   getUserSession,
-  getClientNotice,
-  getVersionMaintenanceInfo
+  // getClientNotice,
+  // getVersionMaintenanceInfo
 } from '@/api/dashboard';
 import _ from 'lodash';
 
@@ -13,7 +13,12 @@ const state = {
     adminUserCount: 0,
     regUserCount: 0,
     contentCount: 0,
-    messageCount: 0
+    messageCount: 0,
+    listArtists:[],
+    listStaffs:[],
+    totalGoods:0,
+    totalRecords:0,
+    totalVideos:0,
   },
   loginState: {
     state: false,
@@ -25,8 +30,8 @@ const state = {
     },
     noticeCounts: 0
   },
-  notice: [],
-  versionInfo: []
+  //notice: [],
+  //versionInfo: []
 }
 
 const mutations = {
@@ -48,12 +53,12 @@ const mutations = {
       noticeCounts: params.noticeCounts
     });
   },
-  [types.CLIENT_NOTICE](state, list) {
-    state.notice = list
-  },
-  [types.SYSTEM_VERSION_INFO](state, list) {
-    state.versionInfo = list.length > 0 ? list[0] : {}
-  },
+  //[types.CLIENT_NOTICE](state, list) {
+  //  state.notice = list
+  //},
+  //[types.SYSTEM_VERSION_INFO](state, list) {
+  //  state.versionInfo = list.length > 0 ? list[0] : {}
+  //},
 }
 
 const actions = {
@@ -76,21 +81,21 @@ const actions = {
     })
   },
 
-  getNotice: ({
-    commit
-  }, params = {}) => {
-    getClientNotice(params).then((result) => {
-      commit(types.CLIENT_NOTICE, result.data)
-    })
-  },
+  // getNotice: ({
+  //   commit
+  // }, params = {}) => {
+  //   getClientNotice(params).then((result) => {
+  //     commit(types.CLIENT_NOTICE, result.data)
+  //   })
+  // },
 
-  getVersionMaintenanceInfo: ({
-    commit
-  }, params = {}) => {
-    getVersionMaintenanceInfo(params).then((result) => {
-      commit(types.SYSTEM_VERSION_INFO, result.data)
-    })
-  },
+  // getVersionMaintenanceInfo: ({
+  //   commit
+  // }, params = {}) => {
+  //   getVersionMaintenanceInfo(params).then((result) => {
+  //     commit(types.SYSTEM_VERSION_INFO, result.data)
+  //   })
+  // },
 }
 
 export default {

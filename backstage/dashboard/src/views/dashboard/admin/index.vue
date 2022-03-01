@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-editor-container">
-    <github-corner style="position: absolute; top: 0px; border: 0; right: 0;" />
+    <!-- <github-corner style="position: absolute; top: 0px; border: 0; right: 0;" />
     <div class="notice-box">
       <div class="client-notice" v-html="noticeInfo"></div>
       <div class="update-notice" v-if="vNo.newVersion>vNo.oldVersion">
@@ -13,7 +13,10 @@
         >查看详情</el-link>
       </div>
     </div>
+     -->
+    <!-- 顶部统计数据 -->
     <panel-group :basicInfo="basicInfo" />
+    <!-- 权限展示浮窗 -->
     <el-dialog
       width="55%"
       :title="$t('main.myPower')"
@@ -23,32 +26,35 @@
       <resource-view :resource="newSourceData" />
     </el-dialog>
     <el-row :gutter="8">
+      <!-- 近期评论 -->
       <el-col
         :xs="{span: 24}"
         :sm="{span: 24}"
         :md="{span: 24}"
-        :lg="{span: 11}"
-        :xl="{span: 12}"
+        :lg="{span: 7}"
+        :xl="{span: 7}"
         style="padding-right:8px;margin-bottom:30px;"
       >
-        <transaction-table :messages="basicInfo.messages" />
+        <list-docs :listDocs="basicInfo.listDocs" />
       </el-col>
+      <!-- 乐队列表 -->
       <el-col
         :xs="{span: 24}"
         :sm="{span: 12}"
         :md="{span: 12}"
-        :lg="{span: 6}"
-        :xl="{span: 6}"
+        :lg="{span: 12}"
+        :xl="{span: 12}"
         style="margin-bottom:30px;"
       >
-        <user-list :regUsers="basicInfo.regUsers" />
+        <artist-list :listArtists="basicInfo.listArtists" />
       </el-col>
+      <!-- 当前用户信息 -->
       <el-col
         :xs="{span: 24}"
         :sm="{span: 12}"
         :md="{span: 12}"
-        :lg="{span: 7}"
-        :xl="{span: 6}"
+        :lg="{span: 5}"
+        :xl="{span: 5}"
         style="margin-bottom:30px;"
       >
         <box-card :basicInfo="basicInfo" @showMyResourceBox="showMyResource" />
@@ -58,22 +64,26 @@
 </template>
 
 <script>
-import GithubCorner from "@/components/GithubCorner";
+// import GithubCorner from "@/components/GithubCorner";
 import PanelGroup from "./components/PanelGroup";
 import ResourceView from "./components/ResourceView.vue";
-import TransactionTable from "./components/TransactionTable";
-import UserList from "./components/UserList";
+// import TransactionTable from "./components/TransactionTable";
+// import UserList from "./components/UserList";
+import ArtistList from "./components/ArtistList";
+import ListDocs from "./components/ListDocs";
 import BoxCard from "./components/BoxCard";
 import { renderTreeData } from "@/utils";
 import { mapGetters, mapActions } from "vuex";
 export default {
   name: "DashboardAdmin",
   components: {
-    GithubCorner,
+    // GithubCorner,
     PanelGroup,
     ResourceView,
-    TransactionTable,
-    UserList,
+    // TransactionTable,
+    // UserList,
+    ArtistList,
+    ListDocs,
     BoxCard
   },
   data() {
@@ -85,46 +95,46 @@ export default {
     showMyResource() {
       this.resourceShow = true;
     },
-    showUpdateNotice() {
-      if (this.versionInfo && this.versionInfo.description) {
-        window.open(this.versionInfo.description);
-      }
-    }
+    //showUpdateNotice() {
+    //  if (this.versionInfo && this.versionInfo.description) {
+    //    window.open(this.versionInfo.description);
+    //  }
+    //}
   },
   computed: {
-    ...mapGetters(["basicInfo", "notice", "versionInfo"]),
+    ...mapGetters(["basicInfo"]),//, "notice", "versionInfo"
     newSourceData() {
       return renderTreeData({ docs: this.basicInfo.resources });
     },
-    noticeInfo() {
-      if (this.notice && this.notice.length > 0) {
-        let firstStr = this.notice[0].content;
-        return `${firstStr}`;
-      } else {
-        return "";
-      }
-    },
-    vNo() {
-      let cmsVersion = this.$root.appVersion;
-      let oldVersion = Number(cmsVersion.split(".").join(""));
-      let newVersion;
-      if (this.versionInfo && this.versionInfo.version) {
-        newVersion = Number(this.versionInfo.version.split(".").join(""));
-      }
-      return {
-        ov: cmsVersion,
-        oldVersion,
-        nv: this.versionInfo.version,
-        newVersion
-      };
-    }
+    //noticeInfo() {
+    //  if (this.notice && this.notice.length > 0) {
+    //    let firstStr = this.notice[0].content;
+    //    return `${firstStr}`;
+    //  } else {
+    //    return "";
+    //  }
+    //},
+    //vNo() {
+    //  let cmsVersion = this.$root.appVersion;
+    //  let oldVersion = Number(cmsVersion.split(".").join(""));
+    //  let newVersion;
+    //  if (this.versionInfo && this.versionInfo.version) {
+    //    newVersion = Number(this.versionInfo.version.split(".").join(""));
+    //  }
+    //  return {
+    //    ov: cmsVersion,
+    //    oldVersion,
+    //    nv: this.versionInfo.version,
+    //    newVersion
+    //  };
+    //}
   },
   mounted() {
     this.$store.dispatch("dashboard/getSiteBasicInfo");
-    this.$store.dispatch("dashboard/getNotice", { isPaging: "0" });
-    this.$store.dispatch("dashboard/getVersionMaintenanceInfo", {
-      isPaging: "0"
-    });
+    // this.$store.dispatch("dashboard/getNotice", { isPaging: "0" });
+    // this.$store.dispatch("dashboard/getVersionMaintenanceInfo", {
+    //   isPaging: "0"
+    // });
     localStorage.clear();
   }
 };

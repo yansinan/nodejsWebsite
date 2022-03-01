@@ -11,7 +11,7 @@ export default {
     seeDetails: "查看",
     adminUserTotalNum: "管理员总数",
     regUserTotalNum: "注册用户",
-    contentsTotalNum: "文档总数",
+    contentsTotalNum: "文档",
     messagesTotalNum: "留言总数",
     shortcutOption: "快捷操作",
     addAdminUser: "添加管理员",
@@ -59,7 +59,16 @@ export default {
     close_modal: "关闭",
     askForReInputContent: "发现您有未保存的文档，是否载入？",
     cancelReInputContent: "已取消载入并清除数据",
-    noModifyPasswordTips: "不修改密码请留空"
+    noModifyPasswordTips: "不修改密码请留空",
+    // ==========>新增：
+    totalStaffs:"工作人员",
+    totalArtists:"乐队",
+    totalRecords:"唱片",
+    totalShows:"演出",
+    totalGoods:"周边",
+    totalVideos:"视频",
+
+
   },
   validate: {
     inputNull: "请输入 {label}",

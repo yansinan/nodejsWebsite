@@ -1,49 +1,78 @@
 <template>
   <el-row :gutter="40" class="panel-group">
-    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel">
+    <!-- 工作人员 -->
+    <el-col :xs="12" :sm="12" :lg="4" class="card-panel-col">
+      <div class="card-panel" @click="$router.push('/admin/regUser')" >
         <div class="card-panel-icon-wrapper icon-people">
-          <svg-icon icon-class="people" class-name="card-panel-icon" />
+          <svg-icon icon-class="staff" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">{{$t('main.adminUserTotalNum')}}</div>
-          <count-to :start-val="0" :end-val="basicInfo.adminUserCount" :duration="26" class="card-panel-num"/>
+          <div class="card-panel-text">{{$t('main.totalStaffs')}}</div>
+          <count-to :start-val="0" :end-val="basicInfo.listStaffs.length" :duration="3000" class="card-panel-num"/>
         </div>
       </div>
     </el-col>
-    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel">
+    <!-- 乐队 -->
+    <el-col :xs="12" :sm="12" :lg="4" class="card-panel-col">
+      <div class="card-panel" @click="$router.push('/admin/artist')">
         <div class="card-panel-icon-wrapper icon-message">
-          <svg-icon icon-class="peoples" class-name="card-panel-icon" />
+          <svg-icon icon-class="artist" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">{{$t('main.regUserTotalNum')}}</div>
-          <count-to :start-val="0" :end-val="basicInfo.regUserCount" :duration="600" class="card-panel-num"/>
+          <div class="card-panel-text">{{$t('main.totalArtists')}}</div>
+          <count-to :start-val="0" :end-val="basicInfo.listArtists.length" duration="3000" class="card-panel-num"/>
         </div>
       </div>
     </el-col>
-    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel">
+    <!-- 专辑总数 -->
+    <el-col :xs="12" :sm="12" :lg="4" class="card-panel-col">
+      <div class="card-panel" @click="$router.push('/admin/record')">
+        <div class="card-panel-icon-wrapper icon-shoppingCard">
+          <svg-icon icon-class="record" class-name="card-panel-icon" />
+        </div>
+        <div class="card-panel-description">
+          <div class="card-panel-text">{{$t('main.totalRecords')}}</div>
+          <count-to :start-val="0" :end-val="basicInfo.totalRecords" duration="3000" class="card-panel-num"/>
+        </div>
+      </div>
+    </el-col>
+    <!-- 视频总数 -->
+    <el-col :xs="12" :sm="12" :lg="4" class="card-panel-col">
+      <div class="card-panel" @click="$router.push('/admin/record')">
+        <div class="card-panel-icon-wrapper icon-shoppingCard">
+          <svg-icon icon-class="video" class-name="card-panel-icon" />
+        </div>
+        <div class="card-panel-description">
+          <div class="card-panel-text">{{$t('main.totalVideos')}}</div>
+          <count-to :start-val="0" :end-val="basicInfo.totalVideos" duration="3000" class="card-panel-num"/>
+        </div>
+      </div>
+    </el-col>
+    <!-- 周边总数 -->
+    <el-col :xs="12" :sm="12" :lg="4" class="card-panel-col">
+      <div class="card-panel" @click="$router.push('/admin/good')">
         <div class="card-panel-icon-wrapper icon-money">
-          <svg-icon icon-class="documentation" class-name="card-panel-icon" />
+          <svg-icon icon-class="good" class-name="card-panel-icon" />
+        </div>
+        <div class="card-panel-description">
+          <div class="card-panel-text">{{$t('main.totalGoods')}}</div>
+          <count-to :start-val="0" :end-val="basicInfo.totalGoods" duration="3000" class="card-panel-num"/>
+        </div>
+      </div>
+    </el-col>
+    <!-- 文档总数 -->
+    <el-col :xs="12" :sm="12" :lg="4" class="card-panel-col">
+      <div class="card-panel" @click="$router.push('/admin/content')">
+        <div class="card-panel-icon-wrapper icon-money">
+          <svg-icon icon-class="content" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">{{$t('main.contentsTotalNum')}}</div>
-          <count-to :start-val="0" :end-val="basicInfo.contentCount" :duration="400" class="card-panel-num"/>
+          <count-to :start-val="0" :end-val="basicInfo.contentCount" duration="3000" class="card-panel-num"/>
         </div>
       </div>
     </el-col>
-    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel">
-        <div class="card-panel-icon-wrapper icon-shoppingCard">
-          <svg-icon icon-class="message" class-name="card-panel-icon" />
-        </div>
-        <div class="card-panel-description">
-          <div class="card-panel-text">{{$t('main.messagesTotalNum')}}</div>
-          <count-to :start-val="0" :end-val="basicInfo.messageCount" :duration="600" class="card-panel-num"/>
-        </div>
-      </div>
-    </el-col>
+
   </el-row>
 </template>
 
@@ -86,7 +115,7 @@ export default {
         background: #36a3f7;
       }
       .icon-money {
-        background: #f4516c;
+        background: #FF4D3E;
       }
       .icon-shoppingCard {
         background: #34bfa3;
@@ -99,7 +128,7 @@ export default {
       color: #36a3f7;
     }
     .icon-money {
-      color: #f4516c;
+      color: #FF4D3E;
     }
     .icon-shoppingCard {
       color: #34bfa3;

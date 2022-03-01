@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-01-28
  * @Last Modified by: dr
- * @Last Modified time: 2021-12-14 22:16:23
+ * @Last Modified time: 2022-03-01 23:53:52
  */
 
 'use strict';
@@ -39,6 +39,27 @@ class ServicePlugin extends Service {
     get model(){
         if(!this._model)this._model=this.ctx.model[__filename.slice(__dirname.length + 1, -3)];
         return this._model;
+    }
+    async count(){
+        let that=this;
+        let {ctx,service}=this;
+        let listArtists=await service.artist.find({
+            //filesType:"timelineBar", 
+            pageSize: 0,
+            isPaging:"0",
+            lean:false,
+        },{
+            query:{listVideos:{$ne: []}},
+            files:"listVideos",
+            sort:{date:-1},
+        });
+        let cnt=0;
+        listArtists.forEach(artist=>{
+            if(!_.isEmpty(artist.listVideos)){
+                cnt+=artist.listVideos.length;
+            }
+        })
+        return cnt;
     }
     // 获取所有视频列表，并按时间排序
     async findAll(){
