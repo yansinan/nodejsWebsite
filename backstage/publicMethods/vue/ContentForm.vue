@@ -30,9 +30,7 @@
               </el-autocomplete>
             </el-form-item>
 
-            <slot name="leftMiddle">
-
-            </slot>
+            <slot name="leftMiddle"></slot>
             <!-- 作者 -->
             <SelectIds v-if="nameMod!='artist'" ref="selectArtists" :label="$t(nameMod+'.listArtists')" :allow-create="false" @change="eChangeArtist" :listIds="formState.formData.listRefs" :nameMode="nameMod" :apiAdd="false" apiFind="/manage/artist/getList" :initTag="false"/>
 
@@ -40,7 +38,7 @@
             <SelectIds :label="this.$t(nameMod+'.tags')" @change="eChangeTag" @loaded="eLoadedAllTags" :listIds="formState.formData.tags" :nameMode="nameMod" :initTag="createTag" />
 
             <el-form-item prop="discription">
-              <el-input type="textarea" v-model="formState.formData.discription" maxlength="300" show-word-limit :autosize="{minRows: 4, maxRows: 10 }"></el-input>
+              <el-input type="textarea" v-model="formState.formData.discription" maxlength="300" show-word-limit :autosize="{minRows: 10, maxRows: 18 }"></el-input>
               <div class="el-select-suffix el-input--small el-input__suffix"><span class=" el-input__suffix-inner">{{$t('contents.discription')}}</span></div>
             </el-form-item>
 
@@ -136,7 +134,6 @@
     .el-select{
       width:100%;
     }
-
 </style>
 <style lang="scss">
 @import "@root/publicMethods/sass/contentForm.scss";
@@ -171,9 +168,11 @@
         ...data,
         editorConfig: {
             // 编辑器不自动被内容撑高
-            autoHeightEnabled: false,
+            autoHeightEnabled: true,
+            scaleEnabled:true, //是否可以拉伸长高，默认true(当开启时，自动长高失效)
+            minFrameHeight:300,
             // 初始容器高度
-            initialFrameHeight: 240,
+            initialFrameHeight: 500,
             // 初始容器宽度
             initialFrameWidth: "100%",
             // 上传文件接口（这个地址是我为了方便各位体验文件上传功能搭建的临时接口，请勿在生产环境使用！！！）

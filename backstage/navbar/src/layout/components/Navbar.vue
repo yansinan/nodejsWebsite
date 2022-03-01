@@ -17,20 +17,21 @@
           <router-link to="/">
             <el-dropdown-item>{{$t('navbar.dashboard')}}</el-dropdown-item>
           </router-link>
-          <a target="_blank" href="https://github.com/doramart/DoraCMS">
-            <el-dropdown-item>Github</el-dropdown-item>
+          <a target="_blank" href="/">
+            <el-dropdown-item>网站主页</el-dropdown-item>
           </a>
-
+          <!-- 
           <el-dropdown-item>
-            <!-- <span style="display:block;" v-if="!singleUserInfo.userName" @click="loginCmsVip">
+            <span style="display:block;" v-if="!singleUserInfo.userName" @click="loginCmsVip">
               DoraCMS
               <svg-icon style="red" icon-class="icon_vip" />
-            </span>-->
+            </span>
             <span style="display:block;" v-if="singleUserInfo.userName" @click="showCmsVipInfo">
               <svg-icon style="red" icon-class="icon_vip" />
               {{singleUserInfo.userName}}
             </span>
           </el-dropdown-item>
+          -->
           <el-dropdown-item divided>
             <span style="display:block;" @click="logout">{{$t('navbar.logOut')}}</span>
           </el-dropdown-item>

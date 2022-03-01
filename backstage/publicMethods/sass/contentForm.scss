@@ -1,7 +1,11 @@
 .demo-ruleForm {
     margin: 15px 0;
-    width: 80%;
     padding-bottom: 50px;
+    width: 95%;
+    @media only screen and (min-width: 768px) {
+      width: 80%;
+    }
+
     .post-rate {
       .el-rate {
         margin-top: 10px;

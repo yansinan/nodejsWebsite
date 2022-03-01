@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: 'RobyEyesCMS Admin',
+  title: 'RubyEyesCMS',
 
   /**
    * @type {boolean} true | false
