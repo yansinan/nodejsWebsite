@@ -8,7 +8,12 @@
               <LinkWX v-model="formState.formData" />
             </el-form-item>
           </template>
-
+          <!-- 大标题:不知道为什么必须要设置一个，否则模板识别出错 -->
+          <template v-slot:leftTop>
+            <el-form-item prop="name">
+              <el-input v-model="formState.formData.name" maxlength="50" show-word-limit><template slot="suffix" style="color:red;">{{$t(nameMod + '.name')}}</template><!-- <label slot="suffix" class="el-form-item__label">{{$t(nameMod + '.name')}}</label> --></el-input>
+            </el-form-item>
+          </template>
           <template v-slot:leftMiddle>
             <!-- 上传word -->
             <el-row v-if="formState.formData" :gutter="40" type="flex" justify="space-between" style="flex-wrap: wrap;">
@@ -575,7 +580,7 @@ let objBackUpCover={
   line-height: 20px !important;
 }
 .dr-contentForm {
-  padding: 20px;
+  // padding: 20px;
   .post-rate {
     .el-rate {
       margin-top: 10px;
