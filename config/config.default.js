@@ -64,28 +64,36 @@ module.exports = appInfo => {
     },
     // 错误处理
     onerror: {
-      all(err, ctx) {
-        // 在此处定义针对所有响应类型的错误处理方法
-        // 注意，定义了 config.all 之后，其他错误处理方法不会再生效
-        debugger;
-        ctx.body = err;
-        ctx.status = 500;
-        //ctx.redirect("/404");
-      },
+      // all(err, ctx) {
+      //   // 在此处定义针对所有响应类型的错误处理方法
+      //   // 注意，定义了 config.all 之后，其他错误处理方法不会再生效
+      //   // debugger;
+      //   ctx.body = err;
+      //   ctx.status = 500;
+      //   ctx.logger.error("config.onerror:",err);
+      //   ctx.redirect("/");
+      // },
       html(err, ctx) {
         // html hander
         ctx.body = '<h3>error</h3>';
         ctx.status = 500;
-        debugger;
+        // debugger;
+        ctx.logger.error("config[html error]:",err);
+        ctx.redirect("/");
+
       },
       json(err, ctx) {
         // json hander
-        ctx.body = { message: 'error' };
+        ctx.body = { message: 'error' ,err:JSON.stringify(err)};
         ctx.status = 500;
-        debugger;
+        // debugger;
+        ctx.logger.error("config[json error]:",err);
       },
       jsonp(err, ctx) {
         // 一般来说，不需要特殊针对 jsonp 进行错误定义，jsonp 的错误处理会自动调用 json 错误处理，并包装成 jsonp 的响应格式
+        ctx.logger.error("config[jsonp error]:",err);
+        ctx.body = { message: 'error' ,err:JSON.stringify(err)};
+        ctx.status = 500;
       },
     },
     // gzip压缩
