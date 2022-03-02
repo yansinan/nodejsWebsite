@@ -3,9 +3,10 @@
     <!-- 新建用户 -->
     <el-col :xs="19" :sm="6">
         <el-input
+          class="add"
           size="small"
           placeholder="人员姓名或昵称"
-          v-model="pageInfo.searchkey"
+          v-model="strNameAdd"
           suffix-icon="el-icon-plus"
           @keyup.enter.native="addPeople"
         ><template slot="suffix" style="color:green;">{{"新增人员"}}</template></el-input>
@@ -42,8 +43,9 @@ export default {
   },
   data() {
     return {
-      selectUserList: [],
-      searchkey: ""
+      // selectUserList: [],
+      // searchkey: "",
+      strNameAdd:"",
     };
   },
   methods: {
@@ -133,5 +135,11 @@ export default {
 }
 .dr-toolbar .el-col{
   margin-bottom:1rem;
+}
+.el-input.add .el-input__inner{
+  border: 1px solid limegreen;
+}
+.el-input.add .el-input__suffix{
+  color:limegreen
 }
 </style>

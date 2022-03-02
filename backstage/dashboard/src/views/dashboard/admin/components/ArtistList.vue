@@ -3,7 +3,7 @@
     <h2 class="dash-title">乐队</h2>
      <div class="user-list">
        <ul>
-         <li v-for="artist in listArtists" :key="artist.id">
+         <li v-for="artist in listArtists" :key="artist.id"  @click="!hasEditPower?'':$router.push('/admin/'+artist.doc.toLowerCase()+'/edit/'+artist.id)">
            <random-avatar :user="artist"/>
            <label for="">{{artist.name}}</label>
          </li>
@@ -16,7 +16,7 @@
 import RandomAvatar from "@/components/RandomAvatar";
 
 export default {
-  props: ["listArtists"],
+  props: ["listArtists","hasEditPower"],
   filters: {},
   components: {
     RandomAvatar

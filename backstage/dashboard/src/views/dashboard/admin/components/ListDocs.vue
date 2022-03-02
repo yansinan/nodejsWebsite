@@ -3,7 +3,7 @@
     <h2 class="dash-title">最新更新</h2>
     <div class="dash-content message-pannel">
         <div v-if="listDocs && listDocs.length > 0">
-            <div class="direct-chat-msg" v-for="msg in listDocs" :key="msg._id" @click="$router.push('/admin/'+msg.doc.toLowerCase()+'/edit/'+msg.id)">
+            <div class="direct-chat-msg" v-for="msg in listDocs" :key="msg._id" @click="!hasEditPower?'':$router.push('/admin/'+msg.doc.toLowerCase()+'/edit/'+msg.id)">
                <!-- <random-avatar :user="msg"/> -->
               <svg-icon :icon-class="msg.doc.toLowerCase()" :class-name="'card-panel-icon direct-chat-img '+ msg.doc.toLowerCase()"/>
               <div class="direct-chat-text" v-html="msg.name+'@'+msg.dateFull"></div>
@@ -19,7 +19,7 @@
 import RandomAvatar from "@/components/RandomAvatar";
 
 export default {
-  props: ["listDocs"],
+  props: ["listDocs","hasEditPower"],
   filters: {},
   data() {
     return {

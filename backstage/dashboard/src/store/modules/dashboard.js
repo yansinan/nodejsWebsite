@@ -19,6 +19,7 @@ const state = {
     totalGoods:0,
     totalRecords:0,
     totalVideos:0,
+    resources:[],
   },
   loginState: {
     state: false,

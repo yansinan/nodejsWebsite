@@ -1,8 +1,8 @@
 <template>
   <el-row :gutter="40" class="panel-group">
     <!-- 工作人员 -->
-    <el-col :xs="12" :sm="12" :lg="4" class="card-panel-col">
-      <div class="card-panel" @click="$router.push('/admin/regUser')" >
+    <el-col :xs="12" :sm="12" :lg="4" class="card-panel-col" :class="dicSourceRoot['regUser'] ? '':'disable'">
+      <div class="card-panel" @click="!dicSourceRoot['regUser'] ? '' : $router.push('/admin/regUser')" >
         <div class="card-panel-icon-wrapper icon-people">
           <svg-icon icon-class="staff" class-name="card-panel-icon" />
         </div>
@@ -13,8 +13,8 @@
       </div>
     </el-col>
     <!-- 乐队 -->
-    <el-col :xs="12" :sm="12" :lg="4" class="card-panel-col">
-      <div class="card-panel" @click="$router.push('/admin/artist')">
+    <el-col :xs="12" :sm="12" :lg="4" class="card-panel-col" :class="dicSourceRoot['artist'] ? '':'disable'">
+      <div class="card-panel" @click="!dicSourceRoot['artist'] ? '' : $router.push('/admin/artist')">
         <div class="card-panel-icon-wrapper icon-message">
           <svg-icon icon-class="artist" class-name="card-panel-icon" />
         </div>
@@ -25,8 +25,8 @@
       </div>
     </el-col>
     <!-- 专辑总数 -->
-    <el-col :xs="12" :sm="12" :lg="4" class="card-panel-col">
-      <div class="card-panel" @click="$router.push('/admin/record')">
+    <el-col :xs="12" :sm="12" :lg="4" class="card-panel-col" :class="dicSourceRoot['record'] ? '':'disable'">
+      <div class="card-panel" @click="!dicSourceRoot['record'] ? '' : $router.push('/admin/record')">
         <div class="card-panel-icon-wrapper icon-shoppingCard">
           <svg-icon icon-class="record" class-name="card-panel-icon" />
         </div>
@@ -37,8 +37,8 @@
       </div>
     </el-col>
     <!-- 视频总数 -->
-    <el-col :xs="12" :sm="12" :lg="4" class="card-panel-col">
-      <div class="card-panel" @click="$router.push('/admin/record')">
+    <el-col :xs="12" :sm="12" :lg="4" class="card-panel-col" :class="dicSourceRoot['video'] ? '':'disable'">
+      <div class="card-panel" @click="!dicSourceRoot['video'] ? '' : $router.push('/admin/record')">
         <div class="card-panel-icon-wrapper icon-shoppingCard">
           <svg-icon icon-class="video" class-name="card-panel-icon" />
         </div>
@@ -49,8 +49,8 @@
       </div>
     </el-col>
     <!-- 周边总数 -->
-    <el-col :xs="12" :sm="12" :lg="4" class="card-panel-col">
-      <div class="card-panel" @click="$router.push('/admin/good')">
+    <el-col :xs="12" :sm="12" :lg="4" class="card-panel-col" :class="dicSourceRoot['good'] ? '':'disable'">
+      <div class="card-panel" @click="!dicSourceRoot['good'] ? '' : $router.push('/admin/good')">
         <div class="card-panel-icon-wrapper icon-money">
           <svg-icon icon-class="good" class-name="card-panel-icon" />
         </div>
@@ -61,8 +61,8 @@
       </div>
     </el-col>
     <!-- 文档总数 -->
-    <el-col :xs="12" :sm="12" :lg="4" class="card-panel-col">
-      <div class="card-panel" @click="$router.push('/admin/content')">
+    <el-col :xs="12" :sm="12" :lg="4" class="card-panel-col" :class="dicSourceRoot['content'] ? '':'disable'">
+      <div class="card-panel" @click="!dicSourceRoot['content'] ? '' : $router.push('/admin/content')">
         <div class="card-panel-icon-wrapper icon-money">
           <svg-icon icon-class="content" class-name="card-panel-icon" />
         </div>
@@ -80,7 +80,7 @@
 import CountTo from "vue-count-to";
 
 export default {
-  props: ["basicInfo"],
+  props: ["basicInfo","dicSourceRoot"],
   components: {
     CountTo
   },
@@ -94,7 +94,12 @@ export default {
   .card-panel-col {
     margin-bottom: 32px;
   }
-  .card-panel {
+  .card-panel-col.disable {
+    pointer-events:none;
+    filter: saturate(0.1);
+    opacity: 0.5;
+  }
+    .card-panel {
     height: 108px;
     cursor: pointer;
     font-size: 12px;

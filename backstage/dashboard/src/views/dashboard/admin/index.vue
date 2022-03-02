@@ -15,7 +15,7 @@
     </div>
      -->
     <!-- 顶部统计数据 -->
-    <panel-group :basicInfo="basicInfo" />
+    <panel-group :basicInfo="basicInfo" :dicSourceRoot="dicSourceRoot"/>
     <!-- 权限展示浮窗 -->
     <el-dialog
       width="55%"
@@ -106,6 +106,24 @@ export default {
     newSourceData() {
       return renderTreeData({ docs: this.basicInfo.resources });
     },
+    // 根节点的访问能力字典
+    dicSourceRoot(){
+      if(this.basicInfo.resources.length == 0)return {};
+      let listSourceChck=["regUser","artist","record","video","content","good"]
+      let objRes={}
+      this.basicInfo.resources.forEach(v=>{
+        let strSourceName=listSourceChck.find(checkRoutePath=>(v.api==checkRoutePath+"/getList"));
+        if(strSourceName){
+          objRes[strSourceName]=v.hasPower;
+        }
+        // 文件夹全部访问权限:content和regUser和其他不一样
+        // if(listSourceChck.find(checkRoutePath=>(v.routePath==checkRoutePath))){
+        //   objRes[v.routePath]=v.isExt;
+        // }
+      })
+      return objRes;
+    },
+
     //noticeInfo() {
     //  if (this.notice && this.notice.length > 0) {
     //    let firstStr = this.notice[0].content;
