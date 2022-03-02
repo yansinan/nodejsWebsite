@@ -48,7 +48,7 @@ export default {
     listFormatTags:"发行介质",
     dateRelease:"发行时间",
     catalog:"发行编号",
-    listLinks:"购买链接",
+    listLinks:"购买",
     dateRelease:"发行日期",
     tags:"专辑标签",
   },

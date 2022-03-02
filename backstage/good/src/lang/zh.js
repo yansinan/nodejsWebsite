@@ -46,7 +46,7 @@ export default {
     name:"商品名称",
     date:"发售日期",
     nameAlias:"商品别名",
-    listLinks:"相关链接",//购买链接
+    listLinks:"微店",//购买链接
     tags:"商品标签",
   },
   //LangEnd

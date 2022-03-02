@@ -37,8 +37,8 @@
       </div>
     </el-col>
     <!-- 视频总数 -->
-    <el-col :xs="12" :sm="12" :lg="4" class="card-panel-col" :class="dicSourceRoot['video'] ? '':'disable'">
-      <div class="card-panel" @click="!dicSourceRoot['video'] ? '' : $router.push('/admin/record')">
+    <el-col :xs="12" :sm="12" :lg="4" class="card-panel-col" :class="dicSourceRoot['artist'] ? '':'disable'">
+      <div class="card-panel" @click="!dicSourceRoot['artist'] ? '' : $router.push('/admin/artist')">
         <div class="card-panel-icon-wrapper icon-shoppingCard">
           <svg-icon icon-class="video" class-name="card-panel-icon" />
         </div>

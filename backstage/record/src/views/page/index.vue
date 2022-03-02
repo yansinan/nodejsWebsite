@@ -62,7 +62,7 @@ export default {
   mounted() {
     initEvent(this);
     // 触发action,异步
-    this.$store.dispatch(nameMod+"/getList",{mod:nameMod});
+    this.$store.dispatch(nameMod+"/getList",{mod:nameMod,pageSize:50});
   }
 };
 </script>

@@ -5,16 +5,56 @@
     td{
       height:80px;
     }
+    // 右侧固定栏，移动端隐藏
+    .el-table__fixed-right{
+      display:none;
+      @media only screen and (min-width: 768px){
+        display:block;
+      }
+    }
+    // 复选框宽度边距
+    .el-table-column--selection .cell{
+      padding-left: 0px;
+    }
     .cell{
       height:100%;
       display:flex;
       align-items: center;
       text-align: center;
-  
+      // 主列的行格式修正
+      .el-row{
+        flex: 1;
+        /* width: 100%; */
+        display: flex;
+        justify-content: flex-start;
+        .el-col{
+          flex: 1;
+        }
+        // 主列图不扩展
+        .el-col.sImg{
+          flex:0;
+        }
+      }
+      .actionInName{
+        display:flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        align-items: flex-start;
+        .roofPlacement,
+        .top{
+          flex:1;
+        }
+      }
       .el-button--text{
         color:#303133;
         font-size:18px;
-        line-height:2.5em;
+        // line-height:1.5em;
+        padding-top: 0px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        max-width: 100%;
       }
       .el-avatar{
         margin-right:5px;
