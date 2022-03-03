@@ -48,8 +48,8 @@ export default {
     nameAlias:"副标题",
     listDateDur:"活动日期",
     location:"地点",
-    listTicketLink:"购票链接",
-    listLinks:"相关链接",
+    listTicketLink:"购票",
+    listLinks:"链接",
     tags:"演出标签",
   },
   //LangEnd

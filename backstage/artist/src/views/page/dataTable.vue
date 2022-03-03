@@ -32,7 +32,7 @@
         </template>
       </el-table-column>
       <!-- 图 -->
-      <el-table-column prop="listImages" :label="$t('artist.listImages')" width="80" show-overflow-tooltip>
+      <el-table-column class-name="table-column--links" prop="listImages" :label="$t('artist.listImages')" width="80" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-badge :value="scope.row.listImages.length" :hidden="scope.row.listImages.length==0?true:false" :max="99" type="info">
             <el-button @click="eAlbumEdit(scope.$index,dataList)" size="large" plain icon="el-icon-picture-outline" :type="scope.row.listImages.length==0?'':'primary'" circle></el-button>  
@@ -40,7 +40,7 @@
         </template>
       </el-table-column>
       <!-- 专辑 -->
-      <el-table-column prop="listRecords" :label="$t('artist.listRecords')" width="80" show-overflow-tooltip>
+      <el-table-column class-name="table-column--links" prop="listRecords" :label="$t('artist.listRecords')" width="80" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-badge :value="scope.row.cntRecords" :hidden="scope.row.cntRecords==0?true:false" :max="99" type="info">
             <el-button @click="eRecordEdit(scope.$index,dataList)" size="large" plain icon="el-icon-files" :type="scope.row.cntRecords==0?'':'primary'" circle></el-button>  
@@ -48,7 +48,7 @@
         </template>
       </el-table-column>
       <!-- 视频 -->
-      <el-table-column prop="listVideos" :label="$t('artist.listVideos')" width="80" show-overflow-tooltip>
+      <el-table-column class-name="table-column--links" prop="listVideos" :label="$t('artist.listVideos')" width="80" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-badge :value="scope.row.listVideos.length" :hidden="scope.row.listVideos.length==0?true:false" :max="99" type="info">
             <el-button @click="eListVideosEdit(scope.$index,dataList)" size="large" plain icon="el-icon-video-camera" :type="scope.row.listVideos.length==0?'':'primary'" circle></el-button>  
@@ -56,7 +56,7 @@
         </template>
       </el-table-column>      
       <!-- 热门歌曲 -->
-      <el-table-column prop="listHotMusics" :label="$t('artist.listHotMusics')" width="80" show-overflow-tooltip>
+      <el-table-column class-name="table-column--links" prop="listHotMusics" :label="$t('artist.listHotMusics')" width="80" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-badge :value="scope.row.listHotMusics.length" :hidden="scope.row.listHotMusics.length==0?true:false" :max="99" type="info">
             <el-button @click="eListHotMusicsEdit(scope.$index,dataList)" size="large" plain icon="el-icon-headset" :type="scope.row.listHotMusics.length==0?'':'primary'" circle></el-button>  
@@ -64,7 +64,7 @@
         </template>
       </el-table-column>      
       <!-- 其他链接 -->
-      <el-table-column prop="listLinks" :label="$t('artist.listLinks')" width="80" show-overflow-tooltip>
+      <el-table-column class-name="table-column--links" prop="listLinks" :label="$t('artist.listLinks')" width="80" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-badge :value="scope.row.listLinks.length" :hidden="scope.row.listLinks.length==0?true:false" :max="99" type="info">
             <el-button @click="eListLinksEdit(scope.$index,dataList)" size="large" plain icon="el-icon-link" :type="scope.row.listLinks.length==0?'':'primary'" circle></el-button>  

@@ -26,7 +26,7 @@
       </el-table-column>
        -->
       <!-- 名称 -->
-      <el-table-column prop="name" :label="$t('docs.name')" min-width="350" show-overflow-tooltip>
+      <el-table-column class-name="table-column--name" prop="name" :label="$t('docs.name')" min-width="360" show-overflow-tooltip>
         <el-row :gutter="20" slot-scope="scope" :style="scope.row.state!=2 ? 'filter: opacity(0.5) grayscale(1);' : ''">
           <el-col class="sImg" :span="12">
             <el-avatar :src="scope.row.sImg" fit="cover" :size="128"  shape="square" />
@@ -71,13 +71,13 @@
         <template slot-scope="scope">{{scope.row.date}}</template>
       </el-table-column>
       -->
-      <el-table-column prop="tags" :label="$t('contents.tags')" min-width="100" show-overflow-tooltip>
+      <el-table-column class-name="table-column--tags" prop="tags" :label="$t('contents.tags')" min-width="100" show-overflow-tooltip>
         <div class="containerTag" slot-scope="scope">
           <el-tag size="mini" type="info" v-for="tag in scope.row.tags" :key="tag._id">{{tag.name}}</el-tag>
         </div>
       </el-table-column>
       <!-- 其他链接 -->
-      <el-table-column prop="listLinks" :label="$t('record.listLinks')" min-width="70" show-overflow-tooltip>
+      <el-table-column class-name="table-column--links" prop="listLinks" :label="$t('record.listLinks')" min-width="70" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-badge :value="scope.row.listLinks.length" :hidden="scope.row.listLinks.length==0?true:false" :max="99" type="info">
             <el-button @click="eListLinksEdit(scope.$index,dataList)" size="large" plain icon="el-icon-link" :type="scope.row.listLinks.length==0?'':'primary'" circle></el-button>  

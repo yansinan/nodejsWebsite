@@ -5,6 +5,29 @@
     td{
       height:80px;
     }
+    // 名称
+    td.table-column--name{
+      .cell{
+        padding-left: 0px;
+      }
+    }
+    // 标签栏
+    td.table-column--tags{
+      .cell{
+        flex-wrap: wrap;
+        align-content: flex-start;
+        justify-content: space-between;
+        span{
+          margin-top: 1rem;
+        }
+      }
+    }
+    // 链接
+    td.table-column--links{
+      .cell{
+        justify-content: center;
+      }
+    }    
     // 右侧固定栏，移动端隐藏
     .el-table__fixed-right{
       display:none;
@@ -27,12 +50,17 @@
         /* width: 100%; */
         display: flex;
         justify-content: flex-start;
+        max-width: 100%;
         .el-col{
           flex: 1;
         }
         // 主列图不扩展
         .el-col.sImg{
           flex:0;
+          align-self: center;
+          img{
+            max-width: 100%;
+          }
         }
       }
       .actionInName{
@@ -67,9 +95,10 @@
         flex-wrap: wrap;
         justify-content: start;
         align-items: start;
+        margin-top:1rem;
         // height:100%;
         .el-tag {
-          margin-top:20px;
+          margin-bottom:1rem;
           margin-right: 10px;
         }
       }
