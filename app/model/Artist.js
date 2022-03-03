@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2019/11/10 
  * @Last Modified by: dr
- * @Last Modified time: 2021-12-06 01:46:26
+ * @Last Modified time: 2022-03-03 17:58:12
  */
 /**
  * Created by Dr on 2019/11/10.
@@ -201,15 +201,24 @@ module.exports =app=>{
                     v = [objImage];
                 }
             }
-            v.forEach(v=>{
-                v.url=v.url.replace("http://wx.z-core.cn:8791","");
-                v.urlThumbsnail=v.urlThumbsnail.replace("http://wx.z-core.cn:8791","");
+            // 检查与sImg重复的链接
+            let cntSImgInList=0;
+            v.forEach((video,idx)=>{
+                // 去掉绝对路径；兼容以前数据
+                if(video.url)video.url=video.url.replace("http://wx.z-core.cn:8791","");
+                if(video.urlThumbsnail)video.urlThumbsnail=video.urlThumbsnail.replace("http://wx.z-core.cn:8791","");
+                // 检查与sImg重复的链接
+                if(video.url==artist.sImg){
+                    cntSImgInList+=1;
+                    if(cntSImgInList>1)v.splice(idx,1);
+                }
             })
             return v;
         })
         // listVideos补齐属性
         schema.path("listVideos").get(function(listV){
             let artist=this;
+            listV=listV || [];
             return listV.map(v=>{
                 v.url="/video___"+v.idURL+".html";
                 v.sImg=v.urlImg;

@@ -93,7 +93,7 @@
     }
 }
 .el-upload-list__item-thumbnail{
-    object-fit: cover;
+    object-fit: contain;
 }
 </style>
 <script>
@@ -218,12 +218,11 @@ export default {
               return response.text();
           }).then(res => {
               // 在这个then里面我们能拿到最终的数据
-              let objData=JSON.parse(res);
-              debugger;
+              let objData=JSON.parse(res);              
               if(objData.status==200){
                 console.log("缩略图",objData.path,"上传完成::",objData);
                 $img.dispatchEvent(new CustomEvent("uploaded",objData));
-                $img.dispose();
+                $img.dispose && $img.dispose();
               }
           }).catch(e=>{
             debugger
