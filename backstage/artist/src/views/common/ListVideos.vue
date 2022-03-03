@@ -26,7 +26,7 @@
                   <span slot="prepend" v-else style="text-align:center;font-size: 18px;" ><i class="el-icon-link"/>视频 {{index+1}}</span>
                   <!-- <el-button slot="append" icon="el-icon-delete" @click.prevent="removeDomain(domain)"/> -->
                 </el-input>
-              <el-image :md="24" :src="domain.urlImg" fit="contain" @load="eImgLoaded" v-loading="!domain.isFitted" crossOrigin="Anonymous"/>
+              <el-image :md="24" :src="domain.urlImg" fit="contain" crossOrigin="Anonymous"/>
               <div class="titleVideo" style="">
                 <span v-if="domain.name">{{domain.name}}</span>
                 <el-tooltip :content="'从'+dialogState.formData.name+'的'+label+'移除'" placement="top" effect="light">
@@ -104,11 +104,16 @@
 }
 .listGrid{
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr;
   grid-template-rows: auto;
   grid-gap: 1rem;
   margin: 0rem 1rem;
 }
+@media only screen and (min-width: 768px){
+  .listGrid{
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+}  
 .listGrid.local{
   margin-bottom:4rem;
 }

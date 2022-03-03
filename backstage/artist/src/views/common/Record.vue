@@ -60,11 +60,16 @@
 
 .listGrid{
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr;    
   grid-template-rows: auto;
   grid-gap: 1rem;
   margin: 0rem 1rem;
 }
+@media only screen and (min-width: 768px){
+  .listGrid{
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+}    
 .listGrid.local{
   margin-bottom:4rem;
 }
