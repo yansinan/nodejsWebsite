@@ -86,7 +86,7 @@
       </el-table-column>      
 
       <!-- 右侧固定栏 -->
-      <el-table-column :label="$t('main.dataTableOptions')" width="200" fixed="right">
+      <el-table-column v-if="!isMobile" :label="$t('main.dataTableOptions')" width="200" fixed="right">
         <template slot-scope="scope">
           <el-button-group>
             <el-button icon="el-icon-view" :type="scope.row.state?'':'info'" :disabled="!scope.row.state" size="large" @click="eLink('/timeline/records'+scope.row.url)" />
@@ -107,7 +107,7 @@
 import _ from "lodash";
 // import { mapGetters, mapActions,createNamespacedHelpers} from "vuex";
 // let mod = createNamespacedHelpers(nameMod)////模块,含mapGetters, mapActions等
-import {methods,props,data} from "@root/publicMethods/vue/dataTable";
+import {methods,props,data,computed} from "@root/publicMethods/vue/dataTable";
 
 export default {
   props: {
@@ -124,6 +124,8 @@ export default {
   methods: {
     ...methods
   },
-  computed: {}
+  computed: {
+    ...computed,
+  }
 };
 </script>

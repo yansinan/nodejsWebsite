@@ -10,7 +10,7 @@
       class="tableBox"
       @selection-change="handleContentSelectionChange"
     >
-      <el-table-column type="selection" width="30"></el-table-column>
+      <!--  
       <el-table-column prop="isTop" :label="$t('contents.rec')" width="30" show-overflow-tooltip>
         <template slot-scope="scope">
           <svg-icon :style="yellow" v-show="scope.row.isTop === 1" @click="topContent(scope.$index, dataList)" icon-class="icon_star_fill" />
@@ -23,16 +23,62 @@
           <svg-icon :style="gray" v-show="scope.row.isTop === 1 && scope.row.roofPlacement != 1" @click="roofContent(scope.$index, dataList)" icon-class="icon_ding" />
         </template>
       </el-table-column>
-      <!-- 名称 -->
-      <el-table-column prop="name" :label="$t('docs.name')" min-width="250" show-overflow-tooltip>
-        <template slot-scope="scope">
-          <el-avatar :src="scope.row.sImg" fit="cover" size="large" :style="scope.row.state!=2 ? 'filter: opacity(0.5) grayscale(1);' : ''"/>
-          <el-button type="text" size="large" @click="editContentInfo(scope.$index, dataList)" :style="scope.row.state!=2 ? 'filter: opacity(0.5) grayscale(1);' : ''">{{scope.row.name}}  <i class="el-icon-edit" /></el-button>
-          <!-- <div v-else class="col-name hide" ><el-avatar :src="scope.row.sImg" :fit="cover"/>{{scope.row.name}}</div> -->
+      -->
+      <!-- 展开行 -->
+      <el-table-column v-if="isMobile" type="expand" width="30">
+        <template slot-scope="props">
+          <!-- 图集 -->
+          <el-badge :value="props.row.listImages.length" :hidden="props.row.listImages.length==0?true:false" :max="99" type="info">
+            <el-button @click="eAlbumEdit(props.$index,dataList)" size="large" plain icon="el-icon-picture-outline" :type="props.row.listImages.length==0?'':'primary'" circle></el-button>  
+          </el-badge>
+          <!-- 专辑 -->
+          <el-badge :value="props.row.cntRecords" :hidden="props.row.cntRecords==0?true:false" :max="99" type="info">
+            <el-button @click="eRecordEdit(props.$index,dataList)" size="large" plain icon="el-icon-files" :type="props.row.cntRecords==0?'':'primary'" circle></el-button>  
+          </el-badge>
+          <!-- 视频 -->
+          <el-badge :value="props.row.listVideos.length" :hidden="props.row.listVideos.length==0?true:false" :max="99" type="info">
+            <el-button @click="eListVideosEdit(props.$index,dataList)" size="large" plain icon="el-icon-video-camera" :type="props.row.listVideos.length==0?'':'primary'" circle></el-button>  
+          </el-badge>          
+          <!-- 热门歌曲 -->
+          <el-badge :value="props.row.listHotMusics.length" :hidden="props.row.listHotMusics.length==0?true:false" :max="99" type="info">
+            <el-button @click="eListHotMusicsEdit(props.$index,dataList)" size="large" plain icon="el-icon-headset" :type="props.row.listHotMusics.length==0?'':'primary'" circle></el-button>  
+          </el-badge>          
+          <!-- 其他链接 -->
+          <el-badge :value="props.row.listLinks.length" :hidden="props.row.listLinks.length==0?true:false" :max="99" type="info">
+            <el-button @click="eListLinksEdit(props.$index,dataList)" size="large" plain icon="el-icon-link" :type="props.row.listLinks.length==0?'':'primary'" circle></el-button>  
+          </el-badge>
         </template>
       </el-table-column>
+      <!-- 复选框 -->
+      <el-table-column type="selection" width="20"></el-table-column>
+
+      <!-- 名称 -->
+      <el-table-column class-name="table-column--name" prop="name" :label="$t('docs.name')" min-width="300" show-overflow-tooltip>
+        <el-row :gutter="20" slot-scope="scope" :style="scope.row.state!=2 ? 'filter: opacity(0.5) grayscale(1);' : ''">
+          <el-col class="sImg">
+            <el-avatar :src="scope.row.sImg" fit="cover" :size="70"  shape="square" />
+          </el-col>
+          <!-- 名称和功能 -->
+          <el-col style="text-align:left;min-width:128px;">
+            <!-- 名称 -->
+            <el-button type="text" size="large" @click="editContentInfo(scope.$index, dataList)" >{{scope.row.name}}  <i class="el-icon-edit" /></el-button>
+            <!-- 置顶/推荐 -->
+            <div class="actionInName">
+              <el-button-group>
+                <el-button icon="el-icon-view" :type="scope.row.state?'':'info'" :disabled="!scope.row.state" size="medium" @click="eLink('/timeline/records'+scope.row.url)" />
+                <el-tooltip content="推荐" placement="top" effect="light">
+                  <el-button :icon="scope.row.isTop === 1?'el-icon-star-on':'el-icon-star-off'" size="medium" :type="scope.row.isTop === 1?'warning':''" @click="topContent(scope.$index, dataList)" plain/>
+                </el-tooltip>
+                <el-tooltip content="置顶" placement="top" effect="light">
+                  <el-button v-show="scope.row.isTop===1" :icon="scope.row.isTop === 1 && scope.row.roofPlacement == 1?'el-icon-medal-1':'el-icon-medal'" size="medium" :type="scope.row.isTop === 1 && scope.row.roofPlacement == 1?'danger':''" @click="roofContent(scope.$index, dataList)"  plain/>
+                </el-tooltip>
+              </el-button-group>
+            </div>
+          </el-col>
+        </el-row>
+      </el-table-column>
       <!-- 图 -->
-      <el-table-column class-name="table-column--links" prop="listImages" :label="$t('artist.listImages')" width="80" show-overflow-tooltip>
+      <el-table-column class-name="table-column--links" prop="listImages" :label="$t('artist.listImages')" min-width="70" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-badge :value="scope.row.listImages.length" :hidden="scope.row.listImages.length==0?true:false" :max="99" type="info">
             <el-button @click="eAlbumEdit(scope.$index,dataList)" size="large" plain icon="el-icon-picture-outline" :type="scope.row.listImages.length==0?'':'primary'" circle></el-button>  
@@ -40,7 +86,7 @@
         </template>
       </el-table-column>
       <!-- 专辑 -->
-      <el-table-column class-name="table-column--links" prop="listRecords" :label="$t('artist.listRecords')" width="80" show-overflow-tooltip>
+      <el-table-column class-name="table-column--links" prop="listRecords" :label="$t('artist.listRecords')" min-width="70" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-badge :value="scope.row.cntRecords" :hidden="scope.row.cntRecords==0?true:false" :max="99" type="info">
             <el-button @click="eRecordEdit(scope.$index,dataList)" size="large" plain icon="el-icon-files" :type="scope.row.cntRecords==0?'':'primary'" circle></el-button>  
@@ -48,7 +94,7 @@
         </template>
       </el-table-column>
       <!-- 视频 -->
-      <el-table-column class-name="table-column--links" prop="listVideos" :label="$t('artist.listVideos')" width="80" show-overflow-tooltip>
+      <el-table-column class-name="table-column--links" prop="listVideos" :label="$t('artist.listVideos')" min-width="70" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-badge :value="scope.row.listVideos.length" :hidden="scope.row.listVideos.length==0?true:false" :max="99" type="info">
             <el-button @click="eListVideosEdit(scope.$index,dataList)" size="large" plain icon="el-icon-video-camera" :type="scope.row.listVideos.length==0?'':'primary'" circle></el-button>  
@@ -56,7 +102,7 @@
         </template>
       </el-table-column>      
       <!-- 热门歌曲 -->
-      <el-table-column class-name="table-column--links" prop="listHotMusics" :label="$t('artist.listHotMusics')" width="80" show-overflow-tooltip>
+      <el-table-column class-name="table-column--links" prop="listHotMusics" :label="$t('artist.listHotMusics')" min-width="70" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-badge :value="scope.row.listHotMusics.length" :hidden="scope.row.listHotMusics.length==0?true:false" :max="99" type="info">
             <el-button @click="eListHotMusicsEdit(scope.$index,dataList)" size="large" plain icon="el-icon-headset" :type="scope.row.listHotMusics.length==0?'':'primary'" circle></el-button>  
@@ -64,7 +110,7 @@
         </template>
       </el-table-column>      
       <!-- 其他链接 -->
-      <el-table-column class-name="table-column--links" prop="listLinks" :label="$t('artist.listLinks')" width="80" show-overflow-tooltip>
+      <el-table-column class-name="table-column--links" prop="listLinks" :label="$t('artist.listLinks')" min-width="70" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-badge :value="scope.row.listLinks.length" :hidden="scope.row.listLinks.length==0?true:false" :max="99" type="info">
             <el-button @click="eListLinksEdit(scope.$index,dataList)" size="large" plain icon="el-icon-link" :type="scope.row.listLinks.length==0?'':'primary'" circle></el-button>  
@@ -73,7 +119,7 @@
       </el-table-column>      
 
       <!-- 右侧固定栏 -->
-      <el-table-column :label="$t('main.dataTableOptions')" width="200" fixed="right">
+      <el-table-column v-if="!isMobile" :label="$t('main.dataTableOptions')" width="200" fixed="right">
         <template slot-scope="scope">
           <el-button-group>
             <el-button icon="el-icon-view" :type="scope.row.state?'':'info'" :disabled="!scope.row.state" size="large" @click="eLink('/artists/news/'+scope.row.url)" />
@@ -99,6 +145,19 @@
 </template>
 <style lang="scss">
   @import "@root/publicMethods/sass/dataTable.scss";
+  // .el-table__body td.el-table__expand-column{
+  //   // display:table-cell;
+  //   width:0px;
+  //   @media only screen and (min-width: 768px){
+  //     // display:none;
+  //     width:0px;
+  //   }    
+  // }
+  .el-table__expanded-cell{
+    .el-badge{
+      margin-right: 6vw;
+    }
+  }
 </style>
 <script>
 import { remove, roof, updateToTop } from "@root/publicMethods/apiGeneral";
@@ -106,7 +165,7 @@ import { remove, roof, updateToTop } from "@root/publicMethods/apiGeneral";
 import Album from "../common/Album.vue";
 // 相册上传
 import Record from "../common/Record.vue";
-import {methods,props,data} from "@root/publicMethods/vue/dataTable";
+import {methods,props,data,computed} from "@root/publicMethods/vue/dataTable";
 
 import _ from "lodash";
 // import { mapGetters, mapActions,createNamespacedHelpers} from "vuex";
@@ -194,6 +253,8 @@ export default {
       };
     },
   },
-  computed: {}
+  computed: {
+    ...computed,
+  }
 };
 </script>

@@ -130,3 +130,9 @@ export let methods={
       eLink(url,target){window.open(url,target);},
   
 }
+
+export let computed={
+  isMobile(){
+    return document.body.clientWidth<768;
+  },
+}
