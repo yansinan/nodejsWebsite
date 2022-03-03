@@ -9,9 +9,14 @@
       style="width: 100%"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column type="selection" width="55"></el-table-column>
+      <el-table-column type="selection" min-width="30"></el-table-column>
       <el-table-column prop="name" :label="$t('contentTag.name')" width="120"></el-table-column>
-      <el-table-column prop="comments" :label="$t('contentTag.comments')"></el-table-column>
+      <el-table-column 
+        width="auto"      
+        :filters="groups"
+        :filter-method="filterHandler"
+        prop="comments" 
+        :label="$t('contentTag.comments')"></el-table-column>
       <el-table-column :label="$t('main.dataTableOptions')" width="150">
         <template slot-scope="scope">
           <el-button
@@ -42,7 +47,9 @@ import { deleteContentTag, getOneContentTag } from "@/api/contentTag";
 export default {
   props: {
     dataList: Array,
-    pageInfo: Object
+    pageInfo: Object,
+    groups:Array, //类型分类信息
+
   },
   data() {
     return {
@@ -107,7 +114,12 @@ export default {
             message: this.$t("main.scr_modal_del_error_info")
           });
         });
+    },
+    // 表格筛选
+    filterHandler(value, row, column) {
+        return row.comments === value;
     }
+
   }
 };
 </script>

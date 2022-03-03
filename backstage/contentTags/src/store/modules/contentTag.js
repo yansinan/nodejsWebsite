@@ -63,7 +63,7 @@ const actions = {
   },
   getContentTagList({
     commit
-  }, params = {}) {
+  }, params = {pageSize:100}) {
     contentTagList(params).then((result) => {
       commit(types.CONTENTTAG_LIST, result.data)
     })

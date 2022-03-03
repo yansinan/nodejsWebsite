@@ -24,8 +24,25 @@
         <el-form-item :label="$t('contentTag.alias')" prop="alias">
           <el-input size="small" type="textarea" v-model="dialogState.formData.alias"></el-input>
         </el-form-item>
+        <!--  
         <el-form-item :label="$t('contentTag.comments')" prop="comments">
           <el-input size="small" type="textarea" v-model="dialogState.formData.comments"></el-input>
+        </el-form-item>
+        -->
+        <el-form-item prop="comments" :label="$t('contentTag.comments')">
+          <el-select
+            v-model="dialogState.formData.comments"
+            filterable
+            allow-create
+            default-first-option
+            :placeholder="$t('contentTag.comments')">
+            <el-option
+              v-for="item in groups"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item>
           <el-button
@@ -61,8 +78,8 @@ export default {
           },
           {
             min: 1,
-            max: 12,
-            message: this.$t("validate.rangelength", { min: 1, max: 12 }),
+            max: 120,
+            message: this.$t("validate.rangelength", { min: 1, max: 120 }),
             trigger: "blur"
           }
         ],
@@ -76,10 +93,10 @@ export default {
           },
           {
             min: 2,
-            max: 30,
+            max: 100,
             message: this.$t("validate.ranglengthandnormal", {
               min: 2,
-              max: 30
+              max: 100
             }),
             trigger: "blur"
           }
