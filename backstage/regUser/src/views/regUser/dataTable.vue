@@ -27,7 +27,7 @@
             <el-tag size="mini" type="info" v-if="isMobile">{{scope.row.group == '0' ? '普通用户' : scope.row.group}}</el-tag>
           </el-col>
           <el-col class="col-name" style="text-align:left">
-            <el-button type="text" size="large" @click="editContentInfo(scope.$index, dataList)">{{scope.row.name}}  <i class="el-icon-edit" /></el-button>
+            <el-button type="text" size="large" @click="editUserInfo(scope.$index, dataList)">{{scope.row.name}}  <i class="el-icon-edit" /></el-button>
             <!-- 时间@地点 -->
             <div v-if="isMobile" class="info">
               <!-- <div class="foot" v-if="scope.row.group == '0'">普通用户</div> -->
