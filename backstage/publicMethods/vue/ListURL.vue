@@ -173,6 +173,8 @@
         if(objLink.url.indexOf("weibo.com") != -1 ) objLink.icon="/static/themes/images/link/logo_sina_32x32.png";
         if(objLink.url.indexOf("douban.com") !=-1 ) objLink.icon="/static/themes/images/link/logo_douban_32x32.png";
         if(objLink.url.indexOf("music.163.com")!=-1)objLink.icon="/static/themes/images/link/logo_163_32x32.png";
+        if(objLink.url.indexOf("weidian.com")!=-1)objLink.icon="/static/themes/images/link/logo_weidian_32x32.png";
+
         // 更新name
         if(objLink.url.indexOf("music.163.com")!=-1){
           return new Promise((resolve,reject)=>{

@@ -49,7 +49,7 @@ export function initData(that){
                         categoryIdArr = [],
                         tagsArr = [],
                         formatTagArr=[];
-                    console.info("获取"+that.nameMod+"详情：",contentObj);
+                    console.info("获取"+that.nameMod,".id=",that.$route.params.id,"详情：",contentObj);
                     if (contentObj.categories) {
                         contentObj.categories.map((item, index) => {
                             item && categoryIdArr.push(item._id);

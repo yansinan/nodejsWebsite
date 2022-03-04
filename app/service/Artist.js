@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-24 13:20:49 
  * @Last Modified by: dr
- * @Last Modified time: 2022-03-04 22:24:45
+ * @Last Modified time: 2022-03-04 23:31:08
  */
 
 'use strict';
@@ -13,6 +13,8 @@ const shortid = require('shortid');
 const _ = require('lodash')
 const moment = require("moment");
 // const Model_NAME=__filename.slice(__dirname.length + 1, -3);
+//中文转拼音
+const getPinYin = require('../utils/modPinYin.js').getPinYin;
 
 
 class ServicePlugin extends BaseService {
@@ -631,7 +633,7 @@ class ServicePlugin extends BaseService {
                 let resList=resNCM.data.hotAlbums.map(ncm=>({
                     idAlbumNCM: ncm.id,
                     name:ncm.name,
-                    alias:ncm.alias[0] || "",
+                    alias:ncm.alias[0] || getPinYin(ncm.name) || "",
                     dateRelease:ncm.publishTime,
                     sImg:ncm.picUrl,
                     discription:ncm.briefDesc || "网易云音乐无简介",

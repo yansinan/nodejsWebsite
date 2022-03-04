@@ -20,7 +20,7 @@
               <div class="titleVideo" style="">
                 <span v-if="domain.name">{{domain.name}}</span>
                 <el-tooltip content="编辑专辑内容" placement="top" effect="light">
-                  <el-button type="primary" plain icon="el-icon-edit" @click.prevent="eEditRecord(domain)"/>
+                  <el-button type="primary" plain icon="el-icon-edit" :disabled="!domain._id" @click.prevent="eEditRecord(domain)"/>
                 </el-tooltip>
               </div>
             </el-card>
@@ -78,6 +78,7 @@
   import { updateOne } from "@root/publicMethods/apiGeneral";
   import { imgFit } from "@root/publicMethods/imgFit";
   import request from '@root/publicMethods/request'
+  import Vue from '_vue@2.6.14@vue';
 
   export default {
     props: {
@@ -242,7 +243,7 @@
         let data={
             idAlbumNCM: item.idAlbumNCM,
             name:item.name,
-            alias:item.alias,
+            alias:item.alias || item.name,
             dateRelease:item.dateRelease,
             sImg:item.sImg,
             discription:item.discription,
@@ -270,6 +271,7 @@
               message: that.$t("main.addContents"),
               type: "success"
             });
+            console.debug("[Record.vue]addRecord ok","\n resAdd",result);
             return request({
               url:"/manage/record/getOne",
               method:"get",
@@ -289,16 +291,21 @@
             Object.assign(item,resQuery.data);
             // 从网易云列表中移除，添加到listVideos
             let idxNCM=that.listRecordsNCM.findIndex(v=>(v.idAlbumNCM==item.idAlbumNCM));
-            that.listRecords.push(...that.listRecordsNCM.splice(idxNCM,1));
+            let objNewAdded=Object.assign(that.listRecordsNCM[idxNCM],item,resQuery.data);//合并新数据
+            that.listRecords.push(objNewAdded);
+            console.debug("[Record.vue]queryRecord ok\n","objNewAdded",objNewAdded,"\n that.listRecordsNCM[idxNCM]",that.listRecordsNCM[idxNCM],"\n resQuery",resQuery);
+            that.listRecordsNCM.splice(idxNCM,1);//删除网易数组
           } else {
             that.$message.error(resQuery.message);
             return Promise.reject(resQuery);
           }   
 
         }).catch(error=>{
+          Vue.set(item,"isLoading",true);
+          item.isLoading=false;
           debugger
           console.error(that.nameMod,"更新:fail,",error);
-          that.$message.error(JSON.stringify(error));
+          that.$message.error(error.message);
         });    
             
       },
