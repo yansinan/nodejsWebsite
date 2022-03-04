@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-24 13:20:49 
  * @Last Modified by: dr
- * @Last Modified time: 2022-03-04 10:50:28
+ * @Last Modified time: 2022-03-04 15:08:37
  */
 
 'use strict';
@@ -121,11 +121,13 @@ class ServicePlugin extends BaseService {
     } = {}){
         let targetId=query._id;
         if (!shortid.isValid(targetId)) {
-            throw new Error(ctx.__('validate_error_params'));
+            throw new Error(ctx.__('validate_error_params')+"未提供item.id");
         }
         try{
             let artist = await super.item(ctx,{query,populate,files});
-
+            if(!artist){
+                throw new Error(ctx.__('validate_error_params'+"id对应artist未找到:"+targetId));
+            }
             // 获取唱片
             artist.objDocsRecords=await ctx.service.record.find({isPaging:false,pageSize:0,},{
                 sort: {dateRelease: -1},

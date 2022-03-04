@@ -42,7 +42,7 @@ export default {
   },
   data() {
     return {
-      // ...data,
+      ...data,
       nameMod:nameMod,
     };
   },
