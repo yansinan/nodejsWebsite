@@ -17,15 +17,6 @@ class APIController extends BaseController {
         const {ctx}=this;
         let formObj=await super.funGetData(fields);
 
-        // 友情链接图标
-        if(fields.listLinks && fields.listLinks.length > 0 ){
-            fields.listLinks.forEach(objLink => {
-                if(objLink.icon=="" && objLink.url.indexOf("weibo.com")!=-1)objLink.icon="/static/themes/images/link/logo_sina_32x32.png";
-                if(objLink.icon=="" && objLink.url.indexOf("douban.com")!=-1)objLink.icon="/static/themes/images/link/logo_douban_32x32.png";
-                if(objLink.icon=="" && objLink.url.indexOf("music.163.com")!=-1)objLink.icon="/static/themes/images/link/logo_163_32x32.png";
-                if(objLink.icon=="" && objLink.url.indexOf("weidian.com")!=-1)objLink.icon="/static/themes/images/link/logo_weidian_32x32.png";
-            });
-        }
         if(fields.listTicketLink && fields.listTicketLink.length > 0 ){
             fields.listTicketLink.forEach(objLink => {
                 if(objLink.icon=="" && objLink.url.indexOf("weibo.com")!=-1)objLink.icon="/static/themes/images/link/logo_sina_32x32.png";

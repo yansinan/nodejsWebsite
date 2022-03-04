@@ -105,8 +105,9 @@ class APIController extends Controller {
         if(fields.listLinks && fields.listLinks.length > 0 ){
             fields.listLinks.forEach(objLink => {
                 if(objLink.icon=="" && objLink.url.indexOf("weibo.com")!=-1)objLink.icon="/static/themes/images/link/logo_sina_32x32.png";
-                if(objLink.icon=="" && objLink.url.indexOf("douban.com")!=-1)objLink.icon="/static/themes/images/link/logo_douban_32x32.png"
-                if(objLink.icon=="" && objLink.url.indexOf("music.163.com")!=-1)objLink.icon="/static/themes/images/link/logo_163_32x32.png"
+                if(objLink.icon=="" && objLink.url.indexOf("douban.com")!=-1)objLink.icon="/static/themes/images/link/logo_douban_32x32.png";
+                if(objLink.icon=="" && objLink.url.indexOf("music.163.com")!=-1)objLink.icon="/static/themes/images/link/logo_163_32x32.png";
+                if(objLink.icon=="" && objLink.url.indexOf("weidian.com")!=-1)objLink.icon="/static/themes/images/link/logo_weidian_32x32.png";
             });
             // 是否listLinks有更新，优先取listLinks
             let idNCM=ctx.service.artist.findIdInLink(fields.listLinks);
@@ -220,10 +221,9 @@ class APIController extends Controller {
             // 初始化用户喜欢
             fields.likeUserIds=[];
             let formObj=await this.funGetData(fields);//Object.assign({},await funGetData(ctx,fields));
-            console.info("create.artist:",fields,formObj)
+            console.info("[create.doc.service]fields:",fields,"formObj to check:",formObj)
             //数据有效性 
             ctx.validate(this.checkRule(), formObj);
-
             await service.create(formObj);
 
             ctx.helper.renderSuccess(ctx);
@@ -241,7 +241,7 @@ class APIController extends Controller {
         let service=this.SERVICE;
         let _id = ctx.query.id;
         try {
-            if (!shortid.isValid(_id)) throw new Error(ctx.__('validate_error_params')+_id);
+            if (!shortid.isValid(_id)) throw new Error(ctx.__('validate_error_params',["query.id="+_id]));
             let target = await service.item(ctx, {
                 query: {
                     _id: _id
@@ -254,7 +254,31 @@ class APIController extends Controller {
             ctx.helper.renderFail(ctx, { message: err });
         }
     }
+    // 任意字段查找
+    async item() {
+        const {
+            ctx,
+            app
+        } = this;
+        const service=this.SERVICE;
+        try {
+            if (_.isEmpty(ctx.query)) throw new Error(ctx.__('validate_error_params',["query = "+ JSON.stringify(ctx.query)]));
+            // fix query,id 查不到，只能_id
+            let objFixedQuery=Object.assign({},ctx.query,{
+                _id:ctx.query._id || ctx.query.id,
+            })
+            if(objFixedQuery.id)delete objFixedQuery.id;
+            // 剔除所有错误参数
+            if(!objFixedQuery._id)delete objFixedQuery._id;
 
+            let target = await service.item(ctx, {
+                query: objFixedQuery,
+            });
+            ctx.helper.renderSuccess(ctx, { data: target});
+        } catch (err) {
+            ctx.helper.renderFail(ctx, { message: err });
+        }
+    }
     // 文章推荐
     async updateToTop() {
         const {
