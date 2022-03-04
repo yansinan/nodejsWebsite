@@ -140,14 +140,20 @@ export default {
     }
     .card-panel-icon-wrapper {
       float: left;
-      margin: 14px 0 0 14px;
-      padding: 16px;
+      margin-top: 14px;
       transition: all 0.38s ease-out;
       border-radius: 6px;
+      @media only screen and (min-width: 768px) {
+        margin: 14px 0 0 14px;
+        padding: 16px;
+      }
     }
     .card-panel-icon {
       float: left;
-      font-size: 48px;
+      font-size: 5rem;
+      @media only screen and (min-width: 768px) {
+        font-size: 48px;
+      }
     }
     .card-panel-description {
       float: right;

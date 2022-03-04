@@ -61,7 +61,7 @@ export default {
     cancelReInputContent: "已取消载入并清除数据",
     noModifyPasswordTips: "不修改密码请留空",
     // ==========>新增：
-    totalStaffs:"工作人员",
+    totalStaffs:"人员",
     totalArtists:"乐队",
     totalRecords:"唱片",
     totalShows:"演出",
