@@ -239,6 +239,8 @@
         let that=this;
         // 设置一下，为了外部调用传入url时可用
         this.objToAdd.url=url;
+        // 通知外部容器loading
+        that.$emit('loading',true);
         // 验证表单
         this.$refs["formAdd"].validate((valid) => {
           if (valid) {
@@ -254,14 +256,16 @@
               // console.log("增加链接：",that.objToAdd);
               // 触发事件;
               if(that.listObjURL)that.$emit('input',that.listObjURL);
-
+              that.$emit('loading',false);
             }).catch(e=>{
+              that.$emit('loading',false);
               debugger
               console.error(e);
               that.$message.error( that.$t("validate.inputCorrect", { label: "链接编辑"+url }) );
             });  
             
           } else {
+            that.$emit('loading',false);
             // console.log('新增链接表单验证失败');
             this.$message.error(  this.$t("validate.inputCorrect", { label: this.label }) );
             return false;

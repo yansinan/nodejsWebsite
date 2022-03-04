@@ -10,10 +10,10 @@
         <div slot="title" class="el-dialog__title">
             <el-avatar :src="dialogState.formData.sImg" fit="cover"/>{{dialogState.formData.name}}的{{label}}
         </div>
-        <ListURL v-model="listObjURL" :label="lablel"/>
+        <ListURL v-model="listObjURL" :label="lablel" @loading="eLoading" @input="eChange"/>
         <span slot="footer" class="dialog-footer">
             <el-button @click="handleClose">取 消</el-button>
-            <el-button type="success" @click="submitUpload">更 新</el-button>
+            <el-button type="success" @click="submitUpload" :disabled="!isEdited">更 新</el-button>
         </span>
     </el-dialog>
 
@@ -56,12 +56,17 @@
         objToAdd:Object.assign({},objURLDefault),
         strErrorAdd:"",
         strErrorUpdate:"",
+        // 组件等待
+        isLoading:false,
       };
     },
     computed: {
       // 主要列表
       listObjURL: function () {
           return this.dialogState.formData[this.dialogState.strListObjURL] || [];
+      },
+      isEdited:function(){
+        return !this.isLoading && this.dialogState.isEdited;
       }
     },
     components: {
@@ -92,7 +97,7 @@
         }).catch(error=>{
           debugger
           console.error(that.nameMod,"更新:fail,",error);
-          that.$message.error(JSON.stringify(error));
+          that.$message.error(that.nameMod+"服务器返回失败:"+result.status+","+error);
         });
       },
       // 弹窗关闭
@@ -105,6 +110,14 @@
           this.dialogState.formData={};
           this.dialogState.isEdited=false;
       },
+      // 组件正在处理，等待
+      eLoading(e){
+        this.isLoading=e;
+      },
+      // 数据产生了合理的变化才允许更新；防止读取网易过程中，更新无效
+      eChange(e){
+        this.dialogState.isEdited=true;
+      }
     }
   }
 </script>
