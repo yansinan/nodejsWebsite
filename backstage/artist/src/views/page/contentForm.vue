@@ -170,7 +170,7 @@ export default {
       that.formState.formData.sImg=(that.formState.formData.sImg && that.formState.formData.sImg!="/static/upload/images/defaultImg.jpg")?that.formState.formData.sImg:(that.objDataNCM.sImg || "");
       that.formState.formData.discription=that.formState.formData.discription?that.formState.formData.discription:(that.objDataNCM.discription || "");
       that.formState.formData.alias=that.formState.formData.alias?that.formState.formData.alias:(that.objDataNCM.alias || "");
-      that.formState.formData.comments=that.formState.formData.comments?that.formState.formData.comments:(that.objDataNCM.comments.txt || that.formState.formData.discription);
+      that.formState.formData.comments=that.formState.formData.comments?that.formState.formData.comments:(that.objDataNCM.comments.txt || that.objDataNCM.comments || that.formState.formData.discription);
       let isLinked=that.formState.formData.listLinks.find(v=>(v.url==that.objDataNCM.link));
       if(!isLinked)that.$refs.listLinks.eAddURL(that.objDataNCM.link);
       console.warn("网易云音乐数据自动填充",that.objDataNCM);

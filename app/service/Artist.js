@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-24 13:20:49 
  * @Last Modified by: dr
- * @Last Modified time: 2022-03-04 15:08:37
+ * @Last Modified time: 2022-03-04 22:24:45
  */
 
 'use strict';
@@ -120,8 +120,9 @@ class ServicePlugin extends BaseService {
         files = null
     } = {}){
         let targetId=query._id;
-        if (!shortid.isValid(targetId)) {
-            throw new Error(ctx.__('validate_error_params')+"未提供item.id");
+        let targetName=query.name;
+        if (!shortid.isValid(targetId) && _.isEmpty(targetName)) {
+            throw new Error(ctx.__('validate_error_params')+"未提供item.id或name");
         }
         try{
             let artist = await super.item(ctx,{query,populate,files});
@@ -260,10 +261,20 @@ class ServicePlugin extends BaseService {
                     // 没有listLinks，搜索数据库开始用artist.name手动搜索
                     // 优先按_id查找，其次name，_id,name,listLinks都没有,真没辙
                     if(!name && _id){//没name，但是有id可以通过数据库检索name
-                        let data=await this.item(this.ctx,{query:{_id:_id},files:"_id name listLinks idNCM"})
+                        let data={};
+                        try{
+                            data=await this.item(this.ctx,{query:{_id:_id},files:"_id name listLinks idNCM"})
+                        }catch(e){
+                            console.warn("[serfice.Artist.checkIdNCM]query with id",_id,":not found.",e.message)
+                        }
                         Object.assign(payload,data);
                     }else if(!_id){//有name 没id
-                        let data=await this.item(this.ctx,{query:{name:name},files:"_id name listLinks idNCM"})
+                        let data={};
+                        try{
+                            data=await this.item(this.ctx,{query:{name:name},files:"_id name listLinks idNCM"})
+                        }catch(e){
+                            console.warn("[serfice.Artist.checkIdNCM]query with name",name,":not found.",e.message)
+                        }
                         Object.assign(payload,data);
                         
                     }else throw new Error("_id,name,listLinks都没有,真没辙");
@@ -307,7 +318,7 @@ class ServicePlugin extends BaseService {
     
         }catch(e){
             debugger
-            console.warn("网易云音乐checkIdNCM:",e);
+            console.warn("[serfice.Artist.checkIdNCM]","网易云音乐checkIdNCM:",e);
             return "";
         }
     }
@@ -500,10 +511,9 @@ class ServicePlugin extends BaseService {
                 let resNCMDesc=await this.ctx.service.webCrawler.api("/artist/desc",{id:idNCM});
                 // 万一失去链接，直接返回，不影响
                 if(resNCMDesc.error || !resNCMDesc.data || !resNCMDesc.data.introduction || !resNCMDesc.data.introduction[0]) {
-
+                    debugger
                 }else{
-                    debugger;
-                    artistNCM.comments=resNCMDesc.data.introduction[0] || "";
+                    artistNCM.comments=resNCMDesc.data.introduction[0].txt || resNCMDesc.data.introduction[0] || "";
                 }
 
                 return artistNCM;
