@@ -20,23 +20,27 @@
         </template>
       </el-table-column>
       -->
-      <el-table-column prop="name" :label="$t('regUser.name')" min-width="250">
-        <template slot-scope="scope">
-          <el-avatar :src="scope.row.avatar" fit="cover" size="large" :style="scope.row.enable ? '' : 'filter: opacity(0.5) grayscale(1);'">{{scope.row.avatarName}}</el-avatar>
-          <el-button type="text" size="large" @click="editUserInfo(scope.$index, dataList)" :style="scope.row.enable ? '' : 'filter: opacity(0.5) grayscale(1);'">{{scope.row.name}}  <i class="el-icon-edit" /></el-button>
-        </template>
+      <el-table-column class-name="table-column--name" prop="name" :label="$t('regUser.name')" :min-width="isMobile?200:200">
+        <el-row :gutter="20" slot-scope="scope">
+          <el-col class="sImg">
+            <el-avatar :src="scope.row.avatar" fit="cover" size="large" :style="scope.row.enable ? '' : 'filter: opacity(0.5) grayscale(1);'">{{scope.row.avatarName}}</el-avatar>
+            <el-tag size="mini" type="info" v-if="isMobile">{{scope.row.group == '0' ? '普通用户' : scope.row.group}}</el-tag>
+          </el-col>
+          <el-col class="col-name" style="text-align:left">
+            <el-button type="text" size="large" @click="editContentInfo(scope.$index, dataList)">{{scope.row.name}}  <i class="el-icon-edit" /></el-button>
+            <!-- 时间@地点 -->
+            <div v-if="isMobile" class="info">
+              <!-- <div class="foot" v-if="scope.row.group == '0'">普通用户</div> -->
+              <!-- <div class="foot" v-else >{{scope.row.group}}</div> -->
+              <div class="foot">{{scope.row.dateInOut}}</div>
+            </div>
+          </el-col>
+        </el-row>
       </el-table-column>
-      <!-- <el-table-column prop="phoneNum" :label="$t('regUser.phoneNum')" width="180">
-        <template slot-scope="scope">
-          <div
-            v-if="scope.row.countryCode&&scope.row.phoneNum"
-          >{{scope.row.countryCode + ' ' + scope.row.phoneNum}}</div>
-          <div v-else-if="scope.row.phoneNum">{{scope.row.phoneNum}}</div>
-          <div v-else></div>
-        </template>
-      </el-table-column>
-       -->
+
+      <!-- 类型 -->
       <el-table-column 
+        v-if="!isMobile"
         prop="group" 
         :label="$t('regUser.group')" 
         width="auto"      
@@ -47,10 +51,9 @@
           <span v-else >{{scope.row.group}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="dateInOut" :label="$t('regUser.dateInOut')" show-overflow-tooltip width="auto"></el-table-column>
-      <!-- <el-table-column prop="email" :label="$t('regUser.email')" show-overflow-tooltip></el-table-column> -->
-      <!-- <el-table-column prop="integral" :label="$t('regUser.integral')" show-overflow-tooltip></el-table-column> -->
-      <el-table-column :label="$t('main.dataTableOptions')" width="150">
+      <!-- 日期 -->
+      <el-table-column v-if="!isMobile" prop="dateInOut" :label="$t('regUser.dateInOut')" show-overflow-tooltip align="left" :width="!isMobile?'300':'auto'"></el-table-column>
+      <el-table-column :label="$t('main.dataTableOptions')" width="70">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -78,11 +81,20 @@
 </template>
 <style lang="scss">
   @import "@root/publicMethods/sass/dataTable.scss";
+  .tableBox{
+      td{
+        .foot{
+          font-size: .3rem;
+          color: darkgrey;
+          word-break: keep-all;
+        }    
+      }
+  }
 </style>
 
 <script>
 import { getOneRegUser, deleteRegUser } from "@/api/regUser";
-
+import {computed} from "@root/publicMethods/vue/dataTable";
 export default {
   props: {
     dataList: Array,
@@ -179,6 +191,9 @@ export default {
     filterHandler(value, row, column) {
         return row.group === value;
     }
+  },
+  computed: {
+    ...computed,
   }
 };
 </script>

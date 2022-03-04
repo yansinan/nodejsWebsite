@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-24 13:20:49 
  * @Last Modified by: dr
- * @Last Modified time: 2021-12-19 03:46:12
+ * @Last Modified time: 2022-03-04 10:50:28
  */
 
 'use strict';
@@ -20,7 +20,7 @@ class ServicePlugin extends BaseService {
     constListPopulate=[
         {
             path: 'listMembers',
-            select: 'userName _id id logo'
+            select: 'name userName _id id logo'
         },
         {
             path: 'tags',

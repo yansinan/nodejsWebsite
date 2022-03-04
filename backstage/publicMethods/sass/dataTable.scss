@@ -4,11 +4,44 @@
     }
     td{
       height:80px;
+
+      // 标签/乐队/介质
+      .containerTag{
+        display:flex;
+        flex-wrap: wrap;
+        justify-content: start;
+        align-items: start;
+        margin-top:1rem;
+        flex: 1 1 100%;
+        // height:100%;
+        .el-tag {
+          margin-bottom:1rem;
+          margin-right: 10px;
+        }
+      }
+      // 辅助信息：地点时间栏目
+      .info{
+        line-height: 1rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        margin-right: 1rem;
+      }
+      .foot{
+        font-size: .5rem;
+        color: darkgrey;
+      }    
+    }
+    td.is-left{
+      .cell{
+        justify-content:left;
+      }
     }
     // 名称
     td.table-column--name{
       .cell{
         padding-left: 0px;
+        justify-content: flex-start;
       }
     }
     // 标签栏
@@ -42,8 +75,10 @@
     .cell{
       height:100%;
       display:flex;
+      justify-content: center;
       align-items: center;
       text-align: center;
+
       // 主列的行格式修正
       .el-row{
         flex: 1;
@@ -53,55 +88,59 @@
         max-width: 100%;
         .el-col{
           flex: 1;
+          .el-button--text{
+            color:#303133;
+            font-size:18px;
+            // line-height:1.5em;
+            padding-top: 0px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            max-width: 100%;
+          }
+          .el-avatar{
+            margin-right:5px;
+            margin-left:5px;
+            min-width: 40px;
+            font-size: 1.5rem;
+          }      // 查看置顶推荐
+          .actionInName{
+            display:flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: flex-start;
+            align-items: flex-start;
+            .roofPlacement,
+            .top{
+              flex:1;
+            }
+          }
+
         }
         // 主列图不扩展
         .el-col.sImg{
           flex:0;
           align-self: center;
-          img{
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: space-between;
+          .el-avatar img{
             max-width: 100%;
           }
+          .el-badge{
+            margin-top: 0rem;
+            button{
+              width: 8rem;
+            }
+          } 
         }
       }
-      .actionInName{
-        display:flex;
-        flex-direction: row;
-        flex-wrap: nowrap;
-        justify-content: flex-start;
-        align-items: flex-start;
-        .roofPlacement,
-        .top{
-          flex:1;
-        }
+      // 去色不可用状态
+      .el-row.invisible{
+        filter: opacity(0.5) grayscale(1);
       }
-      .el-button--text{
-        color:#303133;
-        font-size:18px;
-        // line-height:1.5em;
-        padding-top: 0px;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        max-width: 100%;
-      }
-      .el-avatar{
-        margin-right:5px;
-        margin-left:5px;
-        min-width: 40px;
-        font-size: 1.5rem;
-      }
-      .containerTag{
-        display:flex;
-        flex-wrap: wrap;
-        justify-content: start;
-        align-items: start;
-        margin-top:1rem;
-        // height:100%;
-        .el-tag {
-          margin-bottom:1rem;
-          margin-right: 10px;
-        }
-      }
+  
     }
   }
   .fa-star,

@@ -30,13 +30,16 @@
         <el-row :gutter="20" slot-scope="scope">
           <el-col class="sImg" :span="12">
             <el-avatar :src="scope.row.sImg" fit="cover" :size="128"  shape="square" />
+            <el-badge v-if="isMobile" :value="scope.row.listLinks.length" :hidden="scope.row.listLinks.length==0?true:false" :max="99" type="info">
+              <el-button @click="eListLinksEdit(scope.$index,dataList)" size="mini" plain icon="el-icon-link" :type="scope.row.listLinks.length==0?'':'primary'"></el-button>  
+            </el-badge>          
           </el-col>
-          <el-col :span="12" style="text-align:left">
+          <el-col class="col-name" :span="12" style="text-align:left">
             <el-button type="text" size="large" @click="editContentInfo(scope.$index, dataList)">{{scope.row.name}}  <i class="el-icon-edit" /></el-button>
             <!-- 置顶/推荐 -->
             <div class="actionInName">
               <el-button-group>
-                <el-button icon="el-icon-view" :type="scope.row.state?'':'info'" :disabled="!scope.row.state" size="medium" @click="eLink('/timeline/goods'+scope.row.url)" />
+                <el-button v-if="isMobile" icon="el-icon-view" :type="scope.row.state!=2?'':'primary'" plain :disabled="scope.row.state!=2" size="medium" @click="eLink('/timeline/goods'+scope.row.url)" />
                 <el-tooltip content="推荐" placement="top" effect="light">
                   <el-button :icon="scope.row.isTop === 1?'el-icon-star-on':'el-icon-star-off'" size="medium" :type="scope.row.isTop === 1?'warning':''" @click="topContent(scope.$index, dataList)" plain/>
                 </el-tooltip>
@@ -50,11 +53,19 @@
               <el-tag size="mini" type="success" v-for="artist in scope.row.listRefs" :key="artist._id">{{artist.name}}</el-tag>
             </div>
             <!-- <div><span v-for="artist in scope.row.listRefs" :key="artist._id">{{artist.name+','}}</span></div> -->
-            <div >{{scope.row.date}}</div>              
+            <div class="foot">{{scope.row.date}}</div>              
           </el-col>
          <!-- <div v-else class="col-name hide" ><el-avatar :src="scope.row.sImg" :fit="cover"/>{{scope.row.name}}</div> -->
         </el-row>
       </el-table-column>
+      <!-- 其他链接PC -->
+      <el-table-column v-if="!isMobile" class-name="table-column--links" prop="listLinks" :label="$t(nameMod+'.listLinks')" min-width="70" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <el-badge :value="scope.row.listLinks.length" :hidden="scope.row.listLinks.length==0?true:false" :max="99" type="info">
+            <el-button @click="eListLinksEdit(scope.$index,dataList)" size="large" plain icon="el-icon-link" :type="scope.row.listLinks.length==0?'':'primary'" circle></el-button>  
+          </el-badge>          
+        </template>
+      </el-table-column>  
 
       <el-table-column class-name="table-column--tags" prop="tags" :label="$t('contents.tags')" min-width="100" show-overflow-tooltip>
         <template slot-scope="scope">
@@ -66,20 +77,12 @@
         <template slot-scope="scope">{{scope.row.date}}</template>
       </el-table-column>
       -->
-      <!-- 其他链接 -->
-      <el-table-column class-name="table-column--links" prop="listLinks" :label="$t(nameMod+'.listLinks')" min-width="70" show-overflow-tooltip>
-        <template slot-scope="scope">
-          <el-badge :value="scope.row.listLinks.length" :hidden="scope.row.listLinks.length==0?true:false" :max="99" type="info">
-            <el-button @click="eListLinksEdit(scope.$index,dataList)" size="large" plain icon="el-icon-link" :type="scope.row.listLinks.length==0?'':'primary'" circle></el-button>  
-          </el-badge>          
-        </template>
-      </el-table-column>  
       
       <!-- 右侧固定栏 -->
       <el-table-column v-if="!isMobile" :label="$t('main.dataTableOptions')" width="200" fixed="right">
         <template slot-scope="scope">
           <el-button-group>
-            <el-button icon="el-icon-view" :type="scope.row.state?'':'info'" :disabled="!scope.row.state" size="large" @click="eLink('/timeline/goods'+scope.row.url)" />
+            <el-button icon="el-icon-view" :type="scope.row.state==2?'':'info'" :disabled="scope.row.state!=2" size="large" @click="eLink('/timeline/goods'+scope.row.url)" />
             <el-button icon="el-icon-edit" size="large" type="success" @click="editContentInfo(scope.$index, dataList)" plain/>
             <el-button icon="el-icon-delete" size="large" type="danger" plain @click="deleteContent(scope.$index, dataList)" />
           </el-button-group>

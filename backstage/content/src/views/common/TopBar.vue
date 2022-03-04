@@ -4,6 +4,7 @@
       <el-button size="small" type="primary" plain @click="addContent('content')" round>
         <svg-icon icon-class="icon_add" />
       </el-button>
+      <!--  
       <el-tooltip class="item" effect="dark" content="绑定编辑" placement="top">
         <el-button size="small" type="warning" plain @click="directUser('content')" round>
           <svg-icon icon-class="direct_user" />
@@ -14,6 +15,7 @@
           <svg-icon icon-class="icon_move" />
         </el-button>
       </el-tooltip>
+      -->
       <el-tooltip class="item" effect="dark" content="回收站" placement="top">
         <el-button size="small" type="info" plain round @click="showDraft('content')">
           <svg-icon icon-class="icon_collect" />
@@ -28,6 +30,7 @@
     <el-col :xs="10" :md="18">
       <div class="dr-toolbar-right">
         <div v-if="device != 'mobile'" style="display:inline-block">
+          <!--  
           <el-cascader
             placeholder="请选择类别"
             class="cateSelect"
@@ -60,6 +63,7 @@
               :value="item.value"
             ></el-option>
           </el-select>
+          -->
           <el-input
             class="dr-searchInput"
             style="width:180px"

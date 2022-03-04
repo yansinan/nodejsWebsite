@@ -1,5 +1,5 @@
 <template>
-  <div id="regUser-app">
+  <div id="regUser-app" class="manageMainOuter">
     <router-view />
   </div>
 </template>

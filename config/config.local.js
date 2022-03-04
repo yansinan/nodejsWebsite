@@ -27,11 +27,11 @@ module.exports = appInfo => {
             // 'templateConfig',
             // 'versionManage',
             //'content',//,8900,
-            //'artist',//8888
+            // 'artist',//8888
             // 'record',//8899
             //'show',//8899
             // 'good',//8899
-            // 'contentTags',
+            // 'contentTags', //8900
             // 'contentCategory',
             // 'contentMessage',
             //'regUser', //8899
