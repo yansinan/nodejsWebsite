@@ -4,7 +4,11 @@ import {
     updateOne,
     // regUserList,
 } from "../apiGeneral";
+import _ from "lodash";
+
 import '@/set-public-path'
+console.info("[contentForm.js]==============>",nameMod);
+
 import {
     showFullScreenLoading,
     tryHideFullScreenLoading
@@ -14,7 +18,6 @@ export let props={
     groups: Array
 }
 export let data={
-    nameMod:nameMod,
     contentState: [
       { value: "0", label: "撤回" , color:""},//{ value: "0", label: "退回" },
       { value: "1", label: "草稿" , color:"#409EFF"},//{ value: "1", label: "待审核" },
@@ -37,7 +40,7 @@ export let components={
 // 初始化时判断读取或新建
 export function initData(that){
     // 针对手动页面刷新
-    let _this = this;
+    let _this = this; //this==undefined
     if (that.$route.params.id) {
         getOne({ id: that.$route.params.id },that.nameMod).then(result => {
             if (result.status === 200) {
@@ -46,7 +49,7 @@ export function initData(that){
                         categoryIdArr = [],
                         tagsArr = [],
                         formatTagArr=[];
-                    console.info("获取乐队信息：",contentObj);
+                    console.info("获取"+that.nameMod+"详情：",contentObj);
                     if (contentObj.categories) {
                         contentObj.categories.map((item, index) => {
                             item && categoryIdArr.push(item._id);
@@ -55,7 +58,7 @@ export function initData(that){
                     }
                     if (contentObj.tags)contentObj.tags = contentObj.tags.map(v=>(v && v._id));
                     if (contentObj.keywords)contentObj.keywords = contentObj.keywords.join(",");
-                    if (contentObj.listRefs)contentObj.listRefs=contentObj.listRefs.map(v=>{return v._id});
+                    if (contentObj.listRefs)contentObj.listRefs=contentObj.listRefs.map(v=>{return v && (v._id || v)});
                     if (contentObj.listMembers)contentObj.listMembers = contentObj.listMembers.map(v=>{return v._id});
 
                     // 对象转id
@@ -66,7 +69,7 @@ export function initData(that){
                     });
                 } else {
                     that.$message({
-                        message: that.$t("validate.error_params"),
+                        message: that.$t("validate.error_params", { label: "编辑表单获取详细信息"+JSON.stringify(result.data) }),
                         type: "warning",
                         onClose: () => {
                             that.backToList();

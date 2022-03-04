@@ -1,65 +1,63 @@
 <template>
-  <div :class="classObj" class="dr-contentForm">
-    <div class="main-container">
-        <!--  @submit="eFormSubmit" -->
-        <ContentForm :nameMod="nameMod" :aspectRatio="1.2278" v-model="formState">
-          <template v-slot:leftTop>
-            <!-- 乐队名 -->
-            <el-form-item :label="$t(nameMod + '.name')" prop="name">
-              <el-input size="small" v-model="formState.formData.name" ref="inputName" maxlength="50" show-word-limit>
-                <el-tooltip slot="append" content="尝试搜索网易云音乐" placement="top" effect="light">
-                  <el-button type="success" plain :disabled="!(formState.formData.name)" icon="el-icon-cloudy" @click.prevent="eBnFetchNCM">搜索网易云音乐</el-button>
-                </el-tooltip>            
-              </el-input>
+  <div class="artist-contentForm">
+
+    <ContentForm :nameMod="nameMod" :aspectRatio="1.2278" v-model="formState">
+      <template v-slot:leftTop>
+        <!-- 乐队名 -->
+        <el-form-item :label="$t(nameMod + '.name')" prop="name">
+          <el-input size="small" v-model="formState.formData.name" ref="inputName" maxlength="50" show-word-limit>
+            <el-tooltip slot="append" content="尝试搜索网易云音乐" placement="top" effect="light">
+              <el-button type="success" plain :disabled="!(formState.formData.name)" icon="el-icon-cloudy" @click.prevent="eBnFetchNCM">搜索网易云音乐</el-button>
+            </el-tooltip>            
+          </el-input>
+        </el-form-item>
+      </template>
+
+      <template v-slot:leftMiddle>
+        <!-- 日期&地点 -->
+        <el-row v-if="formState.formData" :gutter="40" type="flex" justify="space-between" style="flex-wrap: wrap;">
+          <el-col :lg="16">
+            <el-form-item prop="listDateDur">
+              <el-row :gutter="5" type="flex" justify="space-around"  align="middle" style="flex-wrap: nowrap;min-width: min-content;max-width: fit-content;">
+                <el-col :span="11">
+                  <el-date-picker
+                    v-model="formState.formData.listDateDur[0]"
+                    type="date"
+                    :span="12"
+                    placeholder="加入日期">
+                  </el-date-picker>
+                </el-col> 
+                <el-col :span="1" style="min-width: min-content;">
+                  <icon class="el-icon-minus"/>
+                </el-col> 
+                <el-col :span="11">
+                  <el-date-picker
+                    v-model="formState.formData.listDateDur[1]"
+                    :span="12"
+                    type="date"
+                    placeholder="退出日期">
+                  </el-date-picker>
+                </el-col> 
+              </el-row>
             </el-form-item>
-          </template>
+          </el-col> 
+          <el-col :lg="8" style="min-width: min-content;">
+            <el-form-item prop="from">
+              <el-input v-model="formState.formData.from" placeholder="中国/China" maxlength="20" show-word-limit><template slot="suffix">{{$t(nameMod + '.from')}}</template></el-input>
+            </el-form-item>
+          </el-col> 
+        </el-row>
+        <!-- 乐队成员 -->
+        <SelectIds :label="$t(nameMod+'.listMembers')" @change="eChangeMember" :listIds="formState.formData.listMembers" :nameMode="nameMod" apiAdd="/manage/regUser/addOneName" apiFind="/manage/regUser/findByName" :initTag="createMember"/>
+      </template>
 
-          <template v-slot:leftMiddle>
-            <!-- 日期&地点 -->
-            <el-row v-if="formState.formData" :gutter="40" type="flex" justify="space-between" style="flex-wrap: wrap;">
-              <el-col :lg="16">
-                <el-form-item prop="listDateDur">
-                  <el-row :gutter="5" type="flex" justify="space-around"  align="middle" style="flex-wrap: nowrap;min-width: min-content;max-width: fit-content;">
-                    <el-col :span="11">
-                      <el-date-picker
-                        v-model="formState.formData.listDateDur[0]"
-                        type="date"
-                        :span="12"
-                        placeholder="加入日期">
-                      </el-date-picker>
-                    </el-col> 
-                    <el-col :span="1" style="min-width: min-content;">
-                      <icon class="el-icon-minus"/>
-                    </el-col> 
-                    <el-col :span="11">
-                      <el-date-picker
-                        v-model="formState.formData.listDateDur[1]"
-                        :span="12"
-                        type="date"
-                        placeholder="退出日期">
-                      </el-date-picker>
-                    </el-col> 
-                  </el-row>
-                </el-form-item>
-              </el-col> 
-              <el-col :lg="8" style="min-width: min-content;">
-                <el-form-item prop="from">
-                  <el-input v-model="formState.formData.from" placeholder="中国/China" maxlength="20" show-word-limit><template slot="suffix">{{$t(nameMod + '.from')}}</template></el-input>
-                </el-form-item>
-              </el-col> 
-            </el-row>
-            <!-- 乐队成员 -->
-            <SelectIds :label="$t(nameMod+'.listMembers')" @change="eChangeMember" :listIds="formState.formData.listMembers" :nameMode="nameMod" apiAdd="/manage/regUser/addOneName" apiFind="/manage/regUser/findByName" :initTag="createMember"/>
-          </template>
-
-          <template v-slot:footer>
-            <!-- 相关链接 -->
-            <ListURL v-model="formState.formData.listLinks" label="其他链接" ref="listLinks"></ListURL>
-            <!-- 热门歌曲 -->
-            <ListURL v-model="formState.formData.listHotMusics" label="热门歌曲"></ListURL>
-          </template>
-        </ContentForm>
-    </div>
+      <template v-slot:footer>
+        <!-- 相关链接 -->
+        <ListURL v-model="formState.formData.listLinks" label="其他链接" ref="listLinks"></ListURL>
+        <!-- 热门歌曲 -->
+        <ListURL v-model="formState.formData.listHotMusics" label="热门歌曲"></ListURL>
+      </template>
+    </ContentForm>
 
     <!-- 网易云结果 -->
     <el-dialog
@@ -87,41 +85,36 @@
     </el-dialog>
   </div>
 </template>
-
-<style lang="scss"> 
-@import "@root/publicMethods/sass/contentForm.scss";
+<style lang="scss">
+  .artist-contentForm{
+    width:100%
+  }
 </style>
-
 <script>
 const nameMod="artist";
-import { initEvent } from "@root/publicMethods/events";
-import {methods,initData,components,data,props,computed} from "@root/publicMethods/vue/contentForm";
+import {methods,initData,components} from "@root/publicMethods/vue/contentForm";
 
-import _ from "lodash";
 import { mapGetters, mapActions,createNamespacedHelpers} from "vuex";
 const mod = createNamespacedHelpers(nameMod)////模块,含mapGetters, mapActions等
 
 export default {
-  props: {
-    ...props,
-  },
+  props: {},
   data() {
     return {
-      ...data,
       nameMod:nameMod,
       objDataNCM:{isPop:false,isFetched:false},//用于存储网易云抓取结果
     };
   },
   components: {
-    ...components,
+    SelectIds:components.SelectIds,
+    ListURL:components.ListURL,
     ContentForm: () => import('@root/publicMethods/vue/ContentForm.vue'),//表格头部
-
   },
   methods: {
-    //...methods,
+    //backToList，getLocalContents在initData里使用
     backToList:methods.backToList,
-    updateKeywords:methods.updateKeywords,
     getLocalContents:methods.getLocalContents,
+    updateKeywords:methods.updateKeywords,
 
     //获取表单信息
     ...mod.mapActions(["showContentForm"]),// 将 `this.showContentForm(params)` 映射为 `this.$store.dispatch(nameMod+'/incrementBy', params)`
@@ -185,14 +178,12 @@ export default {
     },
   },
   computed: {
-    ...computed,
     ...mapGetters(["contentCategoryList"]),//"regUserList",
     ...mod.mapState({
       formState: state => state.formState,
     }),//模块的state
   },
   mounted() {
-    initEvent(this);
     initData(this);
   }
 };

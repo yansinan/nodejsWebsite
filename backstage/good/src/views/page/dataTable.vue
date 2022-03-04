@@ -89,7 +89,7 @@
         </template>
       </el-table-column>  
     </el-table>
-    <DialogURL @complete="getList" :nameMod="nameMod" :label="$t('show.listLinks')" :dialogState="dialogStateLink" />
+    <DialogURL @complete="getList" :nameMod="nameMod" :label="$t(nameMod+'.listLinks')" :dialogState="dialogStateLink" />
 
   </div>
 </template>

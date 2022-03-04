@@ -99,7 +99,7 @@
       <el-table-column v-if="!isMobile" :label="$t('main.dataTableOptions')" width="200" fixed="right">
         <template slot-scope="scope">
           <el-button-group>
-            <el-button icon="el-icon-view" :type="scope.row.state==2?'':'info'" :disabled="scope.row.state!=2" size="large" @click="eLink('/timeline/news/'+scope.row.url)" />
+            <el-button icon="el-icon-view" :type="scope.row.state==2?'':'info'" :disabled="scope.row.state!=2" size="large" @click="eLink('/timeline/news'+scope.row.url)" />
             <el-button icon="el-icon-edit" size="large" type="success" @click="editContentInfo(scope.$index, dataList)" plain/>
             <el-button icon="el-icon-delete" size="large" type="danger" plain @click="deleteContent(scope.$index, dataList)" />
           </el-button-group>

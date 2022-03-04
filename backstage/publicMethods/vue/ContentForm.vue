@@ -1,4 +1,6 @@
 <template>
+  <div :class="classObj" class="dr-contentForm">
+    <div class="main-container">
       <el-form
         :model="formState.formData"
         :rules="rules"
@@ -129,6 +131,9 @@
             </el-form-item>
       </el-form>
 
+    </div>
+  </div>
+
 </template>
 <style lang="scss">
     .el-select{
@@ -139,6 +144,8 @@
 @import "@root/publicMethods/sass/contentForm.scss";
 </style>
 <script>
+  import { initEvent } from "@root/publicMethods/events";
+
   import {methods,initData,components,data,props,computed} from "@root/publicMethods/vue/contentForm";
 
   import _ from "lodash";
@@ -289,7 +296,7 @@
               })
               // 去重合并
               this.formState.formData.listRefs=[...new Set(this.formState.formData.listRefs.concat(listIdArtists))];
-              console.log(listNameArtistsFind,)
+              console.info("提取关键字，自动填充listArtists,去重结果:",listNameArtistsFind,)
             }
         },
     },
@@ -372,7 +379,8 @@
         },
     },
     mounted() {
-        // initData(this);
-    },
+      initEvent(this);
+      // initVuex(this);
+    }
   }
 </script>

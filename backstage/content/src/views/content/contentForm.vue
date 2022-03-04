@@ -1,85 +1,66 @@
 <template>
-  <div :class="classObj" class="dr-contentForm">
-    <div class="main-container">
-        <!--  @submit="eFormSubmit" -->
-        <ContentForm :nameMod="nameMod" v-model="formState" ref="contentForm">
-          <template v-slot:top>
-            <el-form-item v-if="!formState.edit" :label="'公众号文章链接'">
-              <LinkWX v-model="formState.formData" />
-            </el-form-item>
-          </template>
-          <!-- 大标题:不知道为什么必须要设置一个，否则模板识别出错 -->
-          <template v-slot:leftTop>
-            <el-form-item prop="name">
-              <el-input v-model="formState.formData.name" maxlength="50" show-word-limit><template slot="suffix" style="color:red;">{{$t(nameMod + '.name')}}</template><!-- <label slot="suffix" class="el-form-item__label">{{$t(nameMod + '.name')}}</label> --></el-input>
-            </el-form-item>
-          </template>
-          <template v-slot:leftMiddle>
-            <!-- 上传word -->
-            <el-row v-if="formState.formData" :gutter="40" type="flex" justify="space-between" style="flex-wrap: wrap;">
-              <el-col :lg="12">
-                <!-- 上传WORD -->
-                <el-form-item prop="uploadWord">
-                  <el-upload
-                    class="upload-demo"
-                    action="/api/content/getWordHtmlContent"
-                    :on-preview="handleWordPreview"
-                    :on-remove="handleWordRemove"
-                    :before-remove="beforeWordRemove"
-                    :on-success="uploadWordSuccess"
-                    :before-upload="beforeWordUpload"
-                    multiple
-                    :limit="1"
-                    :on-exceed="handleWordExceed"
-                    :file-list="wordFileList"
-                  >
-                  <el-tooltip content="只能上传doc/docx文件，且不超过5mb" placement="top" effect="light">
-                    <el-button size="small" type="primary">{{$t('contents.uploadWord')}}</el-button>
-                  </el-tooltip>
-                    <!-- <div slot="tip" class="el-upload__tip"></div> -->
-                  </el-upload>
-                </el-form-item>
+  <ContentForm :nameMod="nameMod" v-model="formState" ref="contentForm">
+    <template v-slot:top>
+      <el-form-item v-if="!formState.edit" :label="'公众号文章链接'">
+        <LinkWX v-model="formState.formData" />
+      </el-form-item>
+    </template>
+    <!-- 大标题:不知道为什么必须要设置一个，否则模板识别出错 -->
+    <template v-slot:leftTop>
+      <el-form-item prop="name">
+        <el-input v-model="formState.formData.name" maxlength="50" show-word-limit><template slot="suffix" style="color:red;">{{$t(nameMod + '.name')}}</template><!-- <label slot="suffix" class="el-form-item__label">{{$t(nameMod + '.name')}}</label> --></el-input>
+      </el-form-item>
+    </template>
+    <template v-slot:leftMiddle>
+      <!-- 上传word -->
+      <el-row v-if="formState.formData" :gutter="40" type="flex" justify="space-between" style="flex-wrap: wrap;">
+        <el-col :lg="12">
+          <!-- 上传WORD -->
+          <el-form-item prop="uploadWord">
+            <el-upload
+              class="upload-demo"
+              action="/api/content/getWordHtmlContent"
+              :on-preview="handleWordPreview"
+              :on-remove="handleWordRemove"
+              :before-remove="beforeWordRemove"
+              :on-success="uploadWordSuccess"
+              :before-upload="beforeWordUpload"
+              multiple
+              :limit="1"
+              :on-exceed="handleWordExceed"
+              :file-list="wordFileList"
+            >
+            <el-tooltip content="只能上传doc/docx文件，且不超过5mb" placement="top" effect="light">
+              <el-button size="small" type="primary">{{$t('contents.uploadWord')}}</el-button>
+            </el-tooltip>
+              <!-- <div slot="tip" class="el-upload__tip"></div> -->
+            </el-upload>
+          </el-form-item>
 
-              </el-col> 
-              <el-col :lg="12" style="min-width: min-content;">
-                <!-- 文章类别 -->
-                <el-form-item prop="categories">
-                  <el-cascader
-                    disabled 
-                    size="small"
-                    expandTrigger="hover"
-                    :options="contentCategoryList.docs"
-                    v-model="formState.formData.categories"
-                    @change="handleChangeCategory"
-                    :props="categoryProps"
-                  ><template slot="suffix">{{$t('contents.categories')}}</template></el-cascader>
-                </el-form-item>
-              </el-col> 
-            </el-row>
-          </template>
+        </el-col> 
+        <el-col :lg="12" style="min-width: min-content;">
+          <!-- 文章类别 -->
+          <el-form-item prop="categories">
+            <el-cascader
+              disabled 
+              size="small"
+              expandTrigger="hover"
+              :options="contentCategoryList.docs"
+              v-model="formState.formData.categories"
+              @change="handleChangeCategory"
+              :props="categoryProps"
+            ><template slot="suffix">{{$t('contents.categories')}}</template></el-cascader>
+          </el-form-item>
+        </el-col> 
+      </el-row>
+    </template>
 
-          <template v-slot:footer>
-            <!-- 热门歌曲：相关链接 -->
-            <!-- <el-form-item prop="listTicketLink"> -->
-              <!-- <ListURL @list-changed="eListHotMusicChanged" label="购买链接" :listObjURL="formState.formData.listTicketLink"></ListURL> -->
-              <!-- <ListURL v-model="formState.formData.listTicketLink" label="购买链接" ref="listTicketLink"></ListURL> -->
-              <!-- <div class="el-select-suffix el-input--small el-input__suffix"><span class=" el-input__suffix-inner" style="bottom:0px;right: 30px;max-height: 38px;">{{$t(nameMod + '.listTicketLink')}}</span></div> -->
-            <!-- </el-form-item> -->
-          </template>
-        </ContentForm>
-
-    </div>
-  </div>
+  </ContentForm>
 </template>
-
-<style lang="scss">
-@import "@root/publicMethods/sass/contentForm.scss";
-</style>
 
 <script>
 const nameMod="content";
-import { initEvent } from "@root/publicMethods/events";
-import {methods,initData,initVuex,components,computed,data,props} from "@root/publicMethods/vue/contentForm";
+import {methods,initData,components,} from "@root/publicMethods/vue/contentForm";
 // word上传:相关函数在contentForm.js,import，
 
 
@@ -101,11 +82,9 @@ const mod = createNamespacedHelpers(nameMod)////模块,含mapGetters, mapActions
 // import { mapGetters, mapActions } from "vuex";
 export default {
   props: {
-    ...props,
   },
   data() {
     return {
-      ...data,
       nameMod:nameMod,
       wordFileList: [],
       wordFileUrl: "",
@@ -125,17 +104,17 @@ export default {
     };
   },
   components: {
-    ...components,
+    LinkWX:components.LinkWX,
     ContentForm: () => import('@root/publicMethods/vue/ContentForm.vue'),//表格头部
   },
   methods: {
     //获取表单信息
     ...mod.mapActions(["showContentForm"]),// 将 `this.showContentForm(params)` 映射为 `this.$store.dispatch(nameMod+'/incrementBy', params)`
 
-    // ...methods,
+    //backToList，getLocalContents在initData里使用
     backToList:methods.backToList,
-    updateKeywords:methods.updateKeywords,
     getLocalContents:methods.getLocalContents,
+    // updateKeywords:methods.updateKeywords,
     ...methods.funForWordUpload,
 
 
@@ -199,7 +178,6 @@ export default {
     //}
   },
   computed: {
-    ...computed,
     ...mod.mapState({
       formState: state => state.formState,
       // dataArtists:state => state.dataArtists,
@@ -210,9 +188,9 @@ export default {
       "adminUserInfo",
       //"contentCoverDialog"
     ]),
-    listAllTags(){
-      return this.$refs.contentForm.listAllTags || [];
-    },
+    // listAllTags(){
+    //   return this.$refs.contentForm.listAllTags || [];
+    // },
   },
   watch:{
     "contentCategoryList.docs"(nV,oV){
@@ -230,7 +208,7 @@ export default {
     },
   },
   mounted() {
-    initEvent(this);
+    // initEvent(this);
     this.$store.dispatch("adminUser/getUserInfo");
     //this.$store.dispatch("contentCategory/getContentCategoryList");
     // 给artist检索标签用;

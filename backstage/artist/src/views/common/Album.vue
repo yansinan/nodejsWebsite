@@ -97,7 +97,6 @@
 }
 </style>
 <script>
-import '@/set-public-path'
 import request from '@root/publicMethods/request'
 import { imgFit } from "@root/publicMethods/imgFit";
 export default {
@@ -159,7 +158,7 @@ export default {
             dialogPreviewVisible:false,
             dialogImageUrl: '',
             disabled: false,
-            nameMod:nameMod,
+            nameMod:"artist",
             infoImageUploading:{
                 isLoading:false,
                 name:"",

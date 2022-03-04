@@ -31,6 +31,9 @@ const state = {
       commentNum: 0,
       likeNum: 0,
       dismissReason: "",
+      // 继承doc的属性,
+      listRefs:[],
+
     },
   },
   contentList: {

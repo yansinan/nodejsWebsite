@@ -63,13 +63,14 @@
       </el-table-column>
 
       <!-- 其他链接PC -->
-      <el-table-column v-if="!isMobile" class-name="table-column--links" prop="listLinks" :label="$t('show.listTicketLink')" min-width="100" show-overflow-tooltip>
+      <el-table-column v-if="!isMobile" class-name="table-column--links" prop="listLinks" :label="$t(nameMod+'.listTicketLink')" min-width="100" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-badge :value="scope.row.listLinks.length" :hidden="scope.row.listLinks.length==0?true:false" :max="99" type="info">
             <el-button @click="eListLinksEdit(scope.$index,dataList)" size="large" plain icon="el-icon-link" :type="scope.row.listLinks.length==0?'':'primary'" circle></el-button>  
           </el-badge>          
         </template>
       </el-table-column>  
+
       <!-- 标签 -->
       <el-table-column class-name="table-column--tags" prop="tags" :label="$t('contents.tags')" min-width="200" show-overflow-tooltip>
         <template slot-scope="scope">
@@ -81,14 +82,14 @@
       <el-table-column v-if="!isMobile" :label="$t('main.dataTableOptions')" width="200" fixed="right">
         <template slot-scope="scope">
           <el-button-group>
-            <el-button icon="el-icon-view" :type="scope.row.state==2?'':'info'" :disabled="scope.row.state!=2" size="large" @click="eLink('/timeline/shows/'+scope.row.url)" />
+            <el-button icon="el-icon-view" :type="scope.row.state==2?'':'info'" :disabled="scope.row.state!=2" size="large" @click="eLink('/timeline/shows'+scope.row.url)" />
             <el-button icon="el-icon-edit" size="large" type="success" @click="editContentInfo(scope.$index, dataList)" plain/>
             <el-button icon="el-icon-delete" size="large" type="danger" plain @click="deleteContent(scope.$index, dataList)" />
           </el-button-group>
         </template>
       </el-table-column>  
     </el-table>
-    <DialogURL @complete="getList" :nameMod="nameMod" :label="$t('show.listLinks')" :dialogState="dialogStateLink" />
+    <DialogURL @complete="getList" :nameMod="nameMod" :label="$t(nameMod+'.listLinks')" :dialogState="dialogStateLink" />
 
   </div>
 </template>
