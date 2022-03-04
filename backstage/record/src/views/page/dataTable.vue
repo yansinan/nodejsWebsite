@@ -26,7 +26,7 @@
       </el-table-column>
        -->
       <!-- 名称 -->
-      <el-table-column class-name="table-column--name" prop="name" :label="$t('docs.name')" min-width="360" show-overflow-tooltip>
+      <el-table-column class-name="table-column--name" prop="name" :label="$t('docs.name')" min-width="360">
         <el-row :gutter="20" slot-scope="scope">
           <el-col class="sImg" :span="12">
             <el-avatar :src="scope.row.sImg" fit="cover" :size="128"  shape="square" />

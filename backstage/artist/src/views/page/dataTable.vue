@@ -65,7 +65,7 @@
       <el-table-column type="selection" width="25"></el-table-column>
 
       <!-- 名称 -->
-      <el-table-column class-name="table-column--name" prop="name" :label="$t('docs.name')" min-width="300" show-overflow-tooltip>
+      <el-table-column class-name="table-column--name" prop="name" :label="$t('docs.name')" min-width="300">
         <el-row :gutter="20" slot-scope="scope">
           <el-col class="sImg">
             <el-avatar :src="scope.row.sImg" fit="cover" :size="70"  shape="square" />
