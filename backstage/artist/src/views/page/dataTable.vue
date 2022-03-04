@@ -77,7 +77,7 @@
             <!-- 置顶/推荐 -->
             <div class="actionInName">
               <el-button-group>
-                <el-button v-if="isMobile" icon="el-icon-view" :type="scope.row.state!=2?'':'primary'" plain :disabled="scope.row.state!=2" size="medium" @click="eLink('/timeline/artists'+scope.row.url)" />
+                <el-button v-if="isMobile" icon="el-icon-view" :type="scope.row.state!=2?'':'primary'" plain :disabled="scope.row.state!=2" size="medium" @click="eLink('/artists/news'+scope.row.url)" />
                 <el-tooltip content="推荐" placement="top" effect="light">
                   <el-button :icon="scope.row.isTop === 1?'el-icon-star-on':'el-icon-star-off'" size="medium" :type="scope.row.isTop === 1?'warning':''" @click="topContent(scope.$index, dataList)" plain/>
                 </el-tooltip>
