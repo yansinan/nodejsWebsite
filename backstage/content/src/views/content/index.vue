@@ -39,7 +39,7 @@ import Pagination from "../common/Pagination.vue";
 import { mapGetters, mapActions } from "vuex";
 import { initEvent } from "@root/publicMethods/events";
 
-import '@/set-public-path'
+const nameMod="content";
 
 export default {
   name: "index",

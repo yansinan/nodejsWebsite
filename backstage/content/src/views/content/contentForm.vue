@@ -77,7 +77,7 @@
 </style>
 
 <script>
-import '@/set-public-path'
+const nameMod="content";
 import { initEvent } from "@root/publicMethods/events";
 import {methods,initData,initVuex,components,computed,data,props} from "@root/publicMethods/vue/contentForm";
 // word上传:相关函数在contentForm.js,import，

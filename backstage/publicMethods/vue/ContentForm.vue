@@ -139,8 +139,6 @@
 @import "@root/publicMethods/sass/contentForm.scss";
 </style>
 <script>
-  import '@/set-public-path'
-  import VueUeditorWrap from "vue-ueditor-wrap";
   import {methods,initData,components,data,props,computed} from "@root/publicMethods/vue/contentForm";
 
   import _ from "lodash";

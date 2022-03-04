@@ -28,7 +28,7 @@
 @import "@root/publicMethods/sass/contentForm.scss";
 </style>
 <script>
-import '@/set-public-path'
+const nameMod="good";
 import { initEvent } from "@root/publicMethods/events";
 import {methods,initData,initVuex,components,computed,data,props} from "@root/publicMethods/vue/contentForm";
 

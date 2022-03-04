@@ -4,7 +4,7 @@
   </div>
 </template>
 <script>
-import '@/set-public-path'
+const nameMod="good";
 
 export default {
   data() {

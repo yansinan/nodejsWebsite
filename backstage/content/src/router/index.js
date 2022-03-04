@@ -1,7 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import settings from "@root/publicMethods/settings";
-import '@/set-public-path'
+
+const nameMod="content";
+import componentList from '@/views/content'
+import componentForm from '@/views/content/contentForm.vue'
 
 Vue.use(Router)
 
@@ -14,19 +17,19 @@ const createRouter = () => new Router({
   routes: [{
     path: settings.admin_base_path + '/' + nameMod,
     name: "list",
-    component:  () => import('@/views/content')
+    component:  componentList
   }, {
     path: settings.admin_base_path + '/' + nameMod + '/add',
     name: 'add',
-    component: () => import('@/views/content/contentForm.vue')
+    component: componentForm
   }, {
     path: settings.admin_base_path + '/' + nameMod + '/edit/:id',
     name: 'edit',
-    component: () => import('@/views/content/contentForm.vue')
+    component: componentForm
   }, {
     path: settings.admin_base_path + '/' + nameMod + '/editContent/:id',
     name: 'edit',
-    component: () => import('@/views/content/contentForm.vue')
+    component: componentForm
   }]
 })
 

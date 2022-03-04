@@ -46,7 +46,7 @@
 </style>
 
 <script>
-import '@/set-public-path'
+const nameMod="record";
 import { initEvent } from "@root/publicMethods/events";
 import {methods,initData,components,data,props,computed} from "@root/publicMethods/vue/contentForm";
 

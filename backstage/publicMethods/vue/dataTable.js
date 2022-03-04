@@ -1,5 +1,4 @@
 import { remove, roof, updateToTop } from "../apiGeneral";
-import '@/set-public-path'
 
 export let props={
     nameMod:String,

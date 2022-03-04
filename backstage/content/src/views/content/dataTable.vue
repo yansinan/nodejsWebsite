@@ -35,8 +35,8 @@
         </template>
       </el-table-column>
       -->
-      <!-- 名称 show-overflow-tooltip -->
-      <el-table-column class-name="table-column--name" prop="name" :label="$t('contents.title')" min-width="360">
+      <!-- 名称 -->
+      <el-table-column class-name="table-column--name" prop="name" :label="$t('contents.title')" min-width="360" show-overflow-tooltip>
         <el-row :gutter="20" slot-scope="scope">
           <!-- 名称和功能 -->
           <el-col class="col-name" style="text-align:left;min-width:128px;">
@@ -67,9 +67,7 @@
       </el-table-column>
 
       <!-- 日期 -->
-      <el-table-column prop="updateDate" label="最后更新" min-width="100">
-        <template slot-scope="scope">{{scope.row.updateDate}}</template>
-      </el-table-column>
+      <el-table-column prop="updateDate" label="最后更新" width="100"></el-table-column>
 
 
       <!-- 栏目 

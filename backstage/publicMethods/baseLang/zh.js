@@ -82,7 +82,7 @@ export default {
     limitUploadImgSize: "上传图片大小不能超过 {size} MB",
     limitUploadFileType: "上传文件的格式不正确",
     limitUploadFileSize: "上传文件大小不能超过 {size} MB",
-    error_params: "参数非法,请重新操作"
+    error_params: "[CMS]参数非法,请重新操作"
   },
   //LangEnd
 }

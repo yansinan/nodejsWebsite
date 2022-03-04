@@ -153,7 +153,7 @@
 	"validate_limitUploadImgSize": "上传图片大小不能超过 {0} MB",
 	"system_error_imageType": "文件格式不正确，请重新上传",
 	"system_error_upload": "上传失败，请稍后重试",
-	"validate_error_params": "参数非法,请重新操作",
+	"validate_error_params": "[SERVER]参数非法,请重新操作",
 	"validate_error_repost": "不可重复提交",
 	"validate_error_getSuccess": "操作成功 {0}",
 	"validate_error_pass_atypism": "两次输入密码不一致",

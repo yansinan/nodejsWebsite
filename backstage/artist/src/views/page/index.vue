@@ -17,7 +17,7 @@
   </div>
 </template>
 <script>
-import '@/set-public-path'
+const nameMod="artist";
 import DataTable from "./dataTable.vue";
 import TopBar from "@root/publicMethods/vue/TopBar.vue";
 import Pagination from "@root/publicMethods/vue/Pagination.vue";

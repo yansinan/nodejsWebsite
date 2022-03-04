@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 //nameMod定义
-import '@/set-public-path'
+const nameMod="record";
 import mod from './modules/mod'
 import contentCategory from './modules/contentCategory'
 
