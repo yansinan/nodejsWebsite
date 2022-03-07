@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-24 13:20:49 
  * @Last Modified by: dr
- * @Last Modified time: 2021-08-23 08:54:17
+ * @Last Modified time: 2022-03-07 17:09:35
  */
 
 'use strict';
@@ -38,6 +38,10 @@ class ServicePlugin extends Service {
         {
             path: 'tags',
             select: 'name _id alias comments'
+        },
+        {
+            path: 'author',
+            select: 'userName name logo _id group'
         },
     ]
     get model(){

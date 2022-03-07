@@ -54,7 +54,7 @@
             <!-- <div><span v-for="artist in scope.row.listRefs" :key="artist._id">{{artist.name+','}}</span></div> -->
             <!-- 时间@地点 -->
             <div class="info">
-              <div class="foot">@{{scope.row.location?scope.row.location:"未定义"}}</div>              
+              <div class="foot">@{{scope.row.location?scope.row.location:"未定义"}}{{scope.row.author ? ' by '+scope.row.author.name : ""}}</div>              
               <div class="foot">{{parseTime(scope.row.dateStart,"{y}-{m}-{d}")}} 至 {{parseTime(scope.row.dateEnd,"{y}-{m}-{d}")}}</div>              
             </div>
           </el-col>

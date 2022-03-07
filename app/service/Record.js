@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-24 13:20:49 
  * @Last Modified by: dr
- * @Last Modified time: 2020-5-11 14:02:45
+ * @Last Modified time: 2022-03-07 17:35:01
  */
 
 'use strict';
@@ -25,6 +25,10 @@ class ServicePlugin extends BaseService {
         {
             path: 'listFormatTags',
             select: 'name _id alias comments'
+        },
+        {
+            path: 'author',
+            select: 'userName name logo _id group'
         },
     ]
     get model(){

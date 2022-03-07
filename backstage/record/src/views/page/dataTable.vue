@@ -65,7 +65,7 @@
               <el-tag size="mini" type="success" v-for="artist in scope.row.listRefs" :key="artist._id">{{artist.name}}</el-tag>
             </div>
             <!-- <div><span v-for="artist in scope.row.listRefs" :key="artist._id">{{artist.name+','}}</span></div> -->
-            <div class="foot">{{scope.row.dateFull}}</div>              
+            <div class="foot">{{scope.row.dateFull}}{{scope.row.author ? ' by '+scope.row.author.name : ""}}</div>              
           </el-col>
          <!-- <div v-else class="col-name hide" ><el-avatar :src="scope.row.sImg" :fit="cover"/>{{scope.row.name}}</div> -->
         </el-row>

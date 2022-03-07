@@ -72,10 +72,6 @@
         //    type: Date,
         //    default: Date.now
         //}, // 更新时间
-        author: {
-            type: String,
-            ref: 'AdminUser'
-        }, // 文档作者
         uAuthor: {
             type: String,
             ref: 'User'

@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-24 13:20:49 
  * @Last Modified by: dr
- * @Last Modified time: 2020-5-11 14:02:45
+ * @Last Modified time: 2022-03-07 17:11:12
  */
 
 'use strict';
@@ -13,17 +13,6 @@ const BaseService = require('./Doc');//require(path.join(process.cwd(), 'lib/plu
 
 
 class ServicePlugin extends BaseService {
-    constListPopulate=[
-        {
-            path: 'listRefs',
-            select: 'name _id sImg'
-        },
-        {
-            path: 'tags',
-            select: 'name _id alias comments'
-        },
-    
-    ]
     get model(){
         if(!this._model)this._model=this.ctx.model[__filename.slice(__dirname.length + 1, -3)];
         return this._model;

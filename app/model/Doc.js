@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2019/11/10 20:30:53 
  * @Last Modified by: dr
- * @Last Modified time: 2021-12-09 22:53:52
+ * @Last Modified time: 2022-03-07 16:58:01
  */
 const INIT_DOC= app=>{
     //如果已经初始化过，则直接返回；
@@ -106,7 +106,11 @@ const INIT_DOC= app=>{
             default: '0'
         }, // 0草稿 1待审核 2审核通过 3下架
         dismissReason: String, // 驳回原因(针对审核不通过)
-    
+        author: {
+            type: String,
+            ref: 'AdminUser'
+        }, // 文档作者(管理员作者)
+
         appShowType: {
             type: String,
             default: '1'
