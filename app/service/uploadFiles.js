@@ -377,8 +377,13 @@ class ServicePlugin extends Service {
                 // console.info("缓存from:file:",strFile);
             }
         }
-        if((!isLocalFirst || _.isEmpty(data))){// 如果强制更新，或者没有缓存，或者强制后更新             
-            data=await objCallBack.fun.call(objCallBack.tar || this,...(objCallBack.params || []));//:TODO错误处理
+        if((!isLocalFirst || _.isEmpty(data))){// 如果强制更新，或者没有缓存，或者强制后更新
+            try{
+                data=await objCallBack.fun.call(objCallBack.tar || this,...(objCallBack.params || []));//:TODO错误处理
+            }catch(err){
+                that.logger.error("service.uploadFiles.cacheJSON 执行指定的objCallBack.fun失败",err.message);
+                throw err;
+            }
             ctx.runInBackground(async () => {
                 let jsonData=JSON.stringify(data);
                 // 写入内存缓存
