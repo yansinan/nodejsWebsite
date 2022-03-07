@@ -1,0 +1,11 @@
+{
+    "recommendations": [
+        "thekalinga.bootstrap4-vscode",
+        "ronnidc.nunjucks",
+        "ms-azuretools.vscode-docker",
+        "atian25.eggjs",
+        "donjayamanne.githistory",
+        "octref.vetur",
+        "mikey.vscode-fileheader"
+    ]
+}

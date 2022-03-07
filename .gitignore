@@ -28,3 +28,4 @@ app/public/upload
 # 缓存
 app/public/cache/**
 backstage/record/dist
+backstage/record/dist/**

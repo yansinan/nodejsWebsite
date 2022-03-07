@@ -263,7 +263,14 @@
                 $dom.style.removeProperty("width");
                 $dom.style.removeProperty("white-space");
             });
-            
+            {# WX文章的播放器 #}
+            $offcanvasDetail.querySelectorAll("qqmusic").forEach($d=>{
+                if($d.parentElement)$d.parentElement.style["display"]="none";
+            })
+            {# WX文章的视频剧中 #}
+            $offcanvasDetail.querySelectorAll("iframe").forEach($d=>{
+                if($d.parentElement)$d.parentElement.style["text-align"]="center";
+            })
         }
         this.setDetailDom=function($detail){
             {# 获取基础数据 #}
@@ -287,10 +294,7 @@
                 let _width=$img.getAttribute("_width");
                 if(_width)$img.style["max-width"]="min(100%,"+_width+")";
             })
-            {# WX文章的播放器 #}
-            $offcanvasDetail.querySelectorAll("qqmusic").forEach($d=>{
-                if($d.parentElement)$d.parentElement.style["display"]="none";
-            })
+
             {# 详情scrollSnap #}
             $offcanvasDetail.querySelectorAll(".scrollerSnap").forEach($scrollSnap=>{
                 {# 鼠标滚轮 #}
