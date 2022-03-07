@@ -25,9 +25,9 @@
       </el-table-column>
       -->
       <!-- 展开行 -->
-      <el-table-column v-if="isMobile" type="expand" width="20">
+      <el-table-column type="expand" width="20">
         <div class="expandedContainer" slot-scope="props">
-          <div class="listBadges">
+          <div class="listBadges" v-if="isMobile">
             <!-- 图集 -->
             <el-badge :value="props.row.listImages.length" :hidden="props.row.listImages.length==0?true:false" :max="99" type="info">
               <el-button @click="eAlbumEdit(props.$index,dataList)" size="large" plain icon="el-icon-picture-outline" :type="props.row.listImages.length==0?'':'primary'" circle></el-button>  
