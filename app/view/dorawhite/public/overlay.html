@@ -282,6 +282,14 @@
                 if(!$img.classList.contains("loaded"))$img.src="";//$img.dataset.src.replace("https://mmbiz.qpic.cn","/getWXImg");
                 $offcanvasDetail.lazyLoad = $offcanvasDetail.lazyLoad || new LazyLoad({ container: $offcanvasDetail, threshold:500,});
                 $offcanvasDetail.lazyLoad.update();
+
+                {# WX文章图片的处理 #}
+                let _width=$img.getAttribute("_width");
+                if(_width)$img.style["max-width"]="min(100%,"+_width+")";
+            })
+            {# WX文章的播放器 #}
+            $offcanvasDetail.querySelectorAll("qqmusic").forEach($d=>{
+                if($d.parentElement)$d.parentElement.style["display"]="none";
             })
             {# 详情scrollSnap #}
             $offcanvasDetail.querySelectorAll(".scrollerSnap").forEach($scrollSnap=>{
