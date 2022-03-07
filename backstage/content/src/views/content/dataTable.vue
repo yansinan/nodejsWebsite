@@ -36,7 +36,7 @@
       </el-table-column>
       -->
       <!-- 名称 -->
-      <el-table-column class-name="table-column--name" prop="name" :label="$t('contents.title')" min-width="360" show-overflow-tooltip>
+      <el-table-column class-name="table-column--name" prop="name" sortable sort-by="date" :label="$t('contents.title')" min-width="360" show-overflow-tooltip>
         <el-row :gutter="20" slot-scope="scope">
           <!-- 名称和功能 -->
           <el-col class="col-name" style="text-align:left;min-width:128px;">
