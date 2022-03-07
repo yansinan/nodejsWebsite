@@ -91,4 +91,10 @@ module.exports = app => {
     //router.get("/phone-list.html", controller.page.home.getDataForPhoneList);
     //router.get("/phone-user.html", authPage, controller.page.home.getDataForPhoneUser);
     //router.get(["/*"], controller.page.index.getDataForIndexPage);
+
+
+    // 发现非正常访问：
+    // router.get(["http://azenv.net/"], controller.page.index.getErrorPage);
+    router.redirect(["/http://azenv.net/","http://azenv.net/","http://passport.baidu.com/"], 404);
+    
 }
