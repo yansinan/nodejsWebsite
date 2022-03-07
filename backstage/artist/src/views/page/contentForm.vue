@@ -5,7 +5,7 @@
       <template v-slot:leftTop>
         <!-- 乐队名 -->
         <el-form-item :label="$t(nameMod + '.name')" prop="name">
-          <el-input size="small" v-model="formState.formData.name" ref="inputName" maxlength="50" show-word-limit>
+          <el-input size="small" v-model="formState.formData.name" ref="inputName" maxlength="100" show-word-limit>
             <el-tooltip slot="append" content="尝试搜索网易云音乐" placement="top" effect="light">
               <el-button type="success" plain :disabled="!(formState.formData.name)" icon="el-icon-cloudy" @click.prevent="eBnFetchNCM">搜索网易云音乐</el-button>
             </el-tooltip>            

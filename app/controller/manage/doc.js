@@ -16,16 +16,16 @@ class APIController extends Controller {
             name: {
                 type: "string",
                 required: true,
-                min: 2,
-                max: 50,
+                min: 1,
+                max: 100,
                 message: ctx.__("validate_error_field", [ctx.__("label_content_title")])
 
             },
             alias: {
                 type: "string",
                 required: true,
-                min: 2,
-                max: 50,
+                min: 1,
+                max: 100,
                 message: ctx.__("validate_error_field", [ctx.__("label_content_stitle")])
             },
             sImg: {
@@ -36,8 +36,8 @@ class APIController extends Controller {
             discription: {
                 type: "string",
                 required: true,
-                min: 3,
-                max: 300,
+                min: 1,
+                max: 500,
                 message: ctx.__("validate_error_field", [ctx.__("label_content_dis")])
             },
             comments: {

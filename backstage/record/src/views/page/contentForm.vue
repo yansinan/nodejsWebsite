@@ -3,7 +3,7 @@
     <template v-slot:leftTop>
       <!-- 专辑名 -->
       <el-form-item prop="name">
-        <el-input size="small" v-model="formState.formData.name" maxlength="50" show-word-limit><template slot="suffix">{{$t(nameMod + '.name')}}</template></el-input>
+        <el-input size="small" v-model="formState.formData.name" maxlength="100" show-word-limit><template slot="suffix">{{$t(nameMod + '.name')}}</template></el-input>
       </el-form-item>
 
     </template>

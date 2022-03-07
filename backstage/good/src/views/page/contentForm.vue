@@ -8,7 +8,7 @@
     </template>
     <template v-slot:leftTop>
       <el-form-item prop="name">
-        <el-input v-model="formState.formData.name" maxlength="50" show-word-limit><template slot="suffix" style="color:red;">{{$t(nameMod + '.name')}}</template><!-- <label slot="suffix" class="el-form-item__label">{{$t(nameMod + '.name')}}</label> --></el-input>
+        <el-input v-model="formState.formData.name" maxlength="100" show-word-limit><template slot="suffix" style="color:red;">{{$t(nameMod + '.name')}}</template><!-- <label slot="suffix" class="el-form-item__label">{{$t(nameMod + '.name')}}</label> --></el-input>
       </el-form-item>
     </template>
     <template v-slot:footer>

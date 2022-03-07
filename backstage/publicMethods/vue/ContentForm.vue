@@ -17,14 +17,14 @@
             <!-- 大标题 -->
             <slot name="leftTop">
               <el-form-item prop="name">
-                <el-input v-model="formState.formData.name" maxlength="50" show-word-limit><template slot="suffix" style="color:red;">{{$t(nameMod + '.name')}}</template><!-- <label slot="suffix" class="el-form-item__label">{{$t(nameMod + '.name')}}</label> --></el-input>
+                <el-input v-model="formState.formData.name" maxlength="100" show-word-limit><template slot="suffix" style="color:red;">{{$t(nameMod + '.name')}}</template><!-- <label slot="suffix" class="el-form-item__label">{{$t(nameMod + '.name')}}</label> --></el-input>
               </el-form-item>
             </slot>
             <!-- 副标题 -->
             <el-form-item prop="alias">
               <el-autocomplete 
                 v-model="formState.formData.alias" 
-                maxlength="50" 
+                maxlength="100" 
                 show-word-limit 
                 :placeholder="getPinYin(formState.formData.name)" 
                 :fetch-suggestions="suggestAlias"
@@ -40,7 +40,7 @@
             <SelectIds :label="this.$t(nameMod+'.tags')" @change="eChangeTag" @loaded="eLoadedAllTags" :listIds="formState.formData.tags" :nameMode="nameMod" :initTag="createTag" />
 
             <el-form-item prop="discription">
-              <el-input type="textarea" v-model="formState.formData.discription" maxlength="300" show-word-limit :autosize="{minRows: 10, maxRows: 18 }"></el-input>
+              <el-input type="textarea" v-model="formState.formData.discription" maxlength="500" show-word-limit :autosize="{minRows: 10, maxRows: 18 }"></el-input>
               <div class="el-select-suffix el-input--small el-input__suffix"><span class=" el-input__suffix-inner">{{$t('contents.discription')}}</span></div>
             </el-form-item>
 
@@ -205,8 +205,8 @@
             },
             {
                 min: 1,
-                max: 50,
-                message: this.$t("validate.rangelength", { min: 1, max: 50 }),
+                max: 100,
+                message: this.$t("validate.rangelength", { min: 1, max: 100 }),
                 trigger: "blur"
             }
             ],
@@ -237,9 +237,9 @@
                 trigger: "blur"
             },
             {
-                min: 5,
-                max: 300,
-                message: this.$t("validate.rangelength", { min: 5, max: 100 }),
+                min: 1,
+                max: 500,
+                message: this.$t("validate.rangelength", { min: 1, max: 500 }),
                 trigger: "blur"
             }
             ],
