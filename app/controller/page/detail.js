@@ -146,7 +146,7 @@ class IndexController extends Controller {
         }
         return listPeople;
     }
-    // 按日期生成伪数据
+    // 伪人员信息：按日期生成伪数据
     getTestDateByYear(dateEnd,dateStart,inListDocsOfYear=[]){
         let listRes=[];
         // 年份对象;
@@ -329,13 +329,15 @@ class IndexController extends Controller {
                     lean:false,
                     searchkey:q,
                 },{
-                    //query:{
+                    query:{
                     //    _id:{$ne:id},
                     //    //$or:[
                     //    //    {keywords: { $regex: q },},
                     //    //    {keywords: { $in: q.split("|") },},
                     //    //]
-                    //},
+                        state: '2',
+                        draft:{"$ne":"1"},
+                    },
                     searchKeys: ['keywords', 'name', 'comments', 'discription','listRefs','tags'],
                     files:"_id date listDateDur dateYear dateYYYYM dateTimeline percentDateOfYear docAlias docAliasSearch name title nameTimeline alias listRefs listLinks listFormatTags sImg tags url",
                     populate:[{

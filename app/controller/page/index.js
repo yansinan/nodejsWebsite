@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-08-08 06:31:51 
  * @Last Modified by: dr
- * @Last Modified time: 2022-03-07 10:20:33
+ * @Last Modified time: 2022-03-07 15:57:36
  */
 const Controller = require('egg').Controller;
 const _ = require('lodash');
@@ -183,7 +183,10 @@ class IndexController extends Controller {
                 lean:false,
                 searchkey:q,
             },{
-                // query,
+                query:{
+                    state: '2',
+                    draft:{"$ne":"1"},
+                },
                 searchKeys: ['keywords', 'name', 'comments', 'discription','listRefs','tags'],
                 files:"_id date listDateDur dateYear dateYYYYM dateTimeline percentDateOfYear docAlias docAliasSearch name title nameTimeline alias listRefs listLinks listFormatTags sImg tags url",
                 populate:[{
