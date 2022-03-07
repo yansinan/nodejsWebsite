@@ -356,7 +356,8 @@ class IndexController extends Controller {
         let docs = resFind.docs || resFind;
         // 删除本文章，避免重复推荐
         const idx=docs.findIndex(doc=>(doc._id==id));
-        if(idx!=-1)delete docs[idx];
+        // if(idx!=-1)delete docs[idx];
+        if(idx!=-1)docs.splice(idx,1);
 
         let pageInfo = resFind.pageInfo || {};
         let pageData={
