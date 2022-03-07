@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-08-04 05:26:38 
  * @Last Modified by: dr
- * @Last Modified time: 2021-12-02 19:58:22
+ * @Last Modified time: 2022-03-07 10:45:45
  */
 'use strict';
 const { debug } = require('console');
@@ -40,11 +40,13 @@ const docTemplate={// 生成文档种子
 }
 
 class ServicePlugin extends Service {
+    // 从数据库查询
     async getDoc(yearStart=""){
         let console=this.logger;
         let {ctx,service}=this;
         let query={
             state: '2',
+            draft:{"$ne":"1"},
         }
         // 日期范围
         let dateRange={};
@@ -82,7 +84,7 @@ class ServicePlugin extends Service {
 
     }
     // 按年生成伪数据
-    getTestDateByYear(dateStart,dateEnd,inListDocsOfYear=[]){
+    getTestDateByYear(dateStart,dateEnd,inListDocsOfYear=[],isTestData=true){
         let objTimeline=false;
         let listDocsOfYear=[...inListDocsOfYear];
         
@@ -144,7 +146,7 @@ class ServicePlugin extends Service {
                 });
                 listDocsOfYear.splice(idxFindDoc,cntFind)
                 
-            }else if(Math.random()<(factor/cntDays) && timeLast>dateTmp){
+            }else if(isTestData && Math.random()<(factor/cntDays) && timeLast>dateTmp){
                 // let date=timeLast-Math.floor(Math.random()*1000*60*60*24*diffDays);
                 let strDate=moment(dateTmp).format("YYYY-MM-DD");//moment(dateTmp).subtract(Math.floor((Math.random())*diffDays),"days").toDate();
                 // listIdxDays.push(posX);
@@ -228,6 +230,8 @@ class ServicePlugin extends Service {
             yearCurrent,
             isRandom,
         }=payload;
+        // 是否使用虚拟数据，用payload.isDebug控制(从find过来)
+        const isTestData=payload.isDebug || false;
         //缓存目录
         let strFolderCacheOfYears = path.join(strFolderCache,"/timelineYears");
         if (!fs.existsSync(strFolderCacheOfYears)) {
@@ -281,7 +285,7 @@ class ServicePlugin extends Service {
             //检出当年的文档数组
             let listDocsOfYear=listDocs.filter(doc=>(moment(doc.date).isBetween(dateStartOfYear,dateEndOfYear,"day","[]"))) || [];
             // 根据文档日期计算虚拟时间
-            let objTimeline = that.getTestDateByYear(dateEndOfYear,dateStartOfYear,listDocsOfYear);
+            let objTimeline = that.getTestDateByYear(dateEndOfYear,dateStartOfYear,listDocsOfYear,isTestData);
             objTimeline.listDocs=JSON.parse(JSON.stringify(listDocsOfYear));
             // 写入缓存目录
             let data = fs.writeFileSync(pathFile, JSON.stringify(objTimeline));
@@ -380,7 +384,7 @@ class ServicePlugin extends Service {
             throw(new Error(e));
         }
     }
-
+    // 生成一条测试数据，单日
     getTestDoc(date,listImg,listTagsAll){
         let _id=shortid.generate();
         let idxSubstring=Math.floor(Math.random()*docTemplate.discription.length)

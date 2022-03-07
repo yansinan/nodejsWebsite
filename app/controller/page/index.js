@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-08-08 06:31:51 
  * @Last Modified by: dr
- * @Last Modified time: 2021-12-19 01:27:09
+ * @Last Modified time: 2022-03-07 10:20:33
  */
 const Controller = require('egg').Controller;
 const _ = require('lodash');
@@ -83,7 +83,7 @@ class IndexController extends Controller {
             pageInfo,
             listDateYear,
             docs
-        } = await ctx.service.timeline.find({isRandom:true});//await ctx.helper.reqJsonData('timeline/getList', payload);
+        } = await ctx.service.timeline.find({isRandom:true,isDebug:ctx.query.isDebug || false});//await ctx.helper.reqJsonData('timeline/getList', payload);
         // debugger;
         pageData.pageInfo = pageInfo;
         // pageData.listDateYear=listDateYear;
