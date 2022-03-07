@@ -25,4 +25,6 @@ app/public/upload
 .ash_history
 .local
 /report.*.json
+# 缓存
 app/public/cache
+backstage/record/dist

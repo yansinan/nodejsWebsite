@@ -46,7 +46,7 @@
             <!-- 栏目&时间 -->
             <div class="info">
               <div class="foot">@{{(scope.row.categories&&scope.row.categories[scope.row.categories.length-1])?scope.row.categories[scope.row.categories.length-1].name:''}}</div>
-              <div class="foot">{{parseTime(scope.row.date,"{y}-{m}-{d}")}}</div>              
+              <div class="foot">{{parseTime(scope.row.date,"{y}-{m}-{d}")}} by {{scope.row.author.name}}</div>              
             </div>
             <div class="actionInName">
               <el-button-group>
