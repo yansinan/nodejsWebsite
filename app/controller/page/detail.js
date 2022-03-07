@@ -283,6 +283,12 @@ class IndexController extends Controller {
                 })
                 // 定义模板
                 if (!_.isEmpty(pageData.post)) {
+                    // 0草稿 1待审核 2审核通过 3下架
+                    if(pageData.post.state=="0")ctx.throw(500,"草稿尚提交审核");
+                    if(pageData.post.state=="1")ctx.throw(500,"文档待审核");
+                    if(pageData.post.state=="3")ctx.throw(500,"文档已撤销");
+                    if(pageData.post.draft=="3")ctx.throw(500,"文档已撤销");
+                    if(pageData.post.draft=="1")ctx.throw(500,"文档已删除");
                     // 根据serviceName，选用不同模板
                     if(serviceName=="record" || serviceName=="good"){
                         ctx.tempPage="../view/dorawhite/2-stage-record/detail.html";
@@ -293,7 +299,7 @@ class IndexController extends Controller {
                     }else ctx.tempPage="../view/dorawhite/2-stage-timeline/detail.html";//"../view/dorawhite/2-stage-timeline/listTempTimeline.html";//app/view/dorawhite/2-stage-timeline/listTempTimeline.html
                     //ctx.tempPage=fs.existsSync(ctx.tempPage)?ctx.tempPage:"../view/dorawhite/2-stage-default/detail.html";
                 } else {
-                    ctx.throw(500,"文档已删除");
+                    ctx.throw(500,"文档不存在");
                     throw new Error(ctx.__('label_page_no_power_content'));
                 }
                 //最终渲染
