@@ -75,7 +75,8 @@ export function roofContent(data) {
 
 export function deleteContent(params) {
   return request({
-    url: '/manage/content/deleteContent',
+    // url: '/manage/content/deleteContent',
+    url: '/manage/content/delete',
     params,
     method: 'get'
   })
