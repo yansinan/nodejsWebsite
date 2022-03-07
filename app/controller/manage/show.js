@@ -25,10 +25,12 @@ class APIController extends BaseController {
                 if(objLink.icon=="" && objLink.url.indexOf("weidian.com")!=-1)objLink.icon="/static/themes/images/link/logo_weidian_32x32.png";
             });
         }
+
         // 购票链接？？
         Object.assign(formObj , {
             listLinks:fields.listLinks,
             listTicketLink:fields.listTicketLink,
+            listDateDur:fields.listDateDur,
         });
         
         return formObj;        

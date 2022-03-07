@@ -17,6 +17,7 @@
       <el-row v-if="formState.formData" :gutter="40" type="flex" justify="space-between" style="flex-wrap: wrap;">
         <el-col :lg="15" style="min-width: min-content;">
           <el-form-item prop="listDateDur"><!-- :label="$t(nameMod + '.listDateDur')"  -->
+            <!-- 
             <el-date-picker
               v-model="formState.formData.listDateDur"
               type="daterange"
@@ -27,6 +28,28 @@
               value-format="yyyy-MM-dd"
               @change="eChangeDate">
             </el-date-picker>
+            -->
+            <el-row :gutter="5" type="flex" justify="space-around"  align="middle" style="flex-wrap: nowrap;min-width: min-content;max-width: fit-content;">
+              <el-col :span="11">
+                <el-date-picker
+                  v-model="formState.formData.listDateDur[0]"
+                  type="date"
+                  :span="12"
+                  placeholder="加入日期">
+                </el-date-picker>
+              </el-col> 
+              <el-col :span="1" style="min-width: min-content;">
+                <icon class="el-icon-minus"/>
+              </el-col> 
+              <el-col :span="11">
+                <el-date-picker
+                  v-model="formState.formData.listDateDur[1]"
+                  :span="12"
+                  type="date"
+                  placeholder="退出日期">
+                </el-date-picker>
+              </el-col> 
+            </el-row>
           </el-form-item>
         </el-col> 
         <el-col :lg="8" style="min-width: min-content;">
