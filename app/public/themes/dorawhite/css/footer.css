@@ -7,6 +7,7 @@
     transition-duration: 0.5s;
 
     overflow: visible;
+    user-select: none;
     z-index:1000;
     
     width:calc(var(--vh, 1vh) * 100)!important;
