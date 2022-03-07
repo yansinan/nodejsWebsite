@@ -258,6 +258,7 @@ body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s {
     /* border:1px solid green; */
     /* background-color: white; */
     /* -webkit-text-stroke: 2.0px white; */
+    pointer-events: none;
 }
 #dr-footer .timelineContainer .timelineYearContainer .timelineYear.now span{
     color: #000000;
@@ -372,6 +373,8 @@ body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s {
         opacity:1;
         height:var(--footer-size-pc,105px);
         transform: translate(var(--width-footer-bn-pc,40px),0px);
+        /* 移动到设计位置 */
+        transform: translate(calc( var(--width-footer-bn-pc,40px) + 6rem),0px);
     }
     #bsTimelineBarWrapper .bsTimelineBarContent-md .left{
         flex-basis: calc(var(--main-offset-left-pc,46px))!important;

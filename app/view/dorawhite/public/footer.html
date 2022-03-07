@@ -107,8 +107,10 @@
                     paddingNow: { 
                         get:()=>{
                             let $coverWrapper=document.getElementById("coverWrapper");
-                            if(!$coverWrapper)return 0;
-                            else return Math.floor( this.isRotated ? $coverWrapper.getBoundingClientRect().top : $coverWrapper.getBoundingClientRect().left );
+                            const $scrollbarTimeLine=document.getElementById("scrollbarTimeLine");
+                            if(!$coverWrapper || !$scrollbarTimeLine)return 0;
+                            {# else return Math.floor( this.isRotated ? $coverWrapper.getBoundingClientRect().top : $coverWrapper.getBoundingClientRect().left ); #}
+                            else return Math.floor( this.isRotated ? $coverWrapper.getBoundingClientRect().top : $scrollbarTimeLine.getBoundingClientRect().left );
                         } 
                     },
                 })

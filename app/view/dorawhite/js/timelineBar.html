@@ -290,6 +290,15 @@
             that.dispatchEvent(new CustomEvent("BS_TIMELINE_BAR_DATE_CHANGE_FINAL", { detail:{ strDateNow:strNowDate, } }))
         }
     }
+    {# 防止动画中不能拖动，体验差;$timelineWrapper的pointer-events,在main滑动中设为none,但不知为何未能恢复，曾导致无效 #}
+    that.bsTimelineBarWrapper.eStopAniAndDrap=function(e){
+        {# 没动画&没激活：bug #}
+        if(!that.bsTimelineBarWrapper.pending){
+            {# that.bsTimelineBarWrapper.stop() #}
+            if(!that.bsTimelineBarWrapper.enabled)that.bsTimelineBarWrapper.enable();
+        }
+    }
+    that.bsTimelineBarWrapper.scroller.actionsHandler.hooks.on('beforeStart', that.bsTimelineBarWrapper.eStopAniAndDrap)
     this.bsTimelineBarWrapper.eScrollEnd=function(position={x:0}){
         that.bsTimelineBarWrapper.$docNow=that.bsTimelineBarWrapper.findDateNow({x:that.bsTimelineBarWrapper.x,y:that.bsTimelineBarWrapper.y});
         let strNowDate=that.bsTimelineBarWrapper.$docNow.id.replace("b","");
