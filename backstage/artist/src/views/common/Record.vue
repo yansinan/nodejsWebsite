@@ -18,7 +18,7 @@
             <el-card :body-style="{ padding: '0px' }" shadow="hover" v-loading="domain.isLoading">
               <el-image :span="24" :src="domain.sImg" :fit="contain" crossOrigin="Anonymous" />
               <div class="titleVideo" style="">
-                <span v-if="domain.name">{{domain.name}}</span>
+                <span v-if="domain.name">{{domain.name}}</span><span class="date">{{domain.dateRelease ? parseTime(domain.dateRelease,"{y}-{m}-{d}"):""}}</span>
                 <el-tooltip content="编辑专辑内容" placement="top" effect="light">
                   <el-button type="primary" plain icon="el-icon-edit" :disabled="!domain._id" @click.prevent="eEditRecord(domain)"/>
                 </el-tooltip>
@@ -33,7 +33,7 @@
             <el-card :body-style="{ padding: '0px' }" shadow="hover" v-loading="domain.isLoading">
               <el-image :span="24" :src="domain.sImg" :fit="contain" @load="eImgLoaded" v-loading="!domain.isFitted" crossOrigin="Anonymous" />
               <div class="titleVideo" style="">
-                <span v-if="domain.name">{{domain.name}}</span>
+                <span v-if="domain.name">{{domain.name}}</span><span class="date">{{domain.dateRelease ? parseTime(domain.dateRelease,"{y}-{m}-{d}"):""}}</span>
                 <el-tooltip content="复制到本站" placement="top" effect="light">
                   <el-button type="success" plain :disabled="!domain.isFitted" icon="el-icon-document-copy" @click.prevent="addRecord(domain)"/>
                 </el-tooltip>
@@ -56,8 +56,21 @@
   justify-content: space-between;
   font-size: 18px;
   padding: 18px 20px;
+  position:relative;
 }
-
+.titleVideo .date{
+  font-size: .5rem;
+  font-weight: 800;
+  color: white;
+  line-height: 1.5rem;
+  height: 1.5rem;
+  text-align: center;
+  width: 8rem;
+  background-color: rgba(0,0,0,0.5);
+  /* text-shadow: 2px 2px 2px white; */
+  position: absolute;
+  top: -2rem;
+}
 .listGrid{
   display: grid;
   grid-template-columns: 1fr;    
@@ -79,6 +92,7 @@
   import { imgFit } from "@root/publicMethods/imgFit";
   import request from '@root/publicMethods/request'
   import Vue from '_vue@2.6.14@vue';
+  import {parseTime} from "@/utils"
 
   export default {
     props: {
@@ -345,6 +359,8 @@
           }
         }
       },
+      parseTime:parseTime,
+
     }
   }
 </script>
