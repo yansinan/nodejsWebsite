@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-08-04 05:26:38 
  * @Last Modified by: dr
- * @Last Modified time: 2022-03-07 10:45:45
+ * @Last Modified time: 2022-03-08 17:49:59
  */
 'use strict';
 const { debug } = require('console');
@@ -273,7 +273,8 @@ class ServicePlugin extends Service {
         // 文档中最新日期;
         let dateStart=yearCurrent ? moment(yearCurrent).endOf("year").format("YYYY-MM-DD") : (listDocs[0].date);
         //计算两年
-        let listYear=[dateStart,moment(dateStart).subtract(1, 'year').endOf("year").toDate()];//一次取两年
+        // let listYear=[dateStart,moment(dateStart).subtract(1, 'year').endOf("year").toDate()];//一次取两年
+        let listYear=[moment(dateStart).format("YYYY-MM-DD"),moment(dateStart).subtract(1, 'year').endOf("year").format("YYYY-MM-DD")];//一次取两年
         //最后的年份
         let strYearCurrent=listYear[0];
         // 输出用的年份数组
@@ -335,7 +336,7 @@ class ServicePlugin extends Service {
         //    pageInfo.yearNewest=parseInt(moment(listDocs[0].date).format("YYYY"));
         //}
         if(!yearCurrent)pageInfo.yearNewest=parseInt(moment(listYear[0]).format("YYYY"));
-        console.info(listYear,pageInfo)
+        // console.info(listYear,pageInfo)
         return {pageInfo,listDateYear,listDocs};
     }
     // 获取虚拟docs,payload.yearCurrent

@@ -29,3 +29,4 @@ app/public/upload
 app/public/cache/**
 backstage/record/dist
 backstage/record/dist/**
+app/public/cache
