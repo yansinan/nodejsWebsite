@@ -1,8 +1,8 @@
 /*
  * @Author: doramart 
  * @Date: 2019-09-23 09:25:24 
- * @Last Modified by: doramart
- * @Last Modified time: 2020-08-03 00:09:00
+ * @Last Modified by: dr
+ * @Last Modified time: 2022-03-10 16:43:36
  */
 'use strict';
 
@@ -12,6 +12,8 @@ const _ = require('lodash');
 const muri = require('muri');
 const restore = require('@cdxoo/mongodb-restore')
 const child = require('child_process');
+// pushover logger
+const RemoteErrorTransport = require('../../lib/logger_pushover');
 
 require('module-alias/register')
 const {
@@ -41,6 +43,9 @@ module.exports = {
                 console.log('init data error:', error.message)
             }
         }
+        // logger上报pushover
+        app.getLogger('errorLogger').set('remote', new RemoteErrorTransport({ level: 'ERROR', app }));
+
     },
     // 获取插件api白名单
     getExtendApiList() {
