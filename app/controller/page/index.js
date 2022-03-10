@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2021-08-08 06:31:51 
  * @Last Modified by: dr
- * @Last Modified time: 2022-03-07 15:57:36
+ * @Last Modified time: 2022-03-10 18:14:30
  */
 const Controller = require('egg').Controller;
 const _ = require('lodash');
@@ -17,7 +17,7 @@ const moment = require('moment')
 
 class IndexController extends Controller {
     //所有页面通用信息
-    async getInitPageData() {
+    async getInitPageData(isUpdateAfter=true) {
         const console=this.logger;
         const ctx = this.ctx;
         let payload = ctx.params;
@@ -36,7 +36,7 @@ class IndexController extends Controller {
             "timelines":"TIMELINE",
             "abouts":"ABOUT",
         }
-        pageData.navigation = await this.service.uploadFiles.cacheJSON(`${(process.cwd() + '/app/public')}/cache/objNavigation.json`,{tar:this,fun:ctx.helper.reqJsonData, params:['contentCategory/getList', payload] },true,true);
+        pageData.navigation = await this.service.uploadFiles.cacheJSON(`${(process.cwd() + '/app/public')}/cache/objNavigation.json`,{tar:this,fun:ctx.helper.reqJsonData, params:['contentCategory/getList', payload] },true,isUpdateAfter);
         pageData.navigation.forEach(cate=>{
             let alias=dictAliasNav[cate.defaultUrl];
             if(alias)cate.alias=alias;
@@ -132,13 +132,13 @@ class IndexController extends Controller {
             throw err;
         }
     }
-    // 404
-    async getErrorPage(){
+    // 404初始数据生成
+    async resetErrorPage(){
         const console=this.logger;
         const ctx = this.ctx;
     
         // 获取通用页面信息
-        let {pageData}=await this.getInitPageData();
+        let {pageData}=await this.getInitPageData(false);//404不要更新缓存了，直接用缓存
         pageData.site.title=pageData.site.title+"404页面未找到"
         // 底条用信息
         pageData.listDateYear=[];
@@ -159,9 +159,23 @@ class IndexController extends Controller {
             // 时间轴内容
             pageData.posts=docs;
         }catch(err){debugger}
-        
+
         try{
             let dom=await ctx.renderView("dorawhite/404.html",pageData);
+            return dom;
+        } catch (err) {
+            debugger;
+            throw err;
+        }            
+    }
+    // 404
+    async getErrorPage(){
+        const console=this.logger;
+        const ctx = this.ctx;
+        // 404是否更新
+        let isRefresh=false;
+        try{
+            let dom = (await this.service.uploadFiles.cacheJSON(`${(process.cwd() + '/app/public')}/cache/dom/404.html`,{tar:this,fun:this.resetErrorPage, params:[isRefresh] },true,false));
             this.ctx.body=dom;
             this.ctx.status = 200;
         } catch (err) {
@@ -236,6 +250,12 @@ class IndexController extends Controller {
            ctx.helper.renderFail(ctx, { message: err });
         }
 
+    }
+    // emptyPage
+    async getForbiddenPage(){
+        this.ctx.body="";
+        this.ctx.status = 500;
+        return this.ctx.redirect("/");
     }
 }
 

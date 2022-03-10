@@ -3,7 +3,7 @@
  * @Date: 2019-11-02 18:38:55 
  * @Discription 404 filter
  * @Last Modified by: dr
- * @Last Modified time: 2022-03-08 01:43:23
+ * @Last Modified time: 2022-03-10 17:43:01
  */
 const _ = require('lodash')
 module.exports = () => {
@@ -19,10 +19,14 @@ module.exports = () => {
                     ctx.redirect('/dr-admin');
                 } else if(ctx.originalUrl.indexOf('/sockjs-node/') ==0){
                     ctx.body = '<h1>sockjs-node</h1>';
+                } else if(ctx.url.indexOf('/static/') ==0){
+                    // 访问静态文件
+                    ctx.body = '<h1>Static Resource Not Found</h1>';
+                    ctx.logger.warn("NOT FOUND 静态文件:",ctx.url,"\n request:",ctx.request,);
                 }else {
                     try {
                         // console.warn("NOT FOUND from ",ctx.ip,",url:",ctx.url,"header:",ctx.header)
-                        ctx.logger.warn("NOT FOUND from ",ctx.ip,"\n url:",ctx.url,"\n request:",ctx.request,"\n query:",ctx.query,"\n header:",ctx.header,)
+                        ctx.logger.warn("NOT FOUND type:",ctx.request.type,"\n request:",ctx.request,);
                         ctx.redirect('/404');
                         return;
                         let defaultTemp = await ctx.helper.reqJsonData('contentTemplate/getDefaultTempInfo');
