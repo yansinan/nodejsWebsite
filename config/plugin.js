@@ -203,3 +203,9 @@ for (const pluginItem in pluginConfigs) {
 
 
 // EGGPLUGINCONFIG
+
+// // alinode性能监控 
+// exports.alinode = {
+//     enable: true,
+//     package: 'egg-alinode',
+// };

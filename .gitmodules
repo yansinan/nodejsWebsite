@@ -1,3 +1,6 @@
 [submodule "docker/node"]
 	path = docker/node
 	url = git@github.com:yansinan/node.alpine.docker.git
+[submodule "docker/nginx"]
+	path = docker/nginx
+	url = https://github.com/yansinan/nginx.docker.git

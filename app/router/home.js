@@ -95,6 +95,6 @@ module.exports = app => {
 
     // 发现非正常访问：
     // router.get(["http://azenv.net/"], controller.page.index.getErrorPage);
-    router.redirect(["/http://azenv.net/","http://azenv.net/","http://passport.baidu.com/"], 404);
+    router.redirect(["/http://azenv.net/","http://azenv.net/","http://passport.baidu.com/","/cgi-bin","/shell","/HNAP1"], 404);
     
 }

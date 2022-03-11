@@ -322,10 +322,17 @@ module.exports = appInfo => {
 
     // CONFIG_NORMALPLUGIN_END
 
+    // // alinode性能监控
+    // alinode : {
+    //   // 从 `Node.js 性能平台` 获取对应的接入参数
+    //   appid: '90398',
+    //   secret: '6e71f091dea8687b8db3aee54cc36169e366ccb5',
+    // },
 
     // EGGCONFIGDEFAULT
 
-
+    proxy : true,//会支持通过解析约定的请求头来获取用户真实的 IP，协议和域名。如果你的服务未部署在反向代理之后，请不要开启此配置，以防被恶意用户伪造请求 IP 等信息。
+    ipHeaders : 'X-Real-Ip, X-Forwarded-For',
     ...defaultConfig
 
   }
