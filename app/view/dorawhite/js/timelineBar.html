@@ -35,8 +35,8 @@
         },
         observeDOM: true ,// 开启 observe-dom 插件
         stopPropagation: true,
-        //tap:"tap",
-        //click:true,
+        tap:"tap",
+        // click:true,
         probeType: 3,
     })
 
@@ -251,6 +251,24 @@
         //position:{get:()=>({x:that.bsTimelineBarWrapper.x,y:that.bsTimelineBarWrapper.y} )},
         -#}
     })
+    
+    {# 根据bar上的横坐标位置,找到最接近的日期 #}
+    that.bsTimelineBarWrapper.findDocClosest=function(pos,$container){
+        let $listDocsCheckRange=that.bsTimelineBarWrapper.$listDocsNow;//Array.from($container.querySelectorAll(".b-d."+that.bsTimelineBarWrapper.strBodyBSMain) || []);//
+        let objDocClosest={
+            $doc:false,
+            dist:!that.$footer.isRotated ? $container.getBoundingClientRect().width : $container.getBoundingClientRect().height,
+        }
+        $listDocsCheckRange.forEach(($doc)=>{
+            let dist= (!that.$footer.isRotated) ? ($doc.getBoundingClientRect().left - pos) : ($doc.getBoundingClientRect().top - pos) ;
+            dist=Math.abs(dist);
+            if(objDocClosest.dist > dist){
+                objDocClosest.$doc=$doc;
+                objDocClosest.dist=dist;
+            }
+        })
+        return objDocClosest.$doc;
+    }
     this.bsTimelineBarWrapper.updateTimelineBar=function(position={x:0}){
         that.bsTimelineBarWrapper.updateAllBnYears();
         {# 如果不是在时间轴页，不执行 #}
@@ -290,15 +308,6 @@
             that.dispatchEvent(new CustomEvent("BS_TIMELINE_BAR_DATE_CHANGE_FINAL", { detail:{ strDateNow:strNowDate, } }))
         }
     }
-    {# 防止动画中不能拖动，体验差;$timelineWrapper的pointer-events,在main滑动中设为none,但不知为何未能恢复，曾导致无效 #}
-    that.bsTimelineBarWrapper.eStopAniAndDrap=function(e){
-        {# 没动画&没激活：bug #}
-        if(!that.bsTimelineBarWrapper.pending){
-            {# that.bsTimelineBarWrapper.stop() #}
-            if(!that.bsTimelineBarWrapper.enabled)that.bsTimelineBarWrapper.enable();
-        }
-    }
-    that.bsTimelineBarWrapper.scroller.actionsHandler.hooks.on('beforeStart', that.bsTimelineBarWrapper.eStopAniAndDrap)
     this.bsTimelineBarWrapper.eScrollEnd=function(position={x:0}){
         that.bsTimelineBarWrapper.$docNow=that.bsTimelineBarWrapper.findDateNow({x:that.bsTimelineBarWrapper.x,y:that.bsTimelineBarWrapper.y});
         let strNowDate=that.bsTimelineBarWrapper.$docNow.id.replace("b","");
@@ -309,6 +318,55 @@
             that.dispatchEvent(new CustomEvent("BS_TIMELINE_BAR_DATE_CHANGE_FINAL", { detail:{ strDateNow:strNowDate, } }))
         }
     }
+    {# 防止动画中不能拖动，体验差;$timelineWrapper的pointer-events,在main滑动中设为none,但不知为何未能恢复，曾导致无效 #}
+    that.bsTimelineBarWrapper.eStopAniAndDrap=function(e){
+        {# 没动画&没激活：bug #}
+        if(!that.bsTimelineBarWrapper.pending){
+            {# that.bsTimelineBarWrapper.stop() #}
+            if(!that.bsTimelineBarWrapper.enabled)that.bsTimelineBarWrapper.enable();
+        }
+    }
+    {# 时间轴bar点击跳转最邻近日期 #}
+    that.bsTimelineBarWrapper.eClick=function(e){
+        {# 首页点击忽略；只在时间轴页使用 #}
+        if(that.slideCover.getCurrentPage().pageY==0)return;
+        // 拖动中不触发单击
+        // if(that.bsTimelineBarWrapper.pending)return;
+        console.warn("点击时间轴bar被触发了！！！！！！！！！！！！！！！！！！！！！！")
+        let pos=that.$footer.isRotated ? e.y || e.pageY || e.currentTarget.mouseClientY :e.x || e.pageX || e.currentTarget.mouseClientX;
+        let $container=that.bsTimelineBarWrapper.content;//e.target;//
+        {# 找到最接近的日期 #}
+        let $docClosest=that.bsTimelineBarWrapper.findDocClosest(pos,$container);
+        if($docClosest){
+            let strDateTo=$docClosest.id.replace("b","");
+            that.dispatchEvent(new CustomEvent("BS_TIMELINE_BAR_DATE_CHANGE", { detail:{ strDateNow:strDateTo, } }))
+            that.bsTimelineBarWrapper.scrollToElement($docClosest,true);
+        }else{
+            debugger
+        }
+    }
+    // ----------------event hooks
+    this.bsTimelineBarWrapper.offAll=function(){
+        that.bsTimelineBarWrapper.$dateTo=false;
+        if(that.bsTimelineBarWrapper.pending)that.bsTimelineBarWrapper.stop();
+        that.bsTimelineBarWrapper.off('scroll', that.bsTimelineBarWrapper.updateTimelineBar);
+        that.bsTimelineBarWrapper.scroller.animater.hooks.off('end', that.bsTimelineBarWrapper.eAnimaterEnd)
+        {# that.bsTimelineBarWrapper.scroller.hooks.off("scrollEnd", that.bsTimelineBarWrapper.eScrollEnd) #}
+        that.bsTimelineBarWrapper.scroller.actionsHandler.hooks.off("end",that.bsTimelineBarWrapper.eScrollEnd)
+        {# 清除$dateNow #}
+        that.bsTimelineBarWrapper.$docNow=false;
+        {# 取消动画延时恢复的交互 #}
+        if(that.bsTimelineBarWrapper.timerEnable)clearTimeout(that.bsTimelineBarWrapper.timerEnable);
+    }
+    this.bsTimelineBarWrapper.onAll=function(){
+        that.bsTimelineBarWrapper.on('scroll', that.bsTimelineBarWrapper.updateTimelineBar);
+        that.bsTimelineBarWrapper.scroller.animater.hooks.on('end', that.bsTimelineBarWrapper.eAnimaterEnd)
+        {# scrollEnd被动主动都触发，但手动时只有scrollEnd #}
+        {# that.bsTimelineBarWrapper.scroller.hooks.on("scrollEnd", that.bsTimelineBarWrapper.eScrollEnd); #}
+        that.bsTimelineBarWrapper.scroller.actionsHandler.hooks.on("end",that.bsTimelineBarWrapper.eScrollEnd)
+    }
+    {# 主动点击恢复 bar可用#}
+    that.bsTimelineBarWrapper.scroller.actionsHandler.hooks.on('beforeStart', that.bsTimelineBarWrapper.eStopAniAndDrap)
     {# 点击开始判断是否成员列表页，则goto时间轴 #}
     this.bsTimelineBarWrapper.on("beforeScrollStart",()=>{
         {# 首页点击进时间轴 #}
@@ -316,6 +374,16 @@
             this.goto("/timeline/");
         }
     })
+    // 鼠标点击跳转
+    {# this.bsTimelineBarWrapper.scroller.actionsHandler.hooks.on("click",that.bsTimelineBarWrapper.eClick); #}
+    {# 为了移动端：tap事件里缺少坐标，所以折中记录Touch位置。#}
+    this.bsTimelineBarWrapper.scroller.actionsHandler.hooks.on("start",(e)=>{
+        that.bsTimelineBarWrapper.content.mouseClientX=e.touches[0] && e.touches[0].clientX;
+        that.bsTimelineBarWrapper.content.mouseClientY=e.touches[0] && e.touches[0].clientY;
+    });
+    this.bsTimelineBarWrapper.content.addEventListener("tap",that.bsTimelineBarWrapper.eClick);
+
+    // ----------------功能函数
     this.bsTimelineBarWrapper.calcPosX=function($date){
         let rect={};
         try{
@@ -360,25 +428,6 @@
         console.debug("e:底条::",e.type,"有效==>scrollToElement",strDateNow,"==>",e.detail.strDateNow);
         that.bsTimelineBarWrapper.$dateTo=$dateTo;
         that.bsTimelineBarWrapper.scrollToElement($dateTo);
-    }
-    this.bsTimelineBarWrapper.offAll=function(){
-        that.bsTimelineBarWrapper.$dateTo=false;
-        if(that.bsTimelineBarWrapper.pending)that.bsTimelineBarWrapper.stop();
-        that.bsTimelineBarWrapper.off('scroll', that.bsTimelineBarWrapper.updateTimelineBar);
-        that.bsTimelineBarWrapper.scroller.animater.hooks.off('end', that.bsTimelineBarWrapper.eAnimaterEnd)
-        {# that.bsTimelineBarWrapper.scroller.hooks.off("scrollEnd", that.bsTimelineBarWrapper.eScrollEnd) #}
-        that.bsTimelineBarWrapper.scroller.actionsHandler.hooks.off("end",that.bsTimelineBarWrapper.eScrollEnd)
-        {# 清除$dateNow #}
-        that.bsTimelineBarWrapper.$docNow=false;
-        {# 取消动画延时恢复的交互 #}
-        if(that.bsTimelineBarWrapper.timerEnable)clearTimeout(that.bsTimelineBarWrapper.timerEnable);
-    }
-    this.bsTimelineBarWrapper.onAll=function(){
-        that.bsTimelineBarWrapper.on('scroll', that.bsTimelineBarWrapper.updateTimelineBar);
-        that.bsTimelineBarWrapper.scroller.animater.hooks.on('end', that.bsTimelineBarWrapper.eAnimaterEnd)
-        {# scrollEnd被动主动都触发，但手动时只有scrollEnd #}
-        {# that.bsTimelineBarWrapper.scroller.hooks.on("scrollEnd", that.bsTimelineBarWrapper.eScrollEnd); #}
-        that.bsTimelineBarWrapper.scroller.actionsHandler.hooks.on("end",that.bsTimelineBarWrapper.eScrollEnd)
     }
     {# 移动到年 #}
     this.bsTimelineBarWrapper.gotoYear=function(strYear){
