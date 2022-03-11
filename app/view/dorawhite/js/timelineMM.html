@@ -165,4 +165,10 @@
         }
         $bsMM.objBS.refresh();
     }
+
+    {# 时间轴元素用的goto，为了防止拖动中触发 #}
+    this.gotoAndPreventScroll=function(inObj){
+        let isScrollingTimeline= (that.bsTimeline && (Math.abs(that.bsTimeline.movingDirectionX + that.bsTimeline.movingDirectionY) || that.bsTimeline.pending) ) || !that.bsTimeline;
+        if(!isScrollingTimeline)that.goto(inObj);
+    }
 </script>
