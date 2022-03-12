@@ -10,6 +10,7 @@
     --width-timeline-bar-end-mobile:calc( (var(--width-timeline-bar-year-span-mobile) * 2));
     --width-footer-bn-mobile:34px;
     --width-footer-bn-pc:40px;
+    --left-footer-scrollbar-pc:calc( var(--width-footer-bn-pc,40px) + 6rem);
     /* --width-timeline-bar-year-bn-pc:160px; */
     /* --width-timeline-bar-year-bn-mobile:40px; */
 
@@ -374,10 +375,11 @@ body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s {
         height:var(--footer-size-pc,105px);
         transform: translate(var(--width-footer-bn-pc,40px),0px);
         /* 移动到设计位置 */
-        transform: translate(calc( var(--width-footer-bn-pc,40px) + 6rem),0px);
+        transform: translate(var(--left-footer-scrollbar-pc),0px);
     }
     #bsTimelineBarWrapper .bsTimelineBarContent-md .left{
-        flex-basis: calc(var(--main-offset-left-pc,46px))!important;
+        /* flex-basis: calc(var(--main-offset-left-pc,46px))!important; */
+        flex-basis:calc( var(--left-footer-scrollbar-pc) + 0px )!important;
     }
     /* PC端，时间轴页时间轴尺寸 */
     #dr-footer.timeline.footerContainer-md #bsTimelineBarWrapper{

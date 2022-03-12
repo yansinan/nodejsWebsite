@@ -240,6 +240,7 @@
                 that.dispatchEvent(new CustomEvent("BS_MAIN_DATE_CHANGE", {
                     detail:{
                         strDateNow:that.bsTimeline.strDateNow,
+                        isSyncStrict:isNewDateInMM,
                     }
                 }))
                 return true
@@ -304,10 +305,13 @@
             if(!that.bsTimeline.isMobile)return;
 
             that.bsTimeline.scrollTo(1,1,0);
-            let isDispatched=that.bsTimeline.eUpdateTimeline.call(that.bsTimeline,{},true);
+            // 移动端等待400ms的导航栏动画，再触发
+            setTimeout(()=>{
+                let isDispatched=that.bsTimeline.eUpdateTimeline.call(that.bsTimeline,{},true);
+            },500)
             {# 更新lazyLoad , 有可能筛选后没触发scroll？ #}
             that.bsTimeline.$listMMNow
-            console.debug("《移动端》时间轴：强制同步=@NAV_AT=>",e.detail,isDispatched);            
+            // console.debug("《移动端》时间轴：强制同步=@NAV_AT=>",e.detail,isDispatched);            
         }
         {# 筛选内容，根据动画结束监听,当前屏幕范围内激活lazyLoad #}
         that.bsTimeline.filterMM=function(e){

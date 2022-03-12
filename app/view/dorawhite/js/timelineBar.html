@@ -416,7 +416,7 @@
         let strDateNow=false;
         {# 如果日期没变化，不额外触发，防止循环控制 #}
         if(that.bsTimelineBarWrapper.$docNow)strDateNow=that.bsTimelineBarWrapper.$docNow.id.replace("b","");
-        if(e.detail.strDateNow == strDateNow){
+        if(e.detail.strDateNow == strDateNow && !e.detail.isSyncStrict){
             console.warn("e:底条::",e.type,"无效==>",strDateNow,"==>",e.detail.strDateNow,"忽略:同当前日期");
             return;
         }
@@ -482,7 +482,7 @@
             if(cnt>=3){
                 clearInterval(timer);
             }
-        },300);
+        },200);
     })
     this.addEventListener("BS_COVER_TIMELINE_FINAL", (page)=>{
         {# setTimeout(()=>{that.bsTimelineBarWrapper.onAll();} , 500);         #}
@@ -491,7 +491,7 @@
     this.addEventListener("BS_COVER_LISTARTISTS", (page)=>{
         this.removeEventListener("BS_MAIN_DATE_CHANGE",this.bsTimelineBarWrapper.eTimelineDateChange);
         that.bsTimelineBarWrapper.offAll();
-        that.bsTimelineBarWrapper.scrollTo(that.bsTimelineBarWrapper.scrollStartX,0,500);
+        that.bsTimelineBarWrapper.scrollTo(that.bsTimelineBarWrapper.scrollStartX,0,500);//that.bsTimelineBarWrapper.scrollStartX
     })
 
     {# timeline加载完成 #}
@@ -511,7 +511,10 @@
             function eTransitionEnd(eTransition){
                 if(eTransition && eTransition.target.classList.contains("svgTimelineBar")){
                     that.bsTimelineBarWrapper.disable();
-                    that.bsTimelineBarWrapper.scrollTo(0,0,0);
+                    // 当前显示的第一个
+                    let $firstNow=that.bsTimelineBarWrapper.content.querySelector(".b-d."+that.bsTimelineBarWrapper.strBodyBSMain);
+                    if($firstNow)that.bsTimelineBarWrapper.scrollToElement($firstNow,false);
+                    else that.bsTimelineBarWrapper.scrollTo(scrollStartX,0,500);//that.bsTimelineBarWrapper.scrollStartX
                     that.bsTimelineBarWrapper.onAll();
                     that.bsTimelineBarWrapper.enable();
                     that.bsTimelineBarWrapper.refresh();
@@ -521,14 +524,25 @@
                 }
             }
             {# PC端有动画 移动端没有动画，直接跳转 #}
-            if(!that.$footer.isRotated)$bsTimelineBarWrapper.addEventListener("transitionend", eTransitionEnd, {capture:false,once:false});
-            else that.bsTimelineBarWrapper.onAll();//eTransitionEnd(false);
+            if(!that.$footer.isRotated){
+                $bsTimelineBarWrapper.addEventListener("transitionend", eTransitionEnd, {capture:false,once:false});
+            }else {
+                that.bsTimelineBarWrapper.onAll();//eTransitionEnd(false);
+            }
             {# 缩放 #}
             let $listSVG=$bsTimelineBarWrapper.querySelectorAll(".svgTimelineBar");
-            $bsTimelineBarWrapper.style.setProperty('--scale-timeline-bar-svg', Math.max(1/($listSVG.length+1),1/4));
+            const scaleFactor=Math.max(1/($listSVG.length+1),1/4);
+            $bsTimelineBarWrapper.style.setProperty('--scale-timeline-bar-svg', scaleFactor);
         }else{
             $bsTimelineBarWrapper.style.setProperty('--scale-timeline-bar-svg', "1"); 
         }
+        // 缩放的同时先移动
+        // that.bsTimelineBarWrapper.disable();
+        // 当前显示的第一个
+        let $firstNow=that.bsTimelineBarWrapper.content.querySelector(".b-d."+that.bsTimelineBarWrapper.strBodyBSMain);
+        if($firstNow)that.bsTimelineBarWrapper.scrollToElement($firstNow,false);
+        else that.bsTimelineBarWrapper.scrollTo(scrollStartX,0,500);//that.bsTimelineBarWrapper.scrollStartX
+        that.bsTimelineBarWrapper.updateAllBnYears();
     })
 
     {# 翻年按钮 #}
