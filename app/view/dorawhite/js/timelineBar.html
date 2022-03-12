@@ -378,8 +378,9 @@
     {# this.bsTimelineBarWrapper.scroller.actionsHandler.hooks.on("click",that.bsTimelineBarWrapper.eClick); #}
     {# 为了移动端：tap事件里缺少坐标，所以折中记录Touch位置。#}
     this.bsTimelineBarWrapper.scroller.actionsHandler.hooks.on("start",(e)=>{
-        that.bsTimelineBarWrapper.content.mouseClientX=e.touches[0] && e.touches[0].clientX;
-        that.bsTimelineBarWrapper.content.mouseClientY=e.touches[0] && e.touches[0].clientY;
+        const pos=(e.touches && e.touches[0]) || e;
+        that.bsTimelineBarWrapper.content.mouseClientX=pos.clientX;
+        that.bsTimelineBarWrapper.content.mouseClientY=pos.clientY;
     });
     this.bsTimelineBarWrapper.content.addEventListener("tap",that.bsTimelineBarWrapper.eClick);
 
