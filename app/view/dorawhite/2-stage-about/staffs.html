@@ -1,20 +1,72 @@
-<link href="/static/themes/dorawhite/css/default.css" rel="stylesheet">
+<!-- <link href="/static/themes/dorawhite/css/default.css" rel="stylesheet"> -->
 <link href="/static/themes/dorawhite/css/intro.css" rel="stylesheet">
 <style>
+:root{
+    /*
+    --main-offset-left-mobile:0.85rem;
+    --main-offset-left-pc:1.25rem; 
+
+    --footer-size-mobile: 16px;
+    --footer-size-pc: 16px;
+    --footer-size-up-pc:72px;
+    --footer-size-open-mobile:54px;
+    --footer-size-open-pc:106px;
+
+    --header-margin-right:0.5rem;
+    --header-margin-top:0.5rem;
+
+    --header-btn-height:calc(46 * 1rem / 26);
+    --header-height:calc(var(--header-margin-top) + var(--header-btn-height));
+
+    --color-bg-white:#FDFDFD;
+    */
+}
+
+html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.8;
+    /* background: #f5f5f5; */
+    /* font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,Helvetica,Arial,PingFang SC,Hiragino Sans GB,Microsoft YaHei UI,Microsoft YaHei,Source Han Sans CN,sans-serif; */
+
+    font-size: 162.5%;/*292.5%;*/
+    --bs-font-sans-serif: "PingFang SC", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB", "Source Han Sans", "Noto Sans CJK Sc", "Microsoft YaHei", "Microsoft Jhenghei", sans-serif!important;
+    /* font-family: -apple-system,PingFangSC-Regular, Roboto, Helvetica Neue, Helvetica, Tahoma,Arial, PingFang SC-Light, Microsoft YaHei; */
+    font-family:var(--bs-font-sans-serif);
+}
 body{
     max-width:100vw;
     width:100%;
     background-color:transparent;
+    margin: 0px;
+    padding: 0px;
+}
+@media only screen and (min-width: 768px){
+    html {
+        font-size: 225%!important;
+    }
+    :root{
+        --header-margin-right:calc(36 * 1rem / 36);
+        --header-margin-top:calc(27 * 1rem / 36);    
+        --header-btn-height:calc(53 * 1rem / 36);
+    }
+    body{
+        max-width:100vw;
+        min-height:calc( 100 * var(--vh));
+    }
 }
 .d-none{
     display:none;
 }
 </style>
-<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script> -->
 {# <script src="/static/themes/dorawhite/js/jquery.transit.js"></script> #}
 {# <script src="//cdnjs.cloudflare.com/ajax/libs/velocity/2.0.6/velocity.min.js"></script> #}
-<script src="https://cdn.bootcdn.net/ajax/libs/velocity/2.0.6/velocity.min.js"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/better-scroll/2.4.1/better-scroll.min.js"></script>
+<!-- <script src="https://cdn.bootcdn.net/ajax/libs/velocity/2.0.6/velocity.min.js"></script> -->
+<!-- <script src="https://cdn.bootcdn.net/ajax/libs/better-scroll/2.4.1/better-scroll.min.js"></script> -->
+<script src="/static/plugins/jquery/3.6.0/jquery.min.js"></script>
+<script src="/static/plugins/betterScroll/2.4.2/better-scroll.min.js"></script>
+<script src="/static/plugins/velocity/2.0.6/velocity.min.js"></script>
 
     <div id="$aboutStaffs" class="staffs">
         <div class="container animation">
