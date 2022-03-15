@@ -53,9 +53,9 @@
     transform: rotate(180deg);
 }
 #dr-footer .timelineContainer .timelineBn .bnArrow{
-    -webkit-transition-property: -webkit-transform opacity;
+    -webkit-transition-property: -webkit-transform,opacity;
     -webkit-transition-duration: 3s;
-    transition-property: transform opacity;
+    transition-property: transform,opacity;
     transition-duration: 3s;
     height:100%;
     width:100%;
@@ -66,6 +66,7 @@
     background-size: 20px 20px;
 }
 #dr-footer.footerContainer .timelineContainer .timelineBn .bnArrow{
+    -webkit-transition-delay: 0s;
     transition-delay: 0s;
     opacity: 0;
     -webkit-transform: translateX(-40px);
@@ -75,6 +76,7 @@
     opacity: 0;
 }
 #dr-footer.footerContainer.timeline.done .timelineContainer .timelineBn .bnArrow{
+    -webkit-transition-delay: 0.5s;
     transition-delay: 0.5s;
     opacity: 1;
     -webkit-transform: translateX(0px);
@@ -84,6 +86,20 @@
 #dr-footer.footerContainer.timeline.done.newestYear .timelineContainer .timelineBn.prev{
     filter:opacity(0.3);
     pointer-events: none;
+}
+/* 针对IphoneX注意这里采用的是690px(safe area高度)，不是812px; */
+/* 经过测试：iphoneX 375，635 */
+/* 经过测试：iphone12 pro max 428，926 */
+@media only screen and (min-width: 427px) and (max-width:429px) and (min-height: 635px) and (max-height: 927px){
+    #dr-footer .timelineMain{
+        /* border:1px solid blue; */
+    }
+    #dr-footer .timelineContainer .timelineYearContainer{
+        /* background-color: green; */
+    }
+    #dr-footer .timelineContainer .timelineBn{
+        /* border:1px solid red; */
+    }
 }
 /* 当前标记 */
 #dr-footer .scrollBar{
@@ -245,6 +261,7 @@ body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s {
     align-items: flex-start;
     /* flex:0 0 calc(100% - var(--width-timeline-bar-wrapper,82.3%)); */
     flex : 0 0 0px;
+    max-width: 0px;
     overflow: visible;
     /* transform: translateY(54px); */
     /* height: 100%; */
@@ -305,7 +322,7 @@ body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s {
     transition-duration: 0.3s;
     
     width:0px;
-    height:35px;
+    height:36px;
     position: relative;
     /* left: 0px; */
     overflow: visible;
@@ -355,8 +372,8 @@ body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s {
 /* 年：长刻度 */
 #dr-footer .timelineContainer .timelineYearContainer .barContainer .bar .year.line{
     height:10px;
-    border-left: 2px solid black;
-    border-right: 2px solid black;
+    border-left: 3px solid black;
+    border-right: 3px solid black;
     background: transparent;
 }
 @media (min-width: 768px) {
