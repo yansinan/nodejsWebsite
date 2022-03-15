@@ -253,6 +253,17 @@
             }catch(e){
                 console.error(e);
             }
+            
+            {# 更新lazyLoad #}
+            try{
+                that.bsTimeline.cntScroll = (that.bsTimeline.cntScroll || 0 ) + 1;
+                that.bsTimeline.cntScroll = that.bsTimeline.cntScroll % 100;
+                if(that.bsTimeline.cntScroll==0)that.bsTimeline.$listMMNow
+            }catch(e){
+                console.error("[that.bsTimeline.eUpdateTimeline][$listMMNow]更新lazyload",e);
+                debugger
+            }
+
             {# 日期变化，且用户操作产生的，才触发同步通知 #}
             return that.bsTimeline.checkEvent(isSync);
         }
