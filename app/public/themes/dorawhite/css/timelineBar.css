@@ -223,19 +223,20 @@ body.videos #dr-footer .scrollBar div{ background-color: #00FFFE; }
     height:15px;
     fill:#231F20;
 }
-body #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-d.news,
-body.shows #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-d.shows,
-body.goods #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-d.goods,
-body.videos #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-d.videos,
-body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-d.records {
-    opacity: 1;
-}
 body #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-d:not(.news),
 body.shows #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-d:not(.shows),
 body.goods #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-d:not(.goods),
 body.videos #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-d:not(.videos),
 body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-d:not(.records) {
     opacity: 0;
+}
+body #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-d.news,
+body #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-d.artists,
+body.shows #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-d.shows,
+body.goods #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-d.goods,
+body.videos #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-d.videos,
+body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-d.records {
+    opacity: 1;
 }
 body.goods #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s,
 body.videos #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s,

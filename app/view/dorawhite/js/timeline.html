@@ -112,7 +112,7 @@
                             }                   
                         });
                     }catch(e){
-                        console.debug("查找当前县市区$mm",cntMMNow,"个,中途退出",e.type,)
+                        console.debug("查找当前显示区$mm",cntMMNow,"个,中途退出",e.type,)
                     }
 
                     return $listMMNow;
@@ -274,7 +274,11 @@
         }
         that.bsTimeline.scroller.actionsHandler.hooks.on('beforeStart', that.bsTimeline.eStopAniAndDrap)
         that.bsTimeline.scroller.actionsHandler.hooks.on("move",()=>{ that.dispatchEvent(new CustomEvent("BS_MAIN_TOUCH_MOVE")); })
-        that.bsTimeline.scroller.actionsHandler.hooks.on("end",()=>{ that.dispatchEvent(new CustomEvent("BS_MAIN_TOUCH_END")); })
+        that.bsTimeline.scroller.actionsHandler.hooks.on("end",()=>{ 
+            {# 更新lazyLoad #}
+            that.bsTimeline && that.bsTimeline.$listMMNow
+            that.dispatchEvent(new CustomEvent("BS_MAIN_TOUCH_END")); 
+        })
         that.bsTimeline.on('scroll', that.bsTimeline.eUpdateTimeline);
 
         that.bsTimeline.scroller.animater.hooks.on('end', () => {

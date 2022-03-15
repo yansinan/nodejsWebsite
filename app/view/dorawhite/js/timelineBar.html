@@ -219,8 +219,11 @@
         strBodyBSMain:{
             get:()=>( document.body.classList.value.replace(/flex\s|flex/g,"") || "news" ),
         },
+        strQueryAllDocsNow:{
+            get:()=>( that.bsTimelineBarWrapper.strBodyBSMain=="news"? ".b-d.news, .b-d.artists" : ".b-d."+that.bsTimelineBarWrapper.strBodyBSMain ),
+        },
         $listDocsNow:{
-            get:()=>( Array.from($bsTimelineBarWrapper.querySelectorAll(".svgTimelineBar .b-d."+that.bsTimelineBarWrapper.strBodyBSMain) || []) ),
+            get:()=>( Array.from($bsTimelineBarWrapper.querySelectorAll(that.bsTimelineBarWrapper.strQueryAllDocsNow.replace(".b-d",".svgTimelineBar .b-d")) || []) ),
         },
         $docFindNow:{
             get:()=>{
@@ -254,7 +257,7 @@
     
     {# 根据bar上的横坐标位置,找到最接近的日期 #}
     that.bsTimelineBarWrapper.findDocClosest=function(pos,$container){
-        let $listDocsCheckRange=that.bsTimelineBarWrapper.$listDocsNow;//Array.from($container.querySelectorAll(".b-d."+that.bsTimelineBarWrapper.strBodyBSMain) || []);//
+        let $listDocsCheckRange=that.bsTimelineBarWrapper.$listDocsNow;
         let objDocClosest={
             $doc:false,
             dist:!that.$footer.isRotated ? $container.getBoundingClientRect().width : $container.getBoundingClientRect().height,
@@ -450,7 +453,7 @@
             that.$footer.classList.add("oldestYear");
             throw Error("目标年份:"+yearTo+",年份dom未找到");
         }
-        $listDocs=Array.from($yearTo.querySelectorAll(".b-d."+that.bsTimelineBarWrapper.strBodyBSMain));
+        $listDocs=Array.from($yearTo.querySelectorAll(that.bsTimelineBarWrapper.strQueryAllDocsNow));
         if($listDocs && $listDocs.length>0){
             {# 是否需要同步到时间轴 #}
             let strNowDate=$listDocs[0].id.replace("b","");
@@ -512,7 +515,7 @@
                 if(eTransition && eTransition.target.classList.contains("svgTimelineBar")){
                     that.bsTimelineBarWrapper.disable();
                     // 当前显示的第一个
-                    let $firstNow=that.bsTimelineBarWrapper.content.querySelector(".b-d."+that.bsTimelineBarWrapper.strBodyBSMain);
+                    let $firstNow=that.bsTimelineBarWrapper.content.querySelector(that.bsTimelineBarWrapper.strQueryAllDocsNow);
                     if($firstNow)that.bsTimelineBarWrapper.scrollToElement($firstNow,false);
                     else that.bsTimelineBarWrapper.scrollTo(scrollStartX,0,500);//that.bsTimelineBarWrapper.scrollStartX
                     that.bsTimelineBarWrapper.onAll();
@@ -539,7 +542,7 @@
         // 缩放的同时先移动
         // that.bsTimelineBarWrapper.disable();
         // 当前显示的第一个
-        let $firstNow=that.bsTimelineBarWrapper.content.querySelector(".b-d."+that.bsTimelineBarWrapper.strBodyBSMain);
+        let $firstNow=that.bsTimelineBarWrapper.content.querySelector(that.bsTimelineBarWrapper.strQueryAllDocsNow);
         if($firstNow)that.bsTimelineBarWrapper.scrollToElement($firstNow,false);
         else that.bsTimelineBarWrapper.scrollTo(scrollStartX,0,500);//that.bsTimelineBarWrapper.scrollStartX
         that.bsTimelineBarWrapper.updateAllBnYears();
