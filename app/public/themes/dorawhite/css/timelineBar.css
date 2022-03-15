@@ -24,9 +24,11 @@
     overflow: hidden;
 }
 #dr-footer .timelineContainer .timelineBn{
+    -webkit-transition-property: -webkit-transform,opacity,flex-basis;
+    -webkit-transition-duration: 0.3s;
     transition-property: transform,opacity,flex-basis;
-    opacity: 1;
     transition-duration: 0.3s;
+    opacity: 1;
     overflow: visible;
     display: flex;
     flex-direction: column;
@@ -47,9 +49,12 @@
     z-index: 2041;
 }
 #dr-footer .timelineContainer .timelineBn.next{
+    -webkit-transform: rotate(180deg);
     transform: rotate(180deg);
 }
 #dr-footer .timelineContainer .timelineBn .bnArrow{
+    -webkit-transition-property: -webkit-transform opacity;
+    -webkit-transition-duration: 3s;
     transition-property: transform opacity;
     transition-duration: 3s;
     height:100%;
@@ -57,11 +62,13 @@
     background-image: url("/static/upload/images/icons/bnArrow.svg");
     background-repeat: no-repeat;
     background-position: center;
+    -webkit-background-size: 20px 20px;
     background-size: 20px 20px;
 }
 #dr-footer.footerContainer .timelineContainer .timelineBn .bnArrow{
     transition-delay: 0s;
     opacity: 0;
+    -webkit-transform: translateX(-40px);
     transform: translateX(-40px);
 }
 #dr-footer.footerContainer.done .timelineContainer .timelineBn .bnArrow{
@@ -70,6 +77,7 @@
 #dr-footer.footerContainer.timeline.done .timelineContainer .timelineBn .bnArrow{
     transition-delay: 0.5s;
     opacity: 1;
+    -webkit-transform: translateX(0px);
     transform: translateX(0px);
 }
 #dr-footer.footerContainer.timeline.done.oldestYear .timelineContainer .timelineBn.next,
@@ -79,6 +87,9 @@
 }
 /* 当前标记 */
 #dr-footer .scrollBar{
+    -webkit-transition-property: height,opacity,-webkit-transform;
+    -webkit-transition-duration: 0.5s;
+    -webkit-transition-delay: 0.3;
     transition-property: height,opacity,transform;
     transition-duration: 0.5s;
     transition-delay: 0.3;
@@ -86,6 +97,7 @@
     width: 0px;
     flex: 0 0 0px;
     /* 90px */
+    -webkit-transform: translate(calc(var(--top-main-timeline-mobile,0px) - var(--width-footer-bn-mobile,20px) + var(--width-footer-bn-mobile,34px)),-10px);
     transform: translate(calc(var(--top-main-timeline-mobile,0px) - var(--width-footer-bn-mobile,20px) + var(--width-footer-bn-mobile,34px)),-10px);
     opacity: 0;
     /* transform:translateX(20px); */
@@ -103,6 +115,7 @@
     background-color:#2A00FF;
 
     opacity: 1;
+    -webkit-transform:translateX(0px);
     transform:translateX(0px);
 }
 body.news #dr-footer .scrollBar div{ background-color: #2A00FF; }
@@ -113,12 +126,15 @@ body.videos #dr-footer .scrollBar div{ background-color: #00FFFE; }
 #dr-footer.timeline.done .scrollBar{
     opacity:1;
     /* height:var(--footer-size-mobile,105px); */
+    -webkit-transform: translate(calc(var(--top-main-timeline-mobile,0px) - var(--width-footer-bn-mobile,20px)),0px);
     transform: translate(calc(var(--top-main-timeline-mobile,0px) - var(--width-footer-bn-mobile,20px)),0px);
 }
 
 #dr-footer .timelineMain{
     flex:1;
     overflow: hidden;
+    /* min-width: 100%; */
+    flex: 1 0 calc(var(--vh, 1vh) * 100 - 2 * var(--width-footer-bn-mobile,34px));
 }
 
 /* 通用：变形到乐队列表页的尺寸 */
@@ -162,15 +178,19 @@ body.videos #dr-footer .scrollBar div{ background-color: #00FFFE; }
 */
 
 .svgTimelineBar{
+    -webkit-transition-property: -webkit-transform;
+    -webkit-transition-duration: 0.3s;
     transition-property: transform;
     transition-duration: 0.3s;
     flex:0 0 auto;
     width:calc( var(--width-timeline-bar-wrapper-mobile) * var(--width-timeline-bar-year,1) * var(--scale-timeline-bar-svg,1));
 }
 #dr-footer.timeline #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar{
+    -webkit-transform: translateY(12px);
     transform: translateY(12px);
 }
 #dr-footer.listArtist.done #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar{
+    -webkit-transform: translateY(0px);
     transform: translateY(0px);
 }
 #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s.b-y {
@@ -253,6 +273,7 @@ body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s {
 }
 
 #dr-footer .timelineContainer .timelineYearContainer .timelineYear span{
+    -webkit-transform: translate(6px,32px);
     transform: translate(6px,32px);
     padding-right:13px;
     color: #c2c2c2;
@@ -274,9 +295,12 @@ body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s {
     /* display: flex; */
     /* justify-content: stretch; */
     /* flex-wrap: nowrap; */
+    -webkit-transform: translate(calc( -1 * var(--width-timeline-bar-end-mobile) - 0px),calc(12px));
     transform: translate(calc( -1 * var(--width-timeline-bar-end-mobile) - 0px),calc(12px));
 }
 #dr-footer .timelineContainer .timelineYearContainer .barContainer .bar{
+    -webkit-transition-property: -webkit-transform,opacity;
+    -webkit-transition-duration: 0.3s;
     transition-property: transform,opacity;
     transition-duration: 0.3s;
     
@@ -345,12 +369,14 @@ body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s {
         top:unset;
         width:100%!important;
         max-height: var(--footer-size-pc,16px);
+        -webkit-transform:none;
         transform:none;
     }
     #dr-footer.footerContainer-md .timelineBn{
         /* flex:0 0 calc(var(--main-offset-left-pc,46px)); */
         flex:0 0 0px;
         width:0px;
+        -webkit-transform: translate(var(--width-footer-bn-pc,40px),15px);
         transform: translate(var(--width-footer-bn-pc,40px),15px);
     }
     #dr-footer.timeline.done .timelineContainer .timelineBn{
@@ -358,6 +384,7 @@ body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s {
         flex-basis: 0px;
     }
     #dr-footer.footerContainer-md .timelineBn.next {
+        -webkit-transform: rotate(180deg) translate(var(--width-footer-bn-pc,40px),-15px);
         transform: rotate(180deg) translate(var(--width-footer-bn-pc,40px),-15px);
     }
     #dr-footer.footerContainer-md .timelineBn .bnArrow{
@@ -368,13 +395,16 @@ body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s {
     #dr-footer.footerContainer-md .scrollBar{
         opacity: 1;
         height:var(--footer-size-pc,105px);
+        -webkit-transform: translate(var(--width-footer-bn-pc,40px),calc(-1 * var(--footer-size-pc,105px)));
         transform: translate(var(--width-footer-bn-pc,40px),calc(-1 * var(--footer-size-pc,105px)));
     }
     #dr-footer.footerContainer-md.timeline.done .scrollBar{
         opacity:1;
         height:var(--footer-size-pc,105px);
+        -webkit-transform: translate(var(--width-footer-bn-pc,40px),0px);
         transform: translate(var(--width-footer-bn-pc,40px),0px);
         /* 移动到设计位置 */
+        -webkit-transform: translate(var(--left-footer-scrollbar-pc),0px);
         transform: translate(var(--left-footer-scrollbar-pc),0px);
     }
     #bsTimelineBarWrapper .bsTimelineBarContent-md .left{
@@ -391,6 +421,8 @@ body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s {
         max-height: 100%;
     }
     #dr-footer .svgTimelineBar{
+        -webkit-transition-property: -webkit-transform,width;
+        -webkit-transition-duration: 0.3s;
         transition-property: transform,width;
         transition-duration: 0.3s;
     
@@ -399,9 +431,11 @@ body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s {
 
     }
     #dr-footer.timeline.done #bsTimelineBarWrapper .bsTimelineBarContent-md .svgTimelineBar{
+        -webkit-transform: translateY(20px);
         transform: translateY(20px);
     }
     #dr-footer.listArtist #bsTimelineBarWrapper .bsTimelineBarContent-md .svgTimelineBar{
+        -webkit-transform: translateY(0px);
         transform: translateY(0px);
     }
     #bsTimelineBarWrapper .bsTimelineBarContent-md .svgTimelineBar .b-s {
@@ -438,6 +472,7 @@ body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s {
         /* font-family: HelveticaNeue; */
     }
     #dr-footer .timelineContainer .timelineYearContainer-md .timelineYear span{
+        -webkit-transform: translate(calc(-50% + 35.5px),44px);
         transform: translate(calc(-50% + 35.5px),44px);
         padding-right:71px;
         font-weight: 500;
@@ -447,6 +482,7 @@ body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s {
     }
     /* 多余年份bar */
     #dr-footer .timelineContainer .timelineYearContainer-md .barContainer{
+        -webkit-transform: translate(calc( -1 * var(--width-timeline-bar-end-pc)),20px);
         transform: translate(calc( -1 * var(--width-timeline-bar-end-pc)),20px);
     }
     #dr-footer .timelineContainer .timelineYearContainer-md .barContainer .bar{

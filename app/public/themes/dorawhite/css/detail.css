@@ -320,6 +320,7 @@
     background-image: url("/static/themes/images/bnArrowDetail.svg");
     background-repeat: no-repeat;
     background-position: center;
+    -webkit-background-size: 38px 38px;
     background-size: 38px 38px;
     position:absolute;
     z-index: 1999;

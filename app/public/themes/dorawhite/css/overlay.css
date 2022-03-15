@@ -66,6 +66,7 @@
 #offcanvasDetailAll .offcanvas-header .icon-arrow{
     background: url(/static/upload/images/icons/arrow-down.svg) center no-repeat;
     background-size: 1rem;
+    -webkit-background-size: 1rem;
 }
 #offcanvasDetailAll.artists .offcanvas-header .icon-arrow{
     filter: invert(1);
@@ -171,6 +172,7 @@
     #offcanvasRight .offcanvas-header .icon-arrow.left{
         /* display: none; */
         background-size: 0.8rem;
+        -webkit-background-size: 0.8rem;
         margin-right: 1rem;
         margin-right: calc( 16 * 1rem / 36 );
     }

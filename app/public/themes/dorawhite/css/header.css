@@ -100,9 +100,11 @@
   }
   /* ul上移动画 */
   #navHeader.listArtist #collapseNavbarMobile.navbar-collapse ul{
+    -webkit-transform: translateY(-1.15rem);
     transform: translateY(-1.15rem);
   }
   #navHeader.timeline #collapseNavbarMobile.navbar-collapse ul{
+    -webkit-transform: translateY(0%);
     transform: translateY(0%);
   }
   /* 子元素最少间距 */
@@ -175,7 +177,9 @@
     justify-content: center;
     aspect-ratio: 1 / 1;
     width: auto;
+    min-width: var(--size-btn-wrapper);
     height:100%;
+    min-height: var(--size-btn-wrapper);
     /* max-height: 68px; */
     padding: 0px;
     /* IOS下有默认的按钮渲染方式 */
@@ -191,6 +195,7 @@
     vertical-align: middle;
     background-repeat: no-repeat;
     background-position: center;
+    -webkit-background-size: auto;
     background-size: auto;
     /* background-size: 0.827rem 0.56rem; */
     /* background-size: calc(46 * 1rem /36); */
@@ -200,14 +205,14 @@
 
   /* 手机菜单按钮 */
   #navHeader .navbar .btnWrapper{
-
+    --size-btn-wrapper:46px;
     flex:0 1 auto;
 
     aspect-ratio: 1 / 1;
     width: auto;
     height:100%;
-    min-width: 46px;
-    min-height: 46px;
+    min-width: var(--size-btn-wrapper);
+    min-height:  var(--size-btn-wrapper);
     max-height: 100%;
     overflow: hidden;
     margin-right: var(--header-margin-right,0.5rem)!important;
@@ -221,20 +226,24 @@
       right:0;
     }
   #navHeader.listArtist bn-menu-toggler{
+    -webkit-animation:slideDownIn .3s ease 0s 1 normal both;
     animation:slideDownIn .3s ease 0s 1 normal both; 
   }
   #navHeader.timeline bn-menu-toggler{
+    -webkit-animation:slideUpOut .3s ease 0s 1 normal both; 
     animation:slideUpOut .3s ease 0s 1 normal both; 
   }
 
   #navHeader.timeline .navbar .btn-close{
     /* @keyframes name | duration | easing-function | delay |
     iteration-count | direction | fill-mode | play-state |  */
+    -webkit-animation:slideUpIn .3s ease 0s 1 normal both; 
     animation:slideUpIn .3s ease 0s 1 normal both; 
   }
   #navHeader.listArtist .navbar .btn-close{
     /* @keyframes name | duration | easing-function | delay |
     iteration-count | direction | fill-mode | play-state |  */
+    -webkit-animation:slideOut .3s ease 0s 1 normal both;
     animation:slideOut .3s ease 0s 1 normal both; 
   }
 
@@ -297,14 +306,19 @@
   #navHeader #collapseNavbarPC.navbar-collapse-md ul{
     display: flex;
     margin-right:2rem;
+    -webkit-transition-property: -webkit-transform;
+    -webkit-transition-duration: .3s;
+    -webkit-transform:translateY(135%);
     transition-property: transform;
     transition-duration: .3s;
     transform:translateY(135%);
   }
   #navHeader.timeline #collapseNavbarPC.navbar-collapse-md ul{
+    -webkit-transform:translateY(0px);
     transform:translateY(0px);
   }
   #navHeader.listArtist #collapseNavbarPC.navbar-collapse-md ul{
+    -webkit-transform:translateY(135%);
     transform:translateY(135%);
   }
   #navHeader #collapseNavbarPC.navbar-collapse-md ul li{
@@ -318,34 +332,79 @@
     line-height: 0.6rem;
   }
 }
-@keyframes slideDownIn {
+@-webkit-keyframes slideDownIn {
   0%{
+    -webkit-transform:translateY(-100%);
     transform:translateY(-100%);
   }
   100%{
+    -webkit-transform:translateY(0px);
+    transform:translateY(0px);
+  }
+}
+@-webkit-keyframes slideUpIn {
+  0%{
+    -webkit-transform:translateY(100%);
+    transform:translateY(100%);
+  }
+
+  100%{
+    -webkit-transform:translateY(0px);
+    transform:translateY(0px);
+  }
+}
+@-webkit-keyframes slideOut {
+
+  100%{
+    -webkit-transform:translateY(100%);
+    transform:translateY(100%);
+  }
+}
+@-webkit-keyframes slideUpOut {
+  0%{
+    -webkit-transform:translateY(0px);
+    transform:translateY(0px);
+  }
+  100%{
+    -webkit-transform:translateY(-100%);
+    transform:translateY(-100%);
+  }
+}
+@keyframes slideDownIn {
+  0%{
+    -webkit-transform:translateY(-100%);
+    transform:translateY(-100%);
+  }
+  100%{
+    -webkit-transform:translateY(0px);
     transform:translateY(0px);
   }
 }
 @keyframes slideUpIn {
   0%{
+    -webkit-transform:translateY(100%);
     transform:translateY(100%);
   }
 
   100%{
+    -webkit-transform:translateY(0px);
     transform:translateY(0px);
   }
 }
 @keyframes slideOut {
 
   100%{
+    -webkit-transform:translateY(100%);
     transform:translateY(100%);
   }
 }
 @keyframes slideUpOut {
   0%{
+    -webkit-transform:translateY(0px);
     transform:translateY(0px);
   }
   100%{
+    -webkit-transform:translateY(-100%);
     transform:translateY(-100%);
   }
 }

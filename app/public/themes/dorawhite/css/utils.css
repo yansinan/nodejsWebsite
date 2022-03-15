@@ -107,6 +107,7 @@ img:not([src]):not([srcset]) {
     height: 0.587rem;
     background: url(/static/upload/images/icons/arrow-down.svg) -0.027rem -0.027rem no-repeat;
     background-size: 0.614rem 0.64rem;
+    -webkit-background-size: 0.614rem 0.64rem;
     align-self: flex-start;
     margin-left: 0.054rem;
   }
@@ -266,6 +267,7 @@ bn-search{
     background-repeat: no-repeat;
     background-position: center;
     background-size: auto;
+    -webkit-background-size: auto;
 
 }
 .offcanvas-header .btn-close:active, 
