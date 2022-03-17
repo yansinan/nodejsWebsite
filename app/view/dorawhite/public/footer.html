@@ -122,14 +122,14 @@
 
             // 添加一个适当的事件监听器
             this.addEventListener("BS_COVER_WILL_LISTARTISTS", (page)=>{
-                document.documentElement.style.setProperty('--footer-size-mobile', "16px");
-                document.documentElement.style.setProperty('--footer-size-pc', "16px");
+                document.documentElement.style.setProperty('--footer-size-mobile', "calc( 16 * 1rem /26)");
+                document.documentElement.style.setProperty('--footer-size-pc', "calc( 16 * 1rem /36)");
                 this.$footer.classList.add("listArtist");
                 this.$footer.classList.remove("done");
             })
             this.addEventListener("BS_COVER_WILL_TIMELINE", (page)=>{
-                document.documentElement.style.setProperty('--footer-size-mobile', "54px");
-                document.documentElement.style.setProperty('--footer-size-pc', "106px");
+                document.documentElement.style.setProperty('--footer-size-mobile', "calc( 54 * 1rem /26)");
+                document.documentElement.style.setProperty('--footer-size-pc', "calc( 106 * 1rem /36)");
                 this.$footer.classList.add("timeline");
                 this.$footer.classList.remove("done");
             })
