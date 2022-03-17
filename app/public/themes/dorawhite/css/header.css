@@ -307,7 +307,8 @@
   .navbar-brand img{
       max-width:163px;
       min-height:var(--header-btn-height,53px)!important;
-      width: auto;
+      width: auto!important;
+      min-width: auto!important;
       height: 100%;
       object-fit: contain;
   }

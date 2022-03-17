@@ -64,8 +64,8 @@
     background-image: url("/static/upload/images/icons/bnArrow.svg");
     background-repeat: no-repeat;
     background-position: center;
-    -webkit-background-size: 20px 20px;
-    background-size: 20px 20px;
+    -webkit-background-size: calc(20 * 1rem / 26) calc(20 * 1rem / 26);
+    background-size: calc(20 * 1rem / 26) calc(20 * 1rem / 26);
 }
 #dr-footer.footerContainer .timelineContainer .timelineBn .bnArrow{
     -webkit-transition-delay: 0s;
@@ -412,6 +412,7 @@ body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s {
     #dr-footer.footerContainer-md .timelineBn .bnArrow{
         height:var(--width-footer-bn-pc,40px);
         width:var(--width-footer-bn-pc,40px);
+        background-size: calc(28 * 1rem / 36);
     }
     /* 当前标记 */
     #dr-footer.footerContainer-md .scrollBar{
@@ -468,6 +469,7 @@ body.records #bsTimelineBarWrapper .bsTimelineBarContent .svgTimelineBar .b-s {
     #bsTimelineBarWrapper .bsTimelineBarContent-md .svgTimelineBar .b-d {
         /* y:20px; */
         width:2.4px;
+        width: calc( 2.4 * 1rem / 36 );
     }
     /* 鼠标经过弹出 */
     #dr-footer.listArtist.up #bsTimelineBarWrapper .bsTimelineBarContent-md .svgTimelineBar .b-s,

@@ -266,8 +266,8 @@ bn-search{
     vertical-align: middle;
     background-repeat: no-repeat;
     background-position: center;
-    background-size: auto;
     -webkit-background-size: auto;
+    background-size: 0.8rem;
 
 }
 .offcanvas-header .btn-close:active, 

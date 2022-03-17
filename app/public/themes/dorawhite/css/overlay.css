@@ -59,6 +59,10 @@
     max-width: 131px;
     min-height: 30px;
     max-height: 40px;
+    min-width:  calc( 98 * 1rem / 26 );
+    max-width: calc( 131 * 1rem / 26 );
+    min-height: calc( 30 * 1rem / 26 );
+    max-height: calc( 40 * 1rem / 26 );
     width: 100%;
     height: auto;
     object-fit: contain;
@@ -169,10 +173,18 @@
         /* justify-content: space-between; */
         /* padding-left: calc(var(--main-offset-left-pc,46px)); */
     }
+    #offcanvasDetailAll #offcanvasRight .offcanvas-header .navbar-brand img {
+        min-width: calc( 98 * 1rem / 36 );
+        /* max-width: calc( 131 * 1rem / 36 ); */
+        min-height: calc( 30 * 1rem / 36 );
+        /* max-height: calc( 40 * 1rem / 36 ); */
+        max-height: unset;
+        max-width: unset;
+    }
     #offcanvasRight .offcanvas-header .icon-arrow.left{
         /* display: none; */
-        background-size: 0.8rem;
         -webkit-background-size: 0.8rem;
+        background-size: 0.8rem;
         margin-right: 1rem;
         margin-right: calc( 16 * 1rem / 36 );
     }

@@ -150,7 +150,7 @@
 
             {# 鼠标下移拉出 #}
             let footerUpHeight=getComputedStyle(document.documentElement).getPropertyValue('--footer-size-up-pc');
-            footerUpHeight=parseInt(footerUpHeight);
+            footerUpHeight=parseInt(footerUpHeight) || 72;
             footerHoverHeight=(getBrowserInterfaceSize()).pageHeight-footerUpHeight
             function eMouseMoveScreen(e){
                 if(e.y>footerHoverHeight){
