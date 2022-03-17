@@ -129,9 +129,10 @@
             let rate = (pr * 100).toFixed(0);
             const zoom = detectZoom();
             console.log("[window.onresize][refreshVH]zoom:",zoom,"% , rate:",rate,"%");
-            if(rate!=zoom || rate>210 || rate < 60){
+            const isMobile=/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent) || window.screen.width>=768
+            if((rate!=zoom || rate>210 || rate < 60) && !isMobile){
                 document.documentElement.style.setProperty('--bs-body-font-size', `calc( 1rem * 100 / ${rate} )`);
-                alert('系统显示比例'+rate+"%, "+zoom+"%:\n为获得更好浏览体验\n键盘ctrl+0恢复100%显示")
+                alert('系统显示比例'+rate+"%, "+zoom+"%:\n为获得更好浏览体验\n键盘ctrl+0恢复100%显示"+window.screen.width)
                 // pixelRatioBox.innerText = `${rate}% (${pr.toFixed(2)})`;
             }
         }
