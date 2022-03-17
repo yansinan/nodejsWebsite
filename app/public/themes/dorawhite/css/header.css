@@ -185,6 +185,9 @@
     height:100%;
     /* min-width: fit-content; */
     /* width:fit-content; */
+    /* 导航按钮用 */
+    --size-btn-wrapper: calc( 1rem * 46 / 36);
+
   }
   #navHeader.listArtist .navbar .navOffsetRight{
     /* flex: 1 0 calc(var(--main-offset-left-mobile,20px) + var(--footer-size-mobile,16px) ); */
@@ -233,6 +236,8 @@
     background-position: center;
     -webkit-background-size: auto;
     background-size: auto;
+    -webkit-background-size:80%;
+    background-size: 80%;
     /* background-size: 0.827rem 0.56rem; */
     /* background-size: calc(46 * 1rem /36); */
 
@@ -241,7 +246,7 @@
 
   #navHeader .navbar .btnWrapper{
     position: relative;
-    --size-btn-wrapper:46px;
+    /* --size-btn-wrapper:46px; */
     flex:0 1 auto;
 
     aspect-ratio: 1 / 1;

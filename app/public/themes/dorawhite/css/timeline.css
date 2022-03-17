@@ -194,6 +194,13 @@
 #timelineContent .wapper-mm .item .title{
   margin-bottom: 0.61rem;
   padding-left: 0px;
+  line-height:1.5;
+  /* 两行省略号 */
+  display: -webkit-box;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
 #timelineContent .wapper-mm .item .title .list-inline.artists{
   display:none;
@@ -235,6 +242,7 @@
 #timelineContent.records .wapper-mm .item .title .list-inline.artists{
   display:flex;
   font-size:0.4444rem;
+  margin-bottom: 0px;
 }
 #timelineContent.goods .wapper-mm .item .titleContainer .imgContainer,
 #timelineContent.records .wapper-mm .item .titleContainer .imgContainer{
@@ -394,7 +402,9 @@
     justify-content: flex-end;
     /* padding-bottom: calc(41 * 100% / 403); */
     padding-left: 6%;
+    padding-left:calc(var(--bs-gutter-x) * .5);
     padding-right: 6%;
+    padding-right: calc(var(--bs-gutter-x) * 1);
     transition-property: background-color,opacity;
     transition-duration: .5s;
   }
