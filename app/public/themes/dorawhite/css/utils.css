@@ -471,3 +471,65 @@ loading{
 .navbar-brand{
     cursor: pointer;
 }  
+
+/* 应对屏幕缩放 */
+/**/
+@media all
+and (-moz-min-device-pixel-ratio: 1.09) and (-moz-max-device-pixel-ratio: 1.18) and (min-width: 768px),
+    (-webkit-min-device-pixel-ratio: 1.09) and (-webkit-max-device-pixel-ratio: 1.18) and (min-width: 768px),
+    (min-resolution: 1.09dppx) and (max-resolution: 1.18dppx) and (min-width: 768px){
+    :root {
+        font-size: calc(1 * 36px / 1.13)!important;
+    }
+}
+
+@media all
+and (-moz-min-device-pixel-ratio: 1.19) and (-moz-max-device-pixel-ratio: 1.28) and (min-width: 768px),
+    (-webkit-min-device-pixel-ratio: 1.19) and (-webkit-max-device-pixel-ratio: 1.28) and (min-width: 768px),
+    (min-resolution: 1.19dppx) and (max-resolution: 1.28dppx) and (min-width: 768px) {
+    :root {
+        font-size: calc(1 * 36px / 1.24)!important;
+    }
+}
+@media all
+and (-moz-min-device-pixel-ratio: 1.29) and (-moz-max-device-pixel-ratio: 1.4) and (min-width: 768px),
+    (-webkit-min-device-pixel-ratio: 1.29) and (-webkit-max-device-pixel-ratio: 1.4) and (min-width: 768px),
+    (min-resolution: 1.29dppx) and (max-resolution: 1.4dppx) and (min-width: 768px) {
+    :root {
+        font-size: calc(1 * 36px / 1.35)!important;
+    }
+}
+/*
+*/
+@media all
+and (-moz-min-device-pixel-ratio: 1.41) and (-moz-max-device-pixel-ratio: 1.6) and (min-width: 768px),
+    (-webkit-min-device-pixel-ratio: 1.41) and (-webkit-max-device-pixel-ratio: 1.6) and (min-width: 768px),
+    (min-resolution: 1.41dppx) and (max-resolution: 1.6dppx)  and (min-width: 768px){
+    :root {
+        font-size: calc(1 * 36px / 1.5)!important;
+    }
+}
+@media all
+and (-moz-min-device-pixel-ratio: 1.61) and (-moz-max-device-pixel-ratio: 1.8) and (min-width: 768px),
+    (-webkit-min-device-pixel-ratio: 1.61) and (-webkit-max-device-pixel-ratio: 1.8) and (min-width: 768px),
+    (min-resolution: 1.61dppx) and (max-resolution: 1.8dppx)  and (min-width: 768px){
+    :root {
+        font-size: calc(1 * 36px / 1.7)!important;
+    }
+}
+@media all
+and (-moz-min-device-pixel-ratio: 1.81) and (-moz-max-device-pixel-ratio: 2.1) and (min-width: 768px),
+    (-webkit-min-device-pixel-ratio: 1.81) and (-webkit-max-device-pixel-ratio: 2.1) and (min-width: 768px),
+    (min-resolution: 1.81dppx) and (max-resolution: 2.1dppx) and (min-width: 768px) {
+    :root {
+        font-size: calc(1 * 36px / 1.9)!important;
+    }
+}
+@media all
+and (-moz-min-device-pixel-ratio: 2.1) and (min-width: 768px),
+    (-webkit-min-device-pixel-ratio: 2.1) and (min-width: 768px),
+    (min-resolution: 2.1dppx)  and (min-width: 768px){
+    :root {
+        font-size: calc(1 * 36px / 2.5)!important;
+    }
+}

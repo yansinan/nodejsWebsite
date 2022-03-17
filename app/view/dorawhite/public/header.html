@@ -34,7 +34,28 @@
     {# 监听Element变化 #}
     var MutationObserver = window.MutationObserver || window.webkitMutationObserver || window.MozMutationObserver;
     let that=this;
-
+    // 判断pc浏览器是否缩放，若返回100则为默认无缩放，如果大于100则是放大，否则缩小
+    function detectZoom (){
+        var ratio = 0,
+            screen = window.screen,
+            ua = navigator.userAgent.toLowerCase();
+        
+        if (window.devicePixelRatio !== undefined) {
+            ratio = window.devicePixelRatio;
+        }else if (~ua.indexOf('msie')) {
+            if (screen.deviceXDPI && screen.logicalXDPI) {
+            ratio = screen.deviceXDPI / screen.logicalXDPI;
+            }
+        }else if (window.outerWidth !== undefined && window.innerWidth !== undefined) {
+            ratio = window.outerWidth / window.innerWidth;
+        }
+            
+        if (ratio){
+            ratio = Math.round(ratio * 100);
+        }
+            
+        return ratio;
+    };
     // We listen to the resize event
     // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
     let vh = window.innerHeight * 0.01;
@@ -76,9 +97,48 @@
         document.documentElement.style.setProperty('--vh', `${pageHeight*0.01}px`);
         document.documentElement.style.setProperty('--vh-viewport', `max(${pageHeight*0.01}px , 1vh)`);
         document.documentElement.style.setProperty('--vw', `max(${pageWidth*0.01}px , 1vw)`);
+        // // 检查是否缩放
+        // const rate = detectZoom();
+        // if(rate != 100){
+        //     //如何让页面的缩放比例自动为100,'transform':'scale(1,1)'没有用，又无法自动条用键盘事件，目前只能提示让用户如果想使用100%的比例手动去触发按ctrl+0
+        //     console.log("[window.onresize][refreshVH]zoom:",rate,"%");
+        //     alert('系统显示比例'+rate+",%:\n为获得更好浏览体验\n键盘ctrl+0恢复100%显示")
+        // }
     }
     refreshVH();
     window.addEventListener('resize', refreshVH);
+
+    //阻止pc端浏览器缩放js代码
+    //由于浏览器菜单栏属于系统软件权限，没发控制，我们着手解决ctrl/cammond + +/- 或 Windows下ctrl + 滚轮 缩放页面的情况，只能通过js来控制了
+    // jqeury version
+    $(document).ready(function () {
+        // chrome 浏览器直接加上下面这个样式就行了，但是ff不识别
+        $('body').css('zoom', 'reset');
+        // 禁止快捷键缩放
+        function stopZoom(event){
+            if (event.ctrlKey === true || event.metaKey)event.preventDefault();        
+        }
+        window.addEventListener('DOMMouseScroll', stopZoom,{passive: false});
+        window.addEventListener('mousewheel', stopZoom,{passive: false});
+        // 检查是否缩放
+        // let pixelRatioBox = document.querySelector(".pixel-ratio");
+        let mqSystemZoomString = `(resolution: ${window.devicePixelRatio}dppx)`;
+
+        const updatePixelRatio = () => {
+            let pr = window.devicePixelRatio;
+            let rate = (pr * 100).toFixed(0);
+            const zoom = detectZoom();
+            console.log("[window.onresize][refreshVH]zoom:",zoom,"% , rate:",rate,"%");
+            if(rate!=zoom || rate>210 || rate < 60){
+                document.documentElement.style.setProperty('--bs-body-font-size', `calc( 1rem * 100 / ${rate} )`);
+                alert('系统显示比例'+rate+"%, "+zoom+"%:\n为获得更好浏览体验\n键盘ctrl+0恢复100%显示")
+                // pixelRatioBox.innerText = `${rate}% (${pr.toFixed(2)})`;
+            }
+        }
+        updatePixelRatio();
+        // matchMedia(mqSystemZoomString).addListener(updatePixelRatio);
+        window.addEventListener('resize', updatePixelRatio);
+    });
 </script>
 <script>
     {# 地址路由 #}
