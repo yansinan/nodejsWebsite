@@ -321,6 +321,13 @@
   #timelineContent.goods .container-mm.goods{
     max-width: 23.6vw;
   }
+  #timelineContent.records .container-mm.records{
+    /* --size-item-record: calc(400 * 1rem / 36 ); */
+    --size-item-record: calc(400 * 100vw / 1440 );
+    /* --margin-right-record: calc( 199 * 1rem / 36 ); */
+    --margin-right-record: calc( 199 * 100vw / 1440 );
+    max-width: calc(var(--margin-right-record) + var(--size-item-record));
+  }
   #timelineContent .container-mm{
     transition-property: max-width,transform;
     transition-duration: .5s,1s;
@@ -359,6 +366,17 @@
     width:22vw;
     margin-right:1.6vw;
     min-width:22vw;
+  }
+  #timelineContent.records .wapper-mm-md{
+    /* width:22vw; */
+    /* margin-right:1.6vw; */
+    /* min-width:22vw; */
+    /* height: var(--size-item-record); */
+    min-width: auto;
+    width: var(--size-item-record);
+    /* max-width: var(--size-item-record); */
+    /* max-width: var(--size-item-record); */
+    margin-right: var(--margin-right-record);
   }
   #timelineContent .wapper-mm-md .item{
     margin-bottom: 1.42rem;
