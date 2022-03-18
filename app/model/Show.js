@@ -64,6 +64,9 @@ module.exports =app=>{
         }).set(function(v){
             this.listDateDur[1]=v;
         });
+        schema.virtual('listDateDurYYYYMMDD').get(function () {
+            return this.listDateDur ? this.listDateDur.map(v=>(moment(v).format("YYYY-MM-DD"))) : [];
+        })        
         // schema.virtual('date').get(function () {
         //     return moment(this.dateStart).format("YYYY-MM-DD");
         // }).set((v)=>{

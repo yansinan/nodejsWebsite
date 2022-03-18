@@ -1,0 +1,44 @@
+{% from "../public/compListTags.html" import tag as domTag %}
+{% from "../public/compListTags.html" import listTags as listTags %}
+{% from "../public/compListTags.html" import listArtists %}
+<div class="detail {{serviceName}} font-normal" data-bs-main="{{post.docAlias}}">
+    <div class="head">
+        {# 海报 #}
+        <div class="album">
+            <img src="{{post.sImg}}" alt="{{image.name}}"/>
+        </div>
+        <div class="link">
+            <div class="location">{{post.location}}</div>
+            <div class="url outUnderline"><a href="{{post.listLinks[0].url}}" target="_blank">购买链接<img src="/static/upload/images/icons/bnArrowLink.svg"/></a></div>
+        </div>
+    </div>
+    <div class="info">
+        {# 乐队名 {{listArtists(post.listArtists)}}#}
+        <div class="name">{{post.name}}</div>
+        {# 标签 #}
+        {{ listTags(post.tags) }}
+        {# 唱片：发行方式&发行日期 #}
+        {% if post.listDateDur.length>0%}
+        <ol class="listDateDur breadcrumb">
+            {% for date in post.listDateDurYYYYMMDD %}
+            <li class="breadcrumb-item hoverUnderline">{{date}}</li>
+            {% endfor %}
+        </ol>
+        {% endif %}
+        {# <div class="date">{{post.dateStart}} - {{post.dateEnd}}</div> #}
+    </div>
+    <div class="headEnd"></div>
+    {# 介绍 #}
+    <article class="">
+        {{post.comments | safe}}
+    </article>
+    {# 友链 #}
+    {% if post.listLinks.length>0%}
+    <ol class="breadcrumb">
+        {% for link in post.listLinks %}
+        <li class="breadcrumb-item hoverUnderline"><a href="#">{{link.name}}</a></li>
+        {% endfor %}
+    </ol>
+    {% endif %}
+
+</div>

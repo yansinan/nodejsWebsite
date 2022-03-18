@@ -697,6 +697,7 @@
 }
 
 /* 专辑和周边详情 */
+.detail.show,
 .detail.record,
 .detail.good{
     display:flex;
@@ -705,6 +706,7 @@
     justify-content: flex-start;
     align-items: flex-start;
 }
+.detail.show .head,
 .detail.record .head,
 .detail.good .head{
     display: flex;
@@ -717,6 +719,7 @@
     margin-bottom: calc(42 * 1rem / 26);
     align-self: center;
 }
+    .detail.show .head .album,
     .detail.record .head .album,
     .detail.good .head .album{
         position: relative;
@@ -726,6 +729,7 @@
         background-color: var(--color-placeholder,#aaa);
         margin-bottom: 0px;
     }
+    .detail.show .head .album::after,
     .detail.record .head .album::after,
     .detail.good .head .album::after{
         content:"";
@@ -733,6 +737,7 @@
         padding-bottom:100%;
         height:0px;
     }
+    .detail.show .head .album img,
     .detail.record .head .album img,
     .detail.good .head .album img{
         /* width:83.33vw; */
@@ -741,6 +746,7 @@
         position: absolute;  
     }
     /* 链接和编号 */
+    .detail.show .head .link,
     .detail.record .head .link,
     .detail.good .head .link{
         display: flex;
@@ -750,6 +756,7 @@
         width: 83.33vw;        
         margin-top: 1rem;
     }
+    .detail.show .head .link .location,
     .detail.record .head .link .catalog,
     .detail.good .head .link .catalog{
         border:1px solid black;
@@ -758,6 +765,7 @@
     .detail.good .head .link .catalog{
         visibility: hidden;
     }
+    .detail.show .head .link .url,
     .detail.record .head .link .url,
     .detail.good .head .link .url{
         display: flex;
@@ -765,6 +773,7 @@
         justify-content: space-between;
         align-items: center;
     }
+.detail.show .info,
 .detail.record .info,
 .detail.good .info{
     display:flex;
@@ -774,6 +783,7 @@
     flex: 1 1 40%;
 }
     /* 乐队名称&标题 */
+    .detail.show .info .name .list-inline.artists,
     .detail.good .info .name .list-inline.artists,
     .detail.record .info .name .list-inline.artists{
         font-size: calc(14 * 1rem / 26);
@@ -782,16 +792,20 @@
     .detail .formatTags{
         display:none;
     }
+    .detail.show .listDateDur,
     .detail.record .formatTags{
         display:flex;
         margin-bottom: 0px;
     }
+    .detail.show .listDateDur::before,
     .detail.record .formatTags::before{
         content:"发行方式：";
     }
+    .detail.show .listDateDur .breadcrumb-item::before,
     .detail.record .formatTags .breadcrumb-item::before{
         color:inherit;
     }
+    .detail.show .listDateDur,
     .detail.record .formatTags,
     .detail.good .date,
     .detail.record .date{
@@ -802,7 +816,10 @@
     .detail.record .date::before{
         content:"发行时间：";
     }
-
+    .detail.show .listDateDur::before{
+        content:"时间：";
+    }
+.detail.show .headEnd,
 .detail.good .headEnd,
 .detail.record .headEnd{
     /* flex:0 0 3rem; */
@@ -814,30 +831,36 @@
 
 
 @media (min-width: 1024px) {
+    .detail.show .head .album,
     .detail.record .head .album,
     .detail.good .head .album{
         width:39vw;
         min-width:560px;
     }
+    .detail.show .head .link,
     .detail.record .head .link,
     .detail.good .head .link{
         width:39vw;
         min-width:560px;
     }
+    .detail.show .info,
     .detail.record .info,
     .detail.good .info{
         order:-1;
     }
+    .detail.show .listDateDur,
     .detail.record .formatTags,
     .detail.good .date,
     .detail.record .date{
         font-size:calc(24 * 1rem / 36);
         line-height: 0.917rem;
     }
+    .detail.show article,
     .detail.record article,
     .detail.good article{
         max-width: calc( 75% - 20px);
     }
+    .detail.show article img,
     .detail.record article img,
     .detail.good article img{
         margin-bottom: 1rem;

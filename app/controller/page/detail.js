@@ -296,6 +296,8 @@ class IndexController extends Controller {
                         ctx.tempPage="../view/dorawhite/2-stage-video/detail.html";
                     }else if(serviceName=="artist"){
                         ctx.tempPage="../view/dorawhite/2-stage-artist/detail.html";
+                    }else if(serviceName=="show"){
+                        ctx.tempPage="../view/dorawhite/2-stage-show/detail.html";
                     }else ctx.tempPage="../view/dorawhite/2-stage-timeline/detail.html";//"../view/dorawhite/2-stage-timeline/listTempTimeline.html";//app/view/dorawhite/2-stage-timeline/listTempTimeline.html
                     //ctx.tempPage=fs.existsSync(ctx.tempPage)?ctx.tempPage:"../view/dorawhite/2-stage-default/detail.html";
                 } else {
@@ -377,7 +379,7 @@ class IndexController extends Controller {
         //最终渲染
         // 模板的真实路径
         let path="../view/dorawhite/public/relative.html";
-        ctx.logger.info("getDomSearch::",ctx.query,q,resObj.pageInfo);
+        // ctx.logger.info("getDomSearch::",ctx.query,q,resObj.pageInfo);
         try {
             resObj.dom=await ctx.renderView(path,pageData);
             ctx.helper.renderSuccess(ctx, {
