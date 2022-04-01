@@ -15,7 +15,7 @@
                     tooltip.hide();
                 });
                 let $inner=tooltip.tip.querySelector(".tooltip-inner");
-                
+                // 添加可以点击的链接
                 $artist.querySelectorAll(".notice").forEach($notice=>{
                     let $dom=$notice.cloneNode(true);
                     $dom.classList.remove("d-none");
@@ -25,6 +25,14 @@
                     })
                     $inner.append($dom);
                 })
+                {#- 
+                // // 去掉动画后bug没有了，暂时没有用到 隐藏其他的
+                // $container.tooltipList.forEach((t)=>{
+                //     if(t && tooltip!=t && t.tip && !t.tip.hidden){
+                //         t.hide();
+                //     }
+                // });
+                -#}
             }
             //e.preventDefault();
         }
@@ -58,6 +66,7 @@
                 //boundary: $container, // or document.querySelector('#boundary')
                 //container: $container,//tooltipTriggerEl,//$container.querySelector(".bs-content-listArtist"),
                 //trigger:"hover focus",
+                animation:false,
                 trigger:"manual",
                 popperConfig:{
                     placement,

@@ -138,6 +138,7 @@ body{
     justify-content: center;
     align-items: center;
     border:2px black solid;
+    border:calc(2 * 1rem / 26) black solid;
     border-radius: 50%;
     font-size: 0.48rem;
     font-weight: 600;
@@ -220,6 +221,9 @@ body{
         margin-right: 0rem;
         max-height: none;
     }
+    .listArtists .noticeCnt{
+        border:calc(2 * 1rem / 36) black solid;
+    }    
     body .tooltip .tooltip-inner{
         max-width: 20rem;
         font-size: calc(24 * 1rem /36);

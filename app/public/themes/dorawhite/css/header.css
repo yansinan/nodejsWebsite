@@ -150,6 +150,8 @@
     background-color: transparent;
     color: black;
     border:1px solid black;
+    border:calc(1 * 1rem / 26) black solid;
+
     cursor:pointer;
   }
   #navHeader .navbar-collapse ul li.now
@@ -311,6 +313,10 @@
       min-width: auto!important;
       height: 100%;
       object-fit: contain;
+  }
+  #navHeader .navbar-collapse ul li 
+  {
+    border:calc(1 * 1rem / 36) black solid;
   }
   /* #navHeader.timeline .navbar .navOffsetLeft-md */
   /* #navHeader.timeline.done .navbar .navOffsetLeft-md */
