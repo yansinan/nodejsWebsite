@@ -76,7 +76,7 @@ module.exports =app=>{
             return `/record___${this._id}.html`;
         });
         schema.virtual('nameTimeline').get(function (){
-            return "专辑《"+this.name + "》发布";
+            return "专辑 "+this.name + " ";
         })
         schema.virtual('listArtists').get(function () {
             return this.listRefs;

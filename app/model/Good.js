@@ -40,7 +40,7 @@ module.exports =app=>{
             return this.listLinks && this.listLinks[0]?this.listLinks[0].url : `/good___${this._id}.html`;
         });
         schema.virtual('nameTimeline').get(function (){
-            return "周边《"+this.name + "》发售";
+            return "周边 "+this.name + "";
         })
         schema.virtual('listArtists').get(function () {
             return this.listRefs;

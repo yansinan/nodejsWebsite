@@ -299,12 +299,12 @@
             $offcanvasDetail.querySelectorAll(".scrollerSnap").forEach($scrollSnap=>{
                 {# 鼠标滚轮 #}
                 $scrollSnap.addEventListener("wheel", (evt) => {
-                    evt.preventDefault();
-                    $($scrollSnap)[0].scrollBy({
-                        top      : 0,
-                        left     : evt.deltaY,
-                        behavior : 'smooth'
-                    });
+                    // evt.preventDefault();
+                    // $($scrollSnap)[0].scrollBy({
+                    //     top      : 0,
+                    //     left     : evt.deltaY,
+                    //     behavior : 'smooth'
+                    // });
                     //$scrollSnap.scrollLeft += evt.deltaY;
                 });
                 {# 鼠标拖拽 #}
@@ -426,6 +426,15 @@
                 ctlOffcanvasBody.dom = res.data.comments || res.data.dom;
                 {# 样式处理完再显示 #}
                 window.offcanvasRight.classList.remove("loading");
+                {# 跳转到开头 #}
+                setTimeout(()=>{
+                    $($offcanvasDetail)[0].scrollBy({
+                            top      : -$offcanvasDetail.scrollTop,
+                            left     : 0,
+                            behavior : 'smooth'
+                    });
+                    // debugger;
+                },200)
             }
             function error(d) {
                 console.error('error:', url,d);
