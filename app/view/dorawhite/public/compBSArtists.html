@@ -115,7 +115,7 @@
             })
 
         })
-        this.addEventListener("NAV_TO",(e)=>{
+        function hideAllAritstsSImgTooltip(e){
             if(!that.isMobile){
                 $listArtists.forEach($artist=>{
                     var $listNameArtists = $artist.querySelectorAll('.name [data-bs-toggle="tooltip"]');
@@ -125,7 +125,12 @@
                     });
                 });
             }
-        });
+        }
+        that.addEventListener("NAV_TO",hideAllAritstsSImgTooltip);
+        that.addEventListener("BS_COVER_TIMELINE",hideAllAritstsSImgTooltip);
+        that.addEventListener("BS_COVER_TIMELINE_FINAL",hideAllAritstsSImgTooltip);
+        that.addEventListener("OPEN_OFFCANVAS_DETAIL",hideAllAritstsSImgTooltip);
+        that.addEventListener("OPEN_OFFCANVAS_SEARCH",hideAllAritstsSImgTooltip);
         </script>
     </div>
     {# 乐手列表 #}
