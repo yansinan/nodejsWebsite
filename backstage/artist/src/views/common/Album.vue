@@ -239,8 +239,10 @@ export default {
             //        url:returnPath,
             //        type:part.mime,
             //}
+            // 每个图片上传完成触发一次；到artist.updateAlbum
             Promise.all(res.data.listInfoImage.map(v=>{
                     return new Promise((resolve, reject) => {
+                        // 每张大图上传完成，再裁切-》上传小图；一图一次
                         let $img=new Image();
                         $img.addEventListener("load",this.eImgLoaded);
                         $img.addEventListener("uploaded",resolve);
@@ -253,6 +255,7 @@ export default {
                     })
                 })
             ).then(resAll=>{
+                // 每张大图完成，触发
                 if(typeof _this["onSuccess"] === "function")_this["onSuccess"](res,file,fileList)
                 // 
                 if(!fileList.find(v=>(v.status!="success"))){//合规的图片已全部上传完成                
@@ -261,7 +264,7 @@ export default {
                     _this.infoImageUploading.isLoading=false;
 
                     // 上传按钮变浏览?
-                }                
+                }
             }).catch(e=>{
                 debugger;
             })

@@ -247,17 +247,19 @@ class APIController extends BaseController {
                 },
                 files:"_id name url listImages updateDate"
             });
-            let listImages = JSON.parse(JSON.stringify(target)).listImages || [];
+            // let listImages = JSON.parse(JSON.stringify(target)).listImages || [];
+            let listImages = [];
             let resListInfoImage=resUpload.listInfoImage;
             // 添加到listImages
             if(resListInfoImage && resListInfoImage.length>0){
                 resListInfoImage.forEach(objImage=>{
                     let isUploaded=listImages.find(v=>(v.url==objImage.url));
-                    if(!isUploaded)listImages.push(objImage);        
+                    if(!isUploaded)listImages.push(objImage);
                 })
             }
             let resUpdate=await service.update(ctx, fields._id, {
-                listImages: listImages,
+                // listImages: listImages,
+                $push:{listImages:{$each:listImages}},
                 updateDate:Date.now(),
             })
             let resQuery=await service.item(ctx, {
@@ -272,7 +274,8 @@ class APIController extends BaseController {
                 listInfoImage:resUpload.listInfoImage,
                 _doc:resQuery._doc
             }
-            console.info("updateAlbum.artist.controller:更新图集结果:",resFinal)
+            let listImagesTmp=resFinal._doc.listImages.map(i=>(JSON.stringify(i)))
+            console.info("[updateAlbum.artist.controller]更新图集结果:",resFinal._doc.name,listImagesTmp)
             ctx.helper.renderSuccess(ctx,{
                 data:resFinal,
             });
