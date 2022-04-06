@@ -217,7 +217,7 @@
     scroll-snap-stop: normal;
     /* scroll-margin-left: 20px; */
     margin:0 0rem;
-    background-color: #222222a8;
+    /* background-color: #222222a8; */
     flex: 0 0 min(800px,100%,calc( var(--offsetcanvas-right) - var(--offsetcanvas-padding) - var(--offsetcanvas-padding-right,0.77rem) - 1rem));
     flex: auto;
 }

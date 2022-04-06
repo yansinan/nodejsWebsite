@@ -24,6 +24,8 @@
   overflow: visible;
   position: relative;
   top:0px;
+  --width-mm-img: 31.7vw;
+  --width-mm:40.7vw;
 }
 #timelineContent::before,
 #timelineContent::after{
@@ -93,7 +95,8 @@
 /* 手机每条内容宽整宽 */
 #timelineContent .wapper-mm{
   width:100%;
-  min-width:34.7vw;
+  /* min-width:34.7vw; */
+  min-width: var(--width-mm-img);
   height:100%;
   overflow: hidden;
   position: relative;
@@ -314,7 +317,8 @@
   #timelineContent.videos .container-mm.videos,
   #timelineContent.shows .container-mm.shows,
   #timelineContent.goods .container-mm.goods{
-    max-width: 40.7vw;
+    /* max-width: 40.7vw; */
+    max-width: var(--width-mm);
     overflow: visible;
     transform: translateY(0%);
   }
@@ -354,13 +358,15 @@
     transform: translateX(calc(100% + 1rem)) translateZ(0);
   }
   #timelineContent .loading{
-    flex: 0 0 calc(100vw - (40.7vw));
-    min-width: calc(100vw - (40.7vw));
+    flex: 0 0 calc(100vw - var(--width-mm));
+    min-width: calc(100vw - var(--width-mm));
   }
   /* PC内容一屏2个半 */
   #timelineContent .wapper-mm-md{
-    width:34.7vw;
-    margin-right:6vw;
+    /* width:34.7vw; */
+    /* margin-right:6vw; */
+    width: var(--width-mm-img);
+    margin-right: calc(var(--width-mm) - var(--width-mm-img));
   }
   #timelineContent.goods .wapper-mm-md{
     width:22vw;

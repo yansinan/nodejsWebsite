@@ -316,7 +316,7 @@
   }
   #navHeader .navbar-collapse ul li 
   {
-    border:calc(1 * 1rem / 36) black solid;
+    border: calc(1.5 * 1rem / 36) black solid;
   }
   /* #navHeader.timeline .navbar .navOffsetLeft-md */
   /* #navHeader.timeline.done .navbar .navOffsetLeft-md */
