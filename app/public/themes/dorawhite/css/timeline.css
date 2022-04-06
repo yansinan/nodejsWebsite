@@ -258,7 +258,7 @@
 #timelineContent.goods .titleContainer .tags.goods,
 #timelineContent.records .titleContainer .tags.records{
   display:flex;
-  font-size:0.444rem;
+  font-size: var(--font-size-tiny);
   margin-bottom:0px;
 }
 #timelineContent.goods .titleContainer .tags.goods.breadcrumb .breadcrumb-item,
@@ -285,7 +285,7 @@
 
 /* 
 #timelineContent .wapper-mm .item .list-inline-item{
-  font-size: 0.444rem;
+  font-size: var(--font-size-tiny);
   margin: 0px;
   margin-right:0.278rem;
   padding: 0.05rem 0.5rem;

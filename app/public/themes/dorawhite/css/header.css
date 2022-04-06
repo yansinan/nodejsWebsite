@@ -440,11 +440,11 @@
   }
 
   #offcanvasRightMenu .offcanvas-body .menuFoot li{
-    font-size: 0.444rem;
+    font-size: var(--font-size-tiny);
     line-height: 0.8rem;/*0.556rem;*/
   }
   #offcanvasRightMenu .offcanvas-body .menuFootCopyright{
-    font-size: 0.444rem;
+    font-size: var(--font-size-tiny);
     margin-bottom:60px;
   }
 }

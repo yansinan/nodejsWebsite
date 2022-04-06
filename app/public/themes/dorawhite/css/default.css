@@ -12,6 +12,8 @@
 @import url('intro.css');
 
 :root{
+    --font-size-tiny:0.444rem;
+    
     --main-offset-left-mobile:0.85rem;
     --main-offset-left-pc:1.25rem; 
 

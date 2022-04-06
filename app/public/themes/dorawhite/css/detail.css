@@ -156,6 +156,7 @@
 }
 .detail.artist{
     background-color: inherit;
+    background-color: black;
 }
 .detail.artist .name{
     flex: 0 0 3rem;    
@@ -217,7 +218,7 @@
     scroll-snap-stop: normal;
     /* scroll-margin-left: 20px; */
     margin:0 0rem;
-    /* background-color: #222222a8; */
+    background-color: inherit;/* #222222a8; */
     flex: 0 0 min(800px,100%,calc( var(--offsetcanvas-right) - var(--offsetcanvas-padding) - var(--offsetcanvas-padding-right,0.77rem) - 1rem));
     flex: auto;
 }
@@ -250,7 +251,7 @@
     margin-top:1.444rem;
     /* margin-bottom:5.667rem; */
 
-    font-size: 0.389rem;
+    font-size: var(--font-size-tiny);
     /* font-family: PingFangSC-Regular, PingFang SC; */
     font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB", "Source Han Sans", "Noto Sans CJK Sc", "Microsoft YaHei", "Microsoft Jhenghei", sans-serif;
     font-weight: 400;
@@ -302,7 +303,7 @@
     height:calc(45 * 1rem / 26);
     border-radius: 5rem;
     border:1px solid white;
-    background-color: inherit;
+    background-color: black;
     opacity: .8;
 
 }
@@ -341,7 +342,7 @@
     bottom: calc(100% + 16px);
 }
 #offcanvasDetail .nav.artist{
-    background-color: black;
+    /* background-color: black; */
 }
 /* 试听 */
 #offcanvasDetail .nav ul li.player{
