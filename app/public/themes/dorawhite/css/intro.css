@@ -115,7 +115,7 @@
 }
 .staffs .timeWrapper .timeline .line{
     height: calc( var(--height_staffs) / 12 );
-    width: calc( 5 * 1rem / 36);
+    width: calc( 8 * 1rem / 36);
     border-top:2px solid black;
 }
 .staffs .timeWrapper .year{
@@ -135,7 +135,7 @@
     text-align: center;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
     z-index: 10;
 }
 .staffs .timeWrapper .year.tag{
@@ -147,7 +147,7 @@
 .staffs .timeWrapper .bar{
     width:calc(29 * 1rem / 36);
     height:calc(2 * 1rem / 36);
-    border: 3px solid black;
+    border: 1.5px solid black;
     background-color: black;
     position: absolute;
     top: calc( 100% / 12 );
@@ -398,11 +398,12 @@
     .staffs .timeWrapper .year{
         --width_staffs_year : calc( 82 * 1rem / 36);
         --height_staffs_year : calc( 37 * 1rem / 36);
-        font-size: 0.3rem;
+        font-size: var(--font-size-tiny);
     }
     .staffs .timeWrapper .bar{
-        width:calc(53 * 1rem / 36);
-        height:calc(4 * 1rem / 36);
+        width:calc(48 * 1rem / 36);
+        height:calc(3 * 1rem / 36);
+        border:none;
     }
     /* 人容器 */
     .staffs .container {
