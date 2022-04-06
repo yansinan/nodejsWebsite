@@ -135,7 +135,7 @@ bn-search{
     padding: 0.05rem 0.5rem;
     line-height: 0.6rem;
     /* border:1px solid black; */
-    border: calc(1.5 * 1rem / 36) black solid;
+    border: calc(1.8 * 1rem / 36) black solid;
 }
 .list-inline-item:not(:last-child) {
     margin-right:0px;

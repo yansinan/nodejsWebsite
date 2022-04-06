@@ -430,7 +430,7 @@
         position: relative;
         top: auto;
         right: auto;
-        font-size: inherit;
+        font-size: 1rem;
     }
     
     .detail.artist article{
