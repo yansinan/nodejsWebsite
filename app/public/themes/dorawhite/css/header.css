@@ -368,6 +368,7 @@
 }
 #offcanvasRightMenu .offcanvas-header .btn{
   filter: invert(1);
+  background-size: 70%;
 }
 
   /* 搜索按钮 */
@@ -461,6 +462,7 @@
 }
 #offcanvasSearch .offcanvas-header .btn{
   filter:invert(1);
+  background-size: 70%;
 }
   #offcanvasSearch input{
       border:none;
