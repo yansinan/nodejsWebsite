@@ -548,3 +548,10 @@ and (-moz-min-device-pixel-ratio: 2.21) and (min-width: 768px),
         font-size: calc(1 * 36px / 2.5)!important;
     }
 }
+
+/* pc低分辨率 */
+@media screen and (min-width: 768px) and (min-height:600px) and (max-height: 1023px){
+    :root {
+        font-size: calc(30px)!important;
+    }
+}
