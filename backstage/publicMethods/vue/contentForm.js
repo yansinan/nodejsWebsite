@@ -196,6 +196,8 @@ export let methods={
     submitForm(formName, type = "") {
         let that=this;
         if(type!="")that.formState.formData.state=type;
+        if(that.formState.formData.title=="")that.formState.formData.title= that.formState.formData.name;
+        if(that.formState.formData.stitle=="")that.formState.formData.stitle= that.formState.formData.alias;
         this.$refs[formName].validate(valid => {
             if (valid) {
                 let params = Object.assign({}, that.formState.formData, {
@@ -233,6 +235,7 @@ export let methods={
                             });
                         } else {
                             that.$message.error(result.message);
+                            debugger
                         }
                     }).catch(error=>{
                         console.error("乐队添加：fail:",error,params);
