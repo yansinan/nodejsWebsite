@@ -23,7 +23,7 @@
         }
         function preventDefault(e) {
             let tar=e.target;
-            let isScrollble=isChildOf(tar,window.offcanvasDetailAll)
+            let isScrollble=isChildOf(tar,window.offcanvasDetailAll) || isChildOf(tar,window.offcanvasSearch)
             if(!isScrollble)e.preventDefault();
         }
 
