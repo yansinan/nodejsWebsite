@@ -345,7 +345,7 @@
   #timelineContent.videos .container-mm:not(.videos){    
     max-width: 0px;
     overflow: hidden;
-    transform: translateY(-150%);
+    /* transform: translateY(-150%); */
   }
   #timelineContent::before,
   #timelineContent::after{
