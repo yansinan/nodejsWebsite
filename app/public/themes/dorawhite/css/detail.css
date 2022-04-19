@@ -255,7 +255,8 @@
     /* font-family: PingFangSC-Regular, PingFang SC; */
     font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB", "Source Han Sans", "Noto Sans CJK Sc", "Microsoft YaHei", "Microsoft Jhenghei", sans-serif;
     font-weight: 400;
-    color: #979797;
+    /* color: #979797; */
+    color: inherit;
     line-height: 0.694rem;
     /* text-decoration: underline; */
     -webkit-background-clip: text;
@@ -415,7 +416,7 @@
     align-items: center;
 }
 #offcanvasDetail .nav.artist.show .playList ul li span.now::before{
-    content:"";
+    /* content:""; */
     border-left:solid 1px white;
     transform:translateX(0px);
     flex: 0 0 2rem;
