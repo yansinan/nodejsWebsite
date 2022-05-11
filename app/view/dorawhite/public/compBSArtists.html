@@ -1,10 +1,10 @@
 {# 横滚乐队名 #}
 <div id="coverArtistsWrapper" class="bs-wrapper-listArtist">                        
     <div class="bs-content-listArtist listArtists">
-        {% for artist in listArtists|sort(false,false,"letters") %}
+        {% for artist in listArtists|sort(false,false,"letters")|sort(false,false,"isLeft") %}
         {# 乐队名列表 #}
         {# <h1 class="display-1">RUBY</h1> #}
-        <div class="artist d-flex align-items-center ">
+        <div class="artist d-flex align-items-center {{'isLeft' if artist.isLeft else ''}}">
             {# <div class="fixed"><div class="sImg"><img src="{{artist.sImg}}" width="0px" data-src="{{artist.sImg}}" alt="{{artist.nameTimeline}}"  class="img-fluid"/></div></div> #}
              
             <button 

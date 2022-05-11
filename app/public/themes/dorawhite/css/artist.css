@@ -58,6 +58,10 @@ body{
     padding-bottom: 0rem;
 
 }
+/* 离开的乐队 */
+.listArtists .artist.isLeft{
+    color:gray;
+}
 /* PC乐队图提示 */
 .tooltip.sImg .tooltip-inner{
     pointer-events: none;

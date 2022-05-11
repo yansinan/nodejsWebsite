@@ -2,7 +2,7 @@
  * @Author: dr 
  * @Date: 2019/11/10 
  * @Last Modified by: dr
- * @Last Modified time: 2022-03-03 17:58:12
+ * @Last Modified time: 2022-05-11 13:09:48
  */
 /**
  * Created by Dr on 2019/11/10.
@@ -150,6 +150,10 @@ module.exports =app=>{
         }).set(function(v){
             this.listDateDur[1]=v;
             return this.listDateDur[1];
+        });
+        // 是否已经离开
+        schema.virtual('isLeft').get(function () {
+            return (this.listDateDur && this.listDateDur[1] )? this.listDateDur[1]<new Date() : false ;
         });
         // TODO:没弄懂，v输出总是undefinded
         // schema.path('listDateDur').get(v=>(v)).set(function (v) {

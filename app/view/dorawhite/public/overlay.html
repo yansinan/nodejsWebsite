@@ -155,10 +155,10 @@
                 </div >
             {% for letter,artistItems in listArtists|sort(false,false,"letters")|groupby("firstLetter") %}
                 <div class="firstLetter">{{letter}}</div>
-                {% for artist in artistItems %}
+                {% for artist in artistItems|sort(false,false,"isLeft") %}
                 {# 乐队名列表 #}
                 {# <h1 class="display-1">RUBY</h1> #}
-                <div class="artist d-flex align-items-center ">
+                <div class="artist d-flex align-items-center {{'isLeft' if artist.isLeft else ''}}">
                     <button class="name hoverUnderline btn btn-link" data-dr-url="{{artist.url}}"  onclick="window.goto('{{artist.url}}')">
                         {{artist.name}}
                     </button>
