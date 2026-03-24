@@ -218,29 +218,27 @@
         {% endblock %}
     </div>
     <script>
-        function resetBSMain(){
+        function resetBSMain(e){
+            {#- 移动端且横屏，不处理 -#}
             if(that.isMobile && !that.isPortrait)return;
+            console.debug("启动测试：DOMContentLoaded",e)
             let $bsMain=document.getElementById("mainCover");
             if($bsMain)$bsMain.classList.remove("loading");
             refreshVH();
             that.initBSMain && that.initBSMain();
         }
         document.addEventListener('DOMContentLoaded', resetBSMain);
-        {# 横竖屏控制 #}
-        function eResetViewport(){
-            {# let $bsMain=document.getElementById("mainCover"); #}
-            {# this.slideCover && this.slideCover.disable(); #}
-            {# if($bsMain)$bsMain.classList.add("loading"); #}
-            {# window.location.reload(); #}
+        {# 横竖屏控制：只在旋转改变时，且变为竖屏发生 #}
+        this.addEventListener("RefreshViewport",(e)=>{
             setTimeout(()=>{
                 resetBSMain();
             },50)
-        }
-        this.addEventListener("RefreshViewport",eResetViewport)
+        })
     </script>
 
     {# <script async src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.4.0/dist/lazyload.min.js"></script> #}
     <script src="/static/themes/dorawhite/js/preventRotate.js"></script>
+    <debug class="vh"></debug>
 </body>
 
 </html>

@@ -205,3 +205,52 @@ body.flex #dr-footer{
     }
 }
 
+/* html.landscape body, */
+html.debug{
+    background-color: bisque;
+}
+/*
+html.portrait body{
+    background-color: rgb(142, 166, 243);
+}
+*/
+/* 测试用 */
+html.debug #navHeader{
+    background-color:rgb(204, 76, 236);
+}
+html.debug #headerNav,
+html.debug #collapseNavbarMobile{
+    border:1px solid blue;
+}
+html.debug #timelineContent .wapper-mm.now{
+    background-color:blanchedalmond;
+}
+html.debug #mainCover{
+    background-color: #082b13;
+}
+html.debug #coverArtistsWrapper{
+    background-color: lawngreen;
+}
+html.debug #coverArtistsWrapper .bs-content-listArtist{
+    background-color:rgb(205, 255, 182);
+}
+/* iphoneX适配 */
+@media only screen and (width: 375px) and (height: 812px){
+    body {
+        border-bottom: 2px red solid;
+    }
+}
+@media only screen and (width: 375px) and (min-height: 690px){
+    body {
+        border-bottom: 2px red solid;
+    }
+}
+html debug.vh{
+    position: fixed;
+    height:3px;
+    background-color: green;
+    width:max(100vw,calc(var(--vw) * 100));
+    top:calc( min(100vh,calc(var(--vh) * 100)) - 3px);
+    left:0px;
+    z-index: 99999999;
+}
